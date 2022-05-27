@@ -14,7 +14,7 @@ Needed contracts/components:
 ## Agreement
 
 - `createAgreement(hash, lockAmount)`: Creates an agreement with a hash (hash of the file with the human-readable text of the agreement) and a lock amount (maximum amount to be slashed in case of breach).
-- `enterAgreement(id)`: Enters an agreement, which means that the $veNATION is escrowed by the court contract and can be slashed by it.
+- `enterAgreement(id)`: Enters an agreement, which means that the $veNATION is escrowed by the court contract and can be slashed by it. A nice to have would be to mint an NFT, since then certain corners of the Internet could be token gated to those who have entered the agreement. In doing so, even Nation3 citizenship itself could be an agreement, and you would become a citizen by depositing stake, signing the terms (constitution) and receiving a passport NFT.
 - `resolveDispute(address, outcome, amount)`: Resolves the agreement for an address (which must have entered the agreement). Depending on the outcome for that address, it either slashes an amount (if ruled against), or gives back an extra amount (if ruled in favor). It also removes the ability for the agreement contract to slash the lock amount, meaning that the address is done with the agreement. It should first collect the negative amounts, so the contract has funds to send the positive ones afterwards. This is a protected function only called by the court contract.
 - `finishAgreement(id, signatures)`: Finishes the agreeement if all parts are in favor of doing so (by signing a confirmation message). Checks all signatures from participants, and if valid, releases all the locks.
 
