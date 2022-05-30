@@ -6,10 +6,10 @@ Needed contracts/components:
 
 ## VotingEscrow
 
-- Needs a customized version of `VotingEscrow`, with an added function for an address to burn and transfer $NATION.
+- Needs a customized version of `VotingEscrow`, with an added function for an address to transfer $NATION.
 - Might be worth it to deploy a different one and keep two veTokens, or to deploy a new one and perform a migration. Tradeoffs are:
   - Having two veTokens means less capital efficiency (cannot use your $veNATION for both being a citizen and participating in agreements).
-  - Having one veToken means locked $NATION, which is most of the supply, can be burned by a contract. Even with proper safeguards in place, there can be bugs, attacks, etc.
+  - Having one veToken means locked $NATION, which is most of the supply, can be transferred by a contract. Even with proper safeguards in place, there can be bugs, attacks, etc.
 
 ## Agreement
 
