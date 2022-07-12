@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-07-12T10:23:15.345Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36" etag="l6kK6B-39jGIglRkWuy5" version="20.0.3" type="github">
+<mxfile host="app.diagrams.net" modified="2022-07-12T10:39:44.610Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36" etag="WgnLwj363l-5LsYEqoqM" version="20.0.3" type="github">
   <diagram id="RIN1eg-LxDucRnpEeOLB" name="Page-1">
     <mxGraphModel dx="1166" dy="719" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -83,7 +83,10 @@
           <mxGeometry x="10" y="110" width="130" height="40" as="geometry" />
         </mxCell>
         <mxCell id="Vpkfen6-pFlWCI1bwdF5-65" value="CollateralAgreement" style="swimlane;" vertex="1" parent="1">
-          <mxGeometry x="305" y="600" width="200" height="50" as="geometry" />
+          <mxGeometry x="305" y="585" width="200" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="Vpkfen6-pFlWCI1bwdF5-145" value="withdrawFromAgreement" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="Vpkfen6-pFlWCI1bwdF5-65">
+          <mxGeometry x="22.5" y="35" width="155" height="40" as="geometry" />
         </mxCell>
         <mxCell id="Vpkfen6-pFlWCI1bwdF5-83" value="ArbitrationModule" style="swimlane;" vertex="1" parent="1">
           <mxGeometry x="530" y="290" width="170" height="260" as="geometry" />
