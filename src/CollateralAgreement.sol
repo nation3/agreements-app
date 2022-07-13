@@ -1,11 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
-import {ERC20} from "@rari-capital/solmate/src/tokens/ERC20.sol";
-import {SafeTransferLib} from "@rari-capital/solmate/src/utils/SafeTransferLib.sol";
-import {Agreement, AgreementParams, Position, PositionParams, PositionStatus} from "./AgreementStructs.sol";
-import {IAgreementFramework} from "./IAgreementFramework.sol";
-import {IArbitrable} from "./IArbitrable.sol";
+import { ERC20 } from "@rari-capital/solmate/src/tokens/ERC20.sol";
+import { SafeTransferLib } from "@rari-capital/solmate/src/utils/SafeTransferLib.sol";
+import {
+    Agreement,
+    AgreementParams,
+    Position,
+    PositionParams,
+    PositionStatus
+} from "./AgreementStructs.sol";
+import { IAgreementFramework } from "./IAgreementFramework.sol";
+import { IArbitrable } from "./IArbitrable.sol";
 
 /*
 struct CriteriaResolver {
@@ -16,7 +22,6 @@ struct CriteriaResolver {
 */
 
 contract CollateralAgreementFramework is IAgreementFramework {
-
     error MissingPositions();
     error PositionsMustMatch();
 
@@ -32,7 +37,11 @@ contract CollateralAgreementFramework is IAgreementFramework {
     /// @dev Current last agreement index.
     uint256 private _currentIndex;
 
-    constructor(ERC20 token_, address arbitrator_, uint256 arbitrationFee_) {
+    constructor(
+        ERC20 token_,
+        address arbitrator_,
+        uint256 arbitrationFee_
+    ) {
         arbitrator = arbitrator_;
         token = token_;
         arbitrationFee = arbitrationFee_;
@@ -60,7 +69,10 @@ contract CollateralAgreementFramework is IAgreementFramework {
         return positions;
     }
 
-    function createAgreement(AgreementParams calldata params) external returns (uint256 agreementId) {
+    function createAgreement(AgreementParams calldata params)
+        external
+        returns (uint256 agreementId)
+    {
         if (params.criteria < arbitrationFee) revert CriteriaUnderArbitrationFee();
         agreementId = _currentIndex;
 
@@ -101,8 +113,7 @@ contract CollateralAgreementFramework is IAgreementFramework {
     function disputeAgreement(uint256 id) public {}
 
     function withdrawFromAgreement(uint256 id) public {
-        if (!isTerminated(id))
-            revert AgreementNotTerminated();
+        if (!isTerminated(id)) revert AgreementNotTerminated();
         if (agreement[id].party[agreement[id].position[msg.sender].id] != msg.sender)
             revert NoPartOfAgreement();
 
@@ -131,7 +142,11 @@ contract CollateralAgreementFramework is IAgreementFramework {
         for (uint256 i = 0; i < positionsLength; i++) {
             if (i < agreement[id].party.length && agreement[id].party[0] != settlement[0].party)
                 revert PositionsMustMatch();
-            agreement[id].position[settlement[i].party] = Position(i, settlement[i].balance, PositionStatus.Terminated);
+            agreement[id].position[settlement[i].party] = Position(
+                i,
+                settlement[i].balance,
+                PositionStatus.Terminated
+            );
             if (i >= agreement[id].party.length) {
                 agreement[id].party.push(settlement[i].party);
             }

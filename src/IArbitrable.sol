@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
-import {PositionParams} from "./AgreementStructs.sol";
+import { PositionParams } from "./AgreementStructs.sol";
 
 /// @notice Interface for arbitrable contracts.
 /// @dev Implementers must write the logic to raise and settle disputes.
 interface IArbitrable {
-
     error OnlyArbitrator();
 
     /// @notice Address capable of settling disputes.

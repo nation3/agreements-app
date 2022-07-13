@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
-import {AgreementParams, PositionParams, CollateralAgreementFramework} from "../src/CollateralAgreement.sol";
-import {MockERC20} from "@rari-capital/solmate/src/test/utils/mocks/MockERC20.sol";
-import {Hevm} from "@rari-capital/solmate/src/test/utils/Hevm.sol";
-import {DSTestPlus} from "@rari-capital/solmate/src/test/utils/DSTestPlus.sol";
+import {
+    AgreementParams,
+    PositionParams,
+    CollateralAgreementFramework
+} from "../src/CollateralAgreement.sol";
+import { MockERC20 } from "@rari-capital/solmate/src/test/utils/mocks/MockERC20.sol";
+import { Hevm } from "@rari-capital/solmate/src/test/utils/Hevm.sol";
+import { DSTestPlus } from "@rari-capital/solmate/src/test/utils/DSTestPlus.sol";
 
 contract CollateralAgreementTest is DSTestPlus {
     Hevm evm = Hevm(HEVM_ADDRESS);
@@ -26,8 +30,8 @@ contract CollateralAgreementTest is DSTestPlus {
         token = new MockERC20("Agreements Token", "AT", 18);
         agreements = new CollateralAgreementFramework(token, arbitrator, arbitrationFee);
 
-        token.mint(bob, 5*1e18);
-        token.mint(alice, 5*1e18);
+        token.mint(bob, 5 * 1e18);
+        token.mint(alice, 5 * 1e18);
     }
 
     function testCreateAgreement() public {
@@ -43,7 +47,7 @@ contract CollateralAgreementTest is DSTestPlus {
 
         // Bob joins the agreement
         evm.startPrank(bob);
-        token.approve(address(agreements), 2*1e18);
+        token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, 1e18);
         evm.stopPrank();
 
@@ -60,17 +64,17 @@ contract CollateralAgreementTest is DSTestPlus {
 
         // Bob joins the agreement
         evm.startPrank(bob);
-        token.approve(address(agreements), 2*1e18);
+        token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, 1e18);
         evm.stopPrank();
 
         // Alice joins the agreement
         evm.startPrank(alice);
-        token.approve(address(agreements), 2*1e18);
+        token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, 1e18);
         evm.stopPrank();
 
-        assertEq(token.balanceOf(address(agreements)), 2*criteria); 
+        assertEq(token.balanceOf(address(agreements)), 2 * criteria);
 
         // Bob tries to withdraw himself from the agreement before settlement
         evm.startPrank(bob);
@@ -104,30 +108,30 @@ contract CollateralAgreementTest is DSTestPlus {
 
         // Bob joins the agreement
         evm.startPrank(bob);
-        token.approve(address(agreements), 2*1e18);
+        token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, 1e18);
         evm.stopPrank();
 
         // Alice joins the agreement
         evm.startPrank(alice);
-        token.approve(address(agreements), 2*1e18);
+        token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, 1e18);
         evm.stopPrank();
 
         PositionParams[] memory settlementPositions = new PositionParams[](3);
-        settlementPositions[0] = PositionParams(bob, 1.5*1e18);
+        settlementPositions[0] = PositionParams(bob, 1.5 * 1e18);
         settlementPositions[1] = PositionParams(alice, 0);
-        settlementPositions[2] = PositionParams(address(0xD0011), 0.5*1e18);
+        settlementPositions[2] = PositionParams(address(0xD0011), 0.5 * 1e18);
 
         evm.prank(arbitrator);
         agreements.settleDispute(agreementId, settlementPositions);
 
         PositionParams[] memory agreementPositions = agreements.agreementPositions(agreementId);
         assertEq(agreementPositions[0].party, bob);
-        assertEq(agreementPositions[0].balance, 1.5*1e18);
+        assertEq(agreementPositions[0].balance, 1.5 * 1e18);
         assertEq(agreementPositions[1].party, alice);
         assertEq(agreementPositions[1].balance, 0);
-        assertEq(agreementPositions[2].balance, 0.5*1e18);
+        assertEq(agreementPositions[2].balance, 0.5 * 1e18);
 
         evm.prank(bob);
         agreements.withdrawFromAgreement(agreementId);

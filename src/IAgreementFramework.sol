@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
-import {AgreementParams, PositionParams} from "./AgreementStructs.sol";
-import {IArbitrable} from "./IArbitrable.sol";
+import { AgreementParams, PositionParams } from "./AgreementStructs.sol";
+import { IArbitrable } from "./IArbitrable.sol";
 
 /// @notice Interface for agreements frameworks.
 /// @dev Implementations must manage the logic to manage individual agreements inside the same framework.
 interface IAgreementFramework is IArbitrable {
-
     /* ====================================================================== //
                                         EVENTS
     // ====================================================================== */
@@ -66,5 +65,3 @@ interface IAgreementFramework is IArbitrable {
     /// @param id Id of the agreement to withdraw from.
     function withdrawFromAgreement(uint256 id) external;
 }
-
-
