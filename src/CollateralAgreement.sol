@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
 import {ERC20} from "@rari-capital/solmate/src/tokens/ERC20.sol";
@@ -73,12 +73,12 @@ contract CollateralAgreementFramework is IAgreementFramework {
     }
 
     function joinAgreement(uint256 id, uint256 balance) external {
-        if (balance < agreement[id].criteria) revert InsuficientBalance();
+        if (balance < agreement[id].criteria) revert InsufficientBalance();
         SafeTransferLib.safeTransferFrom(token, msg.sender, address(this), balance);
 
         uint256 newPartyId = agreement[id].party.length;
 
-        Position memory newPositon = Position(newPartyId, balance, PositionStatus.Iddle);
+        Position memory newPositon = Position(newPartyId, balance, PositionStatus.Idle);
 
         agreement[id].party.push(msg.sender);
         agreement[id].position[msg.sender] = newPositon;
@@ -87,8 +87,10 @@ contract CollateralAgreementFramework is IAgreementFramework {
     }
 
     function terminateAgreement(uint256 id) external {
-        if (agreement[id].party[agreement[id].position[msg.sender].id] != msg.sender) revert NoPartOfAgreement();
-        if (agreement[id].position[msg.sender].status == PositionStatus.Terminated) revert PartyAlreadyTerminated();
+        if (agreement[id].party[agreement[id].position[msg.sender].id] != msg.sender)
+            revert NoPartOfAgreement();
+        if (agreement[id].position[msg.sender].status == PositionStatus.Terminated)
+            revert PartyAlreadyTerminated();
 
         agreement[id].position[msg.sender].status = PositionStatus.Terminated;
         agreement[id].terminations += 1;
@@ -99,8 +101,10 @@ contract CollateralAgreementFramework is IAgreementFramework {
     function disputeAgreement(uint256 id) public {}
 
     function withdrawFromAgreement(uint256 id) public {
-        if (!isTerminated(id)) revert AgreementNotTerminated();
-        if (agreement[id].party[agreement[id].position[msg.sender].id] != msg.sender) revert NoPartOfAgreement();
+        if (!isTerminated(id))
+            revert AgreementNotTerminated();
+        if (agreement[id].party[agreement[id].position[msg.sender].id] != msg.sender)
+            revert NoPartOfAgreement();
 
         uint256 withdrawBalance = agreement[id].position[msg.sender].balance;
         agreement[id].position[msg.sender].balance = 0;
@@ -125,7 +129,8 @@ contract CollateralAgreementFramework is IAgreementFramework {
         if (settlement.length < agreement[id].party.length) revert MissingPositions();
 
         for (uint256 i = 0; i < positionsLength; i++) {
-            if (i < agreement[id].party.length && agreement[id].party[0] != settlement[0].party) revert PositionsMustMatch();
+            if (i < agreement[id].party.length && agreement[id].party[0] != settlement[0].party)
+                revert PositionsMustMatch();
             agreement[id].position[settlement[i].party] = Position(i, settlement[i].balance, PositionStatus.Terminated);
             if (i >= agreement[id].party.length) {
                 agreement[id].party.push(settlement[i].party);

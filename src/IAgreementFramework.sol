@@ -1,9 +1,9 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 import {AgreementParams, PositionParams} from "./AgreementStructs.sol";
 import {IArbitrable} from "./IArbitrable.sol";
 
-/// @notice Interface for agreemnts frameworks.
+/// @notice Interface for agreements frameworks.
 /// @dev Implementations must manage the logic to manage individual agreements inside the same framework.
 interface IAgreementFramework is IArbitrable {
 
@@ -22,7 +22,7 @@ interface IAgreementFramework is IArbitrable {
 
     error CriteriaUnderArbitrationFee();
     error NonExistentAgreement();
-    error InsuficientBalance();
+    error InsufficientBalance();
     error NoPartOfAgreement();
     error PartyAlreadyTerminated();
     error AgreementNotTerminated();
@@ -54,7 +54,7 @@ interface IAgreementFramework is IArbitrable {
     /// @param balance Amount to deposit on the agreement.
     function joinAgreement(uint256 id, uint256 balance) external;
 
-    /// @notice Signal the intend to terminate an agreement by consensus.
+    /// @notice Signal the intent to terminate an agreement by consensus.
     /// @param id Id of the agreement to settle.
     function terminateAgreement(uint256 id) external;
 

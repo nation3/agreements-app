@@ -1,14 +1,14 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
 enum PositionStatus {
-    Iddle,
+    Idle,
     Terminated
 }
 
 /// @dev Agreement party position
 struct Position {
-    /// @dev Matches index of the party in the aagreement
+    /// @dev Matches index of the party in the agreement
     uint256 id;
     /// @dev Amount of tokens corresponding to this position.
     uint256 balance;
