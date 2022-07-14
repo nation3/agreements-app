@@ -25,7 +25,7 @@ contract CollateralAgreementFramework is IAgreementFramework {
     error MissingPositions();
     error PositionsMustMatch();
 
-    /// @dev Token used in agreements & to pay arbitratotion fees.
+    /// @dev Token used in agreements.
     ERC20 public token;
     /// @dev Address with the power to settle agreements in dispute.
     address public arbitrator;

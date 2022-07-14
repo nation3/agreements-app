@@ -2,10 +2,9 @@
   "name": "nation3-court",
   "version": "0.1.0",
   "description": "Dispute resolution system with built-in arbitrated agreements",
-  "main": "src/Court.sol",
   "repository": "https://github.com/nation3/court.git",
   "author": "Nation3",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later",
   "private": false,
   "devDependencies": {
     "prettier": "^2.7.1",

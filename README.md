@@ -2,7 +2,7 @@
 
 ## Development
 
-### Solidity tests & build
+### Solidity build & test
 
 [Install Foundry](https://book.getfoundry.sh/getting-started/installation.html), (assuming a Linux or macOS system):
 ```bash
@@ -13,6 +13,11 @@ foundryup
 Install dependencies:
 ```bash
 forge install
+```
+
+Build contracts:
+```bash
+forge build
 ```
 
 Run solidity tests:
