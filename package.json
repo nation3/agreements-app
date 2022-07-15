@@ -1,0 +1,20 @@
+{
+  "name": "nation3-court",
+  "version": "0.1.0",
+  "description": "Dispute resolution system with built-in arbitrated agreements",
+  "repository": "https://github.com/nation3/court.git",
+  "author": "Nation3",
+  "license": "GPL-3.0-or-later",
+  "private": false,
+  "devDependencies": {
+    "prettier": "^2.7.1",
+    "prettier-plugin-solidity": "^1.0.0-dev.22",
+    "solhint": "^3.3.7"
+  },
+  "scripts": {
+      "lint:check": "yarn lint:check:format && yarn lint:check:solhint",
+      "lint:check:format": "prettier --check **/*.sol",
+      "lint:check:solhint": "solhint src/**/*.sol",
+      "lint:fix": "prettier --write **/*.sol"
+  }
+}
