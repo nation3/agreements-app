@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
-import { AgreementParams, PositionParams } from "./AgreementStructs.sol";
+import { AgreementParams, PositionParams } from "../lib/AgreementStructs.sol";
 import { IArbitrable } from "./IArbitrable.sol";
 
 /// @notice Interface for agreements frameworks.
@@ -10,21 +10,21 @@ interface IAgreementFramework is IArbitrable {
                                         EVENTS
     // ====================================================================== */
 
-    event AgreementCreated(uint256 agreementId, bytes32 termsHash, uint256 criteria);
-    event AgreementJoined(uint256 agreementId, address party, uint256 balance);
-    event AgreementTermination(uint256 agreementId, address party);
-    event AgreementWithdrawn(uint256 agreementId, address party, uint256 balance);
+    event AgreementCreated(uint256 id, bytes32 termsHash, uint256 criteria);
+    event AgreementJoined(uint256 id, address party, uint256 balance);
+    event AgreementFinalizationSent(uint256 id, address party);
+    event AgreementFinalized(uint256 id);
+    event AgreementWithdrawn(uint256 id, address party, uint256 balance);
 
     /* ====================================================================== //
                                         ERRORS
     // ====================================================================== */
 
-    error CriteriaUnderArbitrationFee();
     error NonExistentAgreement();
     error InsufficientBalance();
     error NoPartOfAgreement();
-    error PartyAlreadyTerminated();
-    error AgreementNotTerminated();
+    error PartyAlreadyFinalized();
+    error AgreementNotFinalized();
 
     /* ====================================================================== //
                                         VIEWS
@@ -53,11 +53,11 @@ interface IAgreementFramework is IArbitrable {
     /// @param balance Amount to deposit on the agreement.
     function joinAgreement(uint256 id, uint256 balance) external;
 
-    /// @notice Signal the intent to terminate an agreement by consensus.
+    /// @notice Signal the intent to finalize an agreement.
     /// @param id Id of the agreement to settle.
-    function terminateAgreement(uint256 id) external;
+    function finalizeAgreement(uint256 id) external;
 
-    /// @notice Dispute agreement so arbitration is needed for termination.
+    /// @notice Dispute agreement so arbitration is needed for finalization.
     /// @param id Id of the agreement to dispute.
     function disputeAgreement(uint256 id) external;
 

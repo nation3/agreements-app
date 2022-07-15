@@ -5,7 +5,7 @@ import {
     AgreementParams,
     PositionParams,
     CollateralAgreementFramework
-} from "../src/CollateralAgreement.sol";
+} from "../src/agreements/CollateralAgreement.sol";
 import { MockERC20 } from "@rari-capital/solmate/src/test/utils/mocks/MockERC20.sol";
 import { Hevm } from "@rari-capital/solmate/src/test/utils/Hevm.sol";
 import { DSTestPlus } from "@rari-capital/solmate/src/test/utils/DSTestPlus.sol";
@@ -28,7 +28,7 @@ contract CollateralAgreementTest is DSTestPlus {
         arbitrationFee = 0.02 ether;
 
         token = new MockERC20("Agreements Token", "AT", 18);
-        agreements = new CollateralAgreementFramework(token, arbitrator, arbitrationFee);
+        agreements = new CollateralAgreementFramework(token, arbitrator);
 
         token.mint(bob, 5 * 1e18);
         token.mint(alice, 5 * 1e18);
@@ -62,13 +62,13 @@ contract CollateralAgreementTest is DSTestPlus {
         uint256 bobBalance = token.balanceOf(bob);
         uint256 aliceBalance = token.balanceOf(alice);
 
-        // Bob joins the agreement
+        // Bob joins the agreement.
         evm.startPrank(bob);
         token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, 1e18);
         evm.stopPrank();
 
-        // Alice joins the agreement
+        // Alice joins the agreement.
         evm.startPrank(alice);
         token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, 1e18);
@@ -76,26 +76,26 @@ contract CollateralAgreementTest is DSTestPlus {
 
         assertEq(token.balanceOf(address(agreements)), 2 * criteria);
 
-        // Bob tries to withdraw himself from the agreement before settlement
+        // Bob tries to withdraw himself from the agreement before finalization.
         evm.startPrank(bob);
-        evm.expectRevert(abi.encodeWithSignature("AgreementNotTerminated()"));
+        evm.expectRevert(abi.encodeWithSignature("AgreementNotFinalized()"));
         agreements.withdrawFromAgreement(agreementId);
 
-        // Bob agrees to terminate
-        agreements.terminateAgreement(agreementId);
+        // Bob agrees to finalize the agreement.
+        agreements.finalizeAgreement(agreementId);
 
-        // Bob tries to withdraw himself from the agreement before termination consensus
-        evm.expectRevert(abi.encodeWithSignature("AgreementNotTerminated()"));
+        // Bob tries to withdraw himself from the agreement before finalization consensus
+        evm.expectRevert(abi.encodeWithSignature("AgreementNotFinalized()"));
         agreements.withdrawFromAgreement(agreementId);
         evm.stopPrank();
 
-        // Alice agrees to terminate and withdraw herself from the agreement
+        // Alice agrees to finalize and withdraw herself from the agreement
         evm.startPrank(alice);
-        agreements.terminateAgreement(agreementId);
+        agreements.finalizeAgreement(agreementId);
         agreements.withdrawFromAgreement(agreementId);
         evm.stopPrank();
 
-        // Bob can withdraw himself after termination consensus
+        // Bob can withdraw himself after finalization consensus
         evm.prank(bob);
         agreements.withdrawFromAgreement(agreementId);
 

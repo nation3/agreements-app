@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 enum PositionStatus {
     Idle,
-    Terminated
+    Finalized
 }
 
 /// @dev Agreement party position
@@ -21,8 +21,8 @@ struct Agreement {
     bytes32 termsHash;
     /// @dev Required amount to join or merkle root of (address,amount).
     uint256 criteria;
-    /// @dev Number of termination confirmations.
-    uint256 terminations;
+    /// @dev Number of finalizations confirmations.
+    uint256 finalizations;
     /// @dev List of parties involved in the agreement.
     address[] party;
     /// @dev Position by party.

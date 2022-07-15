@@ -9,9 +9,9 @@ import {
     Position,
     PositionParams,
     PositionStatus
-} from "./AgreementStructs.sol";
-import { IAgreementFramework } from "./IAgreementFramework.sol";
-import { IArbitrable } from "./IArbitrable.sol";
+} from "../lib/AgreementStructs.sol";
+import { IAgreementFramework } from "../interfaces/IAgreementFramework.sol";
+import { IArbitrable } from "../interfaces/IArbitrable.sol";
 
 /*
 struct CriteriaResolver {
@@ -21,34 +21,45 @@ struct CriteriaResolver {
 }
 */
 
+/// @notice Framework to create collateral agreements.
 contract CollateralAgreementFramework is IAgreementFramework {
+    /* ====================================================================== //
+                                        ERRORS
+    // ====================================================================== */
+
     error MissingPositions();
     error PositionsMustMatch();
 
+    /* ====================================================================== //
+                                        STORAGE
+    // ====================================================================== */
+
     /// @dev Token used in agreements.
     ERC20 public token;
+
     /// @dev Address with the power to settle agreements in dispute.
     address public arbitrator;
-    /// @dev Amount of jurisdiction token to reserve to pay for arbitration.
-    uint256 public arbitrationFee;
+
     /// @dev Map of agreements by id.
     mapping(uint256 => Agreement) public agreement;
 
     /// @dev Current last agreement index.
     uint256 private _currentIndex;
 
+    /* ====================================================================== //
+                                      CONSTRUCTOR
+    // ====================================================================== */
+
     constructor(
         ERC20 token_,
-        address arbitrator_,
-        uint256 arbitrationFee_
+        address arbitrator_
     ) {
         arbitrator = arbitrator_;
         token = token_;
-        arbitrationFee = arbitrationFee_;
     }
 
     /* ====================================================================== */
-    /*                             IAgreementFramework
+    /*                                  VIEWS
     /* ====================================================================== */
 
     function agreementParams(uint256 id) external view returns (AgreementParams memory params) {
@@ -69,11 +80,14 @@ contract CollateralAgreementFramework is IAgreementFramework {
         return positions;
     }
 
+    /* ====================================================================== */
+    /*                                USER LOGIC
+    /* ====================================================================== */
+
     function createAgreement(AgreementParams calldata params)
         external
         returns (uint256 agreementId)
     {
-        if (params.criteria < arbitrationFee) revert CriteriaUnderArbitrationFee();
         agreementId = _currentIndex;
 
         agreement[agreementId].termsHash = params.termsHash;
@@ -98,22 +112,22 @@ contract CollateralAgreementFramework is IAgreementFramework {
         emit AgreementJoined(id, msg.sender, balance);
     }
 
-    function terminateAgreement(uint256 id) external {
+    function finalizeAgreement(uint256 id) external {
         if (agreement[id].party[agreement[id].position[msg.sender].id] != msg.sender)
             revert NoPartOfAgreement();
-        if (agreement[id].position[msg.sender].status == PositionStatus.Terminated)
-            revert PartyAlreadyTerminated();
+        if (agreement[id].position[msg.sender].status == PositionStatus.Finalized)
+            revert PartyAlreadyFinalized();
 
-        agreement[id].position[msg.sender].status = PositionStatus.Terminated;
-        agreement[id].terminations += 1;
+        agreement[id].position[msg.sender].status = PositionStatus.Finalized;
+        agreement[id].finalizations += 1;
 
-        emit AgreementTermination(id, msg.sender);
+        emit AgreementFinalizationSent(id, msg.sender);
     }
 
     function disputeAgreement(uint256 id) public {}
 
     function withdrawFromAgreement(uint256 id) public {
-        if (!isTerminated(id)) revert AgreementNotTerminated();
+        if (!_isFinalized(id)) revert AgreementNotFinalized();
         if (agreement[id].party[agreement[id].position[msg.sender].id] != msg.sender)
             revert NoPartOfAgreement();
 
@@ -125,8 +139,8 @@ contract CollateralAgreementFramework is IAgreementFramework {
         emit AgreementWithdrawn(id, msg.sender, withdrawBalance);
     }
 
-    function isTerminated(uint256 id) internal view returns (bool) {
-        return agreement[id].terminations >= agreement[id].party.length;
+    function _isFinalized(uint256 id) internal view returns (bool) {
+        return agreement[id].finalizations >= agreement[id].party.length;
     }
 
     /* ====================================================================== */
@@ -145,13 +159,13 @@ contract CollateralAgreementFramework is IAgreementFramework {
             agreement[id].position[settlement[i].party] = Position(
                 i,
                 settlement[i].balance,
-                PositionStatus.Terminated
+                PositionStatus.Finalized
             );
             if (i >= agreement[id].party.length) {
                 agreement[id].party.push(settlement[i].party);
             }
         }
 
-        agreement[id].terminations = positionsLength;
+        agreement[id].finalizations = positionsLength;
     }
 }
