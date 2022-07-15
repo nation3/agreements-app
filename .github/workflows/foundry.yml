@@ -1,0 +1,19 @@
+name: Foundry CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: onbjerg/foundry-toolchain@v1
+      with:
+        version: nightly
+    - run: forge install
+    - run: forge build
+    - run: forge test
