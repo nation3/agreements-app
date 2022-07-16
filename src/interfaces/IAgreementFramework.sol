@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 import { AgreementParams, PositionParams } from "../lib/AgreementStructs.sol";
+import { CriteriaResolver } from "../lib/CriteriaResolution.sol";
 import { IArbitrable } from "./IArbitrable.sol";
 
 /// @notice Interface for agreements frameworks.
-/// @dev Implementations must manage the logic to manage individual agreements inside the same framework.
+/// @dev Implementations must write the logic to manage individual agreements.
 interface IAgreementFramework is IArbitrable {
     /* ====================================================================== //
                                         EVENTS
@@ -23,7 +24,9 @@ interface IAgreementFramework is IArbitrable {
     error NonExistentAgreement();
     error InsufficientBalance();
     error NoPartOfAgreement();
+    error PartyAlreadyJoined();
     error PartyAlreadyFinalized();
+    error PartyMustMatchCriteria();
     error AgreementNotFinalized();
 
     /* ====================================================================== //
@@ -50,8 +53,8 @@ interface IAgreementFramework is IArbitrable {
     /// @notice Join an existent agreement.
     /// @dev Requires a deposit over agreement criteria.
     /// @param id Id of the agreement to join.
-    /// @param balance Amount to deposit on the agreement.
-    function joinAgreement(uint256 id, uint256 balance) external;
+    /// @param criteriaResolver Criteria data to proof sender can join agreement.
+    function joinAgreement(uint256 id, CriteriaResolver calldata criteriaResolver) external;
 
     /// @notice Signal the intent to finalize an agreement.
     /// @param id Id of the agreement to settle.

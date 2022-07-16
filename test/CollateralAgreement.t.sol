@@ -6,12 +6,15 @@ import {
     PositionParams,
     CollateralAgreementFramework
 } from "../src/agreements/CollateralAgreement.sol";
-import { MockERC20 } from "@rari-capital/solmate/src/test/utils/mocks/MockERC20.sol";
-import { Hevm } from "@rari-capital/solmate/src/test/utils/Hevm.sol";
-import { DSTestPlus } from "@rari-capital/solmate/src/test/utils/DSTestPlus.sol";
+import { CriteriaResolver } from "../src/lib/CriteriaResolution.sol";
+import { MockERC20 } from "solmate/src/test/utils/mocks/MockERC20.sol";
+import { Hevm } from "solmate/src/test/utils/Hevm.sol";
+import { DSTestPlus } from "solmate/src/test/utils/DSTestPlus.sol";
+import { Merkle } from "murky/Merkle.sol";
 
 contract CollateralAgreementTest is DSTestPlus {
     Hevm evm = Hevm(HEVM_ADDRESS);
+    Merkle merkle = new Merkle();
 
     CollateralAgreementFramework agreements;
     MockERC20 token;
@@ -22,7 +25,9 @@ contract CollateralAgreementTest is DSTestPlus {
 
     address arbitrator = address(0xB055);
     address bob = address(0xB0B);
-    address alice = address(0xBABE);
+    address alice = address(0xA11CE);
+
+    mapping(address => bytes32[]) proofs;
 
     function setUp() public {
         arbitrationFee = 0.02 ether;
@@ -48,16 +53,16 @@ contract CollateralAgreementTest is DSTestPlus {
         // Bob joins the agreement
         evm.startPrank(bob);
         token.approve(address(agreements), 2 * 1e18);
-        agreements.joinAgreement(agreementId, 1e18);
+        agreements.joinAgreement(agreementId, CriteriaResolver(bob, 2 * 1e18, proofs[bob]));
         evm.stopPrank();
 
         PositionParams[] memory agreementPositions = agreements.agreementPositions(agreementId);
 
         assertEq(agreementPositions[0].party, bob);
-        assertEq(agreementPositions[0].balance, criteria);
+        assertEq(agreementPositions[0].balance, 2 * 1e18);
     }
 
-    function testsettlement() public {
+    function testFinalization() public {
         uint256 agreementId = _createAgreement();
         uint256 bobBalance = token.balanceOf(bob);
         uint256 aliceBalance = token.balanceOf(alice);
@@ -65,16 +70,16 @@ contract CollateralAgreementTest is DSTestPlus {
         // Bob joins the agreement.
         evm.startPrank(bob);
         token.approve(address(agreements), 2 * 1e18);
-        agreements.joinAgreement(agreementId, 1e18);
+        agreements.joinAgreement(agreementId, CriteriaResolver(bob, 2 * 1e18, proofs[bob]));
         evm.stopPrank();
 
         // Alice joins the agreement.
         evm.startPrank(alice);
         token.approve(address(agreements), 2 * 1e18);
-        agreements.joinAgreement(agreementId, 1e18);
+        agreements.joinAgreement(agreementId, CriteriaResolver(alice, 1e18, proofs[alice]));
         evm.stopPrank();
 
-        assertEq(token.balanceOf(address(agreements)), 2 * criteria);
+        assertEq(token.balanceOf(address(agreements)), 3 * 1e18);
 
         // Bob tries to withdraw himself from the agreement before finalization.
         evm.startPrank(bob);
@@ -109,13 +114,13 @@ contract CollateralAgreementTest is DSTestPlus {
         // Bob joins the agreement
         evm.startPrank(bob);
         token.approve(address(agreements), 2 * 1e18);
-        agreements.joinAgreement(agreementId, 1e18);
+        agreements.joinAgreement(agreementId, CriteriaResolver(bob, 2 * 1e18, proofs[bob]));
         evm.stopPrank();
 
         // Alice joins the agreement
         evm.startPrank(alice);
         token.approve(address(agreements), 2 * 1e18);
-        agreements.joinAgreement(agreementId, 1e18);
+        agreements.joinAgreement(agreementId, CriteriaResolver(alice, 1e18, proofs[alice]));
         evm.stopPrank();
 
         PositionParams[] memory settlementPositions = new PositionParams[](3);
@@ -137,9 +142,28 @@ contract CollateralAgreementTest is DSTestPlus {
         agreements.withdrawFromAgreement(agreementId);
     }
 
+    function _prepareCriteria() internal {
+        PositionParams[] memory criteriaPositions = new PositionParams[](2);
+        criteriaPositions[0] = PositionParams(bob, 2 * 1e18);
+        criteriaPositions[1] = PositionParams(alice, 1 * 1e18);
+
+        bytes32[] memory leafs = new bytes32[](criteriaPositions.length);
+
+        for (uint256 i = 0; i < criteriaPositions.length; i++) {
+            leafs[i] = keccak256(abi.encode(criteriaPositions[i].party, criteriaPositions[i].balance));
+        }
+
+        for (uint256 i = 0; i < criteriaPositions.length; i++) {
+            proofs[criteriaPositions[i].party] = merkle.getProof(leafs, i);
+        }
+
+        bytes32 root = merkle.getRoot(leafs);
+        criteria = uint256(root);
+    }
+
     function _createAgreement() internal returns (uint256 agreementId) {
-        termsHash = keccak256("Some terms");
-        criteria = 1e18;
+        _prepareCriteria();
+        termsHash = keccak256("Terms & Conditions");
 
         agreementId = agreements.createAgreement(AgreementParams(termsHash, criteria));
     }

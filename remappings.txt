@@ -1,3 +1,4 @@
 forge-std/=lib/forge-std/src/
 ds-test/=lib/forge-std/lib/ds-test/src/
-@rari-capital/solmate/=lib/solmate/
+solmate/=lib/solmate/
+murky/=lib/murky/src/

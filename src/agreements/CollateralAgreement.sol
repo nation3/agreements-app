@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
-import { ERC20 } from "@rari-capital/solmate/src/tokens/ERC20.sol";
-import { SafeTransferLib } from "@rari-capital/solmate/src/utils/SafeTransferLib.sol";
+import { ERC20 } from "solmate/src/tokens/ERC20.sol";
+import { SafeTransferLib } from "solmate/src/utils/SafeTransferLib.sol";
 import {
     Agreement,
     AgreementParams,
@@ -12,17 +12,10 @@ import {
 } from "../lib/AgreementStructs.sol";
 import { IAgreementFramework } from "../interfaces/IAgreementFramework.sol";
 import { IArbitrable } from "../interfaces/IArbitrable.sol";
-
-/*
-struct CriteriaResolver {
-    uint256 index;
-    address party;
-    bytes32[] criteriaProof;
-}
-*/
+import {CriteriaResolver, CriteriaResolution} from "../lib/CriteriaResolution.sol";
 
 /// @notice Framework to create collateral agreements.
-contract CollateralAgreementFramework is IAgreementFramework {
+contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution {
     /* ====================================================================== //
                                         ERRORS
     // ====================================================================== */
@@ -62,11 +55,15 @@ contract CollateralAgreementFramework is IAgreementFramework {
     /*                                  VIEWS
     /* ====================================================================== */
 
-    function agreementParams(uint256 id) external view returns (AgreementParams memory params) {
+    function agreementParams(uint256 id) external view override returns (
+        AgreementParams memory params
+    ) {
         params = AgreementParams(agreement[id].termsHash, agreement[id].criteria);
     }
 
-    function agreementPositions(uint256 id) external view returns (PositionParams[] memory) {
+    function agreementPositions(uint256 id) external view override returns (
+        PositionParams[] memory
+    ) {
         uint256 partyLength = agreement[id].party.length;
         PositionParams[] memory positions = new PositionParams[](partyLength);
 
@@ -86,6 +83,7 @@ contract CollateralAgreementFramework is IAgreementFramework {
 
     function createAgreement(AgreementParams calldata params)
         external
+        override
         returns (uint256 agreementId)
     {
         agreementId = _currentIndex;
@@ -98,22 +96,33 @@ contract CollateralAgreementFramework is IAgreementFramework {
         emit AgreementCreated(agreementId, params.termsHash, params.criteria);
     }
 
-    function joinAgreement(uint256 id, uint256 balance) external {
-        if (balance < agreement[id].criteria) revert InsufficientBalance();
-        SafeTransferLib.safeTransferFrom(token, msg.sender, address(this), balance);
+    function joinAgreement(
+        uint256 id,
+        CriteriaResolver calldata criteriaResolver
+    ) external override {
+        if (_isPartOfAgreement(id, msg.sender)) revert PartyAlreadyJoined();
+        if (msg.sender != criteriaResolver.party) revert PartyMustMatchCriteria();
 
+        _validateCriteria(agreement[id].criteria, criteriaResolver);
+
+        SafeTransferLib.safeTransferFrom(token, msg.sender, address(this), criteriaResolver.balance);
+
+        _registerParty(id, msg.sender, criteriaResolver.balance);
+
+        emit AgreementJoined(id, msg.sender, criteriaResolver.balance);
+    }
+
+    function _registerParty(uint256 id, address party, uint256 balance) internal {
         uint256 newPartyId = agreement[id].party.length;
 
         Position memory newPositon = Position(newPartyId, balance, PositionStatus.Idle);
 
-        agreement[id].party.push(msg.sender);
-        agreement[id].position[msg.sender] = newPositon;
-
-        emit AgreementJoined(id, msg.sender, balance);
+        agreement[id].party.push(party);
+        agreement[id].position[party] = newPositon;
     }
 
-    function finalizeAgreement(uint256 id) external {
-        if (agreement[id].party[agreement[id].position[msg.sender].id] != msg.sender)
+    function finalizeAgreement(uint256 id) external override {
+        if (!_isPartOfAgreement(id, msg.sender))
             revert NoPartOfAgreement();
         if (agreement[id].position[msg.sender].status == PositionStatus.Finalized)
             revert PartyAlreadyFinalized();
@@ -124,9 +133,9 @@ contract CollateralAgreementFramework is IAgreementFramework {
         emit AgreementFinalizationSent(id, msg.sender);
     }
 
-    function disputeAgreement(uint256 id) public {}
+    function disputeAgreement(uint256 id) external override {}
 
-    function withdrawFromAgreement(uint256 id) public {
+    function withdrawFromAgreement(uint256 id) external override {
         if (!_isFinalized(id)) revert AgreementNotFinalized();
         if (agreement[id].party[agreement[id].position[msg.sender].id] != msg.sender)
             revert NoPartOfAgreement();
@@ -143,11 +152,15 @@ contract CollateralAgreementFramework is IAgreementFramework {
         return agreement[id].finalizations >= agreement[id].party.length;
     }
 
+    function _isPartOfAgreement(uint256 id, address account) internal view returns (bool) {
+        return agreement[id].party.length > 0 && agreement[id].party[agreement[id].position[account].id] == account;
+    }
+
     /* ====================================================================== */
     /*                              IArbitrable
     /* ====================================================================== */
 
-    function settleDispute(uint256 id, PositionParams[] calldata settlement) public {
+    function settleDispute(uint256 id, PositionParams[] calldata settlement) external override {
         uint256 positionsLength = settlement.length;
 
         if (msg.sender != arbitrator) revert OnlyArbitrator();
