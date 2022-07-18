@@ -15,6 +15,7 @@ interface IAgreementFramework is IArbitrable {
     event AgreementJoined(uint256 id, address party, uint256 balance);
     event AgreementFinalizationSent(uint256 id, address party);
     event AgreementFinalized(uint256 id);
+    event AgreementDisputed(uint256 id, address party);
     event AgreementWithdrawn(uint256 id, address party, uint256 balance);
 
     /* ====================================================================== //
@@ -27,7 +28,9 @@ interface IAgreementFramework is IArbitrable {
     error PartyAlreadyJoined();
     error PartyAlreadyFinalized();
     error PartyMustMatchCriteria();
+    error AgreementAlreadyDisputed();
     error AgreementNotFinalized();
+    error AgreementNotDisputed();
 
     /* ====================================================================== //
                                         VIEWS

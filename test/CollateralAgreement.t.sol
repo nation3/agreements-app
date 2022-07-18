@@ -123,6 +123,11 @@ contract CollateralAgreementTest is DSTestPlus {
         agreements.joinAgreement(agreementId, CriteriaResolver(alice, 1e18, proofs[alice]));
         evm.stopPrank();
 
+        // Bob dispute the agreement
+        evm.prank(bob);
+        agreements.disputeAgreement(agreementId);
+
+        // Arbitrator settle dispute
         PositionParams[] memory settlementPositions = new PositionParams[](3);
         settlementPositions[0] = PositionParams(bob, 1.5 * 1e18);
         settlementPositions[1] = PositionParams(alice, 0);
@@ -131,6 +136,7 @@ contract CollateralAgreementTest is DSTestPlus {
         evm.prank(arbitrator);
         agreements.settleDispute(agreementId, settlementPositions);
 
+        // Check new settlement positions
         PositionParams[] memory agreementPositions = agreements.agreementPositions(agreementId);
         assertEq(agreementPositions[0].party, bob);
         assertEq(agreementPositions[0].balance, 1.5 * 1e18);
@@ -138,6 +144,7 @@ contract CollateralAgreementTest is DSTestPlus {
         assertEq(agreementPositions[1].balance, 0);
         assertEq(agreementPositions[2].balance, 0.5 * 1e18);
 
+        // Bob withdraw from agreement
         evm.prank(bob);
         agreements.withdrawFromAgreement(agreementId);
     }
@@ -150,7 +157,9 @@ contract CollateralAgreementTest is DSTestPlus {
         bytes32[] memory leafs = new bytes32[](criteriaPositions.length);
 
         for (uint256 i = 0; i < criteriaPositions.length; i++) {
-            leafs[i] = keccak256(abi.encode(criteriaPositions[i].party, criteriaPositions[i].balance));
+            leafs[i] = keccak256(
+                abi.encode(criteriaPositions[i].party, criteriaPositions[i].balance)
+            );
         }
 
         for (uint256 i = 0; i < criteriaPositions.length; i++) {

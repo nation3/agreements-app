@@ -21,8 +21,12 @@ struct Agreement {
     bytes32 termsHash;
     /// @dev Required amount to join or merkle root of (address,amount).
     uint256 criteria;
+    /// @dev Total balance deposited in the agreement.
+    uint256 balance;
     /// @dev Number of finalizations confirmations.
     uint256 finalizations;
+    /// @dev Signal if agreement is disputed.
+    bool disputed;
     /// @dev List of parties involved in the agreement.
     address[] party;
     /// @dev Position by party.

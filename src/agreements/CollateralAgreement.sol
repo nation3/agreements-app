@@ -22,6 +22,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
 
     error MissingPositions();
     error PositionsMustMatch();
+    error DisputeBalanceMustMatch();
 
     /* ====================================================================== //
                                         STORAGE
@@ -98,30 +99,22 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
 
     function joinAgreement(
         uint256 id,
-        CriteriaResolver calldata criteriaResolver
+        CriteriaResolver calldata resolver
     ) external override {
         if (_isPartOfAgreement(id, msg.sender)) revert PartyAlreadyJoined();
-        if (msg.sender != criteriaResolver.party) revert PartyMustMatchCriteria();
+        if (msg.sender != resolver.party) revert PartyMustMatchCriteria();
 
-        _validateCriteria(agreement[id].criteria, criteriaResolver);
+        _validateCriteria(agreement[id].criteria, resolver);
 
-        SafeTransferLib.safeTransferFrom(token, msg.sender, address(this), criteriaResolver.balance);
+        SafeTransferLib.safeTransferFrom(token, msg.sender, address(this), resolver.balance);
 
-        _registerParty(id, msg.sender, criteriaResolver.balance);
+        _addPosition(id, PositionParams(msg.sender, resolver.balance));
 
-        emit AgreementJoined(id, msg.sender, criteriaResolver.balance);
-    }
-
-    function _registerParty(uint256 id, address party, uint256 balance) internal {
-        uint256 newPartyId = agreement[id].party.length;
-
-        Position memory newPositon = Position(newPartyId, balance, PositionStatus.Idle);
-
-        agreement[id].party.push(party);
-        agreement[id].position[party] = newPositon;
+        emit AgreementJoined(id, msg.sender, resolver.balance);
     }
 
     function finalizeAgreement(uint256 id) external override {
+        if (agreement[id].disputed) revert AgreementAlreadyDisputed();
         if (!_isPartOfAgreement(id, msg.sender))
             revert NoPartOfAgreement();
         if (agreement[id].position[msg.sender].status == PositionStatus.Finalized)
@@ -133,11 +126,18 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
         emit AgreementFinalizationSent(id, msg.sender);
     }
 
-    function disputeAgreement(uint256 id) external override {}
+    function disputeAgreement(uint256 id) external override {
+        if (!_isPartOfAgreement(id, msg.sender))
+            revert NoPartOfAgreement();
+
+        agreement[id].disputed = true;
+
+        emit AgreementDisputed(id, msg.sender);
+    }
 
     function withdrawFromAgreement(uint256 id) external override {
         if (!_isFinalized(id)) revert AgreementNotFinalized();
-        if (agreement[id].party[agreement[id].position[msg.sender].id] != msg.sender)
+        if (!_isPartOfAgreement(id, msg.sender))
             revert NoPartOfAgreement();
 
         uint256 withdrawBalance = agreement[id].position[msg.sender].balance;
@@ -153,7 +153,21 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     }
 
     function _isPartOfAgreement(uint256 id, address account) internal view returns (bool) {
-        return agreement[id].party.length > 0 && agreement[id].party[agreement[id].position[account].id] == account;
+        return (
+            agreement[id].party.length > 0
+            && agreement[id].party[agreement[id].position[account].id] == account
+        );
+    }
+
+    function _addPosition(uint256 agreementId, PositionParams memory params) internal {
+        uint256 partyId = agreement[agreementId].party.length;
+        agreement[agreementId].party.push(params.party);
+        agreement[agreementId].position[params.party] = Position(
+            partyId,
+            params.balance,
+            PositionStatus.Idle
+        );
+        agreement[agreementId].balance += params.balance;
     }
 
     /* ====================================================================== */
@@ -161,24 +175,44 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /* ====================================================================== */
 
     function settleDispute(uint256 id, PositionParams[] calldata settlement) external override {
-        uint256 positionsLength = settlement.length;
-
         if (msg.sender != arbitrator) revert OnlyArbitrator();
-        if (settlement.length < agreement[id].party.length) revert MissingPositions();
+        if (!agreement[id].disputed) revert AgreementNotDisputed();
 
+        uint256 positionsLength = settlement.length;
+        uint256 settleBalance;
+
+        if (positionsLength < agreement[id].party.length) revert MissingPositions();
         for (uint256 i = 0; i < positionsLength; i++) {
             if (i < agreement[id].party.length && agreement[id].party[0] != settlement[0].party)
                 revert PositionsMustMatch();
-            agreement[id].position[settlement[i].party] = Position(
+            settleBalance += settlement[i].balance;
+            _updatePosition(
+                id,
                 i,
-                settlement[i].balance,
+                settlement[i],
                 PositionStatus.Finalized
             );
-            if (i >= agreement[id].party.length) {
-                agreement[id].party.push(settlement[i].party);
-            }
         }
+        if (settleBalance > agreement[id].balance) revert DisputeBalanceMustMatch();
 
+        agreement[id].balance = settleBalance;
         agreement[id].finalizations = positionsLength;
+    }
+
+    function _updatePosition(
+        uint256 agreementId,
+        uint256 partyId,
+        PositionParams memory params,
+        PositionStatus status
+    ) internal {
+        agreement[agreementId].position[params.party] = Position(
+                partyId,
+                params.balance,
+                status
+        );
+
+        if (partyId >= agreement[agreementId].party.length) {
+                agreement[agreementId].party.push(params.party);
+            }
     }
 }
