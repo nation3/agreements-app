@@ -11,14 +11,15 @@ contract CriteriaResolution {
 
     error InvalidProof();
 
-    function _validateCriteria(uint256 criteria, CriteriaResolver calldata criteriaResolver) internal pure{
+    function _validateCriteria(uint256 criteria, CriteriaResolver calldata criteriaResolver) internal pure {
         bytes32 leaf = keccak256(abi.encode(criteriaResolver.party, criteriaResolver.balance));
         bool isValid = _verifyProof(
             criteriaResolver.criteriaProof,
             bytes32(criteria),
             leaf
         );
-        if (!isValid) revert InvalidProof();
+        if (!isValid)
+            revert InvalidProof();
     }
 
     /// @dev Based on Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/utils/MerkleProofLib.sol)

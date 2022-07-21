@@ -101,8 +101,10 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
         uint256 id,
         CriteriaResolver calldata resolver
     ) external override {
-        if (_isPartOfAgreement(id, msg.sender)) revert PartyAlreadyJoined();
-        if (msg.sender != resolver.party) revert PartyMustMatchCriteria();
+        if (_isPartOfAgreement(id, msg.sender))
+            revert PartyAlreadyJoined();
+        if (msg.sender != resolver.party)
+            revert PartyMustMatchCriteria();
 
         _validateCriteria(agreement[id].criteria, resolver);
 
@@ -114,7 +116,8 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     }
 
     function finalizeAgreement(uint256 id) external override {
-        if (agreement[id].disputed) revert AgreementAlreadyDisputed();
+        if (agreement[id].disputed)
+            revert AgreementAlreadyDisputed();
         if (!_isPartOfAgreement(id, msg.sender))
             revert NoPartOfAgreement();
         if (agreement[id].position[msg.sender].status == PositionStatus.Finalized)
@@ -136,7 +139,8 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     }
 
     function withdrawFromAgreement(uint256 id) external override {
-        if (!_isFinalized(id)) revert AgreementNotFinalized();
+        if (!_isFinalized(id))
+            revert AgreementNotFinalized();
         if (!_isPartOfAgreement(id, msg.sender))
             revert NoPartOfAgreement();
 
@@ -154,8 +158,8 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
 
     function _isPartOfAgreement(uint256 id, address account) internal view returns (bool) {
         return (
-            agreement[id].party.length > 0
-            && agreement[id].party[agreement[id].position[account].id] == account
+            (agreement[id].party.length > 0)
+            && (agreement[id].party[agreement[id].position[account].id] == account)
         );
     }
 
@@ -175,15 +179,19 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /* ====================================================================== */
 
     function settleDispute(uint256 id, PositionParams[] calldata settlement) external override {
-        if (msg.sender != arbitrator) revert OnlyArbitrator();
-        if (!agreement[id].disputed) revert AgreementNotDisputed();
+        if (msg.sender != arbitrator)
+            revert OnlyArbitrator();
+        if (!agreement[id].disputed)
+            revert AgreementNotDisputed();
 
         uint256 positionsLength = settlement.length;
         uint256 settleBalance;
 
-        if (positionsLength < agreement[id].party.length) revert MissingPositions();
+        if (positionsLength < agreement[id].party.length)
+            revert MissingPositions();
         for (uint256 i = 0; i < positionsLength; i++) {
-            if (i < agreement[id].party.length && agreement[id].party[0] != settlement[0].party)
+            if ((i < agreement[id].party.length)
+                && (agreement[id].party[0] != settlement[0].party))
                 revert PositionsMustMatch();
             settleBalance += settlement[i].balance;
             _updatePosition(
@@ -193,7 +201,8 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
                 PositionStatus.Finalized
             );
         }
-        if (settleBalance > agreement[id].balance) revert DisputeBalanceMustMatch();
+        if (settleBalance > agreement[id].balance)
+            revert DisputeBalanceMustMatch();
 
         agreement[id].balance = settleBalance;
         agreement[id].finalizations = positionsLength;
@@ -211,8 +220,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
                 status
         );
 
-        if (partyId >= agreement[agreementId].party.length) {
-                agreement[agreementId].party.push(params.party);
-            }
+        if (partyId >= agreement[agreementId].party.length)
+            agreement[agreementId].party.push(params.party);
     }
 }

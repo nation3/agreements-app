@@ -94,7 +94,7 @@ contract CollateralAgreementTest is DSTestPlus {
         agreements.withdrawFromAgreement(agreementId);
         evm.stopPrank();
 
-        // Alice agrees to finalize and withdraw herself from the agreement
+        // Alice agrees to finalize and withdraws herself from the agreement
         evm.startPrank(alice);
         agreements.finalizeAgreement(agreementId);
         agreements.withdrawFromAgreement(agreementId);
@@ -127,7 +127,7 @@ contract CollateralAgreementTest is DSTestPlus {
         evm.prank(bob);
         agreements.disputeAgreement(agreementId);
 
-        // Arbitrator settle dispute
+        // Arbitrator settles dispute
         PositionParams[] memory settlementPositions = new PositionParams[](3);
         settlementPositions[0] = PositionParams(bob, 1.5 * 1e18);
         settlementPositions[1] = PositionParams(alice, 0);
@@ -144,7 +144,7 @@ contract CollateralAgreementTest is DSTestPlus {
         assertEq(agreementPositions[1].balance, 0);
         assertEq(agreementPositions[2].balance, 0.5 * 1e18);
 
-        // Bob withdraw from agreement
+        // Bob withdraws from agreement
         evm.prank(bob);
         agreements.withdrawFromAgreement(agreementId);
     }
