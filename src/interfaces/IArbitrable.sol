@@ -11,8 +11,8 @@ interface IArbitrable {
     /// @notice Address capable of settling disputes.
     function arbitrator() external view returns (address);
 
-    /// @notice Settle dispute providing settlement positions.
+    /// @notice Settles a dispute providing settlement positions.
     /// @param id Id of the dispute to settle.
-    /// @param settlement Arbitrated positions to settle.
+    /// @param settlement Array of final positions.
     function settleDispute(uint256 id, PositionParams[] calldata settlement) external;
 }
