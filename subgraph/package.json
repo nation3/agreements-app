@@ -1,0 +1,16 @@
+{
+  "name": "nation3-court",
+  "version": "0.1.0",
+  "scripts": {
+    "create": "graph create nation3-court --node https://api.thegraph.com/deploy/",
+    "create-local": "graph create nation3-court --node http://127.0.0.1:8020",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy nation3-court --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy-local": "graph deploy nation3-court --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.30.2",
+    "@graphprotocol/graph-ts": "^0.27.0"
+  }
+}

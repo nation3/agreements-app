@@ -1,0 +1,33 @@
+enum AgreementStatus {
+    CREATED
+    ONGOING
+    FINALIZED
+    DISPUTED
+}
+
+enum PositionStatus {
+    IDLE
+    FINALIZED
+    DISPUTED
+}
+
+type Agreement @entity {
+  id: ID!
+  termsHash: Bytes!
+  criteria: String!
+  status: AgreementStatus!
+  positions: [AgreementPosition!]! @derivedFrom(field: "agreement")
+}
+
+type AgreementPosition @entity {
+    id: ID!
+    agreement: Agreement!
+    holder: User!
+    balance: Int!
+    status: PositionStatus!
+}
+
+type User @entity {
+    id: ID!
+    positions: [AgreementPosition!]! @derivedFrom(field: "holder")
+}
