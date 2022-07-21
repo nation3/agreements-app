@@ -22,7 +22,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
 
     error MissingPositions();
     error PositionsMustMatch();
-    error DisputeBalanceMustMatch();
+    error SettlementBalanceMustMatch();
 
     /* ====================================================================== //
                                         STORAGE
@@ -155,6 +155,8 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @dev Requires the caller to be part of the agreement.
     /// @dev Can be perform only once per agreement.
     function disputeAgreement(uint256 id) external override {
+        if (agreement[id].disputed)
+            revert AgreementAlreadyDisputed();
         if (!_isPartOfAgreement(id, msg.sender))
             revert NoPartOfAgreement();
 
@@ -239,42 +241,44 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
             revert AgreementNotDisputed();
 
         uint256 positionsLength = settlement.length;
-        uint256 settleBalance;
+        uint256 newBalance;
 
         if (positionsLength < agreement[id].party.length)
             revert MissingPositions();
         for (uint256 i = 0; i < positionsLength; i++) {
+            // Revert if previous positions parties do not match.
             if ((i < agreement[id].party.length)
-                && (agreement[id].party[0] != settlement[0].party))
+                && (agreement[id].party[i] != settlement[i].party))
                 revert PositionsMustMatch();
-            settleBalance += settlement[i].balance;
-            _updatePosition(
-                id,
+
+            // Add new parties to the agreement if needed.
+            if (i >= agreement[id].party.length)
+                agreement[id].party.push(settlement[i].party);
+
+            // Update / Add position params from settlement.
+            agreement[id].position[settlement[i].party] = Position(
                 i,
-                settlement[i],
+                settlement[i].balance,
+                PositionStatus.Finalized
+            );
+
+            newBalance += settlement[i].balance;
+
+            emit AgreementPositionUpdated(
+                id,
+                settlement[i].party,
+                settlement[i].balance,
                 PositionStatus.Finalized
             );
         }
-        if (settleBalance > agreement[id].balance)
-            revert DisputeBalanceMustMatch();
 
-        agreement[id].balance = settleBalance;
+        if (newBalance != agreement[id].balance)
+            revert SettlementBalanceMustMatch();
+
+        // Finalize agreement.
         agreement[id].finalizations = positionsLength;
+
+        emit AgreementFinalized(id);
     }
 
-    function _updatePosition(
-        uint256 agreementId,
-        uint256 partyId,
-        PositionParams memory params,
-        PositionStatus status
-    ) internal {
-        agreement[agreementId].position[params.party] = Position(
-                partyId,
-                params.balance,
-                status
-        );
-
-        if (partyId >= agreement[agreementId].party.length)
-            agreement[agreementId].party.push(params.party);
-    }
 }

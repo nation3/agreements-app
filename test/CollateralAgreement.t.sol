@@ -131,7 +131,7 @@ contract CollateralAgreementTest is DSTestPlus {
         PositionParams[] memory settlementPositions = new PositionParams[](3);
         settlementPositions[0] = PositionParams(bob, 1.5 * 1e18);
         settlementPositions[1] = PositionParams(alice, 0);
-        settlementPositions[2] = PositionParams(address(0xD0011), 0.5 * 1e18);
+        settlementPositions[2] = PositionParams(address(0xD0011), 1.5 * 1e18);
 
         evm.prank(arbitrator);
         agreements.settleDispute(agreementId, settlementPositions);
@@ -142,7 +142,7 @@ contract CollateralAgreementTest is DSTestPlus {
         assertEq(agreementPositions[0].balance, 1.5 * 1e18);
         assertEq(agreementPositions[1].party, alice);
         assertEq(agreementPositions[1].balance, 0);
-        assertEq(agreementPositions[2].balance, 0.5 * 1e18);
+        assertEq(agreementPositions[2].balance, 1.5 * 1e18);
 
         // Bob withdraws from agreement
         evm.prank(bob);
