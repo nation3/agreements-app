@@ -1,3 +1,6 @@
+# Subgraph Schema: Agreement Framework
+# Version: 0.0.1
+
 enum AgreementStatus {
     Created
     Ongoing
@@ -11,15 +14,35 @@ enum PositionStatus {
 }
 
 type Agreement @entity {
-  id: String!
-  termsHash: Bytes!
-  criteria: BigInt!
-  status: AgreementStatus!
+    "Agreement ID"
+    id: ID!
+    
+    "Hash of the detailed terms of the agreement"
+    termsHash: Bytes!
+
+    "Required amount to join or merkle root of (address,amount)"
+    criteria: BigInt!
+
+    "Status of the agreement"
+    status: AgreementStatus!
+
+    "Positions of the agreement"
+    positions: [AgreementPosition!]! @derivedFrom(field: "agreement")
 }
 
 type AgreementPosition @entity {
+    "Position ID"
     id: Bytes!
+
+    "Holder of the position - address"
     party: Bytes!
+
+    "Amount of tokens corresponding to this position"
     balance: BigInt!
+
+    "Status of the agreement position"
     status: PositionStatus!
+
+    "Agreement this position belongs to"
+    agreement: Agreement! 
 }
