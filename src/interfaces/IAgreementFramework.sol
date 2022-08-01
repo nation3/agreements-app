@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 import { AgreementParams, PositionParams, PositionStatus } from "../lib/AgreementStructs.sol";
 import { CriteriaResolver } from "../lib/CriteriaResolution.sol";
+import { Permit } from "../lib/Permit.sol";
 import { IArbitrable } from "./IArbitrable.sol";
 
 /// @notice Interface for agreements frameworks.
@@ -54,7 +55,8 @@ interface IAgreementFramework is IArbitrable {
     error PartyAlreadyJoined();
     error PartyAlreadyFinalized();
     error PartyMustMatchCriteria();
-    error AgreementAlreadyDisputed();
+    error AgreementIsDisputed();
+    error AgreementIsFinalized();
     error AgreementNotFinalized();
     error AgreementNotDisputed();
 
@@ -84,8 +86,19 @@ interface IAgreementFramework is IArbitrable {
     /// @notice Join an existent agreement.
     /// @dev Requires a deposit over agreement criteria.
     /// @param id Id of the agreement to join.
-    /// @param criteriaResolver Criteria data to proof sender can join agreement.
-    function joinAgreement(bytes32 id, CriteriaResolver calldata criteriaResolver) external;
+    /// @param resolver Criteria data to prove sender can join agreement.
+    function joinAgreement(bytes32 id, CriteriaResolver calldata resolver) external;
+
+    /// @notice Join an existent agreement with EIP-2612 permit.
+    ///         Allow to approve and transfer funds on the same transaction.
+    /// @param id Id of the agreement to join.
+    /// @param resolver Criteria data to prove sender can join agreement.
+    /// @param permit EIP-2612 permit data to approve transfer of tokens.
+    function joinAgreementWithPermit(
+        bytes32 id,
+        CriteriaResolver calldata resolver,
+        Permit calldata permit
+    ) external;
 
     /// @notice Signal the will of the caller to finalize an agreement.
     /// @param id Id of the agreement to settle.

@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import {
     AgreementParams,
     PositionParams,
+    Permit,
     CollateralAgreementFramework
 } from "../src/agreements/CollateralAgreement.sol";
 import { CriteriaResolver } from "../src/lib/CriteriaResolution.sol";
@@ -24,8 +25,8 @@ contract CollateralAgreementTest is DSTestPlus {
     uint256 arbitrationFee;
 
     address arbitrator = address(0xB055);
-    address bob = address(0xB0B);
-    address alice = address(0xA11CE);
+    address bob = hevm.addr(0xB0B);
+    address alice = hevm.addr(0xA11CE);
 
     mapping(address => bytes32[]) proofs;
 
@@ -54,6 +55,48 @@ contract CollateralAgreementTest is DSTestPlus {
         evm.startPrank(bob);
         token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, CriteriaResolver(bob, 2 * 1e18, proofs[bob]));
+        evm.stopPrank();
+
+        PositionParams[] memory agreementPositions = agreements.agreementPositions(agreementId);
+
+        assertEq(agreementPositions[0].party, bob);
+        assertEq(agreementPositions[0].balance, 2 * 1e18);
+    }
+
+    function testJoinAgreementWithPermit() public {
+        bytes32 agreementId = _createAgreement();
+
+        bytes32 permitHash = keccak256(
+            "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
+        );
+
+        (uint8 v, bytes32 r, bytes32 s) = hevm.sign(
+            0xB0B,
+            keccak256(
+                abi.encodePacked(
+                    "\x19\x01",
+                    token.DOMAIN_SEPARATOR(),
+                    keccak256(
+                        abi.encode(
+                            permitHash,
+                            bob,
+                            address(agreements),
+                            2 * 1e18,
+                            0,
+                            block.timestamp
+                        )
+                    )
+                )
+            )
+        );
+
+        // Bob joins the agreement
+        evm.startPrank(bob);
+        agreements.joinAgreementWithPermit(
+            agreementId,
+            CriteriaResolver(bob, 2 * 1e18, proofs[bob]),
+            Permit(2 * 1e18, block.timestamp, v, r, s)
+        );
         evm.stopPrank();
 
         PositionParams[] memory agreementPositions = agreements.agreementPositions(agreementId);

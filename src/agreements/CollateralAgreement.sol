@@ -10,9 +10,11 @@ import {
     PositionParams,
     PositionStatus
 } from "../lib/AgreementStructs.sol";
-import { IAgreementFramework } from "../interfaces/IAgreementFramework.sol";
-import { IArbitrable } from "../interfaces/IArbitrable.sol";
+import {Permit} from "../lib/Permit.sol";
 import {CriteriaResolver, CriteriaResolution} from "../lib/CriteriaResolution.sol";
+import { IAgreementFramework, Permit } from "../interfaces/IAgreementFramework.sol";
+import { IArbitrable } from "../interfaces/IArbitrable.sol";
+
 
 /// @notice Framework to create collateral agreements.
 contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution {
@@ -105,19 +107,44 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
 
     /// Join an existent agreement.
     /// @inheritdoc IAgreementFramework
-    /// @dev Requires that the caller provides a valid criteria resolver.
     function joinAgreement(
         bytes32 id,
         CriteriaResolver calldata resolver
     ) external override {
-        if (_isPartOfAgreement(id, msg.sender))
-            revert PartyAlreadyJoined();
-        if (msg.sender != resolver.party)
-            revert PartyMustMatchCriteria();
-
-        _validateCriteria(agreement[id].criteria, resolver);
+        _canJoinAgreement(id, resolver);
 
         SafeTransferLib.safeTransferFrom(token, msg.sender, address(this), resolver.balance);
+
+        _addPosition(id, PositionParams(msg.sender, resolver.balance));
+
+        emit AgreementJoined(id, msg.sender, resolver.balance);
+    }
+
+    /// @notice Join an existent agreement with EIP-2612 permit.
+    /// @inheritdoc IAgreementFramework
+    /// @dev Approve tokens transfer on the same transaction by permit.
+    function joinAgreementWithPermit(
+        bytes32 id,
+        CriteriaResolver calldata resolver,
+        Permit calldata permit
+    ) external override {
+        _canJoinAgreement(id, resolver);
+
+        token.permit(
+            msg.sender,
+            address(this),
+            permit.value,
+            permit.deadline,
+            permit.v,
+            permit.r,
+            permit.s
+        );
+        SafeTransferLib.safeTransferFrom(
+            token,
+            msg.sender,
+            address(this),
+            resolver.balance
+        );
 
         _addPosition(id, PositionParams(msg.sender, resolver.balance));
 
@@ -130,7 +157,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @dev Can't be perform on disputed agreements.
     function finalizeAgreement(bytes32 id) external override {
         if (agreement[id].disputed)
-            revert AgreementAlreadyDisputed();
+            revert AgreementIsDisputed();
         if (!_isPartOfAgreement(id, msg.sender))
             revert NoPartOfAgreement();
         if (agreement[id].position[msg.sender].status == PositionStatus.Finalized)
@@ -156,7 +183,9 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @dev Can be perform only once per agreement.
     function disputeAgreement(bytes32 id) external override {
         if (agreement[id].disputed)
-            revert AgreementAlreadyDisputed();
+            revert AgreementIsDisputed();
+        if (_isFinalized(id))
+            revert AgreementIsFinalized();
         if (!_isPartOfAgreement(id, msg.sender))
             revert NoPartOfAgreement();
 
@@ -189,12 +218,32 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
         );
     }
 
+    /// Check if caller can join an agreement with the criteria resolver provided.
+    /// @param id Id of the agreement to check.
+    /// @param resolver Criteria resolver to check against criteria.
+    function _canJoinAgreement(bytes32 id, CriteriaResolver calldata resolver) internal view {
+        if (agreement[id].disputed)
+            revert AgreementIsDisputed();
+        if (_isFinalized(id))
+            revert AgreementIsFinalized();
+        if (_isPartOfAgreement(id, msg.sender))
+            revert PartyAlreadyJoined();
+        if (msg.sender != resolver.party)
+            revert PartyMustMatchCriteria();
+
+        _validateCriteria(agreement[id].criteria, resolver);
+    }
+
+
     /// @dev Check if an agreement is finalized.
     /// @dev An agreement is finalized when all positions are finalized.
     /// @param id Id of the agreement to check.
     /// @return A boolean signaling if the agreement is finalized or not.
     function _isFinalized(bytes32 id) internal view returns (bool) {
-        return agreement[id].finalizations >= agreement[id].party.length;
+        return (
+            agreement[id].party.length > 0 
+            && agreement[id].finalizations >= agreement[id].party.length
+        );
     }
 
     /// @dev Check if an account is part of an agreement.
