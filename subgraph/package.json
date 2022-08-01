@@ -1,16 +1,18 @@
 {
-  "name": "nation3-court",
-  "version": "0.1.0",
+  "name": "nation3-court-subgraph",
+  "license": "UNLICENSED",
   "scripts": {
-    "create": "graph create nation3-court --node https://api.thegraph.com/deploy/",
-    "create-local": "graph create nation3-court --node http://127.0.0.1:8020",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy nation3-court --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy-local": "graph deploy nation3-court --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ nation3/nation3-court-subgraph",
+    "create-local": "graph create --node http://localhost:8020/ nation3/nation3-court-subgraph",
+    "remove-local": "graph remove --node http://localhost:8020/ nation3/nation3-court-subgraph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 nation3/nation3-court-subgraph",
+    "test": "graph test"
   },
-  "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.30.2",
-    "@graphprotocol/graph-ts": "^0.27.0"
-  }
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.33.0",
+    "@graphprotocol/graph-ts": "0.27.0"
+  },
+  "devDependencies": { "matchstick-as": "0.5.0" }
 }

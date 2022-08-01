@@ -4,25 +4,34 @@ repository: https://github.com/nation3/court
 schema:
   file: ./schema.graphql
 dataSources:
-  - kind: ethereum/contract
-    name: CollateralAgreementFramework
+  - kind: ethereum
+    name: AgreementFramework
     network: mainnet
     source:
-      address: '0x0000000000000000000000000000000000000000'
-      abi: CollateralAgreementFramework
+      address: "0x0000000000000000000000000000000000000000"
+      abi: AgreementFramework
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Agreement
-        - AgreementPosition
+        - AgreementCreated
+        - AgreementFinalizationSent
+        - AgreementFinalized
+        - AgreementJoined
+        - AgreementWithdrawn
       abis:
-        - name: CollateralAgreementFramework
-          file: ../out/CollateralAgreement.sol/CollateralAgreementFramework.json
+        - name: AgreementFramework
+          file: ./abis/AgreementFramework.json
       eventHandlers:
         - event: AgreementCreated(uint256,bytes32,uint256)
           handler: handleAgreementCreated
+        - event: AgreementFinalizationSent(uint256,address)
+          handler: handleAgreementFinalizationSent
+        - event: AgreementFinalized(uint256)
+          handler: handleAgreementFinalized
         - event: AgreementJoined(uint256,address,uint256)
           handler: handleAgreementJoined
-      file: ./src/mapping.ts
+        - event: AgreementWithdrawn(uint256,address,uint256)
+          handler: handleAgreementWithdrawn
+      file: ./src/agreement-framework.ts

@@ -1,7 +1,7 @@
 {
-  "foundry": {
-    "CollateralAgreementsFramework": {
-      "address": ""
+  "mainnet": {
+    "AgreementFramework": {
+      "address": "0x0000000000000000000000000000000000000000"
     }
   }
 }
