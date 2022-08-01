@@ -14,5 +14,5 @@ interface IArbitrable {
     /// @notice Settles a dispute providing settlement positions.
     /// @param id Id of the dispute to settle.
     /// @param settlement Array of final positions.
-    function settleDispute(uint256 id, PositionParams[] calldata settlement) external;
+    function settleDispute(bytes32 id, PositionParams[] calldata settlement) external;
 }

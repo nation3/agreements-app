@@ -35,10 +35,10 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     address public arbitrator;
 
     /// @dev Map of agreements by id.
-    mapping(uint256 => Agreement) public agreement;
+    mapping(bytes32 => Agreement) public agreement;
 
-    /// @dev Current last agreement index.
-    uint256 private _currentIndex;
+    /// @dev Internal agreement nonce.
+    uint256 internal _nonce;
 
     /* ====================================================================== //
                                       CONSTRUCTOR
@@ -58,7 +58,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     
     /// Retrieve parameters of an agreement.
     /// @inheritdoc IAgreementFramework
-    function agreementParams(uint256 id) external view override returns (
+    function agreementParams(bytes32 id) external view override returns (
         AgreementParams memory params
     ) {
         params = AgreementParams(agreement[id].termsHash, agreement[id].criteria);
@@ -66,7 +66,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
 
     /// Retrieve positions of an agreement.
     /// @inheritdoc IAgreementFramework
-    function agreementPositions(uint256 id) external view override returns (
+    function agreementPositions(bytes32 id) external view override returns (
         PositionParams[] memory
     ) {
         uint256 partyLength = agreement[id].party.length;
@@ -91,14 +91,14 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     function createAgreement(AgreementParams calldata params)
         external
         override
-        returns (uint256 agreementId)
+        returns (bytes32 agreementId)
     {
-        agreementId = _currentIndex;
+        agreementId = keccak256(abi.encode(address(this),_nonce));
 
         agreement[agreementId].termsHash = params.termsHash;
         agreement[agreementId].criteria = params.criteria;
 
-        _currentIndex++;
+        _nonce++;
 
         emit AgreementCreated(agreementId, params.termsHash, params.criteria);
     }
@@ -107,7 +107,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @inheritdoc IAgreementFramework
     /// @dev Requires that the caller provides a valid criteria resolver.
     function joinAgreement(
-        uint256 id,
+        bytes32 id,
         CriteriaResolver calldata resolver
     ) external override {
         if (_isPartOfAgreement(id, msg.sender))
@@ -128,7 +128,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @inheritdoc IAgreementFramework
     /// @dev Requires the caller to be part of the agreement and not have finalized before.
     /// @dev Can't be perform on disputed agreements.
-    function finalizeAgreement(uint256 id) external override {
+    function finalizeAgreement(bytes32 id) external override {
         if (agreement[id].disputed)
             revert AgreementAlreadyDisputed();
         if (!_isPartOfAgreement(id, msg.sender))
@@ -154,7 +154,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @inheritdoc IAgreementFramework
     /// @dev Requires the caller to be part of the agreement.
     /// @dev Can be perform only once per agreement.
-    function disputeAgreement(uint256 id) external override {
+    function disputeAgreement(bytes32 id) external override {
         if (agreement[id].disputed)
             revert AgreementAlreadyDisputed();
         if (!_isPartOfAgreement(id, msg.sender))
@@ -170,7 +170,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @dev Requires the caller to be part of the agreement.
     /// @dev Requires the agreement to be finalized.
     /// @dev Clear your position balance and transfer funds.
-    function withdrawFromAgreement(uint256 id) external override {
+    function withdrawFromAgreement(bytes32 id) external override {
         if (!_isFinalized(id))
             revert AgreementNotFinalized();
         if (!_isPartOfAgreement(id, msg.sender))
@@ -193,7 +193,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @dev An agreement is finalized when all positions are finalized.
     /// @param id Id of the agreement to check.
     /// @return A boolean signaling if the agreement is finalized or not.
-    function _isFinalized(uint256 id) internal view returns (bool) {
+    function _isFinalized(bytes32 id) internal view returns (bool) {
         return agreement[id].finalizations >= agreement[id].party.length;
     }
 
@@ -201,7 +201,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @param id Id of the agreement to check.
     /// @param account Account to check.
     /// @return A boolean signaling if the account is part of the agreement or not.
-    function _isPartOfAgreement(uint256 id, address account) internal view returns (bool) {
+    function _isPartOfAgreement(bytes32 id, address account) internal view returns (bool) {
         return (
             (agreement[id].party.length > 0)
             && (agreement[id].party[agreement[id].position[account].id] == account)
@@ -211,7 +211,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @dev Add a new position to an existent agreement.
     /// @param agreementId Id of the agreement to update.
     /// @param params Struct of the position params to add.
-    function _addPosition(uint256 agreementId, PositionParams memory params) internal {
+    function _addPosition(bytes32 agreementId, PositionParams memory params) internal {
         uint256 partyId = agreement[agreementId].party.length;
         agreement[agreementId].party.push(params.party);
         agreement[agreementId].position[params.party] = Position(
@@ -234,7 +234,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @dev Requires that settlement includes all previous positions 
     /// @dev Requires that settlement match total balance of the agreement.
     /// @dev Allows the arbitrator to add new positions.
-    function settleDispute(uint256 id, PositionParams[] calldata settlement) external override {
+    function settleDispute(bytes32 id, PositionParams[] calldata settlement) external override {
         if (msg.sender != arbitrator)
             revert OnlyArbitrator();
         if (!agreement[id].disputed)

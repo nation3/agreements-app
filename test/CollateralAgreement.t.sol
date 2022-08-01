@@ -40,7 +40,7 @@ contract CollateralAgreementTest is DSTestPlus {
     }
 
     function testCreateAgreement() public {
-        uint256 agreementId = _createAgreement();
+        bytes32 agreementId = _createAgreement();
         AgreementParams memory createdAgreement = agreements.agreementParams(agreementId);
 
         assertEq(createdAgreement.termsHash, termsHash);
@@ -48,7 +48,7 @@ contract CollateralAgreementTest is DSTestPlus {
     }
 
     function testJoinAgreement() public {
-        uint256 agreementId = _createAgreement();
+        bytes32 agreementId = _createAgreement();
 
         // Bob joins the agreement
         evm.startPrank(bob);
@@ -63,7 +63,7 @@ contract CollateralAgreementTest is DSTestPlus {
     }
 
     function testFinalization() public {
-        uint256 agreementId = _createAgreement();
+        bytes32 agreementId = _createAgreement();
         uint256 bobBalance = token.balanceOf(bob);
         uint256 aliceBalance = token.balanceOf(alice);
 
@@ -109,7 +109,7 @@ contract CollateralAgreementTest is DSTestPlus {
     }
 
     function testDisputeSettlement() public {
-        uint256 agreementId = _createAgreement();
+        bytes32 agreementId = _createAgreement();
 
         // Bob joins the agreement
         evm.startPrank(bob);
@@ -170,7 +170,7 @@ contract CollateralAgreementTest is DSTestPlus {
         criteria = uint256(root);
     }
 
-    function _createAgreement() internal returns (uint256 agreementId) {
+    function _createAgreement() internal returns (bytes32 agreementId) {
         _prepareCriteria();
         termsHash = keccak256("Terms & Conditions");
 
