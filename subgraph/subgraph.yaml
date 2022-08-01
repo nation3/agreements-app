@@ -15,11 +15,8 @@ dataSources:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - AgreementCreated
-        - AgreementFinalizationSent
-        - AgreementFinalized
-        - AgreementJoined
-        - AgreementWithdrawn
+        - Agreement
+        - AgreementPosition
       abis:
         - name: AgreementFramework
           file: ./abis/AgreementFramework.json
