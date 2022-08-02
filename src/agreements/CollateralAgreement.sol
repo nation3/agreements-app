@@ -17,6 +17,11 @@ import { IArbitrable } from "../interfaces/IArbitrable.sol";
 
 
 /// @notice Framework to create collateral agreements.
+/// @dev Funds are held on each agreement.
+/// @dev Joining agreements criteria is defined by Merkle trees.
+/// @dev Parties manually join previously created agreements.
+/// @dev Agreements finalization by unanimity of its parties.
+/// @dev Parties manually withdraw their position from agreement.
 contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution {
     /* ====================================================================== //
                                         ERRORS

@@ -14,7 +14,6 @@ import { DSTestPlus } from "solmate/src/test/utils/DSTestPlus.sol";
 import { Merkle } from "murky/Merkle.sol";
 
 contract CollateralAgreementTest is DSTestPlus {
-    Hevm evm = Hevm(HEVM_ADDRESS);
     Merkle merkle = new Merkle();
 
     CollateralAgreementFramework agreements;
@@ -29,6 +28,11 @@ contract CollateralAgreementTest is DSTestPlus {
     address alice = hevm.addr(0xA11CE);
 
     mapping(address => bytes32[]) proofs;
+
+    bytes32 constant PERMIT_HASH =
+        keccak256(
+            "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
+        );
 
     function setUp() public {
         arbitrationFee = 0.02 ether;
@@ -52,10 +56,10 @@ contract CollateralAgreementTest is DSTestPlus {
         bytes32 agreementId = _createAgreement();
 
         // Bob joins the agreement
-        evm.startPrank(bob);
+        hevm.startPrank(bob);
         token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, CriteriaResolver(bob, 2 * 1e18, proofs[bob]));
-        evm.stopPrank();
+        hevm.stopPrank();
 
         PositionParams[] memory agreementPositions = agreements.agreementPositions(agreementId);
 
@@ -66,43 +70,91 @@ contract CollateralAgreementTest is DSTestPlus {
     function testJoinAgreementWithPermit() public {
         bytes32 agreementId = _createAgreement();
 
-        bytes32 permitHash = keccak256(
-            "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
-        );
-
-        (uint8 v, bytes32 r, bytes32 s) = hevm.sign(
-            0xB0B,
-            keccak256(
-                abi.encodePacked(
-                    "\x19\x01",
-                    token.DOMAIN_SEPARATOR(),
-                    keccak256(
-                        abi.encode(
-                            permitHash,
-                            bob,
-                            address(agreements),
-                            2 * 1e18,
-                            0,
-                            block.timestamp
-                        )
-                    )
-                )
-            )
-        );
-
         // Bob joins the agreement
-        evm.startPrank(bob);
+        hevm.startPrank(bob);
         agreements.joinAgreementWithPermit(
             agreementId,
             CriteriaResolver(bob, 2 * 1e18, proofs[bob]),
-            Permit(2 * 1e18, block.timestamp, v, r, s)
+            _getPermit(0xB0B, 2 * 1e18, 0)
         );
-        evm.stopPrank();
+        hevm.stopPrank();
 
         PositionParams[] memory agreementPositions = agreements.agreementPositions(agreementId);
 
         assertEq(agreementPositions[0].party, bob);
         assertEq(agreementPositions[0].balance, 2 * 1e18);
+    }
+
+    function testCantJoinWithInvalidCriteria() public {
+        bytes32 agreementId = _createAgreement();
+        Permit memory permit = _getPermit(0xB0B, 2 * 1e18, 0);
+
+        hevm.startPrank(bob);
+        hevm.expectRevert(abi.encodeWithSignature("InvalidProof()"));
+        agreements.joinAgreementWithPermit(
+            agreementId,
+            CriteriaResolver(bob, 1 * 1e18, proofs[bob]),
+            permit
+        );
+        hevm.stopPrank();
+    }
+
+    function testCantJoinAgreementMultipleTimes() public {
+        bytes32 agreementId = _createAgreement();
+
+        hevm.startPrank(bob);
+        token.approve(address(agreements), 5 * 1e18);
+
+        agreements.joinAgreement(agreementId, CriteriaResolver(bob, 2 * 1e18, proofs[bob]));
+
+        hevm.expectRevert(abi.encodeWithSignature("PartyAlreadyJoined()"));
+        agreements.joinAgreement(agreementId, CriteriaResolver(bob, 2 * 1e18, proofs[bob]));
+
+        hevm.stopPrank();
+    }
+
+    function testCantJoinDisputedAgreement() public {
+        bytes32 agreementId = _createAgreement();
+
+        // Bob joins the agreement & disputes.
+        hevm.startPrank(bob);
+        agreements.joinAgreementWithPermit(
+            agreementId,
+            CriteriaResolver(bob, 2 * 1e18, proofs[bob]),
+            _getPermit(0xB0B, 2 * 1e18, 0)
+        );
+        agreements.disputeAgreement(agreementId);
+        hevm.stopPrank();
+
+        // Alice tries to join the agreement.
+        hevm.startPrank(alice);
+        token.approve(address(agreements), 2 * 1e18);
+
+        hevm.expectRevert(abi.encodeWithSignature("AgreementIsDisputed()"));
+        agreements.joinAgreement(agreementId, CriteriaResolver(alice, 1e18, proofs[alice]));
+        hevm.stopPrank();
+    }
+
+    function testCantJoinFinalizedAgreement() public {
+        bytes32 agreementId = _createAgreement();
+
+        // Bob joins the agreement & finalize.
+        hevm.startPrank(bob);
+        agreements.joinAgreementWithPermit(
+            agreementId,
+            CriteriaResolver(bob, 2 * 1e18, proofs[bob]),
+            _getPermit(0xB0B, 2 * 1e18, 0)
+        );
+        agreements.finalizeAgreement(agreementId);
+        hevm.stopPrank();
+
+        // Alice tries to join the agreement.
+        hevm.startPrank(alice);
+        token.approve(address(agreements), 2 * 1e18);
+
+        hevm.expectRevert(abi.encodeWithSignature("AgreementIsFinalized()"));
+        agreements.joinAgreement(agreementId, CriteriaResolver(alice, 1e18, proofs[alice]));
+        hevm.stopPrank();
     }
 
     function testFinalization() public {
@@ -111,40 +163,40 @@ contract CollateralAgreementTest is DSTestPlus {
         uint256 aliceBalance = token.balanceOf(alice);
 
         // Bob joins the agreement.
-        evm.startPrank(bob);
+        hevm.startPrank(bob);
         token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, CriteriaResolver(bob, 2 * 1e18, proofs[bob]));
-        evm.stopPrank();
+        hevm.stopPrank();
 
         // Alice joins the agreement.
-        evm.startPrank(alice);
+        hevm.startPrank(alice);
         token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, CriteriaResolver(alice, 1e18, proofs[alice]));
-        evm.stopPrank();
+        hevm.stopPrank();
 
         assertEq(token.balanceOf(address(agreements)), 3 * 1e18);
 
         // Bob tries to withdraw himself from the agreement before finalization.
-        evm.startPrank(bob);
-        evm.expectRevert(abi.encodeWithSignature("AgreementNotFinalized()"));
+        hevm.startPrank(bob);
+        hevm.expectRevert(abi.encodeWithSignature("AgreementNotFinalized()"));
         agreements.withdrawFromAgreement(agreementId);
 
         // Bob agrees to finalize the agreement.
         agreements.finalizeAgreement(agreementId);
 
         // Bob tries to withdraw himself from the agreement before finalization consensus
-        evm.expectRevert(abi.encodeWithSignature("AgreementNotFinalized()"));
+        hevm.expectRevert(abi.encodeWithSignature("AgreementNotFinalized()"));
         agreements.withdrawFromAgreement(agreementId);
-        evm.stopPrank();
+        hevm.stopPrank();
 
         // Alice agrees to finalize and withdraws herself from the agreement
-        evm.startPrank(alice);
+        hevm.startPrank(alice);
         agreements.finalizeAgreement(agreementId);
         agreements.withdrawFromAgreement(agreementId);
-        evm.stopPrank();
+        hevm.stopPrank();
 
         // Bob can withdraw himself after finalization consensus
-        evm.prank(bob);
+        hevm.prank(bob);
         agreements.withdrawFromAgreement(agreementId);
 
         assertEq(token.balanceOf(bob), bobBalance);
@@ -155,19 +207,19 @@ contract CollateralAgreementTest is DSTestPlus {
         bytes32 agreementId = _createAgreement();
 
         // Bob joins the agreement
-        evm.startPrank(bob);
+        hevm.startPrank(bob);
         token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, CriteriaResolver(bob, 2 * 1e18, proofs[bob]));
-        evm.stopPrank();
+        hevm.stopPrank();
 
         // Alice joins the agreement
-        evm.startPrank(alice);
+        hevm.startPrank(alice);
         token.approve(address(agreements), 2 * 1e18);
         agreements.joinAgreement(agreementId, CriteriaResolver(alice, 1e18, proofs[alice]));
-        evm.stopPrank();
+        hevm.stopPrank();
 
         // Bob dispute the agreement
-        evm.prank(bob);
+        hevm.prank(bob);
         agreements.disputeAgreement(agreementId);
 
         // Arbitrator settles dispute
@@ -176,7 +228,7 @@ contract CollateralAgreementTest is DSTestPlus {
         settlementPositions[1] = PositionParams(alice, 0);
         settlementPositions[2] = PositionParams(address(0xD0011), 1.5 * 1e18);
 
-        evm.prank(arbitrator);
+        hevm.prank(arbitrator);
         agreements.settleDispute(agreementId, settlementPositions);
 
         // Check new settlement positions
@@ -188,9 +240,13 @@ contract CollateralAgreementTest is DSTestPlus {
         assertEq(agreementPositions[2].balance, 1.5 * 1e18);
 
         // Bob withdraws from agreement
-        evm.prank(bob);
+        hevm.prank(bob);
         agreements.withdrawFromAgreement(agreementId);
     }
+
+    /* ====================================================================== //
+                                        UTILS
+    // ====================================================================== */
 
     function _prepareCriteria() internal {
         PositionParams[] memory criteriaPositions = new PositionParams[](2);
@@ -218,5 +274,35 @@ contract CollateralAgreementTest is DSTestPlus {
         termsHash = keccak256("Terms & Conditions");
 
         agreementId = agreements.createAgreement(AgreementParams(termsHash, criteria));
+    }
+
+    function _getPermit(
+        uint256 privateKey,
+        uint256 value,
+        uint256 nonce
+    ) private returns (Permit memory permit) {
+        address account = hevm.addr(privateKey);
+
+        (uint8 v, bytes32 r, bytes32 s) = hevm.sign(
+            privateKey,
+            keccak256(
+                abi.encodePacked(
+                    "\x19\x01",
+                    token.DOMAIN_SEPARATOR(),
+                    keccak256(
+                        abi.encode(
+                            PERMIT_HASH,
+                            account,
+                            address(agreements),
+                            value,
+                            nonce,
+                            block.timestamp
+                        )
+                    )
+                )
+            )
+        );
+
+        permit = Permit(value, block.timestamp, v, r, s);
     }
 }
