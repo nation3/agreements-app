@@ -48,3 +48,4 @@ struct PositionParams {
     /// @dev Amount of tokens corresponding to this position.
     uint256 balance;
 }
+

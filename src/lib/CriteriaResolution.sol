@@ -1,28 +1,38 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
 
+/// @dev Data structure to prove membership to a criteria tree.
+///      Account and balance are used to encode the leaf.
 struct CriteriaResolver {
-    address party;
+    address account;
     uint256 balance;
-    bytes32[] criteriaProof;
+    bytes32[] proof;
 }
 
+/// @dev Methods to verify membership to a criteria Merkle tree.
 contract CriteriaResolution {
 
     error InvalidProof();
 
-    function _validateCriteria(uint256 criteria, CriteriaResolver calldata criteriaResolver) internal pure {
-        bytes32 leaf = keccak256(abi.encode(criteriaResolver.party, criteriaResolver.balance));
+    /// @dev Check that given resolver is valid for the provided criteria.
+    /// @param criteria Root of the Merkle tree.
+    /// @param resolver Struct with the required params to prove membership to the tree.
+    function _validateCriteria(uint256 criteria, CriteriaResolver calldata resolver) internal pure {
+        // Encode the leaf from the (account, balance) pair.
+        bytes32 leaf = keccak256(abi.encode(resolver.account, resolver.balance));
+
         bool isValid = _verifyProof(
-            criteriaResolver.criteriaProof,
+            resolver.proof,
             bytes32(criteria),
             leaf
         );
+
         if (!isValid)
             revert InvalidProof();
     }
 
     /// @dev Based on Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/utils/MerkleProofLib.sol)
+    ///      Verify proofs for given root and leaf are correct.
     function _verifyProof(
         bytes32[] calldata proof,
         bytes32 root,

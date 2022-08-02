@@ -24,7 +24,7 @@ interface IAgreementFramework is IArbitrable {
     /// @param balance Balance of the party joined.
     event AgreementJoined(bytes32 id, address party, uint256 balance);
 
-    /// @dev Raised when an existent party of an agreement updates its position.
+    /// @dev Raised when an existing party of an agreement updates its position.
     /// @param id Id of the agreement updated.
     /// @param party Address of the party updated.
     /// @param balance New balance of the party.
@@ -83,13 +83,13 @@ interface IAgreementFramework is IArbitrable {
     /// @return id Id of the agreement created.
     function createAgreement(AgreementParams calldata params) external returns (bytes32 id);
 
-    /// @notice Join an existent agreement.
+    /// @notice Join an existing agreement.
     /// @dev Requires a deposit over agreement criteria.
     /// @param id Id of the agreement to join.
     /// @param resolver Criteria data to prove sender can join agreement.
     function joinAgreement(bytes32 id, CriteriaResolver calldata resolver) external;
 
-    /// @notice Join an existent agreement with EIP-2612 permit.
+    /// @notice Join an existing agreement with EIP-2612 permit.
     ///         Allow to approve and transfer funds on the same transaction.
     /// @param id Id of the agreement to join.
     /// @param resolver Criteria data to prove sender can join agreement.

@@ -95,7 +95,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
         override
         returns (bytes32 agreementId)
     {
-        agreementId = keccak256(abi.encode(address(this),_nonce));
+        agreementId = keccak256(abi.encode(address(this), _nonce));
 
         agreement[agreementId].termsHash = params.termsHash;
         agreement[agreementId].criteria = params.criteria;
@@ -228,7 +228,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
             revert AgreementIsFinalized();
         if (_isPartOfAgreement(id, msg.sender))
             revert PartyAlreadyJoined();
-        if (msg.sender != resolver.party)
+        if (msg.sender != resolver.account)
             revert PartyMustMatchCriteria();
 
         _validateCriteria(agreement[id].criteria, resolver);
