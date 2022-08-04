@@ -32,7 +32,7 @@ type Agreement @entity {
 
 type AgreementPosition @entity {
     "Position ID"
-    id: Bytes!
+    id: ID!
 
     "Holder of the position - address"
     party: Bytes!
