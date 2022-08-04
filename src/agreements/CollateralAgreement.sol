@@ -6,6 +6,7 @@ import { SafeTransferLib } from "solmate/src/utils/SafeTransferLib.sol";
 import {
     Agreement,
     AgreementParams,
+    AgreementPosition,
     Position,
     PositionParams,
     PositionStatus
@@ -80,16 +81,19 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
         external
         view
         override
-        returns (PositionParams[] memory)
+        returns (AgreementPosition[] memory)
     {
         uint256 partyLength = agreement[id].party.length;
-        PositionParams[] memory positions = new PositionParams[](partyLength);
+        AgreementPosition[] memory positions = new AgreementPosition[](partyLength);
 
         for (uint256 i = 0; i < partyLength; i++) {
             address party = agreement[id].party[i];
-            uint256 balance = agreement[id].position[party].balance;
 
-            positions[i] = PositionParams(party, balance);
+            positions[i] = AgreementPosition(
+                party,
+                agreement[id].position[party].balance,
+                agreement[id].position[party].status
+            );
         }
 
         return positions;

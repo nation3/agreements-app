@@ -2,7 +2,9 @@
 pragma solidity ^0.8.13;
 import {
     AgreementParams,
+    AgreementPosition,
     PositionParams,
+    PositionStatus,
     Permit,
     CollateralAgreementFramework
 } from "../../src/agreements/CollateralAgreement.sol";
@@ -41,10 +43,11 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         framework.joinAgreement(agreementId, CriteriaResolver(bob, 2 * 1e18, proofs[bob]));
         hevm.stopPrank();
 
-        PositionParams[] memory agreementPositions = framework.agreementPositions(agreementId);
+        AgreementPosition[] memory agreementPositions = framework.agreementPositions(agreementId);
 
         assertEq(agreementPositions[0].party, bob);
         assertEq(agreementPositions[0].balance, 2 * 1e18);
+        assertEq(uint256(agreementPositions[0].status), 0);
     }
 
     function testJoinAgreementWithPermit() public {
@@ -59,7 +62,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         );
         hevm.stopPrank();
 
-        PositionParams[] memory agreementPositions = framework.agreementPositions(agreementId);
+        AgreementPosition[] memory agreementPositions = framework.agreementPositions(agreementId);
 
         assertEq(agreementPositions[0].party, bob);
         assertEq(agreementPositions[0].balance, 2 * 1e18);
@@ -202,18 +205,22 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         PositionParams[] memory settlementPositions = new PositionParams[](3);
         settlementPositions[0] = PositionParams(bob, 1.5 * 1e18);
         settlementPositions[1] = PositionParams(alice, 0);
-        settlementPositions[2] = PositionParams(address(0xD0011), 1.5 * 1e18);
+        settlementPositions[2] = PositionParams(address(0xD011), 1.5 * 1e18);
 
         hevm.prank(arbitrator);
         framework.settleDispute(agreementId, settlementPositions);
 
         // Check new settlement positions
-        PositionParams[] memory agreementPositions = framework.agreementPositions(agreementId);
+        AgreementPosition[] memory agreementPositions = framework.agreementPositions(agreementId);
         assertEq(agreementPositions[0].party, bob);
         assertEq(agreementPositions[0].balance, 1.5 * 1e18);
+        assertEq(uint256(agreementPositions[0].status), 1);
         assertEq(agreementPositions[1].party, alice);
         assertEq(agreementPositions[1].balance, 0);
+        assertEq(uint256(agreementPositions[1].status), 1);
+        assertEq(agreementPositions[2].party, address(0xD011));
         assertEq(agreementPositions[2].balance, 1.5 * 1e18);
+        assertEq(uint256(agreementPositions[2].status), 1);
 
         // Bob withdraws from agreement
         hevm.prank(bob);

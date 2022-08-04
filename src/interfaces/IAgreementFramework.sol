@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.13;
-import { AgreementParams, PositionParams, PositionStatus } from "../lib/AgreementStructs.sol";
+import {
+    AgreementParams,
+    AgreementPosition,
+    PositionParams,
+    PositionStatus
+} from "../lib/AgreementStructs.sol";
 import { CriteriaResolver } from "../lib/CriteriaResolution.sol";
 import { Permit } from "../lib/Permit.sol";
 import { IArbitrable } from "./IArbitrable.sol";
@@ -71,8 +76,8 @@ interface IAgreementFramework is IArbitrable {
 
     /// @notice Retrieve positions of an agreement.
     /// @param id Id of the agreement to return data from.
-    /// @return Array of PositionParams with all the positions of the agreement.
-    function agreementPositions(bytes32 id) external view returns (PositionParams[] memory);
+    /// @return Array of the positions of the agreement.
+    function agreementPositions(bytes32 id) external view returns (AgreementPosition[] memory);
 
     /* ====================================================================== //
                                     USER ACTIONS

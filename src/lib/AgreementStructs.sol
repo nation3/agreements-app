@@ -45,7 +45,7 @@ struct AgreementParams {
     string metadataURI;
 }
 
-/// @dev Adapter of agreement params for functions I/O.
+/// @dev Params to create new positions.
 struct PositionParams {
     /// @dev Holder of the position.
     address party;
@@ -53,3 +53,12 @@ struct PositionParams {
     uint256 balance;
 }
 
+/// @dev Agreement position data.
+struct AgreementPosition {
+    /// @dev Holder of the position.
+    address party;
+    /// @dev Amount of tokens corresponding to this position.
+    uint256 balance;
+    /// @de Status of the position.
+    PositionStatus status;
+}
