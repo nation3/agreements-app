@@ -271,6 +271,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     /// @dev Allows the arbitrator to add new positions.
     function settleDispute(bytes32 id, PositionParams[] calldata settlement) external override {
         if (msg.sender != arbitrator) revert OnlyArbitrator();
+        if (_isFinalized(id)) revert AgreementIsFinalized();
         if (!agreement[id].disputed) revert AgreementNotDisputed();
 
         uint256 positionsLength = settlement.length;

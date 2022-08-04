@@ -31,7 +31,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
     }
 
     /* ====================================================================== //
-                                     JOINING TESTS
+                                     JOIN TESTS
     // ====================================================================== */
 
     function testJoinAgreement() public {
@@ -118,20 +118,13 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
     function testFinalization() public {
         bytes32 agreementId = _createAgreement();
-        uint256 bobBalance = token.balanceOf(bob);
-        uint256 aliceBalance = token.balanceOf(alice);
 
         _bobJoinsAgreement(agreementId);
         _aliceJoinsAgreementWithPermit(agreementId);
 
         assertEq(token.balanceOf(address(framework)), 3 * 1e18);
 
-        // Bob tries to withdraw himself from the agreement before finalization.
-        hevm.startPrank(bob);
-        hevm.expectRevert(abi.encodeWithSignature("AgreementNotFinalized()"));
-        framework.withdrawFromAgreement(agreementId);
-
-        // Bob agrees to finalize the agreement.
+        hevm.prank(bob);
         framework.finalizeAgreement(agreementId);
 
         // Bob tries to withdraw himself from the agreement before finalization consensus
@@ -139,18 +132,11 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         framework.withdrawFromAgreement(agreementId);
         hevm.stopPrank();
 
-        // Alice agrees to finalize and withdraws herself from the agreement
-        hevm.startPrank(alice);
+        hevm.prank(alice);
         framework.finalizeAgreement(agreementId);
-        framework.withdrawFromAgreement(agreementId);
-        hevm.stopPrank();
 
-        // Bob can withdraw himself after finalization consensus
         hevm.prank(bob);
         framework.withdrawFromAgreement(agreementId);
-
-        assertEq(token.balanceOf(bob), bobBalance);
-        assertEq(token.balanceOf(alice), aliceBalance);
     }
 
     function testOnlyPartyCanFinalizeAgreement() public {
@@ -192,7 +178,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
                                     DISPUTE TESTS
     // ====================================================================== */
 
-    function testDisputeAndSettlement() public {
+    function testDisputeAgreement() public {
         bytes32 agreementId = _createAgreement();
 
         _bobJoinsAgreement(agreementId);
@@ -200,31 +186,6 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         hevm.prank(bob);
         framework.disputeAgreement(agreementId);
-
-        // Arbitrator settles dispute
-        PositionParams[] memory settlementPositions = new PositionParams[](3);
-        settlementPositions[0] = PositionParams(bob, 1.5 * 1e18);
-        settlementPositions[1] = PositionParams(alice, 0);
-        settlementPositions[2] = PositionParams(address(0xD011), 1.5 * 1e18);
-
-        hevm.prank(arbitrator);
-        framework.settleDispute(agreementId, settlementPositions);
-
-        // Check new settlement positions
-        AgreementPosition[] memory agreementPositions = framework.agreementPositions(agreementId);
-        assertEq(agreementPositions[0].party, bob);
-        assertEq(agreementPositions[0].balance, 1.5 * 1e18);
-        assertEq(uint256(agreementPositions[0].status), 1);
-        assertEq(agreementPositions[1].party, alice);
-        assertEq(agreementPositions[1].balance, 0);
-        assertEq(uint256(agreementPositions[1].status), 1);
-        assertEq(agreementPositions[2].party, address(0xD011));
-        assertEq(agreementPositions[2].balance, 1.5 * 1e18);
-        assertEq(uint256(agreementPositions[2].status), 1);
-
-        // Bob withdraws from agreement
-        hevm.prank(bob);
-        framework.withdrawFromAgreement(agreementId);
     }
 
     function testOnlyPartyCanDisputeAgreement() public {
@@ -248,5 +209,171 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         framework.finalizeAgreement(agreementId);
 
         _aliceExpectsErrorWhenDisputing(agreementId, "AgreementIsFinalized()");
+    }
+
+    /* ====================================================================== //
+                              DISPUTE SETTLEMENT TESTS
+    // ====================================================================== */
+
+    function _setupDispute() internal returns (bytes32 agreementId) {
+        agreementId = _createAgreement();
+
+        _bobJoinsAgreement(agreementId);
+        _aliceJoinsAgreementWithPermit(agreementId);
+
+        hevm.prank(bob);
+        framework.disputeAgreement(agreementId);
+    }
+
+    function _getValidSettlement() internal view returns (PositionParams[] memory) {
+        PositionParams[] memory settlement = new PositionParams[](3);
+
+        settlement[0] = PositionParams(bob, 1.5 * 1e18);
+        settlement[1] = PositionParams(alice, 0);
+        settlement[2] = PositionParams(address(0xD011), 1.5 * 1e18);
+
+        return settlement;
+    }
+
+    function _verifySettlement(
+        PositionParams[] memory settlement,
+        AgreementPosition[] memory agreementPositions
+    ) internal {
+        for (uint256 i = 0; i < settlement.length; i++) {
+            assertEq(agreementPositions[i].party, settlement[i].party);
+            assertEq(agreementPositions[i].balance, settlement[i].balance);
+            assertEq(uint256(agreementPositions[i].status), 1);
+        }
+    }
+
+    function testDisputeSettlement() public {
+        bytes32 disputedId = _setupDispute();
+
+        PositionParams[] memory settlement = _getValidSettlement();
+
+        hevm.prank(arbitrator);
+        framework.settleDispute(disputedId, settlement);
+
+        AgreementPosition[] memory agreementPositions = framework.agreementPositions(disputedId);
+
+        _verifySettlement(settlement, agreementPositions);
+    }
+
+    function testSettlementCantRemovePositions() public {
+        bytes32 disputedId = _setupDispute();
+
+        PositionParams[] memory settlement = new PositionParams[](1);
+        settlement[0] = PositionParams(bob, 3 * 1e18);
+
+        hevm.prank(arbitrator);
+        hevm.expectRevert(abi.encodeWithSignature("MissingPositions()"));
+        framework.settleDispute(disputedId, settlement);
+    }
+
+    function testSettlementMustMatchBalance() public {
+        bytes32 disputedId = _setupDispute();
+
+        PositionParams[] memory settlement = new PositionParams[](3);
+        // Settlement balance = 4 > 3 = agreement balance
+        settlement[0] = PositionParams(bob, 1.5 * 1e18);
+        settlement[1] = PositionParams(alice, 1 * 1e18);
+        settlement[2] = PositionParams(address(0xD011), 1.5 * 1e18);
+
+        hevm.prank(arbitrator);
+        hevm.expectRevert(abi.encodeWithSignature("SettlementBalanceMustMatch()"));
+        framework.settleDispute(disputedId, settlement);
+
+        // Settlement balance = 2.5 < 3 = agreement balance
+        settlement[2].balance = 0;
+
+        hevm.prank(arbitrator);
+        hevm.expectRevert(abi.encodeWithSignature("SettlementBalanceMustMatch()"));
+        framework.settleDispute(disputedId, settlement);
+    }
+
+    function testOnlyArbitratorCanSettleDispute() public {
+        bytes32 disputedId = _setupDispute();
+
+        PositionParams[] memory settlement = _getValidSettlement();
+
+        hevm.expectRevert(abi.encodeWithSignature("OnlyArbitrator()"));
+        framework.settleDispute(disputedId, settlement);
+    }
+
+    function testCantSettleDisputesInNotDisputedAgreements() public {
+        bytes32 agreementId = _createAgreement();
+
+        _bobJoinsAgreementWithPermit(agreementId);
+        _aliceJoinsAgreementWithPermit(agreementId);
+
+        PositionParams[] memory settlement = _getValidSettlement();
+
+        // Cant dispute ongoing agreement
+        hevm.prank(arbitrator);
+        hevm.expectRevert(abi.encodeWithSignature("AgreementNotDisputed()"));
+        framework.settleDispute(agreementId, settlement);
+
+        hevm.prank(bob);
+        framework.disputeAgreement(agreementId);
+
+        hevm.prank(arbitrator);
+        framework.settleDispute(agreementId, settlement);
+
+        // Cant dispute finalized agreement
+        hevm.prank(arbitrator);
+        hevm.expectRevert(abi.encodeWithSignature("AgreementIsFinalized()"));
+        framework.settleDispute(agreementId, settlement);
+    }
+
+    /* ====================================================================== //
+                                  WITHDRAW TESTS
+    // ====================================================================== */
+
+    function testWithdrawFromAgreement() public {
+        bytes32 agreementId = _createAgreement();
+        uint256 bobBalance = token.balanceOf(bob);
+        uint256 aliceBalance = token.balanceOf(alice);
+
+        _bobJoinsAgreementWithPermit(agreementId);
+        _aliceJoinsAgreementWithPermit(agreementId);
+
+        assertEq(token.balanceOf(address(framework)), 3 * 1e18);
+
+        hevm.prank(bob);
+        hevm.expectRevert(abi.encodeWithSignature("AgreementNotFinalized()"));
+        framework.withdrawFromAgreement(agreementId);
+
+        hevm.prank(bob);
+        framework.finalizeAgreement(agreementId);
+        hevm.prank(alice);
+        framework.finalizeAgreement(agreementId);
+
+        hevm.prank(alice);
+        framework.withdrawFromAgreement(agreementId);
+        hevm.prank(bob);
+        framework.withdrawFromAgreement(agreementId);
+
+        assertEq(token.balanceOf(bob), bobBalance);
+        assertEq(token.balanceOf(alice), aliceBalance);
+    }
+
+    function testWithdrawAfterSettlement() public {
+        bytes32 disputedId = _setupDispute();
+
+        uint256 bobBalance = token.balanceOf(bob);
+        uint256 aliceBalance = token.balanceOf(alice);
+
+        PositionParams[] memory settlement = _getValidSettlement();
+
+        hevm.prank(arbitrator);
+        framework.settleDispute(disputedId, settlement);
+
+        hevm.prank(alice);
+        framework.withdrawFromAgreement(disputedId);
+        hevm.prank(bob);
+        framework.withdrawFromAgreement(disputedId);
+
+        assertEq(token.balanceOf(bob) - bobBalance, settlement[0].balance);
+        assertEq(token.balanceOf(alice) - aliceBalance, settlement[1].balance);
     }
 }
