@@ -21,6 +21,8 @@ struct Agreement {
     bytes32 termsHash;
     /// @dev Required amount to join or merkle root of (address,amount).
     uint256 criteria;
+    /// @dev URI of the metadata of the agreement.
+    string metadataURI;
     /// @dev Total balance deposited in the agreement.
     uint256 balance;
     /// @dev Number of finalizations confirmations.
@@ -39,6 +41,8 @@ struct AgreementParams {
     bytes32 termsHash;
     /// @dev Required amount to join or merkle root of (address,amount).
     uint256 criteria;
+    /// @dev URI of the metadata of the agreement.
+    string metadataURI;
 }
 
 /// @dev Adapter of agreement params for functions I/O.

@@ -25,6 +25,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         assertEq(createdAgreement.termsHash, termsHash);
         assertEq(createdAgreement.criteria, criteria);
+        assertEq(createdAgreement.metadataURI, metadataURI);
     }
 
     /* ====================================================================== //

@@ -67,7 +67,11 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
         override
         returns (AgreementParams memory params)
     {
-        params = AgreementParams(agreement[id].termsHash, agreement[id].criteria);
+        params = AgreementParams(
+            agreement[id].termsHash,
+            agreement[id].criteria,
+            agreement[id].metadataURI
+        );
     }
 
     /// Retrieve positions of an agreement.
@@ -106,6 +110,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
 
         agreement[agreementId].termsHash = params.termsHash;
         agreement[agreementId].criteria = params.criteria;
+        agreement[agreementId].metadataURI = params.metadataURI;
 
         _nonce++;
 

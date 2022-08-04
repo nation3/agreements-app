@@ -17,7 +17,7 @@ contract AgreementFrameworkTestBase is DSTestPlus {
 
     bytes32 termsHash;
     uint256 criteria;
-    uint256 arbitrationFee;
+    string metadataURI;
 
     address arbitrator = address(0xB055);
     address bob = hevm.addr(0xB0B);
@@ -54,8 +54,9 @@ contract AgreementFrameworkTestBase is DSTestPlus {
     function _createAgreement() internal returns (bytes32 agreementId) {
         _prepareCriteria();
         termsHash = keccak256("Terms & Conditions");
+        metadataURI = "ipfs://sha256";
 
-        agreementId = framework.createAgreement(AgreementParams(termsHash, criteria));
+        agreementId = framework.createAgreement(AgreementParams(termsHash, criteria, metadataURI));
     }
 
     /// Sign an EIP-2612 Permit and returns permit data
