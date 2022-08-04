@@ -41,13 +41,13 @@ describe("Describe entity assertions", () => {
     // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
     assert.fieldEquals(
       "Agreement",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a",
+      "234",
       "termsHash",
-      "1234567890"
+      "0xd2029649"
     )
     assert.fieldEquals(
       "Agreement",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a",
+      "234",
       "criteria",
       "234"
     )
