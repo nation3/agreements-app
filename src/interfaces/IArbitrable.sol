@@ -5,7 +5,6 @@ import { PositionParams } from "../lib/AgreementStructs.sol";
 /// @notice Interface for arbitrable contracts.
 /// @dev Implementers must write the logic to raise and settle disputes.
 interface IArbitrable {
-
     error OnlyArbitrator();
 
     /// @notice Address capable of settling disputes.
