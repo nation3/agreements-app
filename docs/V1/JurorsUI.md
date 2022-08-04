@@ -37,7 +37,7 @@ They will need to provide a valid settlement for the dispute.
 Jurors can approve proposed resolution submissions.
 
 **Steps:**
-1. The user triggers the approve.
+1. The user triggers the approval.
 2. The system generates the message to sign.
 3. The user signs the message.
 4. The system stores the signed message.
@@ -47,7 +47,7 @@ Jurors can approve proposed resolution submissions.
 Jurors can approve proposed resolution submissions.
 
 **Steps:**
-1. The user triggers the reject.
+1. The user triggers the rejection.
 2. The system generates the message to sign.
 3. The user signs the message.
 4. The system stores the signed message.
@@ -57,7 +57,7 @@ Jurors can approve proposed resolution submissions.
 Once a resolution proposal is signed by the required jurors any of them can submit the resolution by on-chain execution.
 
 **Steps:**
-1. The user submit the resolution.
+1. The user submits the resolution.
 2. The system generates the submit transaction.
 3. The user approves the transaction.
 4. The system confirms that the resolution has been submitted.
@@ -79,7 +79,7 @@ Once a submitted resolution passes the review period it can be executed by anyon
 **Steps:**
 1. The user triggers the execution.
 2. The system generates the execution transaction.
-3. The ser approves the transaction.
+3. The user approves the transaction.
 4. The system confirms that the resolution has been executed.
 
 ### Verify terms
@@ -87,9 +87,9 @@ Once a submitted resolution passes the review period it can be executed by anyon
 The users can verify if a terms file matches with the terms of the agreement.
 
 **Steps:**
-1. The system open dialog to select the terms file.
-2. The user pick the file.
-3. The system hash the file and check the hash against the agreement's hash. Prompt the user with the result.
+1. The system opens a dialog to select the terms file.
+2. The user picks the file.
+3. The system hashes the file and checks the hash against the agreement's hash. Then prompts the user with the result.
 
 ## Views
 
@@ -99,7 +99,7 @@ This view will show the form required to create a resolution.
 
 Must provide:
 
-- A set of buttons to insert and edit the agreement positions
+- A set of buttons to insert and edit the agreement positions.
 - An indicator of the validity of the settlement.
 
 From this view, the user must be able to:

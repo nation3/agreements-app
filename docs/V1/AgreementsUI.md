@@ -59,9 +59,9 @@ We will retrieve the criteria tree & proofs from the metadata of the agreement t
 **Steps:**
 
 1. The system checks if the user can join the agreement.
-2. The user triggers the join button.
+2. The user presses the join button.
 3. The system generates an EIP-712 permit for the funds required to join.
-4. The user signs the permit on their wallet.
+4. The user signs the permit.
 5. The system generates the join with permit transaction.
 6. The user approves the transaction.
 
@@ -72,7 +72,7 @@ To finalize an agreement, all the parties need to signal their willingness to fi
 **Steps:**
 
 1. The system checks the user can finalize the agreement.
-2. The user triggers the finalize button.
+2. The user presses the finalize button.
 3. The system generates the transaction to finalize.
 4. The user approves the transaction.
 
@@ -83,7 +83,7 @@ To raise a dispute, any of the parties can call the contract to dispute an agree
 **Steps:**
 
 1. The system checks if the user can dispute the agreement.
-2. The user triggers the dispute button.
+2. The user presses the dispute button.
 3. The system generates the dispute transaction.
 4. The user approves the transaction.
 
@@ -93,7 +93,7 @@ When the contract is finalized, the parties can withdraw their positions.
 
 **Steps:**
 1. The system checks if the user can withdraw from the agreement & shows withdrawal details.
-2. The user triggers the withdraw button.
+2. The user presses the withdraw button.
 3. The system generates the withdrawal transaction.
 4. The user approves the transaction.
 
@@ -102,9 +102,9 @@ When the contract is finalized, the parties can withdraw their positions.
 The users can verify if a terms file matches with the terms of the agreement.
 
 **Steps:**
-1. The system open dialog to select the terms file.
-2. The user pick the file.
-3. The system hash the file and check the hash against the agreement's hash. Prompt the user with the result.
+1. The system opens a dialog to select the terms file.
+2. The user picks the file.
+3. The system hashes the file and checks the hash against the agreement's hash. Then prompts the user with the result.
 
 ## Views
 
