@@ -20,15 +20,12 @@ export function handleAgreementCreated(event: AgreementCreated): void {
 export function handleAgreementFinalizationSent(event: AgreementFinalizationSent): void {
 }
 
-export function handleAgreementFinalized(event: AgreementFinalized): void {}
+export function handleAgreementFinalized(event: AgreementFinalized): void {
+}
 
 export function handleAgreementJoined(event: AgreementJoined): void {
   let agreement = Agreement.load(event.params.id.toString())
-  let positionId = 0
-  if (agreement && agreement.positions){
-    positionId = agreement.positions.length  
-  }
-  let position = new AgreementPosition(event.params.id.toString()+"-"+positionId.toString())
+  let position = new AgreementPosition(event.params.id.toString()+"-"+event.params.party.toHexString())
   position.party = event.params.party
   position.balance = event.params.balance
   position.status = "Idle"
