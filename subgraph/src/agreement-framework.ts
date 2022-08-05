@@ -18,6 +18,11 @@ export function handleAgreementCreated(event: AgreementCreated): void {
 }
 
 export function handleAgreementFinalizationSent(event: AgreementFinalizationSent): void {
+  let position = AgreementPosition.load(event.params.id.toString()+"-"+event.params.party.toHexString())
+  if (position) {
+    position.status = "Finalized"
+    position.save()
+  }
 }
 
 export function handleAgreementFinalized(event: AgreementFinalized): void {
