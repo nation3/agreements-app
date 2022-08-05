@@ -1,3 +1,4 @@
+import { assert } from "matchstick-as/assembly/index"
 import { newMockEvent } from "matchstick-as"
 import { ethereum, BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
 import {
@@ -116,4 +117,30 @@ export function createAgreementWithdrawnEvent(
   )
 
   return agreementWithdrawnEvent
+}
+
+export function assertAgreement(
+  id: String, 
+  termsHash: String, 
+  criteria: String, 
+  positions: String, 
+  status: String
+) : void {
+  assert.fieldEquals("Agreement", id, "status", status)
+  assert.fieldEquals("Agreement", id, "termsHash", termsHash)
+  assert.fieldEquals("Agreement", id, "criteria", criteria)
+  assert.fieldEquals("Agreement", id, "positions", positions)
+}
+
+export function assertAgreementPosition(
+  id: String, 
+  party: String, 
+  balance: String, 
+  status: String, 
+  agreement: String
+) : void {
+  assert.fieldEquals("AgreementPosition", id, "party", party)
+  assert.fieldEquals("AgreementPosition", id, "balance", balance)
+  assert.fieldEquals("AgreementPosition", id, "status", status)
+  assert.fieldEquals("AgreementPosition", id, "agreement", agreement)
 }

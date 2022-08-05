@@ -28,7 +28,7 @@ export function handleAgreementJoined(event: AgreementJoined): void {
   if (agreement && agreement.positions){
     positionId = agreement.positions.length  
   }
-  let position = new AgreementPosition(positionId.toString())
+  let position = new AgreementPosition(event.params.id.toString()+"-"+positionId.toString())
   position.party = event.params.party
   position.balance = event.params.balance
   position.status = "Idle"
