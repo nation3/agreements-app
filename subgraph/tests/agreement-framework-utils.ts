@@ -3,10 +3,8 @@ import { newMockEvent } from "matchstick-as"
 import { ethereum, BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
 import {
   AgreementCreated,
-  AgreementFinalizationSent,
   AgreementFinalized,
-  AgreementJoined,
-  AgreementWithdrawn
+  AgreementJoined
 } from "../generated/AgreementFramework/AgreementFramework"
 
 export function createAgreementCreatedEvent(
@@ -35,26 +33,6 @@ export function createAgreementCreatedEvent(
   )
 
   return agreementCreatedEvent
-}
-
-export function createAgreementFinalizationSentEvent(
-  id: BigInt,
-  party: Address
-): AgreementFinalizationSent {
-  let agreementFinalizationSentEvent = changetype<AgreementFinalizationSent>(
-    newMockEvent()
-  )
-
-  agreementFinalizationSentEvent.parameters = new Array()
-
-  agreementFinalizationSentEvent.parameters.push(
-    new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
-  )
-  agreementFinalizationSentEvent.parameters.push(
-    new ethereum.EventParam("party", ethereum.Value.fromAddress(party))
-  )
-
-  return agreementFinalizationSentEvent
 }
 
 export function createAgreementFinalizedEvent(id: BigInt): AgreementFinalized {
@@ -92,31 +70,6 @@ export function createAgreementJoinedEvent(
   )
 
   return agreementJoinedEvent
-}
-
-export function createAgreementWithdrawnEvent(
-  id: BigInt,
-  party: Address,
-  balance: BigInt
-): AgreementWithdrawn {
-  let agreementWithdrawnEvent = changetype<AgreementWithdrawn>(newMockEvent())
-
-  agreementWithdrawnEvent.parameters = new Array()
-
-  agreementWithdrawnEvent.parameters.push(
-    new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
-  )
-  agreementWithdrawnEvent.parameters.push(
-    new ethereum.EventParam("party", ethereum.Value.fromAddress(party))
-  )
-  agreementWithdrawnEvent.parameters.push(
-    new ethereum.EventParam(
-      "balance",
-      ethereum.Value.fromUnsignedBigInt(balance)
-    )
-  )
-
-  return agreementWithdrawnEvent
 }
 
 export function assertAgreement(

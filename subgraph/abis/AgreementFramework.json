@@ -1,10 +1,90 @@
 [
-  { "inputs": [], "name": "AgreementNotFinalized", "type": "error" },
-  { "inputs": [], "name": "InsufficientBalance", "type": "error" },
-  { "inputs": [], "name": "NoPartOfAgreement", "type": "error" },
-  { "inputs": [], "name": "NonExistentAgreement", "type": "error" },
-  { "inputs": [], "name": "OnlyArbitrator", "type": "error" },
-  { "inputs": [], "name": "PartyAlreadyFinalized", "type": "error" },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ERC20",
+        "name": "token_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "arbitrator_",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "AgreementAlreadyDisputed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "AgreementNotDisputed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "AgreementNotFinalized",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InsufficientBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidProof",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MissingPositions",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NoPartOfAgreement",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NonExistentAgreement",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OnlyArbitrator",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PartyAlreadyFinalized",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PartyAlreadyJoined",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PartyMustMatchCriteria",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PositionsMustMatch",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SettlementBalanceMustMatch",
+    "type": "error"
+  },
   {
     "anonymous": false,
     "inputs": [
@@ -46,7 +126,7 @@
         "type": "address"
       }
     ],
-    "name": "AgreementFinalizationSent",
+    "name": "AgreementDisputed",
     "type": "event"
   },
   {
@@ -107,22 +187,81 @@
         "internalType": "uint256",
         "name": "balance",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum PositionStatus",
+        "name": "status",
+        "type": "uint8"
       }
     ],
-    "name": "AgreementWithdrawn",
+    "name": "AgreementPositionUpdated",
     "type": "event"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "id", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "agreement",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "termsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "criteria",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "balance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "finalizations",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "disputed",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
     "name": "agreementParams",
     "outputs": [
       {
         "components": [
-          { "internalType": "bytes32", "name": "termsHash", "type": "bytes32" },
-          { "internalType": "uint256", "name": "criteria", "type": "uint256" }
+          {
+            "internalType": "bytes32",
+            "name": "termsHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "criteria",
+            "type": "uint256"
+          }
         ],
         "internalType": "struct AgreementParams",
-        "name": "",
+        "name": "params",
         "type": "tuple"
       }
     ],
@@ -130,13 +269,27 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "id", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
     "name": "agreementPositions",
     "outputs": [
       {
         "components": [
-          { "internalType": "address", "name": "party", "type": "address" },
-          { "internalType": "uint256", "name": "balance", "type": "uint256" }
+          {
+            "internalType": "address",
+            "name": "party",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balance",
+            "type": "uint256"
+          }
         ],
         "internalType": "struct PositionParams[]",
         "name": "",
@@ -149,7 +302,13 @@
   {
     "inputs": [],
     "name": "arbitrator",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -157,8 +316,16 @@
     "inputs": [
       {
         "components": [
-          { "internalType": "bytes32", "name": "termsHash", "type": "bytes32" },
-          { "internalType": "uint256", "name": "criteria", "type": "uint256" }
+          {
+            "internalType": "bytes32",
+            "name": "termsHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "criteria",
+            "type": "uint256"
+          }
         ],
         "internalType": "struct AgreementParams",
         "name": "params",
@@ -166,19 +333,37 @@
       }
     ],
     "name": "createAgreement",
-    "outputs": [{ "internalType": "uint256", "name": "id", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "agreementId",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "id", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
     "name": "disputeAgreement",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "id", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
     "name": "finalizeAgreement",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -186,8 +371,33 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "id", "type": "uint256" },
-      { "internalType": "uint256", "name": "balance", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "party",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balance",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32[]",
+            "name": "criteriaProof",
+            "type": "bytes32[]"
+          }
+        ],
+        "internalType": "struct CriteriaResolver",
+        "name": "resolver",
+        "type": "tuple"
+      }
     ],
     "name": "joinAgreement",
     "outputs": [],
@@ -196,11 +406,23 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "id", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
       {
         "components": [
-          { "internalType": "address", "name": "party", "type": "address" },
-          { "internalType": "uint256", "name": "balance", "type": "uint256" }
+          {
+            "internalType": "address",
+            "name": "party",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balance",
+            "type": "uint256"
+          }
         ],
         "internalType": "struct PositionParams[]",
         "name": "settlement",
@@ -213,7 +435,26 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "id", "type": "uint256" }],
+    "inputs": [],
+    "name": "token",
+    "outputs": [
+      {
+        "internalType": "contract ERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
     "name": "withdrawFromAgreement",
     "outputs": [],
     "stateMutability": "nonpayable",

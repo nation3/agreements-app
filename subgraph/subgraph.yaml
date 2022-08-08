@@ -23,12 +23,12 @@ dataSources:
       eventHandlers:
         - event: AgreementCreated(uint256,bytes32,uint256)
           handler: handleAgreementCreated
-        - event: AgreementFinalizationSent(uint256,address)
-          handler: handleAgreementFinalizationSent
-        - event: AgreementFinalized(uint256)
-          handler: handleAgreementFinalized
         - event: AgreementJoined(uint256,address,uint256)
           handler: handleAgreementJoined
-        - event: AgreementWithdrawn(uint256,address,uint256)
-          handler: handleAgreementWithdrawn
+        - event: AgreementPositionUpdated(uint256,address,uint256,uint8)
+          handler: handleAgreementPositionUpdated
+        - event: AgreementFinalized(uint256)
+          handler: handleAgreementFinalized
+        - event: AgreementDisputed(uint256,address)
+          handler: handleAgreementDisputed
       file: ./src/agreement-framework.ts
