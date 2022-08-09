@@ -27,9 +27,8 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
                                         ERRORS
     // ====================================================================== */
 
-    error MissingPositions();
     error PositionsMustMatch();
-    error SettlementBalanceMustMatch();
+    error BalanceMustMatch();
 
     /* ====================================================================== //
                                         STORAGE
@@ -277,16 +276,12 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
         uint256 positionsLength = settlement.length;
         uint256 newBalance;
 
-        if (positionsLength < agreement[id].party.length) revert MissingPositions();
+        if (positionsLength != agreement[id].party.length) revert PositionsMustMatch();
         for (uint256 i = 0; i < positionsLength; i++) {
             // Revert if previous positions parties do not match.
-            if ((i < agreement[id].party.length) && (agreement[id].party[i] != settlement[i].party))
-                revert PositionsMustMatch();
+            if (agreement[id].party[i] != settlement[i].party) revert PositionsMustMatch();
 
-            // Add new parties to the agreement if needed.
-            if (i >= agreement[id].party.length) agreement[id].party.push(settlement[i].party);
-
-            // Update / Add position params from settlement.
+            // Update position params from settlement.
             agreement[id].position[settlement[i].party] = Position(
                 i,
                 settlement[i].balance,
@@ -303,11 +298,10 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
             );
         }
 
-        if (newBalance != agreement[id].balance) revert SettlementBalanceMustMatch();
+        if (newBalance != agreement[id].balance) revert BalanceMustMatch();
 
         // Finalize agreement.
         agreement[id].finalizations = positionsLength;
-
         emit AgreementFinalized(id);
     }
 }

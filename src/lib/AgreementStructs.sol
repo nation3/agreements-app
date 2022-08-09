@@ -59,6 +59,6 @@ struct AgreementPosition {
     address party;
     /// @dev Amount of tokens corresponding to this position.
     uint256 balance;
-    /// @de Status of the position.
+    /// @dev Status of the position.
     PositionStatus status;
 }

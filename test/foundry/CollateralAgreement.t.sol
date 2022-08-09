@@ -226,11 +226,11 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
     }
 
     function _getValidSettlement() internal view returns (PositionParams[] memory) {
-        PositionParams[] memory settlement = new PositionParams[](3);
+        PositionParams[] memory settlement = new PositionParams[](2);
 
-        settlement[0] = PositionParams(bob, 1.5 * 1e18);
+        settlement[0] = PositionParams(bob, 3 * 1e18);
         settlement[1] = PositionParams(alice, 0);
-        settlement[2] = PositionParams(address(0xD011), 1.5 * 1e18);
+        // settlement[2] = PositionParams(address(0xD011), 1.5 * 1e18);
 
         return settlement;
     }
@@ -266,28 +266,40 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         settlement[0] = PositionParams(bob, 3 * 1e18);
 
         hevm.prank(arbitrator);
-        hevm.expectRevert(abi.encodeWithSignature("MissingPositions()"));
+        hevm.expectRevert(abi.encodeWithSignature("PositionsMustMatch()"));
+        framework.settleDispute(disputedId, settlement);
+    }
+
+    function testSettlementCantAddNewPositions() public {
+        bytes32 disputedId = _setupDispute();
+
+        PositionParams[] memory settlement = new PositionParams[](3);
+        settlement[0] = PositionParams(bob, 1.5 * 1e18);
+        settlement[1] = PositionParams(alice, 0 * 1e18);
+        settlement[2] = PositionParams(address(0xD011), 1.5 * 1e18);
+
+        hevm.prank(arbitrator);
+        hevm.expectRevert(abi.encodeWithSignature("PositionsMustMatch()"));
         framework.settleDispute(disputedId, settlement);
     }
 
     function testSettlementMustMatchBalance() public {
         bytes32 disputedId = _setupDispute();
 
-        PositionParams[] memory settlement = new PositionParams[](3);
+        PositionParams[] memory settlement = new PositionParams[](2);
         // Settlement balance = 4 > 3 = agreement balance
         settlement[0] = PositionParams(bob, 1.5 * 1e18);
-        settlement[1] = PositionParams(alice, 1 * 1e18);
-        settlement[2] = PositionParams(address(0xD011), 1.5 * 1e18);
+        settlement[1] = PositionParams(alice, 2.5 * 1e18);
 
         hevm.prank(arbitrator);
-        hevm.expectRevert(abi.encodeWithSignature("SettlementBalanceMustMatch()"));
+        hevm.expectRevert(abi.encodeWithSignature("BalanceMustMatch()"));
         framework.settleDispute(disputedId, settlement);
 
-        // Settlement balance = 2.5 < 3 = agreement balance
-        settlement[2].balance = 0;
+        // Settlement balance = 1.5 < 3 = agreement balance
+        settlement[1].balance = 0;
 
         hevm.prank(arbitrator);
-        hevm.expectRevert(abi.encodeWithSignature("SettlementBalanceMustMatch()"));
+        hevm.expectRevert(abi.encodeWithSignature("BalanceMustMatch()"));
         framework.settleDispute(disputedId, settlement);
     }
 

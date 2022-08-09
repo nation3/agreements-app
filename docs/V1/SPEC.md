@@ -148,7 +148,7 @@ When an agreement is in dispute can be unilaterally finalized by its arbitrator.
 
 When finalizing the agreement, the arbitrator will provide a set of party positions to finalize the agreement with.
 
-The arbitrator can adjust the balance of the previously existing positions and include new ones, but never remove the previously existing positions. The final total balance must match the previous total balance of the agreement.
+The arbitrator can adjust the balance of the previously existing positions. The final total balance must match the previous total balance of the agreement.
 
 The arbitrator will provide all the adjustments in a single operation that will automatically finalize the agreement.
 
