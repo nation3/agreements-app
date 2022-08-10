@@ -13,6 +13,8 @@ import { CriteriaResolver } from "../../src/lib/CriteriaResolution.sol";
 import { AgreementFrameworkTestBase } from "./utils/AgreementFrameworkTestBase.sol";
 
 contract CollateralAgreementTest is AgreementFrameworkTestBase {
+    address doll = hevm.addr(0xD011);
+
     function setUp() public {
         token = new MockERC20("framework Token", "AT", 18);
         framework = new CollateralAgreementFramework(token, arbitrator);
@@ -230,7 +232,6 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         settlement[0] = PositionParams(bob, 3 * 1e18);
         settlement[1] = PositionParams(alice, 0);
-        // settlement[2] = PositionParams(address(0xD011), 1.5 * 1e18);
 
         return settlement;
     }
@@ -276,7 +277,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         PositionParams[] memory settlement = new PositionParams[](3);
         settlement[0] = PositionParams(bob, 1.5 * 1e18);
         settlement[1] = PositionParams(alice, 0 * 1e18);
-        settlement[2] = PositionParams(address(0xD011), 1.5 * 1e18);
+        settlement[2] = PositionParams(doll, 1.5 * 1e18);
 
         hevm.prank(arbitrator);
         hevm.expectRevert(abi.encodeWithSignature("PositionsMustMatch()"));
@@ -287,7 +288,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         bytes32 disputedId = _setupDispute();
 
         PositionParams[] memory settlement = new PositionParams[](2);
-        // Settlement balance = 4 > 3 = agreement balance
+        // (Settlement balance = 4) > (3 = agreement balance)
         settlement[0] = PositionParams(bob, 1.5 * 1e18);
         settlement[1] = PositionParams(alice, 2.5 * 1e18);
 
@@ -295,7 +296,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.expectRevert(abi.encodeWithSignature("BalanceMustMatch()"));
         framework.settleDispute(disputedId, settlement);
 
-        // Settlement balance = 1.5 < 3 = agreement balance
+        // (Settlement balance = 1.5) < (3 = agreement balance)
         settlement[1].balance = 0;
 
         hevm.prank(arbitrator);
@@ -338,7 +339,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
     }
 
     /* ====================================================================== //
-                                  WITHDRAW TESTS
+                                  WITHDRAWAL TESTS
     // ====================================================================== */
 
     function testWithdrawFromAgreement() public {
