@@ -1,9 +1,12 @@
 [submodule "lib/forge-std"]
 	path = lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
-[submodule "lib/solmate"]
-	path = lib/solmate
-	url = https://github.com/rari-capital/solmate
 [submodule "lib/zodiac"]
 	path = lib/zodiac
 	url = https://github.com/gnosis/zodiac
+[submodule "lib/murky"]
+	path = lib/murky
+	url = https://github.com/dmfxyz/murky
+[submodule "lib/solmate"]
+	path = lib/solmate
+	url = https://github.com/transmissions11/solmate
