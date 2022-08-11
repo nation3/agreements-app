@@ -17,6 +17,11 @@ export function handleAgreementCreated(event: AgreementCreated): void {
 }
 
 export function handleAgreementFinalized(event: AgreementFinalized): void {
+  let agreement = Agreement.load(event.params.id.toString())
+  if (agreement) {
+    agreement.status = "Finalized"
+    agreement.save()
+  }
 }
 
 export function handleAgreementJoined(event: AgreementJoined): void {
