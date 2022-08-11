@@ -4,6 +4,7 @@ import { ethereum, BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
 import {
   AgreementCreated,
   AgreementFinalized,
+  AgreementPositionUpdated,
   AgreementJoined
 } from "../generated/AgreementFramework/AgreementFramework"
 
@@ -70,6 +71,38 @@ export function createAgreementJoinedEvent(
   )
 
   return agreementJoinedEvent
+}
+
+export function createAgreementPositionUpdatedEvent(
+  id: BigInt,
+  party: Address,
+  balance: BigInt,
+  status: BigInt
+): AgreementPositionUpdated {
+  let agreementPositionUpdatedEvent = changetype<AgreementPositionUpdated>(newMockEvent())
+
+  agreementPositionUpdatedEvent.parameters = new Array()
+
+  agreementPositionUpdatedEvent.parameters.push(
+    new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
+  )
+  agreementPositionUpdatedEvent.parameters.push(
+    new ethereum.EventParam("party", ethereum.Value.fromAddress(party))
+  )
+  agreementPositionUpdatedEvent.parameters.push(
+    new ethereum.EventParam(
+      "balance",
+      ethereum.Value.fromUnsignedBigInt(balance)
+    )
+  )
+  agreementPositionUpdatedEvent.parameters.push(
+    new ethereum.EventParam(
+      "status",
+      ethereum.Value.fromUnsignedBigInt(status)
+    )
+  )
+
+  return agreementPositionUpdatedEvent
 }
 
 export function assertAgreement(

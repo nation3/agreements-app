@@ -2,7 +2,8 @@ import { BigInt } from "@graphprotocol/graph-ts"
 import {
   AgreementCreated,
   AgreementFinalized,
-  AgreementJoined
+  AgreementJoined,
+  AgreementPositionUpdated
 } from "../generated/AgreementFramework/AgreementFramework"
 import { Agreement, AgreementPosition } from "../generated/schema"
 
@@ -29,6 +30,16 @@ export function handleAgreementJoined(event: AgreementJoined): void {
 }
 
 export function handleAgreementPositionUpdated(event: AgreementPositionUpdated): void {
+  let agreement = Agreement.load(event.params.id.toString())
+  let position = AgreementPosition.load(event.params.id.toString()+"-"+event.params.party.toHexString())
+  if (position !== null) {
+    position.balance = event.params.balance
+    if (event.params.status == 0)
+      position.status = "Idle"
+    else 
+      position.status = "Finalized"
+    position.save()  
+  }
 }
 
 export function handleAgreementDisputed(event: AgreedDisputed): void {
