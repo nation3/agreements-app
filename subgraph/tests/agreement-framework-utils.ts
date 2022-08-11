@@ -3,9 +3,10 @@ import { newMockEvent } from "matchstick-as"
 import { ethereum, BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
 import {
   AgreementCreated,
-  AgreementFinalized,
+  AgreementJoined,
   AgreementPositionUpdated,
-  AgreementJoined
+  AgreementFinalized,
+  AgreementDisputed
 } from "../generated/AgreementFramework/AgreementFramework"
 
 export function createAgreementCreatedEvent(
@@ -71,6 +72,24 @@ export function createAgreementJoinedEvent(
   )
 
   return agreementJoinedEvent
+}
+
+export function createAgreementDisputedEvent(
+  id: BigInt,
+  party: Address
+): AgreementDisputed {
+  let agreementDisputedEvent = changetype<AgreementDisputed>(newMockEvent())
+
+  agreementDisputedEvent.parameters = new Array()
+
+  agreementDisputedEvent.parameters.push(
+    new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
+  )
+  agreementDisputedEvent.parameters.push(
+    new ethereum.EventParam("party", ethereum.Value.fromAddress(party))
+  )
+
+  return agreementDisputedEvent
 }
 
 export function createAgreementPositionUpdatedEvent(

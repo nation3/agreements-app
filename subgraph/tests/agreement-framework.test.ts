@@ -10,9 +10,10 @@ import { logStore } from 'matchstick-as/assembly/store'
 import { BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
 import { Agreement } from "../generated/schema"
 import { AgreementCreated  } from "../generated/AgreementFramework/AgreementFramework"
-import { handleAgreementCreated, handleAgreementJoined, handleAgreementPositionUpdated, handleAgreementFinalized } from "../src/agreement-framework"
+import { handleAgreementCreated, handleAgreementJoined, handleAgreementPositionUpdated, handleAgreementFinalized, handleAgreementDisputed } from "../src/agreement-framework"
 import { 
-  createAgreementCreatedEvent, 
+  createAgreementCreatedEvent,
+  createAgreementDisputedEvent,
   createAgreementJoinedEvent,
   createAgreementPositionUpdatedEvent,
   createAgreementFinalizedEvent,
@@ -176,6 +177,10 @@ describe("handling of AgreementFinalized", () => {
 
     newAgreementJoinedEvent = createAgreementJoinedEvent(BigInt.fromI32(200), Address.fromString("0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8"), BigInt.fromI32(1050))
     handleAgreementJoined(newAgreementJoinedEvent)
+
+    let newAgreementPositionUpdatedEvent = createAgreementPositionUpdatedEvent(BigInt.fromI32(200), Address.fromString("0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7"), BigInt.fromI32(1000), BigInt.fromI32(1))
+
+    newAgreementPositionUpdatedEvent = createAgreementPositionUpdatedEvent(BigInt.fromI32(200), Address.fromString("0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8"), BigInt.fromI32(1050), BigInt.fromI32(1))
   }) 
 
   test("finalizing 1 Agreement", () => {
@@ -186,6 +191,35 @@ describe("handling of AgreementFinalized", () => {
     assert.entityCount("AgreementPosition", 2)
 
     assertAgreement("200", "0xd2029649", "1000", "[200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]", "Finalized")
+    assertAgreementPosition("200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", "0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", "1000", "Idle", "200")
+    assertAgreementPosition("200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", "0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", "1050", "Idle", "200")
+  })
+})
+
+describe("handling of AgreementDisputed", () => {
+  afterEach(() => {
+    clearStore()
+  })
+
+  beforeEach(() => {
+    let newAgreementCreatedEvent = createAgreementCreatedEvent(BigInt.fromI32(200), Bytes.fromI32(1234567890), BigInt.fromI32(1000))
+    handleAgreementCreated(newAgreementCreatedEvent)
+
+    let newAgreementJoinedEvent = createAgreementJoinedEvent(BigInt.fromI32(200), Address.fromString("0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7"), BigInt.fromI32(1000))
+    handleAgreementJoined(newAgreementJoinedEvent)
+
+    newAgreementJoinedEvent = createAgreementJoinedEvent(BigInt.fromI32(200), Address.fromString("0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8"), BigInt.fromI32(1050))
+    handleAgreementJoined(newAgreementJoinedEvent)
+  }) 
+
+  test("1 Agreement", () => {
+    let newAgreementDisputedEvent = createAgreementDisputedEvent(BigInt.fromI32(200), Address.fromString("0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7"))
+    handleAgreementDisputed(newAgreementDisputedEvent)
+
+    assert.entityCount("Agreement", 1)
+    assert.entityCount("AgreementPosition", 2)
+
+    assertAgreement("200", "0xd2029649", "1000", "[200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]", "Disputed")
     assertAgreementPosition("200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", "0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", "1000", "Idle", "200")
     assertAgreementPosition("200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", "0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", "1050", "Idle", "200")
   })

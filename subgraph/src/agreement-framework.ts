@@ -3,7 +3,8 @@ import {
   AgreementCreated,
   AgreementFinalized,
   AgreementJoined,
-  AgreementPositionUpdated
+  AgreementPositionUpdated,
+  AgreementDisputed
 } from "../generated/AgreementFramework/AgreementFramework"
 import { Agreement, AgreementPosition } from "../generated/schema"
 
@@ -52,5 +53,10 @@ export function handleAgreementPositionUpdated(event: AgreementPositionUpdated):
   }
 }
 
-export function handleAgreementDisputed(event: AgreedDisputed): void {
+export function handleAgreementDisputed(event: AgreementDisputed): void {
+  let agreement = Agreement.load(event.params.id.toString())
+  if (agreement) {
+    agreement.status = "Disputed"
+    agreement.save()
+  }
 }
