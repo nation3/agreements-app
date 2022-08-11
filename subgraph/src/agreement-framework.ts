@@ -21,6 +21,11 @@ export function handleAgreementFinalized(event: AgreementFinalized): void {
 
 export function handleAgreementJoined(event: AgreementJoined): void {
   let agreement = Agreement.load(event.params.id.toString())
+  if (agreement && agreement.positions.length >= 1) {
+    agreement.status = "Ongoing"
+    agreement.save()
+  }
+
   let position = new AgreementPosition(event.params.id.toString()+"-"+event.params.party.toHexString())
   position.party = event.params.party
   position.balance = event.params.balance

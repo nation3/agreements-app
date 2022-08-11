@@ -73,7 +73,7 @@ describe("handling of AgreementJoined", () => {
     assert.entityCount("Agreement", 1)
     assert.entityCount("AgreementPosition", 2)
 
-    assertAgreement("200", "0xd2029649", "1000", "[200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]", "Created")
+    assertAgreement("200", "0xd2029649", "1000", "[200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]", "Ongoing")
     assertAgreementPosition("200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", "0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", "1000", "Idle", "200")
     assertAgreementPosition("200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", "0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", "1050", "Idle", "200")
   })
@@ -110,8 +110,8 @@ describe("handling of AgreementJoined", () => {
     assert.entityCount("Agreement", 2)
     assert.entityCount("AgreementPosition", 4)
 
-    assertAgreement("200", "0xd2029649", "1000", "[200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]", "Created")
-    assertAgreement("201", "0xd2029649", "2000", "[201-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e9, 201-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43ea]", "Created")
+    assertAgreement("200", "0xd2029649", "1000", "[200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]", "Ongoing")
+    assertAgreement("201", "0xd2029649", "2000", "[201-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e9, 201-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43ea]", "Ongoing")
     assertAgreementPosition("200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", "0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", "1000", "Idle", "200")
     assertAgreementPosition("200-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", "0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", "1050", "Idle", "200")
     assertAgreementPosition("201-0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e9", "0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e9", "2000", "Idle", "201")
