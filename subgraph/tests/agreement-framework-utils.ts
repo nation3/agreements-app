@@ -1,52 +1,52 @@
-import { assert } from "matchstick-as/assembly/index"
-import { newMockEvent } from "matchstick-as"
-import { ethereum, BigInt, Bytes, Address } from "@graphprotocol/graph-ts"
+import { assert } from "matchstick-as/assembly/index";
+import { newMockEvent } from "matchstick-as";
+import { ethereum, BigInt, Bytes, Address } from "@graphprotocol/graph-ts";
 import {
   AgreementCreated,
   AgreementJoined,
   AgreementPositionUpdated,
   AgreementFinalized,
-  AgreementDisputed
-} from "../generated/AgreementFramework/AgreementFramework"
+  AgreementDisputed,
+} from "../generated/AgreementFramework/AgreementFramework";
 
 export function createAgreementCreatedEvent(
   id: BigInt,
   termsHash: Bytes,
   criteria: BigInt
 ): AgreementCreated {
-  let agreementCreatedEvent = changetype<AgreementCreated>(newMockEvent())
+  let agreementCreatedEvent = changetype<AgreementCreated>(newMockEvent());
 
-  agreementCreatedEvent.parameters = new Array()
+  agreementCreatedEvent.parameters = new Array();
 
   agreementCreatedEvent.parameters.push(
     new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
-  )
+  );
   agreementCreatedEvent.parameters.push(
     new ethereum.EventParam(
       "termsHash",
       ethereum.Value.fromFixedBytes(termsHash)
     )
-  )
+  );
   agreementCreatedEvent.parameters.push(
     new ethereum.EventParam(
       "criteria",
       ethereum.Value.fromUnsignedBigInt(criteria)
     )
-  )
+  );
 
-  return agreementCreatedEvent
+  return agreementCreatedEvent;
 }
 
 export function createAgreementFinalizedEvent(id: BigInt): AgreementFinalized {
-  let agreementFinalizedEvent = changetype<AgreementFinalized>(newMockEvent())
+  let agreementFinalizedEvent = changetype<AgreementFinalized>(newMockEvent());
 
-  agreementFinalizedEvent.parameters = new Array()
+  agreementFinalizedEvent.parameters = new Array();
 
   agreementFinalizedEvent.parameters.push(
     new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
-  )
+  );
 
-  return agreementFinalizedEvent
+  return agreementFinalizedEvent;
 }
 
 export function createAgreementJoinedEvent(
@@ -54,42 +54,42 @@ export function createAgreementJoinedEvent(
   party: Address,
   balance: BigInt
 ): AgreementJoined {
-  let agreementJoinedEvent = changetype<AgreementJoined>(newMockEvent())
+  let agreementJoinedEvent = changetype<AgreementJoined>(newMockEvent());
 
-  agreementJoinedEvent.parameters = new Array()
+  agreementJoinedEvent.parameters = new Array();
 
   agreementJoinedEvent.parameters.push(
     new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
-  )
+  );
   agreementJoinedEvent.parameters.push(
     new ethereum.EventParam("party", ethereum.Value.fromAddress(party))
-  )
+  );
   agreementJoinedEvent.parameters.push(
     new ethereum.EventParam(
       "balance",
       ethereum.Value.fromUnsignedBigInt(balance)
     )
-  )
+  );
 
-  return agreementJoinedEvent
+  return agreementJoinedEvent;
 }
 
 export function createAgreementDisputedEvent(
   id: BigInt,
   party: Address
 ): AgreementDisputed {
-  let agreementDisputedEvent = changetype<AgreementDisputed>(newMockEvent())
+  let agreementDisputedEvent = changetype<AgreementDisputed>(newMockEvent());
 
-  agreementDisputedEvent.parameters = new Array()
+  agreementDisputedEvent.parameters = new Array();
 
   agreementDisputedEvent.parameters.push(
     new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
-  )
+  );
   agreementDisputedEvent.parameters.push(
     new ethereum.EventParam("party", ethereum.Value.fromAddress(party))
-  )
+  );
 
-  return agreementDisputedEvent
+  return agreementDisputedEvent;
 }
 
 export function createAgreementPositionUpdatedEvent(
@@ -98,54 +98,53 @@ export function createAgreementPositionUpdatedEvent(
   balance: BigInt,
   status: BigInt
 ): AgreementPositionUpdated {
-  let agreementPositionUpdatedEvent = changetype<AgreementPositionUpdated>(newMockEvent())
+  let agreementPositionUpdatedEvent = changetype<AgreementPositionUpdated>(
+    newMockEvent()
+  );
 
-  agreementPositionUpdatedEvent.parameters = new Array()
+  agreementPositionUpdatedEvent.parameters = new Array();
 
   agreementPositionUpdatedEvent.parameters.push(
     new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
-  )
+  );
   agreementPositionUpdatedEvent.parameters.push(
     new ethereum.EventParam("party", ethereum.Value.fromAddress(party))
-  )
+  );
   agreementPositionUpdatedEvent.parameters.push(
     new ethereum.EventParam(
       "balance",
       ethereum.Value.fromUnsignedBigInt(balance)
     )
-  )
+  );
   agreementPositionUpdatedEvent.parameters.push(
-    new ethereum.EventParam(
-      "status",
-      ethereum.Value.fromUnsignedBigInt(status)
-    )
-  )
+    new ethereum.EventParam("status", ethereum.Value.fromUnsignedBigInt(status))
+  );
 
-  return agreementPositionUpdatedEvent
+  return agreementPositionUpdatedEvent;
 }
 
 export function assertAgreement(
-  id: String, 
-  termsHash: String, 
-  criteria: String, 
-  positions: String, 
+  id: String,
+  termsHash: String,
+  criteria: String,
+  positions: String,
   status: String
-) : void {
-  assert.fieldEquals("Agreement", id, "status", status)
-  assert.fieldEquals("Agreement", id, "termsHash", termsHash)
-  assert.fieldEquals("Agreement", id, "criteria", criteria)
-  assert.fieldEquals("Agreement", id, "positions", positions)
+): void {
+  assert.fieldEquals("Agreement", id, "status", status);
+  assert.fieldEquals("Agreement", id, "termsHash", termsHash);
+  assert.fieldEquals("Agreement", id, "criteria", criteria);
+  assert.fieldEquals("Agreement", id, "positions", positions);
 }
 
 export function assertAgreementPosition(
-  id: String, 
-  party: String, 
-  balance: String, 
-  status: String, 
+  id: String,
+  party: String,
+  balance: String,
+  status: String,
   agreement: String
-) : void {
-  assert.fieldEquals("AgreementPosition", id, "party", party)
-  assert.fieldEquals("AgreementPosition", id, "balance", balance)
-  assert.fieldEquals("AgreementPosition", id, "status", status)
-  assert.fieldEquals("AgreementPosition", id, "agreement", agreement)
+): void {
+  assert.fieldEquals("AgreementPosition", id, "party", party);
+  assert.fieldEquals("AgreementPosition", id, "balance", balance);
+  assert.fieldEquals("AgreementPosition", id, "status", status);
+  assert.fieldEquals("AgreementPosition", id, "agreement", agreement);
 }
