@@ -21,3 +21,4 @@ jobs:
     - run: forge install
     - run: forge build
     - run: forge test
+    - run: forge coverage
