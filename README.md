@@ -25,6 +25,11 @@ Run solidity tests:
 forge test
 ```
 
+Code coverage:
+```
+forge coverage
+```
+
 ### Linters
 
 Install dependencies:
