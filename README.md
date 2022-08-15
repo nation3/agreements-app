@@ -30,6 +30,14 @@ Code coverage:
 forge coverage
 ```
 
+Generate code coverage HTML report:
+```
+forge coverage --report lcov
+brew install lcov
+genhtml lcov.info -o coverage
+```
+Then open coverage/index.html in a browser.
+
 ### Linters
 
 Install dependencies:
