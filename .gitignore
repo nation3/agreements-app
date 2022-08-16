@@ -5,3 +5,5 @@ out/
 # Code coverage
 lcov.info
 coverage
+
+.env
