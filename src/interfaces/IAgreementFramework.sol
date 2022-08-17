@@ -21,7 +21,8 @@ interface IAgreementFramework is IArbitrable {
     /// @param id Id of the new created agreement.
     /// @param termsHash Hash of the detailed terms of the agreement.
     /// @param criteria Criteria requirements to join the agreement.
-    event AgreementCreated(bytes32 id, bytes32 termsHash, uint256 criteria);
+    /// @param metadataURI URI of the metadata of the agreement.
+    event AgreementCreated(bytes32 id, bytes32 termsHash, uint256 criteria, string metadataURI);
 
     /// @dev Raised when a new party joins an agreement.
     /// @param id Id of the agreement joined.

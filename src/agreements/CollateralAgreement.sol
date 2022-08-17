@@ -117,7 +117,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
 
         _nonce++;
 
-        emit AgreementCreated(agreementId, params.termsHash, params.criteria);
+        emit AgreementCreated(agreementId, params.termsHash, params.criteria, params.metadataURI);
     }
 
     /// Join an existent agreement.
