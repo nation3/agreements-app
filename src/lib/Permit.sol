@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.14;
 
 /// @dev EIP-2612 Permit
 ///      Together with a EIP-2612 compliant token,
