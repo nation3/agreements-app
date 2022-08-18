@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.15;
 
 import "forge-std/Script.sol";
 import { MockERC20, ERC20 } from "solmate/src/test/utils/mocks/MockERC20.sol";
