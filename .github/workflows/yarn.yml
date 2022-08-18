@@ -23,6 +23,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
+          cache-dependency-path: "./contracts/yarn.lock"
       - run: npm install yarn
       - run: npx yarn install
       - run: npx yarn lint:check
