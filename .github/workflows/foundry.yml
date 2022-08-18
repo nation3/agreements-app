@@ -21,3 +21,9 @@ jobs:
     - run: forge install
     - run: forge build
     - run: forge test
+    - run: forge coverage
+    - run: forge coverage --report lcov
+    - uses: codecov/codecov-action@v3
+      with:
+        fail_ci_if_error: true
+        verbose: true
