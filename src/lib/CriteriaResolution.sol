@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.15;
 
 /// @dev Data structure to prove membership to a criteria tree.
 ///      Account and balance are used to encode the leaf.
