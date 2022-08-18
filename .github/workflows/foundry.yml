@@ -2,9 +2,9 @@ name: Foundry CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -12,18 +12,21 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./contracts
     steps:
-    - uses: actions/checkout@v3
-    - uses: onbjerg/foundry-toolchain@v1
-      with:
-        version: nightly
-    - run: echo $(forge --version)
-    - run: forge install
-    - run: forge build
-    - run: forge test
-    - run: forge coverage
-    - run: forge coverage --report lcov
-    - uses: codecov/codecov-action@v3
-      with:
-        fail_ci_if_error: true
-        verbose: true
+      - uses: actions/checkout@v3
+      - uses: onbjerg/foundry-toolchain@v1
+        with:
+          version: nightly
+      - run: echo $(forge --version)
+      - run: forge install
+      - run: forge build
+      - run: forge test
+      - run: forge coverage
+      - run: forge coverage --report lcov
+      - uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          verbose: true
