@@ -3,4 +3,8 @@ cache/
 out/
 broadcast/
 
+# Code coverage
+lcov.info
+coverage
+
 .env
