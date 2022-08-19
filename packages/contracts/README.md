@@ -1,8 +1,8 @@
-# Nation3 Court
+# Nation3 Court Smart Contracts
 
 ## Development
 
-### Solidity build & test
+### Build & test
 
 [Install Foundry](https://book.getfoundry.sh/getting-started/installation.html), (assuming a Linux or macOS system):
 ```bash

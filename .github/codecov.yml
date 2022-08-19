@@ -3,4 +3,5 @@ coverage:
   round: down
   precision: 2
 ignore:
-  - "./test"
+  - "*/**/test"
+  - "*/**/script"
