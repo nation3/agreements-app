@@ -1,0 +1,28 @@
+{
+  "name": "nation3app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@heroicons/react": "^1.0.6",
+    "@nation3/components": "^0.0.14",
+    "ethers": "^5.7.0",
+    "next": "12.2.5",
+    "react": "^18.2.0",
+    "react-dom": "18.2.0",
+    "wagmi": "^0.6.4"
+  },
+  "devDependencies": {
+    "@types/node": "18.7.7",
+    "@types/react": "18.0.17",
+    "@types/react-dom": "18.0.6",
+    "eslint": "8.22.0",
+    "eslint-config-next": "12.2.5",
+    "typescript": "4.7.4"
+  }
+}
