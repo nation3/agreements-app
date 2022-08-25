@@ -9,8 +9,10 @@ import {
     CollateralAgreementFramework
 } from "../../src/agreements/CollateralAgreement.sol";
 import { MockERC20 } from "solmate/src/test/utils/mocks/MockERC20.sol";
-import { CriteriaResolver } from "../../src/lib/CriteriaResolution.sol";
+import { CriteriaResolver, CriteriaResolution } from "../../src/lib/CriteriaResolution.sol";
 import { AgreementFrameworkTestBase } from "./utils/AgreementFrameworkTestBase.sol";
+import { IAgreementFramework } from "../../src/interfaces/IAgreementFramework.sol";
+import { IArbitrable } from "../../src/interfaces/IArbitrable.sol";
 
 contract CollateralAgreementTest is AgreementFrameworkTestBase {
     address doll = hevm.addr(0xD011);
@@ -75,7 +77,8 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         Permit memory permit = _getPermit(0xB0B, 2 * 1e18, 0);
 
         hevm.startPrank(bob);
-        hevm.expectRevert(abi.encodeWithSignature("InvalidProof()"));
+        // IAgreementFramework.AgreementIsDisputed.selector
+        hevm.expectRevert(CriteriaResolution.InvalidProof.selector);
         framework.joinAgreementWithPermit(
             agreementId,
             CriteriaResolver(bob, 1 * 1e18, proofs[bob]),
@@ -89,7 +92,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         _bobJoinsAgreement(agreementId);
 
         hevm.startPrank(bob);
-        hevm.expectRevert(abi.encodeWithSignature("PartyAlreadyJoined()"));
+        hevm.expectRevert(IAgreementFramework.PartyAlreadyJoined.selector);
         framework.joinAgreement(agreementId, CriteriaResolver(bob, 2 * 1e18, proofs[bob]));
         hevm.stopPrank();
     }
@@ -101,7 +104,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.prank(bob);
         framework.disputeAgreement(agreementId);
 
-        _aliceExpectsErrorWhenJoining(agreementId, "AgreementIsDisputed()");
+        _aliceExpectsErrorWhenJoining(
+            agreementId,
+            IAgreementFramework.AgreementIsDisputed.selector
+        );
     }
 
     function testCantJoinFinalizedAgreement() public {
@@ -111,7 +117,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.prank(bob);
         framework.finalizeAgreement(agreementId);
 
-        _aliceExpectsErrorWhenJoining(agreementId, "AgreementIsFinalized()");
+        _aliceExpectsErrorWhenJoining(
+            agreementId,
+            IAgreementFramework.AgreementIsFinalized.selector
+        );
     }
 
     /* ====================================================================== //
@@ -130,7 +139,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         framework.finalizeAgreement(agreementId);
 
         // Bob tries to withdraw himself from the agreement before finalization consensus
-        hevm.expectRevert(abi.encodeWithSignature("AgreementNotFinalized()"));
+        hevm.expectRevert(IAgreementFramework.AgreementNotFinalized.selector);
         framework.withdrawFromAgreement(agreementId);
         hevm.stopPrank();
 
@@ -146,7 +155,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         _bobJoinsAgreementWithPermit(agreementId);
 
-        _aliceExpectsErrorWhenFinalizing(agreementId, "NoPartOfAgreement()");
+        _aliceExpectsErrorWhenFinalizing(
+            agreementId,
+            IAgreementFramework.NoPartOfAgreement.selector
+        );
     }
 
     function testCantFinalizeDisputedAgreement() public {
@@ -158,7 +170,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.prank(bob);
         framework.disputeAgreement(agreementId);
 
-        _aliceExpectsErrorWhenFinalizing(agreementId, "AgreementIsDisputed()");
+        _aliceExpectsErrorWhenFinalizing(
+            agreementId,
+            IAgreementFramework.AgreementIsDisputed.selector
+        );
     }
 
     function testCantFinalizeAlreadyFinalizedframework() public {
@@ -173,7 +188,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.prank(alice);
         framework.finalizeAgreement(agreementId);
 
-        _aliceExpectsErrorWhenFinalizing(agreementId, "PartyAlreadyFinalized()");
+        _aliceExpectsErrorWhenFinalizing(
+            agreementId,
+            IAgreementFramework.PartyAlreadyFinalized.selector
+        );
     }
 
     /* ====================================================================== //
@@ -195,7 +213,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         _bobJoinsAgreementWithPermit(agreementId);
 
-        _aliceExpectsErrorWhenDisputing(agreementId, "NoPartOfAgreement()");
+        _aliceExpectsErrorWhenDisputing(
+            agreementId,
+            IAgreementFramework.NoPartOfAgreement.selector
+        );
     }
 
     function testCantDisputeFinalizedAgreement() public {
@@ -210,7 +231,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.prank(alice);
         framework.finalizeAgreement(agreementId);
 
-        _aliceExpectsErrorWhenDisputing(agreementId, "AgreementIsFinalized()");
+        _aliceExpectsErrorWhenDisputing(
+            agreementId,
+            IAgreementFramework.AgreementIsFinalized.selector
+        );
     }
 
     /* ====================================================================== //
@@ -267,7 +291,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         settlement[0] = PositionParams(bob, 3 * 1e18);
 
         hevm.prank(arbitrator);
-        hevm.expectRevert(abi.encodeWithSignature("PositionsMustMatch()"));
+        hevm.expectRevert(CollateralAgreementFramework.PositionsMustMatch.selector);
         framework.settleDispute(disputedId, settlement);
     }
 
@@ -280,7 +304,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         settlement[2] = PositionParams(doll, 1.5 * 1e18);
 
         hevm.prank(arbitrator);
-        hevm.expectRevert(abi.encodeWithSignature("PositionsMustMatch()"));
+        hevm.expectRevert(CollateralAgreementFramework.PositionsMustMatch.selector);
         framework.settleDispute(disputedId, settlement);
     }
 
@@ -293,14 +317,14 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         settlement[1] = PositionParams(alice, 2.5 * 1e18);
 
         hevm.prank(arbitrator);
-        hevm.expectRevert(abi.encodeWithSignature("BalanceMustMatch()"));
+        hevm.expectRevert(CollateralAgreementFramework.BalanceMustMatch.selector);
         framework.settleDispute(disputedId, settlement);
 
         // (Settlement balance = 1.5) < (3 = agreement balance)
         settlement[1].balance = 0;
 
         hevm.prank(arbitrator);
-        hevm.expectRevert(abi.encodeWithSignature("BalanceMustMatch()"));
+        hevm.expectRevert(CollateralAgreementFramework.BalanceMustMatch.selector);
         framework.settleDispute(disputedId, settlement);
     }
 
@@ -309,7 +333,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         PositionParams[] memory settlement = _getValidSettlement();
 
-        hevm.expectRevert(abi.encodeWithSignature("OnlyArbitrator()"));
+        hevm.expectRevert(IArbitrable.OnlyArbitrator.selector);
         framework.settleDispute(disputedId, settlement);
     }
 
@@ -323,7 +347,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         // Cant dispute ongoing agreement
         hevm.prank(arbitrator);
-        hevm.expectRevert(abi.encodeWithSignature("AgreementNotDisputed()"));
+        hevm.expectRevert(IAgreementFramework.AgreementNotDisputed.selector);
         framework.settleDispute(agreementId, settlement);
 
         hevm.prank(bob);
@@ -334,7 +358,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         // Cant dispute finalized agreement
         hevm.prank(arbitrator);
-        hevm.expectRevert(abi.encodeWithSignature("AgreementIsFinalized()"));
+        hevm.expectRevert(IAgreementFramework.AgreementIsFinalized.selector);
         framework.settleDispute(agreementId, settlement);
     }
 
@@ -353,7 +377,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         assertEq(token.balanceOf(address(framework)), 3 * 1e18);
 
         hevm.prank(bob);
-        hevm.expectRevert(abi.encodeWithSignature("AgreementNotFinalized()"));
+        hevm.expectRevert(IAgreementFramework.AgreementNotFinalized.selector);
         framework.withdrawFromAgreement(agreementId);
 
         hevm.prank(bob);
