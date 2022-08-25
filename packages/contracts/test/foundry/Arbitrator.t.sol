@@ -69,6 +69,39 @@ contract ArbitratorTest is DSTestPlus {
         assertEq(unlockBlock, submitBlock + LOCK_PERIOD);
     }
 
+    function testSubmitNewResolutionForSameDispute() public {
+        bytes32 resolutionId = _submittedResolution();
+
+        (,bytes32 originalMark,,) = arbitrator.resolution(resolutionId);
+
+        // Generate new settlement
+        PositionParams[] memory newSettlement = _getSettlement();
+        newSettlement[1].balance = 1e18;
+
+        hevm.roll(block.number + LOCK_PERIOD);
+
+        // Submit new resolution for the same dispute
+        arbitrator.submitResolution(arbitrable, disputeId, metadataURI, newSettlement);
+
+        (,bytes32 mark,,uint256 unlockBlock) = arbitrator.resolution(resolutionId);
+
+        assertTrue(originalMark != mark);
+        assertTrue(mark == keccak256(abi.encode(newSettlement)));
+        assertTrue(unlockBlock == block.number + LOCK_PERIOD);
+    }
+
+    function testCantSubmitNewResolutionForExecutedOne() public {
+        _executedResolution();
+
+        hevm.expectRevert(IArbitrator.ResolutionIsExecuted.selector);
+        arbitrator.submitResolution(
+            arbitrable,
+            disputeId,
+            "ipfs://metadata.new",
+            _getSettlement()
+        );
+    }
+
     function testExecuteResolution() public {
         _submittedResolution();
 
@@ -91,6 +124,13 @@ contract ArbitratorTest is DSTestPlus {
         _appealledResolution();
 
         hevm.expectRevert(IArbitrator.ResolutionIsAppealed.selector);
+        arbitrator.executeResolution(arbitrable, disputeId, _getSettlement());
+    }
+
+    function testCantExecuteAlreadyExecutedResolution() public {
+        _executedResolution();
+
+        hevm.expectRevert(IArbitrator.ResolutionIsExecuted.selector);
         arbitrator.executeResolution(arbitrable, disputeId, _getSettlement());
     }
 
