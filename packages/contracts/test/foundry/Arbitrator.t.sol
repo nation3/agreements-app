@@ -70,14 +70,77 @@ contract ArbitratorTest is DSTestPlus {
     }
 
     function testExecuteResolution() public {
-        PositionParams[] memory settlement = _getSettlement();
         _submittedResolution();
 
+        hevm.roll(block.number + LOCK_PERIOD);
         assertEq(arbitrable.disputeStatus(disputeId), 1);
 
-        arbitrator.executeResolution(arbitrable, disputeId, settlement);
+        arbitrator.executeResolution(arbitrable, disputeId, _getSettlement());
 
         assertEq(arbitrable.disputeStatus(disputeId), 2);
+    }
+
+    function testCantExecuteResolutionBeforeUnlock() public {
+        _submittedResolution();
+
+        hevm.expectRevert(IArbitrator.ExecutionStillLocked.selector);
+        arbitrator.executeResolution(arbitrable, disputeId, _getSettlement());
+    }
+
+    function testCantExecuteAppealedResolution() public {
+        _appealledResolution();
+
+        hevm.expectRevert(IArbitrator.ResolutionIsAppealed.selector);
+        arbitrator.executeResolution(arbitrable, disputeId, _getSettlement());
+    }
+
+    function testCantExecuteResolutionMismatch() public {
+        _submittedResolution();
+        PositionParams[] memory newSettlement = new PositionParams[](2);
+
+        hevm.roll(block.number + LOCK_PERIOD);
+
+        hevm.expectRevert(IArbitrator.ResolutionMustMatch.selector);
+        arbitrator.executeResolution(arbitrable, disputeId, newSettlement);
+    }
+
+    function testCanAlwaysExecuteEndorsedResolution() public {
+        bytes32 resolutionId = _appealledResolution();
+
+        arbitrator.endorseResolution(resolutionId, _getSettlement());
+
+        // Resolution appealed and inside the lock period.
+        arbitrator.executeResolution(arbitrable, disputeId, _getSettlement());
+    }
+
+    function testAppealResolution() public {
+        bytes32 resolutionId = _submittedResolution();
+
+        hevm.prank(bob);
+        arbitrator.appealResolution(resolutionId, _getSettlement());
+
+        (ResolutionStatus status,,,) = arbitrator.resolution(resolutionId);
+
+        assertEq(uint(status), uint(ResolutionStatus.Appealed));
+    }
+
+    function testOnlyPartiesCanAppeal() public {
+        bytes32 resolutionId = _submittedResolution();
+
+        // Pretend to be random user that is not part of settlement
+        hevm.prank(address(0xDEAD));
+        hevm.expectRevert(IArbitrator.NoPartOfResolution.selector);
+        arbitrator.appealResolution(resolutionId, _getSettlement());
+    }
+
+    function testEndorseResolution() public {
+        bytes32 resolutionId = _appealledResolution();
+
+        arbitrator.endorseResolution(resolutionId, _getSettlement());
+
+        (ResolutionStatus status,,,) = arbitrator.resolution(resolutionId);
+
+        assertEq(uint(status), uint(ResolutionStatus.Endorsed));
     }
 
     /* ====================================================================== //
@@ -102,4 +165,20 @@ contract ArbitratorTest is DSTestPlus {
         );
     }
 
+    function _appealledResolution() internal returns (bytes32 hash) {
+        hash = _submittedResolution();
+        hevm.prank(bob);
+        arbitrator.appealResolution(hash, _getSettlement());
+    }
+
+    function _endorsedResolution() internal returns (bytes32 hash) {
+        hash = _appealledResolution();
+        arbitrator.endorseResolution(hash, _getSettlement());
+    }
+
+    function _executedResolution() internal returns (bytes32 hash) {
+        hash = _submittedResolution();
+        hevm.roll(block.number + LOCK_PERIOD);
+        arbitrator.executeResolution(arbitrable, disputeId, _getSettlement());
+    }
 }

@@ -20,7 +20,7 @@ struct Resolution {
 
 contract Arbitrator is IArbitrator {
 
-    // @dev Number of blocks needed to wait before exeucuting a resolution.
+    // @dev Number of blocks needed to wait before executing a resolution.
     uint256 public executionLockPeriod;
     // @dev Mapping of all submitted resolutions.
     mapping(bytes32 => Resolution) public resolution;
@@ -60,8 +60,71 @@ contract Arbitrator is IArbitrator {
         bytes32 hash = getResolutionHash(address(framework), id);
         Resolution storage resolution_ = resolution[hash];
 
+        if (resolution_.status == ResolutionStatus.Appealed)
+            revert ResolutionIsAppealed();
+        if (resolution_.status == ResolutionStatus.Executed)
+            revert ResolutionIsExecuted();
+        if (
+            resolution_.status != ResolutionStatus.Endorsed
+            && block.number < resolution_.unlockBlock
+        )
+            revert ExecutionStillLocked();
+        if (resolution_.mark != keccak256(abi.encode(settlement)))
+            revert ResolutionMustMatch();
+
         framework.settleDispute(id, settlement);
 
         resolution_.status = ResolutionStatus.Executed;
+    }
+
+    /// @inheritdoc IArbitrator
+    function appealResolution(bytes32 hash, PositionParams[] calldata settlement) external {
+        _canAppeal(msg.sender, hash, settlement);
+
+        resolution[hash].status = ResolutionStatus.Appealed;
+        // TODO: Charge appeal fee
+    }
+
+    /// @dev Check if account can appeal a resolution.
+    /// @param account address to check.
+    /// @param hash hash of the resolution.
+    function _canAppeal(address account, bytes32 hash, PositionParams[] calldata settlement) internal view {
+        Resolution storage resolution_ = resolution[hash];
+
+        if (resolution_.status == ResolutionStatus.Default)
+            revert ResolutionNotSubmitted();
+        if (resolution_.status == ResolutionStatus.Executed)
+            revert ResolutionIsExecuted();
+        if (resolution_.status == ResolutionStatus.Endorsed)
+            revert ResolutionIsEndorsed();
+        if (resolution_.mark != keccak256(abi.encode(settlement)))
+            revert ResolutionMustMatch();
+        if (!_isParty(account, settlement))
+            revert NoPartOfResolution();
+    }
+
+    function _isParty(address account, PositionParams[] calldata settlement) internal pure returns (bool found) {
+        for (uint256 i = 0; !found && i < settlement.length; i++) {
+            if (settlement[i].party == account)
+                found = true;
+        }
+    }
+
+    /// @inheritdoc IArbitrator
+    function endorseResolution(bytes32 hash, PositionParams[] calldata settlement) external onlyOwner {
+        Resolution storage resolution_ = resolution[hash];
+
+        if (resolution_.status == ResolutionStatus.Default)
+            revert ResolutionNotSubmitted();
+        if (resolution_.status == ResolutionStatus.Executed)
+            revert ResolutionIsExecuted();
+        if (resolution_.mark != keccak256(abi.encode(settlement)))
+            revert ResolutionMustMatch();
+
+        resolution_.status = ResolutionStatus.Endorsed;
+    }
+
+    function getResolutionHash(address framework, bytes32 id) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(framework, id));
     }
 }

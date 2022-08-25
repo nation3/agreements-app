@@ -7,7 +7,17 @@ import { IArbitrable } from "./IArbitrable.sol";
 interface IArbitrator {
 
     event ResolutionSubmited(address indexed framework, bytes32 indexed id);
+    event ResolutionAppealed(address indexed framework, bytes32 indexed id);
+    event ResolutionEndorsed(address indexed framework, bytes32 indexed id);
     event ResolutionExecuted(address indexed framework, bytes32 indexed id);
+
+    error ResolutionNotSubmitted();
+    error ResolutionIsAppealed();
+    error ResolutionIsExecuted();
+    error ResolutionIsEndorsed();
+    error ExecutionStillLocked();
+    error ResolutionMustMatch();
+    error NoPartOfResolution();
 
     /// @notice Submit a resolution for a dispute.
     /// @dev Any new resolution for the same dispute overrides the last one.
@@ -32,5 +42,20 @@ interface IArbitrator {
         PositionParams[] calldata settlement
     ) external;
 
+    /// @notice Appeal a submitted resolution.
+    /// @param hash Hash of the resolution to appeal.
+    /// @param settlement Array of final positions in the resolution.
+    function appealResolution(
+        bytes32 hash,
+        PositionParams[] calldata settlement
+    ) external;
+
+    /// @notice Endorse a submitted resolution so it can't be appealed.
+    /// @param hash Hash of the resolution to endorse.
+    /// @param settlement Array of final positions in the resolution.
+    function endorseResolution(
+        bytes32 hash,
+        PositionParams[] calldata settlement
+    ) external;
 }
 
