@@ -10,24 +10,10 @@ curl -L https://foundry.paradigm.xyz | bash
 foundryup
 ```
 
-Install dependencies:
+Install dependencies, build, and run tests with coverage:
+
 ```bash
-forge install
-```
-
-Build contracts:
-```bash
-forge build
-```
-
-Run solidity tests:
-```
-forge test
-```
-
-Code coverage:
-```
-forge coverage
+make
 ```
 
 Generate code coverage HTML report:
