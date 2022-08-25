@@ -118,25 +118,25 @@ contract AgreementFrameworkTestBase is DSTestPlus {
         hevm.stopPrank();
     }
 
-    function _aliceExpectsErrorWhenJoining(bytes32 agreementId, string memory error) internal {
+    function _aliceExpectsErrorWhenJoining(bytes32 agreementId, bytes4 error) internal {
         hevm.startPrank(alice);
         token.approve(address(framework), 2 * 1e18);
 
-        hevm.expectRevert(abi.encodeWithSignature(error));
+        hevm.expectRevert(error);
         framework.joinAgreement(agreementId, CriteriaResolver(alice, 1e18, proofs[alice]));
         hevm.stopPrank();
     }
 
-    function _aliceExpectsErrorWhenFinalizing(bytes32 agreementId, string memory error) internal {
+    function _aliceExpectsErrorWhenFinalizing(bytes32 agreementId, bytes4 error) internal {
         hevm.startPrank(alice);
-        hevm.expectRevert(abi.encodeWithSignature(error));
+        hevm.expectRevert(error);
         framework.finalizeAgreement(agreementId);
         hevm.stopPrank();
     }
 
-    function _aliceExpectsErrorWhenDisputing(bytes32 agreementId, string memory error) internal {
+    function _aliceExpectsErrorWhenDisputing(bytes32 agreementId, bytes4 error) internal {
         hevm.startPrank(alice);
-        hevm.expectRevert(abi.encodeWithSignature(error));
+        hevm.expectRevert(error);
         framework.disputeAgreement(agreementId);
         hevm.stopPrank();
     }

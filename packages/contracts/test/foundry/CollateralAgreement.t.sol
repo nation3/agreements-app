@@ -104,7 +104,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.prank(bob);
         framework.disputeAgreement(agreementId);
 
-        _aliceExpectsErrorWhenJoining(agreementId, "AgreementIsDisputed()");
+        _aliceExpectsErrorWhenJoining(
+            agreementId,
+            IAgreementFramework.AgreementIsDisputed.selector
+        );
     }
 
     function testCantJoinFinalizedAgreement() public {
@@ -114,7 +117,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.prank(bob);
         framework.finalizeAgreement(agreementId);
 
-        _aliceExpectsErrorWhenJoining(agreementId, "AgreementIsFinalized()");
+        _aliceExpectsErrorWhenJoining(
+            agreementId,
+            IAgreementFramework.AgreementIsFinalized.selector
+        );
     }
 
     /* ====================================================================== //
@@ -149,7 +155,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         _bobJoinsAgreementWithPermit(agreementId);
 
-        _aliceExpectsErrorWhenFinalizing(agreementId, "NoPartOfAgreement()");
+        _aliceExpectsErrorWhenFinalizing(
+            agreementId,
+            IAgreementFramework.NoPartOfAgreement.selector
+        );
     }
 
     function testCantFinalizeDisputedAgreement() public {
@@ -161,7 +170,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.prank(bob);
         framework.disputeAgreement(agreementId);
 
-        _aliceExpectsErrorWhenFinalizing(agreementId, "AgreementIsDisputed()");
+        _aliceExpectsErrorWhenFinalizing(
+            agreementId,
+            IAgreementFramework.AgreementIsDisputed.selector
+        );
     }
 
     function testCantFinalizeAlreadyFinalizedframework() public {
@@ -176,7 +188,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.prank(alice);
         framework.finalizeAgreement(agreementId);
 
-        _aliceExpectsErrorWhenFinalizing(agreementId, "PartyAlreadyFinalized()");
+        _aliceExpectsErrorWhenFinalizing(
+            agreementId,
+            IAgreementFramework.PartyAlreadyFinalized.selector
+        );
     }
 
     /* ====================================================================== //
@@ -198,7 +213,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         _bobJoinsAgreementWithPermit(agreementId);
 
-        _aliceExpectsErrorWhenDisputing(agreementId, "NoPartOfAgreement()");
+        _aliceExpectsErrorWhenDisputing(
+            agreementId,
+            IAgreementFramework.NoPartOfAgreement.selector
+        );
     }
 
     function testCantDisputeFinalizedAgreement() public {
@@ -213,7 +231,10 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.prank(alice);
         framework.finalizeAgreement(agreementId);
 
-        _aliceExpectsErrorWhenDisputing(agreementId, "AgreementIsFinalized()");
+        _aliceExpectsErrorWhenDisputing(
+            agreementId,
+            IAgreementFramework.AgreementIsFinalized.selector
+        );
     }
 
     /* ====================================================================== //
