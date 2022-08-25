@@ -3,6 +3,8 @@ pragma solidity ^0.8.15;
 import { PositionParams } from "./lib/AgreementStructs.sol";
 import { IArbitrable } from "./interfaces/IArbitrable.sol";
 import { IArbitrator } from "./interfaces/IArbitrator.sol";
+import { Controlled } from "./lib/auth/Controlled.sol";
+
 enum ResolutionStatus {
     Default,
     Pending,
@@ -18,12 +20,14 @@ struct Resolution {
     uint256 unlockBlock;
 }
 
-contract Arbitrator is IArbitrator {
+contract Arbitrator is IArbitrator, Controlled {
 
     // @dev Number of blocks needed to wait before executing a resolution.
     uint256 public executionLockPeriod;
     // @dev Mapping of all submitted resolutions.
     mapping(bytes32 => Resolution) public resolution;
+
+    constructor() Controlled(msg.sender, msg.sender) {}
 
     /// @dev Setup arbitrator variables
     function setUp(uint256 executionLockPeriod_) public onlyOwner {
@@ -31,12 +35,13 @@ contract Arbitrator is IArbitrator {
     }
 
     /// @inheritdoc IArbitrator
+    /// @dev Only controller is able to submit resolutions.
     function submitResolution(
         IArbitrable framework,
         bytes32 id,
         string calldata metadataURI,
         PositionParams[] calldata settlement
-    ) public returns (bytes32) {
+    ) public onlyController returns (bytes32) {
         bytes32 hash = getResolutionHash(address(framework), id);
         Resolution storage resolution_ = resolution[hash];
 
