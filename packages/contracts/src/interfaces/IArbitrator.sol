@@ -2,14 +2,14 @@
 pragma solidity ^0.8.15;
 
 import { PositionParams } from "../lib/AgreementStructs.sol";
+import { Permit } from "../lib/Permit.sol";
 import { IArbitrable } from "./IArbitrable.sol";
 
 interface IArbitrator {
-
-    event ResolutionSubmited(address indexed framework, bytes32 indexed id);
-    event ResolutionAppealed(address indexed framework, bytes32 indexed id);
-    event ResolutionEndorsed(address indexed framework, bytes32 indexed id);
-    event ResolutionExecuted(address indexed framework, bytes32 indexed id);
+    event ResolutionSubmitted(address indexed framework, bytes32 indexed id, bytes32 indexed hash);
+    event ResolutionAppealed(bytes32 indexed hash, address account);
+    event ResolutionEndorsed(bytes32 indexed hash);
+    event ResolutionExecuted(bytes32 indexed hash);
 
     error ResolutionNotSubmitted();
     error ResolutionIsAppealed();
@@ -45,17 +45,20 @@ interface IArbitrator {
     /// @notice Appeal a submitted resolution.
     /// @param hash Hash of the resolution to appeal.
     /// @param settlement Array of final positions in the resolution.
-    function appealResolution(
+    function appealResolution(bytes32 hash, PositionParams[] calldata settlement) external;
+
+    /// @notice Appeal a submitted resolution with EIP-2612 permit.
+    /// @param hash Hash of the resolution to appeal.
+    /// @param settlement Array of final positions in the resolution.
+    /// @param permit EIP-2612 permit data to approve transfer of tokens.
+    function appealResolutionWithPermit(
         bytes32 hash,
-        PositionParams[] calldata settlement
+        PositionParams[] calldata settlement,
+        Permit calldata permit
     ) external;
 
     /// @notice Endorse a submitted resolution so it can't be appealed.
     /// @param hash Hash of the resolution to endorse.
     /// @param settlement Array of final positions in the resolution.
-    function endorseResolution(
-        bytes32 hash,
-        PositionParams[] calldata settlement
-    ) external;
+    function endorseResolution(bytes32 hash, PositionParams[] calldata settlement) external;
 }
-

@@ -1,10 +1,13 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.15;
+
+import { DSTestPlus } from "solmate/src/test/utils/DSTestPlus.sol";
+import { MockERC20 } from "solmate/src/test/utils/mocks/MockERC20.sol";
+
 import { IArbitrable } from "../../src/interfaces/IArbitrable.sol";
 import { IArbitrator } from "../../src/interfaces/IArbitrator.sol";
 import { Arbitrator, ResolutionStatus, Resolution } from "../../src/Arbitrator.sol";
 import { PositionParams } from "../../src/lib/AgreementStructs.sol";
-import { DSTestPlus } from "solmate/src/test/utils/DSTestPlus.sol";
 
 contract MockArbitrable is IArbitrable {
     mapping(bytes32 => uint8) public disputeStatus;
@@ -33,11 +36,12 @@ contract MockArbitrable is IArbitrable {
 }
 
 contract ArbitratorTest is DSTestPlus {
-
+    MockERC20 token;
     MockArbitrable arbitrable;
     Arbitrator arbitrator;
 
     uint256 constant LOCK_PERIOD = 20;
+    uint256 constant APPEAL_FEE = 0.5 * 1e18;
 
     address bob = hevm.addr(0xB0B);
     address alice = hevm.addr(0xA11CE);
@@ -46,9 +50,14 @@ contract ArbitratorTest is DSTestPlus {
     bytes32 disputeId;
 
     function setUp() public {
+        token = new MockERC20("TestToken", "TEST", 18);
         arbitrator = new Arbitrator();
         arbitrable = new MockArbitrable();
-        arbitrator.setUp(LOCK_PERIOD);
+
+        token.mint(bob, 1e18);
+        token.mint(alice, 1e18);
+
+        arbitrator.setUp(token, APPEAL_FEE, LOCK_PERIOD, true);
         arbitrable.setUp(address(arbitrator));
     }
 
@@ -62,17 +71,18 @@ contract ArbitratorTest is DSTestPlus {
             metadataURI,
             _getSettlement()
         );
-        (ResolutionStatus status,, string memory metadataURI_, uint256 unlockBlock) = arbitrator.resolution(hash);
+        (ResolutionStatus status, , string memory metadataURI_, uint256 unlockBlock) = arbitrator
+            .resolution(hash);
 
-        assertEq(uint(status), uint(ResolutionStatus.Pending));
+        assertEq(uint256(status), uint256(ResolutionStatus.Pending));
         assertEq(metadataURI_, metadataURI);
         assertEq(unlockBlock, submitBlock + LOCK_PERIOD);
     }
 
     function testSubmitNewResolutionForSameDispute() public {
-        bytes32 resolutionId = _submittedResolution();
+        bytes32 hash = _submittedResolution();
 
-        (,bytes32 originalMark,,) = arbitrator.resolution(resolutionId);
+        (, bytes32 originalMark, , ) = arbitrator.resolution(hash);
 
         // Generate new settlement
         PositionParams[] memory newSettlement = _getSettlement();
@@ -83,7 +93,7 @@ contract ArbitratorTest is DSTestPlus {
         // Submit new resolution for the same dispute
         arbitrator.submitResolution(arbitrable, disputeId, metadataURI, newSettlement);
 
-        (,bytes32 mark,,uint256 unlockBlock) = arbitrator.resolution(resolutionId);
+        (, bytes32 mark, , uint256 unlockBlock) = arbitrator.resolution(hash);
 
         assertTrue(originalMark != mark);
         assertTrue(mark == keccak256(abi.encode(newSettlement)));
@@ -94,12 +104,7 @@ contract ArbitratorTest is DSTestPlus {
         _executedResolution();
 
         hevm.expectRevert(IArbitrator.ResolutionIsExecuted.selector);
-        arbitrator.submitResolution(
-            arbitrable,
-            disputeId,
-            "ipfs://metadata.new",
-            _getSettlement()
-        );
+        arbitrator.submitResolution(arbitrable, disputeId, "ipfs://metadata.new", _getSettlement());
     }
 
     function testExecuteResolution() public {
@@ -156,12 +161,14 @@ contract ArbitratorTest is DSTestPlus {
     function testAppealResolution() public {
         bytes32 resolutionId = _submittedResolution();
 
-        hevm.prank(bob);
+        hevm.startPrank(bob);
+        token.approve(address(arbitrator), APPEAL_FEE);
         arbitrator.appealResolution(resolutionId, _getSettlement());
+        hevm.stopPrank();
 
-        (ResolutionStatus status,,,) = arbitrator.resolution(resolutionId);
+        (ResolutionStatus status, , , ) = arbitrator.resolution(resolutionId);
 
-        assertEq(uint(status), uint(ResolutionStatus.Appealed));
+        assertEq(uint256(status), uint256(ResolutionStatus.Appealed));
     }
 
     function testOnlyPartiesCanAppeal() public {
@@ -178,9 +185,9 @@ contract ArbitratorTest is DSTestPlus {
 
         arbitrator.endorseResolution(resolutionId, _getSettlement());
 
-        (ResolutionStatus status,,,) = arbitrator.resolution(resolutionId);
+        (ResolutionStatus status, , , ) = arbitrator.resolution(resolutionId);
 
-        assertEq(uint(status), uint(ResolutionStatus.Endorsed));
+        assertEq(uint256(status), uint256(ResolutionStatus.Endorsed));
     }
 
     /* ====================================================================== //
@@ -197,18 +204,15 @@ contract ArbitratorTest is DSTestPlus {
 
     function _submittedResolution() internal returns (bytes32 hash) {
         disputeId = arbitrable.createDispute();
-        hash = arbitrator.submitResolution(
-            arbitrable,
-            disputeId,
-            metadataURI,
-            _getSettlement()
-        );
+        hash = arbitrator.submitResolution(arbitrable, disputeId, metadataURI, _getSettlement());
     }
 
     function _appealledResolution() internal returns (bytes32 hash) {
         hash = _submittedResolution();
-        hevm.prank(bob);
+        hevm.startPrank(bob);
+        token.approve(address(arbitrator), APPEAL_FEE);
         arbitrator.appealResolution(hash, _getSettlement());
+        hevm.stopPrank();
     }
 
     function _endorsedResolution() internal returns (bytes32 hash) {
