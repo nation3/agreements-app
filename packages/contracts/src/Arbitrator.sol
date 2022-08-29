@@ -33,11 +33,34 @@ contract Arbitrator is IArbitrator, Controlled, Toggleable, FeeCollector {
         uint256 fee_,
         uint256 executionLockPeriod_,
         bool enabled_
-    ) public onlyOwner {
+    ) external onlyOwner {
         feeToken = feeToken_;
         fee = fee_;
         executionLockPeriod = executionLockPeriod_;
         enabled = enabled_;
+    }
+
+    /// @inheritdoc Toggleable
+    /// @dev Allows owner to disable submissions and executions.
+    function setEnabled(bool status) external override onlyOwner {
+        enabled = status;
+    }
+
+    /// @inheritdoc FeeCollector
+    /// @dev Allows owner to update the arbitration fees.
+    function setFee(ERC20 token, uint256 amount) external override onlyOwner {
+        feeToken = token;
+        fee = amount;
+    }
+
+    /// @inheritdoc FeeCollector
+    /// @dev Allows owner to withdraw collected fees.
+    function withdrawTokens(
+        ERC20 token,
+        address to,
+        uint256 amount
+    ) external override onlyOwner {
+        SafeTransferLib.safeTransfer(token, to, amount);
     }
 
     /// @inheritdoc IArbitrator

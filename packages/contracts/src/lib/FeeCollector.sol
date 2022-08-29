@@ -4,27 +4,26 @@ pragma solidity ^0.8.15;
 import { ERC20 } from "solmate/src/tokens/ERC20.sol";
 import { SafeTransferLib } from "solmate/src/utils/SafeTransferLib.sol";
 
-import { Owned } from "./auth/Owned.sol";
+abstract contract FeeCollector {
 
-abstract contract FeeCollector is Owned {
-
-    /// @dev Token used to pay arbitration costs.
+    /// @dev Token used to collect fees.
     ERC20 public feeToken;
 
-    /// @dev Cost of appeal.
+    /// @dev Amount of tokens to collect as fee.
     uint256 public fee;
 
-    /// @notice Set fee amount.
+    /// @notice Set fee.
+    /// @param token ERC20 token to collect fees with.
     /// @param amount Amount of fee tokens per fee.
-    function setFee(uint256 amount) public onlyOwner {
+    function setFee(ERC20 token, uint256 amount) external virtual {
+        feeToken = token;
         fee = amount;
     }
 
     /// @notice Withdraw any ERC20 in the contract.
     /// @param token Token to withdraw.
     /// @param to Recipient address.
-    function withdrawTokens(ERC20 token, address to) public onlyOwner {
-        uint256 balance = token.balanceOf(address(this));
-        SafeTransferLib.safeTransfer(token, to, balance);
+    function withdrawTokens(ERC20 token, address to, uint256 amount) external virtual {
+        SafeTransferLib.safeTransfer(token, to, amount);
     }
 }

@@ -11,7 +11,7 @@ abstract contract Controlled is Owned {
     address public controller;
 
     modifier onlyController() virtual {
-        if (msg.sender != owner) revert Unauthorized();
+        if (msg.sender != controller) revert Unauthorized();
 
         _;
     }

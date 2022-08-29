@@ -1,39 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity ^0.8.15;
+pragma solidity 0.8.15;
 
 import { DSTestPlus } from "solmate/src/test/utils/DSTestPlus.sol";
 import { MockERC20 } from "solmate/src/test/utils/mocks/MockERC20.sol";
 
-import { IArbitrable } from "../../src/interfaces/IArbitrable.sol";
-import { IArbitrator } from "../../src/interfaces/IArbitrator.sol";
-import { Arbitrator, ResolutionStatus, Resolution } from "../../src/Arbitrator.sol";
-import { PositionParams } from "../../src/lib/AgreementStructs.sol";
+import {
+    Arbitrator,
+    IArbitrator,
+    ResolutionStatus,
+    Resolution
+} from "nation3-court/Arbitrator.sol";
+import { PositionParams } from "nation3-court/lib/AgreementStructs.sol";
 
-contract MockArbitrable is IArbitrable {
-    mapping(bytes32 => uint8) public disputeStatus;
-    uint256 internal counter;
-    address public arbitrator;
-    uint256 public arbitrationFee;
-
-    error PositionsMustMatch();
-
-    function setUp(address arbitrator_) public {
-        arbitrator = arbitrator_;
-    }
-
-    function createDispute() public returns (bytes32) {
-        bytes32 id = bytes32(counter);
-        disputeStatus[id] = 1;
-        counter += 1;
-        return id;
-    }
-
-    function settleDispute(bytes32 id, PositionParams[] calldata settlement) public {
-        if (msg.sender != arbitrator) revert OnlyArbitrator();
-        if (settlement.length <= 0) revert PositionsMustMatch();
-        disputeStatus[id] = 2;
-    }
-}
+import { MockArbitrable } from "./utils/mocks/MockArbitrable.sol";
 
 contract ArbitratorTest is DSTestPlus {
     MockERC20 token;
