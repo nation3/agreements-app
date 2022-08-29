@@ -14,14 +14,20 @@ import { FeeCollector } from "./lib/FeeCollector.sol";
 import { Toggleable } from "./lib/Toggleable.sol";
 import { Permit } from "./lib/Permit.sol";
 
-contract Arbitrator is IArbitrator, Controlled, Toggleable, FeeCollector {
+/// @notice Contract with the power to arbitrate Nation3 agreements.
+/// @dev The DAO will be expected to own this contract and set a controller to operate it.
+/// @dev The owner set the working parameters and manage the fees.
+/// @dev The owner can disable submissions and executions at any moment.
+/// @dev The owner can replace the controller at any time.
+/// @dev Only parties of a resolution can appeal the resolution.
+/// @dev The owner can override appeals by backing resolutions.
+/// @dev Everyone can execute non-appealed resolutions after a locking period.
+contract Arbitrator is IArbitrator, Controlled(msg.sender, msg.sender), Toggleable, FeeCollector {
     /// @dev Number of blocks needed to wait before executing a resolution.
     uint256 public executionLockPeriod;
 
     /// @dev Mapping of all submitted resolutions.
     mapping(bytes32 => Resolution) public resolution;
-
-    constructor() Controlled(msg.sender, msg.sender) {}
 
     /// @notice Setup arbitrator variables.
     /// @param feeToken_ Token used to pay arbitration costs.

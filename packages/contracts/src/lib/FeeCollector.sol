@@ -4,6 +4,8 @@ pragma solidity ^0.8.15;
 import { ERC20 } from "solmate/src/tokens/ERC20.sol";
 import { SafeTransferLib } from "solmate/src/utils/SafeTransferLib.sol";
 
+
+/// @notice Simple mixin to setup and collect fees.
 abstract contract FeeCollector {
 
     /// @dev Token used to collect fees.
