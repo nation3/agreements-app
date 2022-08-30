@@ -1,5 +1,6 @@
-import { ViewGridIcon } from "@heroicons/react/outline";
+import { PencilAltIcon } from "@heroicons/react/outline";
 import { Nation3App, DefaultLayout, DefaultSidebar } from "@nation3/components";
+import { useRouter } from "next/router";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 
 function Nation3Wrapper({
@@ -10,6 +11,8 @@ function Nation3Wrapper({
   const { address, connector } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
+
+  const router = useRouter();
 
   return (
     <Nation3App>
@@ -22,13 +25,13 @@ function Nation3Wrapper({
               });
             }}
             logo={<img src="/logo.svg" alt="Nation3 Logo" />}
-            onRoute={console.log}
+            onRoute={() => router.push("/agreements")}
             navLinks={[
               {
-                route: "/",
-                icon: <ViewGridIcon className="w-5 h-5" />,
-                name: "Start",
-                isActive: true,
+                route: "/agreements",
+                icon: <PencilAltIcon className="w-5 h-5" />,
+                name: "Agreements",
+                isActive: router.pathname.startsWith("/agreements"),
               },
             ]}
             connectors={connectors.map((connector) => ({
