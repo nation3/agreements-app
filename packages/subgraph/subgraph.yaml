@@ -21,14 +21,14 @@ dataSources:
         - name: AgreementFramework
           file: ./abis/AgreementFramework.json
       eventHandlers:
-        - event: AgreementCreated(uint256,bytes32,uint256)
+        - event: AgreementCreated(bytes32,bytes32,uint256,string)
           handler: handleAgreementCreated
-        - event: AgreementJoined(uint256,address,uint256)
+        - event: AgreementJoined(bytes32,address,uint256)
           handler: handleAgreementJoined
-        - event: AgreementPositionUpdated(uint256,address,uint256,uint8)
+        - event: AgreementPositionUpdated(bytes32,address,uint256,uint8)
           handler: handleAgreementPositionUpdated
-        - event: AgreementFinalized(uint256)
+        - event: AgreementFinalized(bytes32)
           handler: handleAgreementFinalized
-        - event: AgreementDisputed(uint256,address)
+        - event: AgreementDisputed(bytes32,address)
           handler: handleAgreementDisputed
       file: ./src/agreement-framework.ts

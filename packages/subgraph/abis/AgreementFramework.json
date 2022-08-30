@@ -17,7 +17,12 @@
   },
   {
     "inputs": [],
-    "name": "AgreementAlreadyDisputed",
+    "name": "AgreementIsDisputed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "AgreementIsFinalized",
     "type": "error"
   },
   {
@@ -32,17 +37,17 @@
   },
   {
     "inputs": [],
+    "name": "BalanceMustMatch",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "InsufficientBalance",
     "type": "error"
   },
   {
     "inputs": [],
     "name": "InvalidProof",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "MissingPositions",
     "type": "error"
   },
   {
@@ -81,18 +86,13 @@
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "SettlementBalanceMustMatch",
-    "type": "error"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
       },
       {
         "indexed": false,
@@ -105,6 +105,12 @@
         "internalType": "uint256",
         "name": "criteria",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "metadataURI",
+        "type": "string"
       }
     ],
     "name": "AgreementCreated",
@@ -115,9 +121,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
       },
       {
         "indexed": false,
@@ -134,9 +140,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
       }
     ],
     "name": "AgreementFinalized",
@@ -147,9 +153,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
       },
       {
         "indexed": false,
@@ -172,9 +178,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
       },
       {
         "indexed": false,
@@ -201,9 +207,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "",
-        "type": "uint256"
+        "type": "bytes32"
       }
     ],
     "name": "agreement",
@@ -217,6 +223,11 @@
         "internalType": "uint256",
         "name": "criteria",
         "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "metadataURI",
+        "type": "string"
       },
       {
         "internalType": "uint256",
@@ -240,9 +251,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
       }
     ],
     "name": "agreementParams",
@@ -258,6 +269,11 @@
             "internalType": "uint256",
             "name": "criteria",
             "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
           }
         ],
         "internalType": "struct AgreementParams",
@@ -271,9 +287,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
       }
     ],
     "name": "agreementPositions",
@@ -289,9 +305,14 @@
             "internalType": "uint256",
             "name": "balance",
             "type": "uint256"
+          },
+          {
+            "internalType": "enum PositionStatus",
+            "name": "status",
+            "type": "uint8"
           }
         ],
-        "internalType": "struct PositionParams[]",
+        "internalType": "struct AgreementPosition[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -325,6 +346,11 @@
             "internalType": "uint256",
             "name": "criteria",
             "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "metadataURI",
+            "type": "string"
           }
         ],
         "internalType": "struct AgreementParams",
@@ -335,9 +361,9 @@
     "name": "createAgreement",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "agreementId",
-        "type": "uint256"
+        "type": "bytes32"
       }
     ],
     "stateMutability": "nonpayable",
@@ -346,9 +372,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
       }
     ],
     "name": "disputeAgreement",
@@ -359,9 +385,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
       }
     ],
     "name": "finalizeAgreement",
@@ -372,15 +398,15 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
       },
       {
         "components": [
           {
             "internalType": "address",
-            "name": "party",
+            "name": "account",
             "type": "address"
           },
           {
@@ -390,7 +416,7 @@
           },
           {
             "internalType": "bytes32[]",
-            "name": "criteriaProof",
+            "name": "proof",
             "type": "bytes32[]"
           }
         ],
@@ -407,9 +433,76 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balance",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32[]",
+            "name": "proof",
+            "type": "bytes32[]"
+          }
+        ],
+        "internalType": "struct CriteriaResolver",
+        "name": "resolver",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "value",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint8",
+            "name": "v",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "r",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "s",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct Permit",
+        "name": "permit",
+        "type": "tuple"
+      }
+    ],
+    "name": "joinAgreementWithPermit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
       },
       {
         "components": [
@@ -450,9 +543,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "bytes32",
         "name": "id",
-        "type": "uint256"
+        "type": "bytes32"
       }
     ],
     "name": "withdrawFromAgreement",

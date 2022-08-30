@@ -10,16 +10,17 @@ import {
 } from "../generated/AgreementFramework/AgreementFramework";
 
 export function createAgreementCreatedEvent(
-  id: BigInt,
+  id: Bytes,
   termsHash: Bytes,
-  criteria: BigInt
+  criteria: BigInt,
+  metadataURI: String
 ): AgreementCreated {
   let agreementCreatedEvent = changetype<AgreementCreated>(newMockEvent());
 
   agreementCreatedEvent.parameters = new Array();
 
   agreementCreatedEvent.parameters.push(
-    new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
+    new ethereum.EventParam("id", ethereum.Value.fromFixedBytes(id))
   );
   agreementCreatedEvent.parameters.push(
     new ethereum.EventParam(
@@ -31,6 +32,12 @@ export function createAgreementCreatedEvent(
     new ethereum.EventParam(
       "criteria",
       ethereum.Value.fromUnsignedBigInt(criteria)
+    )
+  );
+  agreementCreatedEvent.parameters.push(
+    new ethereum.EventParam(
+      "metadataURI",
+      ethereum.Value.fromString(metadataURI)
     )
   );
 
@@ -128,12 +135,14 @@ export function assertAgreement(
   termsHash: String,
   criteria: String,
   positions: String,
-  status: String
+  status: String,
+  metadataURI: String
 ): void {
   assert.fieldEquals("Agreement", id, "status", status);
   assert.fieldEquals("Agreement", id, "termsHash", termsHash);
   assert.fieldEquals("Agreement", id, "criteria", criteria);
   assert.fieldEquals("Agreement", id, "positions", positions);
+  assert.fieldEquals("Agreement", id, "metadataURI", metadataURI);
 }
 
 export function assertAgreementPosition(

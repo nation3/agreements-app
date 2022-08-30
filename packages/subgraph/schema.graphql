@@ -1,5 +1,5 @@
 # Subgraph Schema: Agreement Framework
-# Version: 0.0.1
+# Version: 0.0.2
 
 enum AgreementStatus {
     Created
@@ -15,7 +15,7 @@ enum PositionStatus {
 
 type Agreement @entity {
     "Agreement ID"
-    id: ID!
+    id: Bytes!
     
     "Hash of the detailed terms of the agreement"
     termsHash: Bytes!
@@ -26,13 +26,16 @@ type Agreement @entity {
     "Status of the agreement"
     status: AgreementStatus!
 
+    "Agreement Metadata URI"
+    metadataURI: String!
+
     "Positions of the agreement"
     positions: [AgreementPosition!]! @derivedFrom(field: "agreement")
 }
 
 type AgreementPosition @entity {
     "Position ID"
-    id: ID!
+    id: Bytes!
 
     "Holder of the position - address"
     party: Bytes!
