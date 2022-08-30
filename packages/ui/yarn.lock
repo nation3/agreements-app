@@ -526,10 +526,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
-"@nation3/components@^0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@nation3/components/-/components-0.0.14.tgz#632a1b99dc41ec9515a236a92a61c0257851694a"
-  integrity sha512-vhc24KgLIs/I3EI5gjd1nMK/JycfPal/NPt4tEtStFNuBvkHp0m4/f1TbC4cq0ktKEkWhzuo14cfnFcfhUVA5g==
+"@nation3/components@^0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@nation3/components/-/components-0.0.15.tgz#a303e63d44a47a884d05f89f3923ec558cea851b"
+  integrity sha512-vJ0oNpCFZpNnrA0Zzd6utHK64nkdre8uoGRKx05oNgIJGBug6Fq+nyyTKrh4nVIwpnCUORvlAcy6D2PlS++ovw==
 
 "@next/env@12.2.5":
   version "12.2.5"
