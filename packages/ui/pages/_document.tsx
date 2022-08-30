@@ -5,7 +5,6 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <link rel="icon" href="/favicon.ico" />
-        <title>Nation3 Court</title>
       </Head>
       <body>
         <Main />
