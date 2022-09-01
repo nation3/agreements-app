@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.15;
+
+import { MockERC20 } from "solmate/src/test/utils/mocks/MockERC20.sol";
+
 import {
     AgreementParams,
     AgreementPosition,
@@ -7,12 +10,12 @@ import {
     PositionStatus,
     Permit,
     CollateralAgreementFramework
-} from "../../src/agreements/CollateralAgreement.sol";
-import { MockERC20 } from "solmate/src/test/utils/mocks/MockERC20.sol";
-import { CriteriaResolver, CriteriaResolution } from "../../src/lib/CriteriaResolution.sol";
+} from "nation3-court/agreements/CollateralAgreement.sol";
+import { CriteriaResolver, CriteriaResolution } from "nation3-court/lib/CriteriaResolution.sol";
+import { IAgreementFramework } from "nation3-court/interfaces/IAgreementFramework.sol";
+import { IArbitrable } from "nation3-court/interfaces/IArbitrable.sol";
+
 import { AgreementFrameworkTestBase } from "./utils/AgreementFrameworkTestBase.sol";
-import { IAgreementFramework } from "../../src/interfaces/IAgreementFramework.sol";
-import { IArbitrable } from "../../src/interfaces/IArbitrable.sol";
 
 contract CollateralAgreementTest is AgreementFrameworkTestBase {
     address doll = hevm.addr(0xD011);

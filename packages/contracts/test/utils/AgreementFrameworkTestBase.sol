@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.15;
-import { AgreementParams, PositionParams } from "../../../src/lib/AgreementStructs.sol";
-import { Permit } from "../../../src/lib/Permit.sol";
-import { IAgreementFramework } from "../../../src/interfaces/IAgreementFramework.sol";
-import { CriteriaResolver } from "../../../src/lib/CriteriaResolution.sol";
+
 import { MockERC20 } from "solmate/src/test/utils/mocks/MockERC20.sol";
-import { Hevm } from "solmate/src/test/utils/Hevm.sol";
 import { DSTestPlus } from "solmate/src/test/utils/DSTestPlus.sol";
 import { Merkle } from "murky/Merkle.sol";
+
+import { AgreementParams, PositionParams } from "nation3-court/lib/AgreementStructs.sol";
+import { Permit } from "nation3-court/lib/Permit.sol";
+import { IAgreementFramework } from "nation3-court/interfaces/IAgreementFramework.sol";
+import { CriteriaResolver } from "nation3-court/lib/CriteriaResolution.sol";
 
 contract AgreementFrameworkTestBase is DSTestPlus {
     Merkle merkle = new Merkle();
