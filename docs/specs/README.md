@@ -1,10 +1,7 @@
 # Nation3 Court <!-- omit in toc -->
 
-[Original rational](https://forum.nation3.org/t/nation3-court-a-backbone-to-bootstrap-a-circular-economy-by-increasing-trust-between-citizens/553)
-
 ### Table of contents <!-- omit in toc -->
 
-- [Introduction](#introduction)
 - [Overall description](#overall-description)
   - [Arbitrable contracts (Agreements)](#arbitrable-contracts-agreements)
   - [Arbitrator](#arbitrator)
@@ -12,29 +9,14 @@
 
 ---
 
-## Introduction
-
-A system that allows the creation of agreements between two or more non-trusted parties that are arbitrable by a trusted third party in the case of a dispute.
-
-The scope of this project includes:
-
-- Smart contracts architecture.
-- Human-friendly interface to interact with the contracts.
-
-> A contract is a legally enforceable agreement that creates, defines, and governs mutual rights and obligations among its parties.
-
-While common smart contracts guarantee their enforceability by a built-in mechanism defined by code, they fall short of the flexibility or complexity required to resolve complex & subjective human-based disputes.
-
-To resolve complex human-based disputes is required to build complex human-based oracles, such as:
-
-- [Aragon Court](https://github.com/aragon/aragon-court)
-- [Kleros](https://github.com/kleros)
-
-In contrast to these projects, Nation3 Court does not aim to be a fully decentralized protocol but a standard to build DAO-centric jurisdictions, where the arbitration power is delegated to one or more trusted decentralized organizations.
-
 ## Overall description
 
-The system relies on two basic primitives to work.
+The system relies on some basic primitives to work:
+
+- Arbitrable contracts
+- Arbitrator
+
+In addition we have to provide human friendly interfaces to operate the system, both to manage agreements and disputes.
 
 ### Arbitrable contracts (Agreements)
 
