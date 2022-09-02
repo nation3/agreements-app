@@ -62,3 +62,7 @@ typings/
 
 # next.js build output
 .next
+
+# Test artifacts
+tests/.bin/*
+tests/.latest.json
