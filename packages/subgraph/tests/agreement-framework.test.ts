@@ -56,22 +56,37 @@ const AGREEMENT_JOINED_EVENT_SAMPLE_2 = createAgreementJoinedEvent(
   BigInt.fromI32(1090)
 );
 
+const AGREEMENT_JOINED_EVENT_SAMPLE_3 = createAgreementJoinedEvent(
+  Bytes.fromI32(201),
+  Address.fromString(ADDRESS_SAMPLE_1),
+  BigInt.fromI32(1190)
+);
+
+const AGREEMENT_JOINED_EVENT_SAMPLE_4 = createAgreementJoinedEvent(
+  Bytes.fromI32(201),
+  Address.fromString(ADDRESS_SAMPLE_2),
+  BigInt.fromI32(1290)
+);
+
 describe("handling of AgreementCreated", () => {
   afterEach(() => {
     clearStore();
   });
 
-  test("1 AgreementCreated event", () => {
+  test("1 AgreementCreated", () => {
     handleAgreementCreated(AGREEMENT_CREATED_EVENT_SAMPLE_1);
+    
     assert.entityCount("Agreement", 1);
+    
     assertAgreement("0xc8000000","0xd2029649","1000","[]","Created","Metadata");
   });
 
-  test("2 AgreementCreated event", () => {
+  test("2 AgreementCreated", () => {
     handleAgreementCreated(AGREEMENT_CREATED_EVENT_SAMPLE_1);
     handleAgreementCreated(AGREEMENT_CREATED_EVENT_SAMPLE_2);
 
     assert.entityCount("Agreement", 2);
+    
     assertAgreement("0xc8000000","0xd2029649","1000","[]","Created","Metadata");
     assertAgreement("0xc9000000","0xd2029649","1100","[]","Created","Metadata");
   });
@@ -88,22 +103,69 @@ describe("handling of AgreementJoined", () => {
       handleAgreementCreated(AGREEMENT_CREATED_EVENT_SAMPLE_1);
     });    
 
-    test("1 AgreementJoined event", () => {
+    test("1 AgreementJoined", () => {
       handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_1);
+      
       assert.entityCount("Agreement", 1);
       assert.entityCount("AgreementPosition", 1);
+      
       assertAgreement("0xc8000000","0xd2029649","1000","[0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7]","Created","Metadata");
       assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", ADDRESS_SAMPLE_1, "1050", "Idle", "0xc8000000")
     });
 
-    test("2 AgreementJoined event", () => {
+    test("2 AgreementJoined", () => {
       handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_1);
       handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_2);
+      
       assert.entityCount("Agreement", 1);
       assert.entityCount("AgreementPosition", 2);
+      
       assertAgreement("0xc8000000","0xd2029649","1000","[0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]","Ongoing","Metadata");
       assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", ADDRESS_SAMPLE_1, "1050", "Idle", "0xc8000000")
       assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", ADDRESS_SAMPLE_2, "1090", "Idle", "0xc8000000")
+    });
+  });
+
+  describe("2 Agreement", () => {
+    afterEach(() => {
+      clearStore();
+    });
+
+    beforeEach(() => {
+      handleAgreementCreated(AGREEMENT_CREATED_EVENT_SAMPLE_1);
+      handleAgreementCreated(AGREEMENT_CREATED_EVENT_SAMPLE_2);
+    });    
+
+    test("1 AgreementJoined each", () => {
+      handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_1);
+      handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_3);
+      
+      assert.entityCount("Agreement", 2);
+      assert.entityCount("AgreementPosition", 2);
+      
+      assertAgreement("0xc8000000","0xd2029649","1000","[0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7]","Created","Metadata");
+      assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", ADDRESS_SAMPLE_1, "1050", "Idle", "0xc8000000")
+      
+      assertAgreement("0xc9000000","0xd2029649","1100","[0xc90000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7]","Created","Metadata");
+      assertAgreementPosition("0xc90000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", ADDRESS_SAMPLE_1, "1190", "Idle", "0xc9000000")
+    });
+
+    test("2 AgreementJoined each", () => {
+      handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_1);
+      handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_2);
+      handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_3);
+      handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_4);
+      
+      assert.entityCount("Agreement", 2);
+      assert.entityCount("AgreementPosition", 4);
+
+      assertAgreement("0xc8000000","0xd2029649","1000","[0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]","Ongoing","Metadata");
+      assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", ADDRESS_SAMPLE_1, "1050", "Idle", "0xc8000000")
+      assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", ADDRESS_SAMPLE_2, "1090", "Idle", "0xc8000000")
+      
+      assertAgreement("0xc9000000","0xd2029649","1100","[0xc90000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 0xc90000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]","Ongoing","Metadata");
+      assertAgreementPosition("0xc90000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", ADDRESS_SAMPLE_1, "1190", "Idle", "0xc9000000")
+      assertAgreementPosition("0xc90000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", ADDRESS_SAMPLE_2, "1290", "Idle", "0xc9000000")
     });
   });
 });
