@@ -44,13 +44,13 @@ export function createAgreementCreatedEvent(
   return agreementCreatedEvent;
 }
 
-export function createAgreementFinalizedEvent(id: BigInt): AgreementFinalized {
+export function createAgreementFinalizedEvent(id: Bytes): AgreementFinalized {
   let agreementFinalizedEvent = changetype<AgreementFinalized>(newMockEvent());
 
   agreementFinalizedEvent.parameters = new Array();
 
   agreementFinalizedEvent.parameters.push(
-    new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
+    new ethereum.EventParam("id", ethereum.Value.fromFixedBytes(id))
   );
 
   return agreementFinalizedEvent;

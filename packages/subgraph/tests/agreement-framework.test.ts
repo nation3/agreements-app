@@ -82,6 +82,17 @@ const AGREEMENT_POSITION_UPDATED_EVENT_SAMPLE_2 = createAgreementPositionUpdated
   BigInt.fromI32(1)
 );
 
+const AGREEMENT_POSITION_UPDATED_EVENT_SAMPLE_3 = createAgreementPositionUpdatedEvent(
+  Bytes.fromI32(200),
+  Address.fromString(ADDRESS_SAMPLE_2),
+  BigInt.fromI32(1090),
+  BigInt.fromI32(1)
+);
+
+const AGREEMENT_FINALIZED_EVENT_SAMPLE_1 = createAgreementFinalizedEvent(
+  Bytes.fromI32(200)
+);
+
 describe("handling of AgreementCreated", () => {
   afterEach(() => {
     clearStore();
@@ -212,5 +223,30 @@ describe("handling of AgreementPositionUpdated", () => {
       
     assertAgreement("0xc8000000","0xd2029649","1000","[0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7]","Created","Metadata");
     assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", ADDRESS_SAMPLE_1, "1050", "Finalized", "0xc8000000");
+  });
+});
+
+describe("handling of AgreementFinalized", () => {
+  afterEach(() => {
+    clearStore();
+  });
+
+  beforeEach(() => {
+    handleAgreementCreated(AGREEMENT_CREATED_EVENT_SAMPLE_1);
+    handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_1);
+    handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_2);
+    handleAgreementPositionUpdated(AGREEMENT_POSITION_UPDATED_EVENT_SAMPLE_2);
+    handleAgreementPositionUpdated(AGREEMENT_POSITION_UPDATED_EVENT_SAMPLE_3);
+  });
+
+  test("1 Agreement", () => {
+    handleAgreementFinalized(AGREEMENT_FINALIZED_EVENT_SAMPLE_1);
+    
+    assert.entityCount("Agreement", 1);
+    assert.entityCount("AgreementPosition", 2);
+
+    assertAgreement("0xc8000000","0xd2029649","1000","[0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]","Finalized","Metadata");
+    assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", ADDRESS_SAMPLE_1, "1050", "Finalized", "0xc8000000");
+    assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", ADDRESS_SAMPLE_2, "1090", "Finalized", "0xc8000000");
   });
 });
