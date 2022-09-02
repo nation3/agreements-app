@@ -1,6 +1,6 @@
 # Nation3 Court <!-- omit in toc -->
 
-[Original rational](https://forum.nation3.org/t/nation3-court-a-backbone-to-bootstrap-a-circular-economy-by-increasing-trust-between-citizens/553)
+[Original rationale](https://forum.nation3.org/t/nation3-court-a-backbone-to-bootstrap-a-circular-economy-by-increasing-trust-between-citizens/553)
 
 ## Introduction
 
@@ -22,6 +22,7 @@ In contrast to these projects, Nation3 Court does not aim to be a fully decentra
 ## Nation3 Court fundamentals
 
 The fundamental primitives of this system are:
+
 - Arbitrable agreements
 - Arbitration system
 
@@ -31,10 +32,20 @@ The arbitration system is a set of on-chain procedures to resolve disputes and e
 
 ## DAO-centric Jurisdiction
 
-The authority to enforce rulings in the system extends to all assets arbitrated by the system, thus defining its jurisdiction. The higher authority in the system is the DAO which owns and operates the system.
+The authority to enforce rulings extends to all assets arbitrated by the system, thus defining its jurisdiction. The higher authority in the system is the DAO which owns and operates the arbitration power.
 
 When a new agreement is created, the joining parties opt-in to the DAO jurisdiction by depositing new assets under the system's arbitration, extending its authority.
 
-The trust in the DAO will define the grade in which users will opt-in to its jurisdiction. And the confidence in the DAO itself will be heavily impacted by how well it can operate this arbitration system.
+The trust in the DAO will define the grade in which users will opt-in to its jurisdiction and the confidence in the DAO itself will be heavily impacted by how well it can operate this arbitration system.
 
 As more value enters the system's jurisdiction, the DAO can capture more value from it. So, the DAO is incentivized to maintain and even improve the trust in the system.
+
+## A Court of Jurors
+
+Having a big DAO intervening in all disputes is not efficient at all. Furthermore, it removes some advantages of this proposal, such as keeping terms private as long as possible. 
+
+The DAO will appoint a set of jurors to compose the Court, and they will enter an agreement with considerable collateral to be punished in case they misbehave in their duties.
+
+We can think about Jurors as delegates of arbitration power. They will need to reach a consensus threshold to submit any dispute resolution and they will be accountable to the DAO when required.
+
+Jurors' compensation should be subject to the jurisdiction's KPIs, incentivizing them to work toward reliable and efficient arbitration procedures.

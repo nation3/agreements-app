@@ -1,4 +1,4 @@
-# Agreement lifecycle
+# Agreement lifecycle <!-- omit in toc -->
 
 ```mermaid
 flowchart LR
@@ -25,7 +25,7 @@ To create an agreement, you first need to define the terms of the agreement. Thi
 
 The terms' details can be kept private. The only thing that will be written on-chain is cryptographic proof of the terms so other parties can verify them when needed and the parameters required on-chain for the operations of the agreement.
 
-Joining an agreement is as simple as signing the transaction to join and fulfilling the requirements to join. In most cases, it means providing some assets as collateral to guarantee the enforceability of the terms. 
+Joining an agreement is as simple as fulfilling the requirements and signing the transaction to join. In most cases, it means providing some assets as collateral to guarantee the enforceability of the terms. 
 
 When those assets are deposited in the agreement, they become part of the system's jurisdiction and are only governable under the terms of the contract.
 
@@ -42,6 +42,8 @@ For example, a collateral agreement could define that only when all the parties 
 ## Dispute creation & resolution
 
 Any of the parties involved can dispute the agreement in Court. When disputed, the parties involved will need to provide allegations & evidence, in most cases making the terms of the agreement accessible to the jurors resolving the dispute.
+
+*(Further documentation on how to submit allegations & evidences to the Court to be defined)*
 
 After reviewing the allegations & evidence, the jurors will have to reach a consensus on a fair settlement for the agreement. That settlement can include punishments to some parties involved through their deposited collateral.
 
