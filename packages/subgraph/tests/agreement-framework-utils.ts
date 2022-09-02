@@ -57,7 +57,7 @@ export function createAgreementFinalizedEvent(id: BigInt): AgreementFinalized {
 }
 
 export function createAgreementJoinedEvent(
-  id: BigInt,
+  id: Bytes,
   party: Address,
   balance: BigInt
 ): AgreementJoined {
@@ -66,7 +66,7 @@ export function createAgreementJoinedEvent(
   agreementJoinedEvent.parameters = new Array();
 
   agreementJoinedEvent.parameters.push(
-    new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
+    new ethereum.EventParam("id", ethereum.Value.fromFixedBytes(id))
   );
   agreementJoinedEvent.parameters.push(
     new ethereum.EventParam("party", ethereum.Value.fromAddress(party))

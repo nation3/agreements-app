@@ -15,7 +15,7 @@ enum PositionStatus {
 
 type Agreement @entity {
     "Agreement ID"
-    id: Bytes!
+    id: String!
     
     "Hash of the detailed terms of the agreement"
     termsHash: Bytes!
@@ -35,7 +35,7 @@ type Agreement @entity {
 
 type AgreementPosition @entity {
     "Position ID"
-    id: Bytes!
+    id: String!
 
     "Holder of the position - address"
     party: Bytes!

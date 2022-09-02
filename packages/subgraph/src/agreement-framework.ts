@@ -9,7 +9,7 @@ import {
 import { Agreement, AgreementPosition } from "../generated/schema";
 
 export function handleAgreementCreated(event: AgreementCreated): void {
-  let agreement = new Agreement(event.params.id);
+  let agreement = new Agreement(event.params.id.toHexString());
   agreement.termsHash = event.params.termsHash;
   agreement.criteria = event.params.criteria;
   agreement.status = "Created";
@@ -19,7 +19,7 @@ export function handleAgreementCreated(event: AgreementCreated): void {
 }
 
 export function handleAgreementFinalized(event: AgreementFinalized): void {
-  let agreement = Agreement.load(event.params.id);
+  let agreement = Agreement.load(event.params.id.toHexString());
   if (agreement) {
     agreement.status = "Finalized";
     agreement.save();
@@ -27,19 +27,21 @@ export function handleAgreementFinalized(event: AgreementFinalized): void {
 }
 
 export function handleAgreementJoined(event: AgreementJoined): void {
-  let agreement = Agreement.load(event.params.id);
-  if (agreement && agreement.positions.length >= 1) {
-    agreement.status = "Ongoing";
-    agreement.save();
-  }
-
+  let agreement = Agreement.load(event.params.id.toHexString());
   let position = new AgreementPosition(
-    event.params.id.concat(event.params.party)
+    event.params.id.toHexString().concat(event.params.party.toHexString())
   );
   position.party = event.params.party;
   position.balance = event.params.balance;
   position.status = "Idle";
-  position.agreement = event.params.id;
+  position.agreement = event.params.id.toHexString();
+
+  if (agreement) {
+    if (agreement.positions.length >= 1) {
+      agreement.status = "Ongoing";
+    }
+    agreement.save();
+  }
   position.save();
 }
 
