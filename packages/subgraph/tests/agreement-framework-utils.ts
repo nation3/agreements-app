@@ -100,7 +100,7 @@ export function createAgreementDisputedEvent(
 }
 
 export function createAgreementPositionUpdatedEvent(
-  id: BigInt,
+  id: Bytes,
   party: Address,
   balance: BigInt,
   status: BigInt
@@ -112,7 +112,7 @@ export function createAgreementPositionUpdatedEvent(
   agreementPositionUpdatedEvent.parameters = new Array();
 
   agreementPositionUpdatedEvent.parameters.push(
-    new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
+    new ethereum.EventParam("id", ethereum.Value.fromFixedBytes(id))
   );
   agreementPositionUpdatedEvent.parameters.push(
     new ethereum.EventParam("party", ethereum.Value.fromAddress(party))

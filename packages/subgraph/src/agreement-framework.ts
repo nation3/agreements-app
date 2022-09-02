@@ -48,9 +48,9 @@ export function handleAgreementJoined(event: AgreementJoined): void {
 export function handleAgreementPositionUpdated(
   event: AgreementPositionUpdated
 ): void {
-  let agreement = Agreement.load(event.params.id);
+  let agreement = Agreement.load(event.params.id.toHexString());
   let position = AgreementPosition.load(
-    event.params.id.concat(event.params.party)
+    event.params.id.toHexString().concat(event.params.party.toHexString())
   );
   if (position !== null) {
     position.balance = event.params.balance;
