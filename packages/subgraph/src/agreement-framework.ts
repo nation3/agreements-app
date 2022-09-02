@@ -61,7 +61,7 @@ export function handleAgreementPositionUpdated(
 }
 
 export function handleAgreementDisputed(event: AgreementDisputed): void {
-  let agreement = Agreement.load(event.params.id);
+  let agreement = Agreement.load(event.params.id.toHexString());
   if (agreement) {
     agreement.status = "Disputed";
     agreement.save();

@@ -82,7 +82,7 @@ export function createAgreementJoinedEvent(
 }
 
 export function createAgreementDisputedEvent(
-  id: BigInt,
+  id: Bytes,
   party: Address
 ): AgreementDisputed {
   let agreementDisputedEvent = changetype<AgreementDisputed>(newMockEvent());
@@ -90,7 +90,7 @@ export function createAgreementDisputedEvent(
   agreementDisputedEvent.parameters = new Array();
 
   agreementDisputedEvent.parameters.push(
-    new ethereum.EventParam("id", ethereum.Value.fromUnsignedBigInt(id))
+    new ethereum.EventParam("id", ethereum.Value.fromFixedBytes(id))
   );
   agreementDisputedEvent.parameters.push(
     new ethereum.EventParam("party", ethereum.Value.fromAddress(party))

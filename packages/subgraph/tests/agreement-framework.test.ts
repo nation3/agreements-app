@@ -93,6 +93,11 @@ const AGREEMENT_FINALIZED_EVENT_SAMPLE_1 = createAgreementFinalizedEvent(
   Bytes.fromI32(200)
 );
 
+const AGREEMENT_DISPUTED_EVENT_SAMPLE_1 = createAgreementDisputedEvent(
+  Bytes.fromI32(200),
+  Address.fromString(ADDRESS_SAMPLE_1)
+);
+
 describe("handling of AgreementCreated", () => {
   afterEach(() => {
     clearStore();
@@ -248,5 +253,30 @@ describe("handling of AgreementFinalized", () => {
     assertAgreement("0xc8000000","0xd2029649","1000","[0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]","Finalized","Metadata");
     assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", ADDRESS_SAMPLE_1, "1050", "Finalized", "0xc8000000");
     assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", ADDRESS_SAMPLE_2, "1090", "Finalized", "0xc8000000");
+  });
+});
+
+describe("handling of AgreementDisputed", () => {
+  afterEach(() => {
+    clearStore();
+  });
+
+  beforeEach(() => {
+    handleAgreementCreated(AGREEMENT_CREATED_EVENT_SAMPLE_1);
+    handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_1);
+    handleAgreementJoined(AGREEMENT_JOINED_EVENT_SAMPLE_2);
+  });
+
+  test("1 Agreement", () => {
+    assertAgreement("0xc8000000","0xd2029649","1000","[0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]","Ongoing","Metadata");
+
+    handleAgreementDisputed(AGREEMENT_DISPUTED_EVENT_SAMPLE_1);
+    
+    assert.entityCount("Agreement", 1);
+    assert.entityCount("AgreementPosition", 2);
+
+    assertAgreement("0xc8000000","0xd2029649","1000","[0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7, 0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8]","Disputed","Metadata");
+    assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7", ADDRESS_SAMPLE_1, "1050", "Idle", "0xc8000000");
+    assertAgreementPosition("0xc80000000x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e8", ADDRESS_SAMPLE_2, "1090", "Idle", "0xc8000000");
   });
 });
