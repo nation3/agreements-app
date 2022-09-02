@@ -19,7 +19,6 @@ import { IArbitrable } from "nation3-court/interfaces/IArbitrable.sol";
 import { AgreementFrameworkTestBase } from "./utils/AgreementFrameworkTestBase.sol";
 
 contract CollateralAgreementTest is AgreementFrameworkTestBase {
-
     uint256 constant DISPUTE_FEE = 0.1 * 1e18;
 
     address doll = hevm.addr(0xD011);
@@ -427,6 +426,4 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         framework.disputeAgreement(agreementId);
         hevm.stopPrank();
     }
-
-
 }
