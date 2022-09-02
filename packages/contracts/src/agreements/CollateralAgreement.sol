@@ -3,6 +3,10 @@ pragma solidity ^0.8.15;
 
 import { ERC20 } from "solmate/src/tokens/ERC20.sol";
 import { SafeTransferLib } from "solmate/src/utils/SafeTransferLib.sol";
+
+import { IAgreementFramework } from "../interfaces/IAgreementFramework.sol";
+import { IArbitrable } from "../interfaces/IArbitrable.sol";
+
 import {
     Agreement,
     AgreementParams,
@@ -13,8 +17,8 @@ import {
 } from "../lib/AgreementStructs.sol";
 import { Permit } from "../lib/Permit.sol";
 import { CriteriaResolver, CriteriaResolution } from "../lib/CriteriaResolution.sol";
-import { IAgreementFramework, Permit } from "../interfaces/IAgreementFramework.sol";
-import { IArbitrable } from "../interfaces/IArbitrable.sol";
+import { Owned } from "../lib/auth/Owned.sol";
+import { FeeCollector } from "../lib/FeeCollector.sol";
 
 /// @notice Framework to create collateral agreements.
 /// @dev Funds are held on each agreement.
@@ -22,7 +26,12 @@ import { IArbitrable } from "../interfaces/IArbitrable.sol";
 /// @dev Parties manually join previously created agreements.
 /// @dev Agreements finalization by unanimity of its parties.
 /// @dev Parties manually withdraw their position from agreement.
-contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution {
+contract CollateralAgreementFramework is
+    IAgreementFramework,
+    CriteriaResolution,
+    FeeCollector,
+    Owned(msg.sender)
+{
     /* ====================================================================== //
                                         ERRORS
     // ====================================================================== */
@@ -34,8 +43,8 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
                                         STORAGE
     // ====================================================================== */
 
-    /// @dev Token used in agreements.
-    ERC20 public token;
+    /// @dev Token used as collateral in agreements.
+    ERC20 public colToken;
 
     /// @dev Address with the power to settle agreements in dispute.
     address public arbitrator;
@@ -50,9 +59,9 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
                                       CONSTRUCTOR
     // ====================================================================== */
 
-    constructor(ERC20 token_, address arbitrator_) {
+    constructor(ERC20 token, address arbitrator_) {
         arbitrator = arbitrator_;
-        token = token_;
+        colToken = token;
     }
 
     /* ====================================================================== */
@@ -125,7 +134,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     function joinAgreement(bytes32 id, CriteriaResolver calldata resolver) external override {
         _canJoinAgreement(id, resolver);
 
-        SafeTransferLib.safeTransferFrom(token, msg.sender, address(this), resolver.balance);
+        SafeTransferLib.safeTransferFrom(colToken, msg.sender, address(this), resolver.balance);
 
         _addPosition(id, PositionParams(msg.sender, resolver.balance));
 
@@ -142,7 +151,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
     ) external override {
         _canJoinAgreement(id, resolver);
 
-        token.permit(
+        colToken.permit(
             msg.sender,
             address(this),
             permit.value,
@@ -151,7 +160,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
             permit.r,
             permit.s
         );
-        SafeTransferLib.safeTransferFrom(token, msg.sender, address(this), resolver.balance);
+        SafeTransferLib.safeTransferFrom(colToken, msg.sender, address(this), resolver.balance);
 
         _addPosition(id, PositionParams(msg.sender, resolver.balance));
 
@@ -190,6 +199,8 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
         if (_isFinalized(id)) revert AgreementIsFinalized();
         if (!_isPartOfAgreement(id, msg.sender)) revert NoPartOfAgreement();
 
+        SafeTransferLib.safeTransferFrom(feeToken, msg.sender, arbitrator, fee);
+
         agreement[id].disputed = true;
 
         emit AgreementDisputed(id, msg.sender);
@@ -207,7 +218,7 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
         uint256 withdrawBalance = agreement[id].position[msg.sender].balance;
         agreement[id].position[msg.sender].balance = 0;
 
-        SafeTransferLib.safeTransfer(token, msg.sender, withdrawBalance);
+        SafeTransferLib.safeTransfer(colToken, msg.sender, withdrawBalance);
 
         emit AgreementPositionUpdated(id, msg.sender, 0, agreement[id].position[msg.sender].status);
     }
@@ -303,5 +314,30 @@ contract CollateralAgreementFramework is IAgreementFramework, CriteriaResolution
         // Finalize agreement.
         agreement[id].finalizations = positionsLength;
         emit AgreementFinalized(id);
+    }
+
+    /* ====================================================================== */
+    /*                                 FEE COLLECTOR
+    /* ====================================================================== */
+
+    /// @inheritdoc FeeCollector
+    function setFee(
+        ERC20 token,
+        address recipient,
+        uint256 amount
+    ) external override onlyOwner {
+        _setFee(token, recipient, amount);
+    }
+
+    /// @notice Withdraw any ERC20 from the contract.
+    /// @param token Token to withdraw.
+    /// @param to Recipient address.
+    /// @param amount Amount of tokens to withdraw.
+    function withdrawTokens(
+        ERC20 token,
+        address to,
+        uint256 amount
+    ) external onlyOwner {
+        _withdraw(token, to, amount);
     }
 }
