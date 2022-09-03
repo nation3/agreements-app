@@ -21,7 +21,7 @@ After the agreement is finalized, all participants can withdraw from it, recover
 
 **Practical example:**
 
-- Bob and Alice join a collateral agreement with three tokens as collateral each.
+- Bob and Alice join a collateral agreement with three tokens each as collateral.
 - They have agreed to include in the terms that; if any of the parties breach the agreement, depending on the obligations that are not met, they will compensate the other party with between half and the totality of their collateral.
 - Bob doesn't fulfill his contractual obligations, and Alice disputes the agreement.
 - The Court reviews the evidence and resolves the dispute in favor of Alice. Based on Bob's missed obligations, the court decided to settle the dispute by giving 2/3 of Bob's collateral to Alice.

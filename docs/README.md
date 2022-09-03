@@ -19,7 +19,7 @@ While being fascinating peer-to-peer arbitration systems that can be effectively
 
 In contrast to these projects, Nation3 Court does not aim to be a fully decentralized protocol but a standard to build DAO-centric jurisdictions, where the arbitration power is delegated to one or more trusted decentralized organizations.
 
-## Nation3 Court fundamentals
+## Nation3 Court Fundamentals
 
 The fundamental primitives of this system are:
 
@@ -30,7 +30,7 @@ An arbitrable agreement is a contract between two or more parties backed by a se
 
 The arbitration system is a set of on-chain procedures to resolve disputes and enforce those resolutions in its arbitrated agreements. The DAO owns the arbitration power and can appoint a court of jurors to operate it.
 
-## DAO-centric Jurisdiction
+## DAO-Centric Jurisdiction
 
 The authority to enforce rulings extends to all assets arbitrated by the system, thus defining its jurisdiction. The higher authority in the system is the DAO which owns and operates the arbitration power.
 
@@ -44,7 +44,7 @@ As more value enters the system's jurisdiction, the DAO can capture more value f
 
 Having a big DAO intervening in all disputes is not efficient at all. Furthermore, it removes some advantages of this proposal, such as keeping terms private as long as possible. 
 
-The DAO will appoint a set of jurors to compose the Court, and they will enter an agreement with considerable collateral to be punished in case they misbehave in their duties.
+The DAO will appoint a set of Jurors to compose the Court, and they will enter an agreement with considerable collateral to be punished in case they misbehave in their duties.
 
 We can think about Jurors as delegates of arbitration power. They will need to reach a consensus threshold to submit any dispute resolution and they will be accountable to the DAO when required.
 
