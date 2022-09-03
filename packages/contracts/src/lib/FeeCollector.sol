@@ -22,7 +22,7 @@ abstract contract FeeCollector {
 
     /// @notice Withdraw any fees in the contract to the default recipient.
     function collectFees() external virtual {
-        if(feeRecipient == address(0)) revert InvalidRecipient();
+        if (feeRecipient == address(0)) revert InvalidRecipient();
 
         uint256 amount = feeToken.balanceOf(address(this));
         _withdraw(feeToken, feeRecipient, amount);
@@ -43,7 +43,7 @@ abstract contract FeeCollector {
 
     /// @dev Set fee parameters.
     function _setFee(ERC20 token, address recipient, uint256 amount) internal {
-        if(recipient == address(0)) revert InvalidRecipient();
+        if (recipient == address(0)) revert InvalidRecipient();
 
         feeToken = token;
         feeRecipient = recipient;

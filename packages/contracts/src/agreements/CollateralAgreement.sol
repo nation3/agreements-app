@@ -44,7 +44,7 @@ contract CollateralAgreementFramework is
     // ====================================================================== */
 
     /// @dev Token used as collateral in agreements.
-    ERC20 public colToken;
+    ERC20 public collateralToken;
 
     /// @dev Address with the power to settle agreements in dispute.
     address public arbitrator;
@@ -61,7 +61,7 @@ contract CollateralAgreementFramework is
 
     constructor(ERC20 token, address arbitrator_) {
         arbitrator = arbitrator_;
-        colToken = token;
+        collateralToken = token;
     }
 
     /* ====================================================================== */
@@ -134,7 +134,12 @@ contract CollateralAgreementFramework is
     function joinAgreement(bytes32 id, CriteriaResolver calldata resolver) external override {
         _canJoinAgreement(id, resolver);
 
-        SafeTransferLib.safeTransferFrom(colToken, msg.sender, address(this), resolver.balance);
+        SafeTransferLib.safeTransferFrom(
+            collateralToken,
+            msg.sender,
+            address(this),
+            resolver.balance
+        );
 
         _addPosition(id, PositionParams(msg.sender, resolver.balance));
 
@@ -151,7 +156,7 @@ contract CollateralAgreementFramework is
     ) external override {
         _canJoinAgreement(id, resolver);
 
-        colToken.permit(
+        collateralToken.permit(
             msg.sender,
             address(this),
             permit.value,
@@ -160,7 +165,12 @@ contract CollateralAgreementFramework is
             permit.r,
             permit.s
         );
-        SafeTransferLib.safeTransferFrom(colToken, msg.sender, address(this), resolver.balance);
+        SafeTransferLib.safeTransferFrom(
+            collateralToken,
+            msg.sender,
+            address(this),
+            resolver.balance
+        );
 
         _addPosition(id, PositionParams(msg.sender, resolver.balance));
 
@@ -218,7 +228,7 @@ contract CollateralAgreementFramework is
         uint256 withdrawBalance = agreement[id].position[msg.sender].balance;
         agreement[id].position[msg.sender].balance = 0;
 
-        SafeTransferLib.safeTransfer(colToken, msg.sender, withdrawBalance);
+        SafeTransferLib.safeTransfer(collateralToken, msg.sender, withdrawBalance);
 
         emit AgreementPositionUpdated(id, msg.sender, 0, agreement[id].position[msg.sender].status);
     }
