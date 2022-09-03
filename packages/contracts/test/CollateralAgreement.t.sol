@@ -9,6 +9,7 @@ import {
     PositionParams,
     PositionStatus,
     Permit,
+    FeeCollector,
     CollateralAgreementFramework
 } from "nation3-court/agreements/CollateralAgreement.sol";
 import { CriteriaResolver, CriteriaResolution } from "nation3-court/lib/CriteriaResolution.sol";
@@ -18,11 +19,14 @@ import { IArbitrable } from "nation3-court/interfaces/IArbitrable.sol";
 import { AgreementFrameworkTestBase } from "./utils/AgreementFrameworkTestBase.sol";
 
 contract CollateralAgreementTest is AgreementFrameworkTestBase {
+    uint256 constant DISPUTE_FEE = 0.1 * 1e18;
+
     address doll = hevm.addr(0xD011);
 
     function setUp() public {
         token = new MockERC20("framework Token", "AT", 18);
         framework = new CollateralAgreementFramework(token, arbitrator);
+        FeeCollector(address(framework)).setFee(token, arbitrator, DISPUTE_FEE);
 
         token.mint(bob, 5 * 1e18);
         token.mint(alice, 5 * 1e18);
@@ -80,7 +84,6 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         Permit memory permit = _getPermit(0xB0B, 2 * 1e18, 0);
 
         hevm.startPrank(bob);
-        // IAgreementFramework.AgreementIsDisputed.selector
         hevm.expectRevert(CriteriaResolution.InvalidProof.selector);
         framework.joinAgreementWithPermit(
             agreementId,
@@ -104,8 +107,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         bytes32 agreementId = _createAgreement();
 
         _bobJoinsAgreementWithPermit(agreementId);
-        hevm.prank(bob);
-        framework.disputeAgreement(agreementId);
+        _disputeAgreement(bob, agreementId);
 
         _aliceExpectsErrorWhenJoining(
             agreementId,
@@ -170,8 +172,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         _bobJoinsAgreementWithPermit(agreementId);
         _aliceJoinsAgreementWithPermit(agreementId);
 
-        hevm.prank(bob);
-        framework.disputeAgreement(agreementId);
+        _disputeAgreement(bob, agreementId);
 
         _aliceExpectsErrorWhenFinalizing(
             agreementId,
@@ -207,8 +208,12 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         _bobJoinsAgreement(agreementId);
         _aliceJoinsAgreementWithPermit(agreementId);
 
-        hevm.prank(bob);
+        hevm.startPrank(bob);
+        token.approve(address(framework), DISPUTE_FEE);
         framework.disputeAgreement(agreementId);
+        hevm.stopPrank();
+
+        assertEq(token.balanceOf(address(arbitrator)), DISPUTE_FEE);
     }
 
     function testOnlyPartyCanDisputeAgreement() public {
@@ -250,8 +255,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         _bobJoinsAgreement(agreementId);
         _aliceJoinsAgreementWithPermit(agreementId);
 
-        hevm.prank(bob);
-        framework.disputeAgreement(agreementId);
+        _disputeAgreement(bob, agreementId);
     }
 
     function _getValidSettlement() internal view returns (PositionParams[] memory) {
@@ -353,8 +357,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         hevm.expectRevert(IAgreementFramework.AgreementNotDisputed.selector);
         framework.settleDispute(agreementId, settlement);
 
-        hevm.prank(bob);
-        framework.disputeAgreement(agreementId);
+        _disputeAgreement(bob, agreementId);
 
         hevm.prank(arbitrator);
         framework.settleDispute(agreementId, settlement);
@@ -415,5 +418,12 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         assertEq(token.balanceOf(bob) - bobBalance, settlement[0].balance);
         assertEq(token.balanceOf(alice) - aliceBalance, settlement[1].balance);
+    }
+
+    function _disputeAgreement(address account, bytes32 agreementId) internal {
+        hevm.startPrank(account);
+        token.approve(address(framework), DISPUTE_FEE);
+        framework.disputeAgreement(agreementId);
+        hevm.stopPrank();
     }
 }
