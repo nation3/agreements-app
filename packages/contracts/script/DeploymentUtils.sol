@@ -61,4 +61,20 @@ contract DeploymentUtils is Script {
             console.log("%s=%s", registeredContracts[i].key, registeredContracts[i].addr);
         }
     }
+
+    function loadEnvUint(uint256 defaultValue, string memory varName) internal virtual returns (uint256 value) {
+        value = defaultValue;
+
+        try vm.envUint(varName) returns (uint256 envValue) {
+            value = envValue;
+        } catch {}
+    }
+
+    function loadEnvAddress(address defaultValue, string memory varName) internal virtual returns (address value) {
+        value = defaultValue;
+
+        try vm.envAddress(varName) returns (address envValue) {
+            value = envValue;
+        } catch {}
+    }
 }
