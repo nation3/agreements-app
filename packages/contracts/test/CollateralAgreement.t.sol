@@ -20,6 +20,8 @@ import { IArbitrable } from "nation3-court/interfaces/IArbitrable.sol";
 import { AgreementFrameworkTestBase } from "./utils/AgreementFrameworkTestBase.sol";
 
 contract CollateralAgreementTest is AgreementFrameworkTestBase {
+
+    /// @dev Framework casted to collateral agreement interface for implementation specific functions.
     CollateralAgreementFramework collateralFramework;
 
     uint256 constant DISPUTE_FEE = 0.1 * 1e18;
