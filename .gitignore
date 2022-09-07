@@ -1,7 +1,4 @@
 node_modules/
-cache/
-out/
-broadcast/
 
 # Code coverage
 lcov.info
