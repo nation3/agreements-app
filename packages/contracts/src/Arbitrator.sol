@@ -40,8 +40,7 @@ contract Arbitrator is IArbitrator, Controlled(msg.sender, msg.sender), Toggleab
         uint256 executionLockPeriod_,
         bool enabled_
     ) external onlyOwner {
-        feeToken = feeToken_;
-        fee = fee_;
+        _setFee(feeToken_, address(this), fee_);
         executionLockPeriod = executionLockPeriod_;
         enabled = enabled_;
     }

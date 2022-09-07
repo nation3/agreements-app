@@ -19,14 +19,21 @@ import { IArbitrable } from "nation3-court/interfaces/IArbitrable.sol";
 import { AgreementFrameworkTestBase } from "./utils/AgreementFrameworkTestBase.sol";
 
 contract CollateralAgreementTest is AgreementFrameworkTestBase {
+
+    /// @dev Framework casted to collateral agreement interface for implementation specific functions.
+    CollateralAgreementFramework collateralFramework;
+
     uint256 constant DISPUTE_FEE = 0.1 * 1e18;
 
     address doll = hevm.addr(0xD011);
 
     function setUp() public {
         token = new MockERC20("framework Token", "AT", 18);
-        framework = new CollateralAgreementFramework(token, arbitrator);
-        FeeCollector(address(framework)).setFee(token, arbitrator, DISPUTE_FEE);
+
+        framework = new CollateralAgreementFramework();
+        collateralFramework = CollateralAgreementFramework(address(framework));
+
+        collateralFramework.setUp(token, token, arbitrator, DISPUTE_FEE);
 
         token.mint(bob, 5 * 1e18);
         token.mint(alice, 5 * 1e18);

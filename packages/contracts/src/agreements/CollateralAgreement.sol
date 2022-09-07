@@ -29,8 +29,8 @@ import { FeeCollector } from "../lib/FeeCollector.sol";
 contract CollateralAgreementFramework is
     IAgreementFramework,
     CriteriaResolution,
-    FeeCollector,
-    Owned(msg.sender)
+    Owned(msg.sender),
+    FeeCollector
 {
     /* ====================================================================== //
                                         ERRORS
@@ -55,13 +55,15 @@ contract CollateralAgreementFramework is
     /// @dev Internal agreement nonce.
     uint256 internal _nonce;
 
-    /* ====================================================================== //
-                                      CONSTRUCTOR
-    // ====================================================================== */
-
-    constructor(ERC20 token, address arbitrator_) {
+    function setUp(
+        ERC20 collateralToken_,
+        ERC20 feeToken_,
+        address arbitrator_,
+        uint256 fee_
+    ) external onlyOwner {
+        _setFee(feeToken_, arbitrator_, fee_);
+        collateralToken = collateralToken_;
         arbitrator = arbitrator_;
-        collateralToken = token;
     }
 
     /* ====================================================================== */
