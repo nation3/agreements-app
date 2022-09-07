@@ -9,7 +9,6 @@ import { Arbitrator } from "nation3-court/Arbitrator.sol";
 import { CollateralAgreementFramework } from "nation3-court/agreements/CollateralAgreement.sol";
 
 contract DeployAgreements is Script, DeploymentUtils {
-
     /// Environment variables
     address ARBITRATOR;
     address COLLATERAL_TOKEN;
@@ -17,9 +16,6 @@ contract DeployAgreements is Script, DeploymentUtils {
     uint256 DISPUTE_FEE = 0;
     uint256 APPEAL_FEE = 0;
     uint256 RESOLUTION_LOCK_PERIOD = 6666;
-
-    function mockToken() internal {
-   }
 
     function setUpArbitrator() internal {
         if (ARBITRATOR == address(0)) {
@@ -75,10 +71,7 @@ contract DeployAgreements is Script, DeploymentUtils {
             "CollateralToken",
             COLLATERAL_TOKEN != address(0) ? COLLATERAL_TOKEN : address(token)
         );
-        registerContract(
-            "FeeToken",
-            FEE_TOKEN != address(0) ? FEE_TOKEN : address(token)
-        );
+        registerContract("FeeToken", FEE_TOKEN != address(0) ? FEE_TOKEN : address(token));
     }
 
     function setUpContracts() internal {
@@ -88,7 +81,6 @@ contract DeployAgreements is Script, DeploymentUtils {
     }
 
     function run() public {
-
         loadEnvVars();
 
         vm.startBroadcast();

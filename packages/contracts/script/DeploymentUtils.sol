@@ -9,11 +9,10 @@ struct ContractData {
 }
 
 contract DeploymentUtils is Script {
-
     ContractData[] registeredContracts;
     mapping(string => address) registeredContractsAddress;
 
-    mapping(string => bool) __madeDir; 
+    mapping(string => bool) __madeDir;
 
     function deploymentsPath(string memory path) internal pure virtual returns (string memory) {
         return string.concat("deployments/", path);
@@ -62,7 +61,11 @@ contract DeploymentUtils is Script {
         }
     }
 
-    function loadEnvUint(uint256 defaultValue, string memory varName) internal virtual returns (uint256 value) {
+    function loadEnvUint(uint256 defaultValue, string memory varName)
+        internal
+        virtual
+        returns (uint256 value)
+    {
         value = defaultValue;
 
         try vm.envUint(varName) returns (uint256 envValue) {
@@ -70,7 +73,11 @@ contract DeploymentUtils is Script {
         } catch {}
     }
 
-    function loadEnvAddress(address defaultValue, string memory varName) internal virtual returns (address value) {
+    function loadEnvAddress(address defaultValue, string memory varName)
+        internal
+        virtual
+        returns (address value)
+    {
         value = defaultValue;
 
         try vm.envAddress(varName) returns (address envValue) {
