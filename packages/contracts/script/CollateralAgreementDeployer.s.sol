@@ -11,9 +11,10 @@ contract DeployCollateralAgreement is Script {
 
         vm.startBroadcast();
 
-        address collateral = address(new MockERC20("Court Token", "CT", 18));
+        ERC20 token = new MockERC20("Court Token", "CT", 18);
 
-        new CollateralAgreementFramework(ERC20(collateral), arbitrator);
+        CollateralAgreementFramework framework = new CollateralAgreementFramework();
+        framework.setUp(token, token, arbitrator, 0);
 
         vm.stopBroadcast();
     }

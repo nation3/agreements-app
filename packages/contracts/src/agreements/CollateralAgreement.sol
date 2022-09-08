@@ -29,8 +29,8 @@ import { FeeCollector } from "../lib/FeeCollector.sol";
 contract CollateralAgreementFramework is
     IAgreementFramework,
     CriteriaResolution,
-    FeeCollector,
-    Owned(msg.sender)
+    Owned(msg.sender),
+    FeeCollector
 {
     /* ====================================================================== //
                                         ERRORS
@@ -49,19 +49,24 @@ contract CollateralAgreementFramework is
     /// @dev Address with the power to settle agreements in dispute.
     address public arbitrator;
 
+    /// @dev Total amount of collateral tokens deposited in the framework.
+    uint256 public totalBalance;
+
     /// @dev Map of agreements by id.
     mapping(bytes32 => Agreement) public agreement;
 
     /// @dev Internal agreement nonce.
     uint256 internal _nonce;
 
-    /* ====================================================================== //
-                                      CONSTRUCTOR
-    // ====================================================================== */
-
-    constructor(ERC20 token, address arbitrator_) {
+    function setUp(
+        ERC20 collateralToken_,
+        ERC20 feeToken_,
+        address arbitrator_,
+        uint256 fee_
+    ) external onlyOwner {
+        _setFee(feeToken_, arbitrator_, fee_);
+        collateralToken = collateralToken_;
         arbitrator = arbitrator_;
-        collateralToken = token;
     }
 
     /* ====================================================================== */
@@ -142,6 +147,7 @@ contract CollateralAgreementFramework is
         );
 
         _addPosition(id, PositionParams(msg.sender, resolver.balance));
+        totalBalance += resolver.balance;
 
         emit AgreementJoined(id, msg.sender, resolver.balance);
     }
@@ -173,6 +179,7 @@ contract CollateralAgreementFramework is
         );
 
         _addPosition(id, PositionParams(msg.sender, resolver.balance));
+        totalBalance += resolver.balance;
 
         emit AgreementJoined(id, msg.sender, resolver.balance);
     }
@@ -202,14 +209,30 @@ contract CollateralAgreementFramework is
 
     /// Raise a dispute over an agreement.
     /// @inheritdoc IAgreementFramework
-    /// @dev Requires the caller to be part of the agreement.
-    /// @dev Can be perform only once per agreement.
     function disputeAgreement(bytes32 id) external override {
-        if (agreement[id].disputed) revert AgreementIsDisputed();
-        if (_isFinalized(id)) revert AgreementIsFinalized();
-        if (!_isPartOfAgreement(id, msg.sender)) revert NoPartOfAgreement();
+        _canDisputeAgreement(id);
 
-        SafeTransferLib.safeTransferFrom(feeToken, msg.sender, arbitrator, fee);
+        SafeTransferLib.safeTransferFrom(feeToken, msg.sender, feeRecipient, fee);
+
+        agreement[id].disputed = true;
+
+        emit AgreementDisputed(id, msg.sender);
+    }
+
+    /// @inheritdoc IAgreementFramework
+    function disputeAgreementWithPermit(bytes32 id, Permit calldata permit) external override {
+        _canDisputeAgreement(id);
+
+        feeToken.permit(
+            msg.sender,
+            address(this),
+            permit.value,
+            permit.deadline,
+            permit.v,
+            permit.r,
+            permit.s
+        );
+        SafeTransferLib.safeTransferFrom(feeToken, msg.sender, feeRecipient, fee);
 
         agreement[id].disputed = true;
 
@@ -227,13 +250,14 @@ contract CollateralAgreementFramework is
 
         uint256 withdrawBalance = agreement[id].position[msg.sender].balance;
         agreement[id].position[msg.sender].balance = 0;
+        totalBalance -= withdrawBalance;
 
         SafeTransferLib.safeTransfer(collateralToken, msg.sender, withdrawBalance);
 
         emit AgreementPositionUpdated(id, msg.sender, 0, agreement[id].position[msg.sender].status);
     }
 
-    /// Check if caller can join an agreement with the criteria resolver provided.
+    /// @dev Check if caller can join an agreement with the criteria resolver provided.
     /// @param id Id of the agreement to check.
     /// @param resolver Criteria resolver to check against criteria.
     function _canJoinAgreement(bytes32 id, CriteriaResolver calldata resolver) internal view {
@@ -243,6 +267,17 @@ contract CollateralAgreementFramework is
         if (msg.sender != resolver.account) revert PartyMustMatchCriteria();
 
         _validateCriteria(agreement[id].criteria, resolver);
+    }
+
+    /// @dev Check if caller can dispute an agreement.
+    /// @dev Requires the caller to be part of the agreement.
+    /// @dev Can be perform only once per agreement.
+    /// @param id Id of the agreement to check.
+    function _canDisputeAgreement(bytes32 id) internal view returns (bool) {
+        if (agreement[id].disputed) revert AgreementIsDisputed();
+        if (_isFinalized(id)) revert AgreementIsFinalized();
+        if (!_isPartOfAgreement(id, msg.sender)) revert NoPartOfAgreement();
+        return true;
     }
 
     /// @dev Check if an agreement is finalized.
@@ -272,7 +307,7 @@ contract CollateralAgreementFramework is
         agreement[agreementId].position[params.party] = Position(
             partyId,
             params.balance,
-            PositionStatus.Idle
+            PositionStatus.Joined
         );
         agreement[agreementId].balance += params.balance;
     }
@@ -339,15 +374,33 @@ contract CollateralAgreementFramework is
         _setFee(token, recipient, amount);
     }
 
+    /// @inheritdoc FeeCollector
+    /// @dev Prevents collecting deposited collateral as fees.
+    /// @dev As this implementation send dispute fees directly to the feeRecipient the only tokens that would be collected as fee are tokens sent to the contract by error.
+    function collectFees() external override {
+        if (feeRecipient == address(0)) revert InvalidRecipient();
+        uint256 amount = feeToken.balanceOf(address(this));
+
+        if (feeToken == collateralToken) amount -= totalBalance;
+
+        _withdraw(feeToken, feeRecipient, amount);
+    }
+
     /// @notice Withdraw any ERC20 from the contract.
     /// @param token Token to withdraw.
     /// @param to Recipient address.
     /// @param amount Amount of tokens to withdraw.
+    /// @dev Prevents withdrawing deposited collateral.
     function withdrawTokens(
         ERC20 token,
         address to,
         uint256 amount
     ) external onlyOwner {
+        if (token == collateralToken) {
+            uint256 available = token.balanceOf(address(this)) - totalBalance;
+            if (amount > available) revert InsufficientBalance();
+        }
+
         _withdraw(token, to, amount);
     }
 }
