@@ -19,7 +19,7 @@ dataSources:
         - AgreementPosition
       abis:
         - name: AgreementFramework
-          file: ./abis/AgreementFramework.json
+          file: ./abis/IAgreementFramework.json
       eventHandlers:
         - event: AgreementCreated(bytes32,bytes32,uint256,string)
           handler: handleAgreementCreated
