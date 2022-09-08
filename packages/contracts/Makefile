@@ -19,10 +19,10 @@ install :;
 build  :; 
 	forge build 
 
-# Builds
+# Test
 test  :; 
 	forge test 
 
-# Builds
+# Get coverage
 coverage  :; 
 	forge coverage 
