@@ -10,6 +10,7 @@ import {
     PositionStatus,
     Permit,
     FeeCollector,
+    Owned,
     CollateralAgreementFramework
 } from "nation3-court/agreements/CollateralAgreement.sol";
 import { CriteriaResolver, CriteriaResolution } from "nation3-court/lib/CriteriaResolution.sol";
@@ -20,7 +21,6 @@ import { AgreementFrameworkTestBase } from "./utils/AgreementFrameworkTestBase.s
 
 contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
-    /// @dev Framework casted to collateral agreement interface for implementation specific functions.
     CollateralAgreementFramework collateralFramework;
 
     uint256 constant DISPUTE_FEE = 0.1 * 1e18;
@@ -65,6 +65,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         assertEq(agreementPositions[0].party, bob);
         assertEq(agreementPositions[0].balance, 2 * 1e18);
         assertEq(uint256(agreementPositions[0].status), 0);
+        assertEq(collateralFramework.totalBalance(), 2 * 1e18);
     }
 
     function testJoinAgreementWithPermit() public {
@@ -83,6 +84,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         assertEq(agreementPositions[0].party, bob);
         assertEq(agreementPositions[0].balance, 2 * 1e18);
+        assertEq(collateralFramework.totalBalance(), 2 * 1e18);
     }
 
     function testCantJoinWithInvalidCriteria() public {
@@ -391,13 +393,14 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
     }
 
     /* ====================================================================== //
-                                  WITHDRAWAL TESTS
+                             AGREEMENT WITHDRAWAL TESTS
     // ====================================================================== */
 
     function testWithdrawFromAgreement() public {
         bytes32 agreementId = _createAgreement();
         uint256 bobBalance = token.balanceOf(bob);
         uint256 aliceBalance = token.balanceOf(alice);
+        uint256 frameworkBalance = token.balanceOf(address(framework));
 
         _bobJoinsAgreementWithPermit(agreementId);
         _aliceJoinsAgreementWithPermit(agreementId);
@@ -420,6 +423,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         assertEq(token.balanceOf(bob), bobBalance);
         assertEq(token.balanceOf(alice), aliceBalance);
+        assertEq(token.balanceOf(address(framework)), frameworkBalance);
     }
 
     function testWithdrawAfterSettlement() public {
@@ -441,6 +445,57 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         assertEq(token.balanceOf(bob) - bobBalance, settlement[0].balance);
         assertEq(token.balanceOf(alice) - aliceBalance, settlement[1].balance);
     }
+
+    /* ====================================================================== //
+                             FEES WITHDRAWAL TESTS
+    // ====================================================================== */
+
+    function testCollectFees() public {
+        bytes32 agreementId = _createAgreement();
+        uint256 arbitratorBalance = token.balanceOf(arbitrator);
+
+        _bobJoinsAgreement(agreementId);
+        token.mint(address(collateralFramework), 3 * 1e18);
+
+        collateralFramework.collectFees();
+
+        // Checks that only collect tokens in the contract that are not deposited as collateral.
+        assertEq(token.balanceOf(arbitrator) - arbitratorBalance, 3 * 1e18);
+    }
+
+    function testOnlyOwnerCanWithdrawTokens() public {
+        collateralFramework.setOwner(bob);
+
+        hevm.expectRevert(Owned.Unauthorized.selector);
+        collateralFramework.withdrawTokens(token, alice, 3 * 1e18);
+    }
+
+    function testWithdrawTokens() public {
+        bytes32 agreementId = _createAgreement();
+        uint256 arbitratorBalance = token.balanceOf(arbitrator);
+
+        _bobJoinsAgreement(agreementId);
+        token.mint(address(collateralFramework), 3 * 1e18);
+
+        collateralFramework.withdrawTokens(token, arbitrator, 3 * 1e18);
+
+        assertEq(token.balanceOf(arbitrator) - arbitratorBalance, 3 * 1e18);
+    }
+
+    function testCantWithdrawCollateralTokens() public {
+        bytes32 agreementId = _createAgreement();
+        _bobJoinsAgreement(agreementId);
+        token.mint(address(collateralFramework), 3 * 1e18);
+
+        uint256 contractBalance = token.balanceOf(address(collateralFramework));
+
+        hevm.expectRevert(IAgreementFramework.InsufficientBalance.selector);
+        collateralFramework.withdrawTokens(token, arbitrator, contractBalance);
+    }
+
+    /* ====================================================================== //
+                                  TEST SNIPPETS
+    // ====================================================================== */
 
     function _disputeAgreement(address account, bytes32 agreementId) internal {
         hevm.startPrank(account);

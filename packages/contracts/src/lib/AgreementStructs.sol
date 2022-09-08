@@ -23,7 +23,7 @@ struct Agreement {
     uint256 criteria;
     /// @dev URI of the metadata of the agreement.
     string metadataURI;
-    /// @dev Total balance deposited in the agreement.
+    /// @dev Total amount of collateral tokens deposited in the agreement.
     uint256 balance;
     /// @dev Number of finalizations confirmations.
     uint256 finalizations;

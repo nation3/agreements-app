@@ -49,6 +49,9 @@ contract CollateralAgreementFramework is
     /// @dev Address with the power to settle agreements in dispute.
     address public arbitrator;
 
+    /// @dev Total amount of collateral tokens deposited in the framework.
+    uint256 public totalBalance;
+
     /// @dev Map of agreements by id.
     mapping(bytes32 => Agreement) public agreement;
 
@@ -144,6 +147,7 @@ contract CollateralAgreementFramework is
         );
 
         _addPosition(id, PositionParams(msg.sender, resolver.balance));
+        totalBalance += resolver.balance;
 
         emit AgreementJoined(id, msg.sender, resolver.balance);
     }
@@ -175,6 +179,7 @@ contract CollateralAgreementFramework is
         );
 
         _addPosition(id, PositionParams(msg.sender, resolver.balance));
+        totalBalance += resolver.balance;
 
         emit AgreementJoined(id, msg.sender, resolver.balance);
     }
@@ -245,6 +250,7 @@ contract CollateralAgreementFramework is
 
         uint256 withdrawBalance = agreement[id].position[msg.sender].balance;
         agreement[id].position[msg.sender].balance = 0;
+        totalBalance -= withdrawBalance;
 
         SafeTransferLib.safeTransfer(collateralToken, msg.sender, withdrawBalance);
 
@@ -368,15 +374,33 @@ contract CollateralAgreementFramework is
         _setFee(token, recipient, amount);
     }
 
+    /// @inheritdoc FeeCollector
+    /// @dev Prevents collecting deposited collateral as fees.
+    /// @dev As this implementation send dispute fees directly to the feeRecipient the only tokens that would be collected as fee are tokens sent to the contract by error.
+    function collectFees() external override {
+        if (feeRecipient == address(0)) revert InvalidRecipient();
+        uint256 amount = feeToken.balanceOf(address(this));
+
+        if (feeToken == collateralToken) amount -= totalBalance;
+
+        _withdraw(feeToken, feeRecipient, amount);
+    }
+
     /// @notice Withdraw any ERC20 from the contract.
     /// @param token Token to withdraw.
     /// @param to Recipient address.
     /// @param amount Amount of tokens to withdraw.
+    /// @dev Prevents withdrawing deposited collateral.
     function withdrawTokens(
         ERC20 token,
         address to,
         uint256 amount
     ) external onlyOwner {
+        if (token == collateralToken) {
+            uint256 available = token.balanceOf(address(this)) - totalBalance;
+            if (amount > available) revert InsufficientBalance();
+        }
+
         _withdraw(token, to, amount);
     }
 }
