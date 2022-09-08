@@ -3,6 +3,7 @@ pragma solidity ^0.8.15;
 
 enum PositionStatus {
     Idle,
+    Joined,
     Finalized
 }
 

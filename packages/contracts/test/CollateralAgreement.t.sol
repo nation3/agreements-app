@@ -20,7 +20,6 @@ import { IArbitrable } from "nation3-court/interfaces/IArbitrable.sol";
 import { AgreementFrameworkTestBase } from "./utils/AgreementFrameworkTestBase.sol";
 
 contract CollateralAgreementTest is AgreementFrameworkTestBase {
-
     CollateralAgreementFramework collateralFramework;
 
     uint256 constant DISPUTE_FEE = 0.1 * 1e18;
@@ -64,7 +63,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
         assertEq(agreementPositions[0].party, bob);
         assertEq(agreementPositions[0].balance, 2 * 1e18);
-        assertEq(uint256(agreementPositions[0].status), 0);
+        assertEq(uint256(agreementPositions[0].status), uint256(PositionStatus.Joined));
         assertEq(collateralFramework.totalBalance(), 2 * 1e18);
     }
 
@@ -298,7 +297,7 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         for (uint256 i = 0; i < settlement.length; i++) {
             assertEq(agreementPositions[i].party, settlement[i].party);
             assertEq(agreementPositions[i].balance, settlement[i].balance);
-            assertEq(uint256(agreementPositions[i].status), 1);
+            assertEq(uint256(agreementPositions[i].status), uint256(PositionStatus.Finalized));
         }
     }
 

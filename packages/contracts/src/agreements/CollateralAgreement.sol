@@ -307,7 +307,7 @@ contract CollateralAgreementFramework is
         agreement[agreementId].position[params.party] = Position(
             partyId,
             params.balance,
-            PositionStatus.Idle
+            PositionStatus.Joined
         );
         agreement[agreementId].balance += params.balance;
     }
