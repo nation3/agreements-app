@@ -29,7 +29,6 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
     function setUp() public {
         token = new MockERC20("framework Token", "AT", 18);
-
         framework = new CollateralAgreementFramework();
         collateralFramework = CollateralAgreementFramework(address(framework));
 
@@ -189,7 +188,6 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
     function testCantFinalizeAlreadyFinalizedframework() public {
         bytes32 agreementId = _createAgreement();
-
         _bobJoinsAgreementWithPermit(agreementId);
         _aliceJoinsAgreementWithPermit(agreementId);
 
@@ -211,7 +209,6 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
 
     function testDisputeAgreement() public {
         bytes32 agreementId = _createAgreement();
-
         _bobJoinsAgreement(agreementId);
         _aliceJoinsAgreementWithPermit(agreementId);
 
@@ -220,6 +217,24 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         framework.disputeAgreement(agreementId);
         hevm.stopPrank();
 
+        (, , , , , bool disputed) = collateralFramework.agreement(agreementId);
+
+        assertTrue(disputed);
+        assertEq(token.balanceOf(address(arbitrator)), DISPUTE_FEE);
+    }
+
+    function testDisputeAgreementWithPermit() public {
+        bytes32 agreementId = _createAgreement();
+        _bobJoinsAgreement(agreementId);
+        _aliceJoinsAgreementWithPermit(agreementId);
+
+        hevm.startPrank(bob);
+        framework.disputeAgreementWithPermit(agreementId, _getPermit(0xB0B, DISPUTE_FEE, 0));
+        hevm.stopPrank();
+
+        (, , , , , bool disputed) = collateralFramework.agreement(agreementId);
+
+        assertTrue(disputed);
         assertEq(token.balanceOf(address(arbitrator)), DISPUTE_FEE);
     }
 

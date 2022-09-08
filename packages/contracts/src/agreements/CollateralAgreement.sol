@@ -204,14 +204,30 @@ contract CollateralAgreementFramework is
 
     /// Raise a dispute over an agreement.
     /// @inheritdoc IAgreementFramework
-    /// @dev Requires the caller to be part of the agreement.
-    /// @dev Can be perform only once per agreement.
     function disputeAgreement(bytes32 id) external override {
-        if (agreement[id].disputed) revert AgreementIsDisputed();
-        if (_isFinalized(id)) revert AgreementIsFinalized();
-        if (!_isPartOfAgreement(id, msg.sender)) revert NoPartOfAgreement();
+        _canDisputeAgreement(id);
 
-        SafeTransferLib.safeTransferFrom(feeToken, msg.sender, arbitrator, fee);
+        SafeTransferLib.safeTransferFrom(feeToken, msg.sender, feeRecipient, fee);
+
+        agreement[id].disputed = true;
+
+        emit AgreementDisputed(id, msg.sender);
+    }
+
+    /// @inheritdoc IAgreementFramework
+    function disputeAgreementWithPermit(bytes32 id, Permit calldata permit) external override {
+        _canDisputeAgreement(id);
+
+        feeToken.permit(
+            msg.sender,
+            address(this),
+            permit.value,
+            permit.deadline,
+            permit.v,
+            permit.r,
+            permit.s
+        );
+        SafeTransferLib.safeTransferFrom(feeToken, msg.sender, feeRecipient, fee);
 
         agreement[id].disputed = true;
 
@@ -235,7 +251,7 @@ contract CollateralAgreementFramework is
         emit AgreementPositionUpdated(id, msg.sender, 0, agreement[id].position[msg.sender].status);
     }
 
-    /// Check if caller can join an agreement with the criteria resolver provided.
+    /// @dev Check if caller can join an agreement with the criteria resolver provided.
     /// @param id Id of the agreement to check.
     /// @param resolver Criteria resolver to check against criteria.
     function _canJoinAgreement(bytes32 id, CriteriaResolver calldata resolver) internal view {
@@ -245,6 +261,17 @@ contract CollateralAgreementFramework is
         if (msg.sender != resolver.account) revert PartyMustMatchCriteria();
 
         _validateCriteria(agreement[id].criteria, resolver);
+    }
+
+    /// @dev Check if caller can dispute an agreement.
+    /// @dev Requires the caller to be part of the agreement.
+    /// @dev Can be perform only once per agreement.
+    /// @param id Id of the agreement to check.
+    function _canDisputeAgreement(bytes32 id) internal view returns (bool) {
+        if (agreement[id].disputed) revert AgreementIsDisputed();
+        if (_isFinalized(id)) revert AgreementIsFinalized();
+        if (!_isPartOfAgreement(id, msg.sender)) revert NoPartOfAgreement();
+        return true;
     }
 
     /// @dev Check if an agreement is finalized.
