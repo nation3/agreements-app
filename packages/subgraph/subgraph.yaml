@@ -6,9 +6,9 @@ schema:
 dataSources:
   - kind: ethereum
     name: AgreementFramework
-    network: mainnet
+    network: goerli
     source:
-      address: "0x0000000000000000000000000000000000000000"
+      address: "0xb47262C22280f361ad47Af0636086463Bd29A109"
       abi: AgreementFramework
     mapping:
       kind: ethereum/events

@@ -1,7 +1,7 @@
 {
-  "mainnet": {
+  "goerli": {
     "AgreementFramework": {
-      "address": "0x0000000000000000000000000000000000000000"
+      "address": "0xb47262C22280f361ad47Af0636086463Bd29A109"
     }
   }
 }
