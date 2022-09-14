@@ -30,7 +30,7 @@ type Agreement @entity {
     metadataURI: String!
 
     "Positions of the agreement"
-    positions: [AgreementPosition!]! @derivedFrom(field: "agreement")
+    positions: [AgreementPosition!] @derivedFrom(field: "agreement")
 }
 
 type AgreementPosition @entity {

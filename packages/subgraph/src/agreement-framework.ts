@@ -13,7 +13,6 @@ export function handleAgreementCreated(event: AgreementCreated): void {
   agreement.termsHash = event.params.termsHash;
   agreement.criteria = event.params.criteria;
   agreement.status = "Created";
-  agreement.positions = [];
   agreement.metadataURI = event.params.metadataURI;
   agreement.save();
 }
@@ -31,18 +30,21 @@ export function handleAgreementJoined(event: AgreementJoined): void {
   let position = new AgreementPosition(
     event.params.id.toHexString().concat(event.params.party.toHexString())
   );
-  position.party = event.params.party;
-  position.balance = event.params.balance;
-  position.status = "Idle";
-  position.agreement = event.params.id.toHexString();
+
+  if (position) {
+    position.party = event.params.party;
+    position.balance = event.params.balance;
+    position.status = "Idle";
+    position.agreement = event.params.id.toHexString();
+    position.save();
+  }
 
   if (agreement) {
-    if (agreement.positions.length >= 1) {
+    if (agreement.positions && agreement.positions!.length >= 1) {
       agreement.status = "Ongoing";
     }
     agreement.save();
   }
-  position.save();
 }
 
 export function handleAgreementPositionUpdated(
