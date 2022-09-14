@@ -1,0 +1,51 @@
+# Subgraph Schema: Agreement Framework
+# Version: 0.0.2
+
+enum AgreementStatus {
+    Created
+    Ongoing
+    Finalized
+    Disputed
+}
+
+enum PositionStatus {
+    Idle
+    Finalized
+}
+
+type Agreement @entity {
+    "Agreement ID"
+    id: String!
+    
+    "Hash of the detailed terms of the agreement"
+    termsHash: Bytes!
+
+    "Required amount to join or merkle root of (address,amount)"
+    criteria: BigInt!
+
+    "Status of the agreement"
+    status: AgreementStatus!
+
+    "Agreement Metadata URI"
+    metadataURI: String!
+
+    "Positions of the agreement"
+    positions: [AgreementPosition!] @derivedFrom(field: "agreement")
+}
+
+type AgreementPosition @entity {
+    "Position ID"
+    id: String!
+
+    "Holder of the position - address"
+    party: Bytes!
+
+    "Amount of tokens corresponding to this position"
+    balance: BigInt!
+
+    "Status of the agreement position"
+    status: PositionStatus!
+
+    "Agreement this position belongs to"
+    agreement: Agreement! 
+}
