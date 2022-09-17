@@ -110,9 +110,14 @@ interface IAgreementFramework is IArbitrable {
     /// @param id Id of the agreement to settle.
     function finalizeAgreement(bytes32 id) external;
 
-    /// @notice Dispute agreement so arbitration is needed for finalization.
+    /// @notice Raise a dispute over an agreement.
     /// @param id Id of the agreement to dispute.
     function disputeAgreement(bytes32 id) external;
+
+    /// @notice Raise a dispute over an agreement with EIP-2612 permit for posible fees.
+    /// @param id Id of the agreement to dispute.
+    /// @param permit EIP-2612 permit data to approve transfer of tokens.
+    function disputeAgreementWithPermit(bytes32 id, Permit calldata permit) external;
 
     /// @notice Withdraw your position from the agreement.
     /// @param id Id of the agreement to withdraw from.

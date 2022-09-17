@@ -1,0 +1,35 @@
+specVersion: 0.0.4
+description: TBD
+repository: https://github.com/nation3/court
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: AgreementFramework
+    network: goerli
+    source:
+      address: "0xb47262C22280f361ad47Af0636086463Bd29A109"
+      abi: AgreementFramework
+      startBlock: 7555630
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Agreement
+        - AgreementPosition
+      abis:
+        - name: AgreementFramework
+          file: ./abis/IAgreementFramework.json
+      eventHandlers:
+        - event: AgreementCreated(bytes32,bytes32,uint256,string)
+          handler: handleAgreementCreated
+        - event: AgreementJoined(bytes32,address,uint256)
+          handler: handleAgreementJoined
+        - event: AgreementPositionUpdated(bytes32,address,uint256,uint8)
+          handler: handleAgreementPositionUpdated
+        - event: AgreementFinalized(bytes32)
+          handler: handleAgreementFinalized
+        - event: AgreementDisputed(bytes32,address)
+          handler: handleAgreementDisputed
+      file: ./src/agreement-framework.ts

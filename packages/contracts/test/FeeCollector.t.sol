@@ -5,6 +5,7 @@ import { DSTestPlus } from "solmate/src/test/utils/DSTestPlus.sol";
 import { MockERC20 } from "solmate/src/test/utils/mocks/MockERC20.sol";
 import { SafeTransferLib } from "solmate/src/utils/SafeTransferLib.sol";
 
+import { FeeCollector } from "nation3-court/lib/FeeCollector.sol";
 import { MockFeeCollector } from "./utils/mocks/MockFeeCollector.sol";
 
 contract FeeCollectorTest is DSTestPlus {
@@ -24,22 +25,35 @@ contract FeeCollectorTest is DSTestPlus {
         MockERC20 newToken = new MockERC20("TestToken2", "TEST2", 18);
         uint256 newAmount = 3 * 1e18;
 
-        collector.setFee(newToken, newAmount);
+        collector.setFee(newToken, address(this), newAmount);
 
         assertEq(address(collector.feeToken()), address(newToken));
+        assertEq(address(collector.feeRecipient()), address(this));
         assertEq(collector.fee(), newAmount);
     }
 
-    function testWithdrawTokens() public {
-        testWithdrawTokens(address(0xB0B), 200 * 1e18);
+    function testCantSetInvalidRecipient() public {
+        hevm.expectRevert(FeeCollector.InvalidRecipient.selector);
+        collector.setFee(token, address(0), 1e18);
     }
 
-    function testWithdrawTokens(address to, uint256 amount) public {
-        hevm.assume(to != address(this));
+    function testCollectFees() public {
+        testCollectFees(address(0xB0B), 200 * 1e18);
+    }
 
-        SafeTransferLib.safeTransfer(token, address(collector), amount);
+    function testCantCollectToInvalidRecipient() public {
+        // The recipient is not initialized so its set to 0x0
+        hevm.expectRevert(FeeCollector.InvalidRecipient.selector);
+        collector.collectFees();
+    }
 
-        collector.withdrawTokens(token, to, amount);
+    function testCollectFees(address to, uint256 amount) public {
+        hevm.assume(to != address(this) && to != address(0));
+
+        collector.setFee(token, to, amount);
+        SafeTransferLib.safeTransfer(token, address(collector), collector.fee());
+
+        collector.collectFees();
 
         assertEq(token.balanceOf(to), amount);
     }
