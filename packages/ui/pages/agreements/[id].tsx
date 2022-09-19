@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import { ChevronLeftIcon } from "@heroicons/react/outline";
 import { Badge, Button, Card, InfoAlert } from "@nation3/components";
-import { transformNumber } from "@nation3/utils";
+import { transformNumber, NumberType } from "@nation3/utils";
 import { useContractRead, useContractWrite, useSigner } from "wagmi";
 import { constants } from "ethers";
 
@@ -14,70 +14,123 @@ import contractInterface from "../../abis/IAgreementFramework.json";
 
 const abi = contractInterface.abi;
 
-const statusMessageMap = {
+const statusMessageMap: { [key: number]: string } = {
 	0: "Not joined",
 	1: "Joined",
 	2: "Finalized",
 };
 
 const statusMessage = (status: number) => {
-    return statusMessageMap[status] || "Unknown"
-}
+	return statusMessageMap[status] || "Unknown";
+};
 
 export default function AgreementDetailPage() {
 	const router = useRouter();
 	const { id } = router.query;
+	const { data: signer } = useSigner();
 	const contractAddress = "0xb47262C22280f361ad47Af0636086463Bd29A109";
 
-	const [agreementParams, setParams] = useState({
-		termsHash: constants.HashZero,
-		metadataURI: "ifps://",
-	});
-	const [agreementMetadata, setMetadata] = useState({
-		title: "Agreement",
-        resolvers: {}
-	});
-	const [agreementPositions, setPositions] = useState({});
+	const [title, setTitle] = useState("Agreement");
+	const [termsHash, setTermsHash] = useState<string>();
+	const [metadataURI, setMetadataURI] = useState<string>();
+	const [resolvers, setResolvers] = useState<{
+		[key: string]: { balance: string; proof: string[] };
+	}>();
+	const [positions, setPositions] = useState<{
+		[key: string]: { balance: string; status: number };
+	}>();
 
-	const { data: params } = useContractRead({
+	const { data: agreementParams } = useContractRead({
 		addressOrName: contractAddress,
 		contractInterface: abi,
 		functionName: "agreementParams",
 		args: id,
 	});
 
-	const { data: positions } = useContractRead({
+	const { data: agreementPositions } = useContractRead({
 		addressOrName: contractAddress,
 		contractInterface: abi,
 		functionName: "agreementPositions",
 		args: id,
 	});
 
+	const { write: joinAgreement } = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: contractAddress,
+		contractInterface: abi,
+		functionName: "joinAgreement",
+		onError(error) {
+			console.log(error);
+		},
+	});
+
 	const loadMetadata = async (metadataURI: string) => {
 		const metadata = await fetchMetadata(metadataURI);
-		setMetadata({
-            ...agreementMetadata,
-            title: metadata?.title,
-            resolvers: metadata?.criteria.resolvers ?? {},
+		if (metadata.title) {
+			setTitle(metadata.title);
+		}
+		if (metadata.criteria?.resolvers) {
+			const parsed: { [key: string]: { balance: string; proof: string[] } } = Object.entries(
+				metadata.criteria.resolvers,
+			).reduce(
+				(result, [account, { amount, proof }]) => ({
+					...result,
+					[account]: { balance: amount, proof: proof },
+				}),
+				{},
+			);
+			setResolvers({ ...resolvers, ...parsed });
+		}
+	};
+
+	const join = async () => {
+		const address: string | undefined = await signer?.getAddress();
+		if (!address) {
+			return false;
+		}
+
+		const resolver = { account: address, ...resolvers?.[address] };
+		if (!resolver.proof) {
+			return false;
+		}
+
+		console.log("Resolver", resolver);
+
         });
 	};
 
+	{
+		/* Update state when fetched agreement params */
+	}
 	useEffect(() => {
-		const newParams = {
-			termsHash: params?.termsHash ?? agreementParams.termsHash,
-			metadataURI: params?.metadataURI ?? agreementParams.metadataURI,
-		};
-		if (newParams != agreementParams) {
-			setParams(newParams);
-			if (params?.metadataURI) {
-				loadMetadata(params.metadataURI);
-			}
+		if (agreementParams?.termsHash && agreementParams.termsHash != termsHash) {
+			setTermsHash(agreementParams.termsHash);
 		}
-	}, [params]);
+		if (agreementParams?.metadataURI && agreementParams.metadataURI != metadataURI) {
+			setMetadataURI(agreementParams.metadataURI);
+			loadMetadata(agreementParams.metadataURI);
+		}
+	}, [agreementParams]);
 
+	{
+		/* Update positions when fetched agreement positions or new resolvers */
+	}
 	useEffect(() => {
-		if (positions) {
-			const parsedPositions = positions.reduce(
+		let knownPositions = {};
+		if (resolvers) {
+			knownPositions = Object.entries(resolvers).reduce(
+				(result, [account, { balance }]) => ({
+					...result,
+					[account.toString()]: {
+						balance: balance,
+						status: 0,
+					},
+				}),
+				knownPositions,
+			);
+		}
+		if (agreementPositions) {
+			knownPositions = agreementPositions.reduce(
 				(result, [party, balance, status]) => ({
 					...result,
 					[party.toString()]: {
@@ -85,11 +138,13 @@ export default function AgreementDetailPage() {
 						status: status,
 					},
 				}),
-				{},
+				knownPositions,
 			);
-			setPositions(parsedPositions);
 		}
-	}, [positions]);
+		if (knownPositions != positions) {
+			setPositions(knownPositions);
+		}
+	}, [agreementPositions, resolvers]);
 
 	return (
 		<div>
@@ -102,27 +157,26 @@ export default function AgreementDetailPage() {
 			<Card className="flex flex-col gap-8 max-w-2xl text-gray-800">
 				{/* Title and details */}
 				<div className="text-gray-700">
-					<h1 className="font-display font-medium text-2xl">{agreementMetadata.title}</h1>
+					<h1 className="font-display font-medium text-2xl">{title}</h1>
 					<span>
-						ID {shortenHash(id ?? constants.HashZero)} | Terms hash{" "}
-						{shortenHash(agreementParams.termsHash ?? constants.HashZero)}
+						ID {shortenHash(String(id) ?? constants.HashZero)} | Terms hash{" "}
+						{shortenHash(termsHash ?? constants.HashZero)}
 					</span>
 				</div>
 				{/* Participant table */}
 				<Table
 					columns={["participant", "stake", "status"]}
-					data={Object.entries(agreementPositions).map(([party, data]) => [
-						shortenHash(party),
-						<b>{transformNumber(data.balance, "number", 5)} $NATION</b>,
-						<Badge textColor="yellow-800" bgColor="yellow-100" text={statusMessage(data.status)} />,
+					data={Object.entries(positions ?? {}).map(([account, { balance, status }]) => [
+						shortenHash(account),
+						<b> {String(transformNumber(balance, NumberType.number, 5))} $NATION</b>,
+						<Badge textColor="yellow-800" bgColor="yellow-100" text={statusMessage(status)} />,
 					])}
 				/>
 				{/* Info */}
 				<InfoAlert message="If you are one of the parties involved in this agreement, please keep the terms file safe. You will need it to interact with this app." />
 				{/* Action buttons */}
 				<div className="flex gap-8 justify-between">
-					<Button label="Validate terms" />
-					<Button label="Join" />
+					<Button label="Join" onClick={() => join()} />
 				</div>
 			</Card>
 		</div>
