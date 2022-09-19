@@ -1,7 +1,17 @@
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const Home: NextPage = () => {
-	return <div>HOME</div>;
+	const router = useRouter();
+
+	useEffect(() => {
+		if (router.pathname == "/") {
+			router.push("/agreements");
+		}
+	});
+
+	return <div>...</div>;
 };
 
 export default Home;

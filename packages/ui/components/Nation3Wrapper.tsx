@@ -21,7 +21,7 @@ function Nation3Wrapper({ children }: { children: React.ReactElement | React.Rea
 							});
 						}}
 						logo={<img src="/logo.svg" alt="Nation3 Logo" />}
-						onRoute={() => router.push("/agreements")}
+						onRoute={() => router.push("/")}
 						navLinks={[
 							{
 								route: "/agreements",
