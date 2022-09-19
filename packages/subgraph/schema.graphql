@@ -49,3 +49,30 @@ type AgreementPosition @entity {
     "Agreement this position belongs to"
     agreement: Agreement! 
 }
+
+enum ResolutionStatus {
+    Submitted
+    Appealed
+    Endorsed
+    Executed
+}
+
+type Resolution @entity {
+    "Resolution ID = Hash"
+    id: String!
+
+    "Address of the framework of the agreement in dispute"
+    framework: Bytes!
+
+    "Disputed Agreement ID"
+    agreement: String!
+
+    "List of accounts that have appealed the resolution"
+    appealedBy: [Bytes!]
+
+    "Unlock block number for the resolution execution"
+    unlockBlock: BigInt!
+
+    "Resolution Status"
+    status: ResolutionStatus!
+}
