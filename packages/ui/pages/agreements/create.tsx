@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeftIcon } from "@heroicons/react/outline";
+import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import { Button } from "@nation3/components";
 import { Card } from "@nation3/components";
 import { shortenHash } from "../../utils/strings";
