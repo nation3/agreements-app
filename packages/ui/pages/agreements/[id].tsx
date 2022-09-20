@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import { ChevronLeftIcon } from "@heroicons/react/outline";
-import { Badge, Button, Card, InfoAlert } from "@nation3/components";
+import { ChevronLeftIcon } from "@heroicons/react/20/solid";
+import { Badge, Card, InfoAlert } from "@nation3/components";
 import { transformNumber, NumberType } from "@nation3/utils";
 import { useContractRead, useContractWrite, useSigner } from "wagmi";
 import { constants } from "ethers";
 
 import { shortenHash } from "../../utils/strings";
-import { fetchMetadata } from "../../utils/metadata";
+import { fetchMetadata, AgreementMetadata, parseMetadata } from "../../utils/metadata";
 import Table from "../../components/Table";
+import { Button, UploadButton } from "../../components/buttons";
 import contractInterface from "../../abis/IAgreementFramework.json";
 
 const abi = contractInterface.abi;
@@ -29,6 +30,7 @@ export default function AgreementDetailPage() {
 	const { id } = router.query;
 	const { data: signer } = useSigner();
 	const contractAddress = "0xb47262C22280f361ad47Af0636086463Bd29A109";
+	const [joinable, setJoinable] = useState(false);
 
 	const [title, setTitle] = useState("Agreement");
 	const [termsHash, setTermsHash] = useState<string>();
@@ -64,8 +66,7 @@ export default function AgreementDetailPage() {
 		},
 	});
 
-	const loadMetadata = async (metadataURI: string) => {
-		const metadata = await fetchMetadata(metadataURI);
+	const setMetadata = (metadata: AgreementMetadata) => {
 		if (metadata.title) {
 			setTitle(metadata.title);
 		}
@@ -96,27 +97,25 @@ export default function AgreementDetailPage() {
 
 		console.log("Resolver", resolver);
 
-        });
+		joinAgreement?.({
+			recklesslySetUnpreparedArgs: [id, resolver],
+		});
 	};
 
-	{
-		/* Update state when fetched agreement params */
-	}
+	/* Update state when fetched agreement params */
 	useEffect(() => {
 		if (agreementParams?.termsHash && agreementParams.termsHash != termsHash) {
 			setTermsHash(agreementParams.termsHash);
 		}
 		if (agreementParams?.metadataURI && agreementParams.metadataURI != metadataURI) {
 			setMetadataURI(agreementParams.metadataURI);
-			loadMetadata(agreementParams.metadataURI);
+			fetchMetadata(agreementParams.metadataURI).then((metadata) => setMetadata(metadata));
 		}
 	}, [agreementParams]);
 
-	{
-		/* Update positions when fetched agreement positions or new resolvers */
-	}
+	/* Update positions when fetched agreement positions or new resolvers */
 	useEffect(() => {
-		let knownPositions = {};
+		let knownPositions: { [key: string]: { balance: string; status: number } } = {};
 		if (resolvers) {
 			knownPositions = Object.entries(resolvers).reduce(
 				(result, [account, { balance }]) => ({
@@ -143,6 +142,11 @@ export default function AgreementDetailPage() {
 		}
 		if (knownPositions != positions) {
 			setPositions(knownPositions);
+			signer?.getAddress().then((address) => {
+				if (address && knownPositions[address] && knownPositions[address].status == 0) {
+					setJoinable(true);
+				}
+			});
 		}
 	}, [agreementPositions, resolvers]);
 
@@ -152,7 +156,7 @@ export default function AgreementDetailPage() {
 				className="flex items-center gap-1 py-1 text-n3blue cursor-pointer hover:underline"
 				onClick={() => router.push("/agreements")}
 			>
-				<ChevronLeftIcon className="w-4 h-4" /> Back to your agreements
+				<ChevronLeftIcon className="w-5 h-5" /> Back to your agreements
 			</div>
 			<Card className="flex flex-col gap-8 max-w-2xl text-gray-800">
 				{/* Title and details */}
@@ -176,7 +180,11 @@ export default function AgreementDetailPage() {
 				<InfoAlert message="If you are one of the parties involved in this agreement, please keep the terms file safe. You will need it to interact with this app." />
 				{/* Action buttons */}
 				<div className="flex gap-8 justify-between">
-					<Button label="Join" onClick={() => join()} />
+					<UploadButton
+						label="Upload metadata"
+						onUpload={(data) => setMetadata(parseMetadata(data))}
+					/>
+					<Button label="Join" disabled={!joinable} onClick={() => join()} />
 				</div>
 			</Card>
 		</div>
