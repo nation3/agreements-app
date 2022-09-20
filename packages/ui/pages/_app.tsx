@@ -3,6 +3,7 @@ import Head from "next/head";
 import { createClient, WagmiConfig, configureChains, chain } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import Nation3Wrapper from "../components/Nation3Wrapper";
+import "./index.css";
 
 const { provider, webSocketProvider } = configureChains(
 	[chain.goerli, chain.foundry],

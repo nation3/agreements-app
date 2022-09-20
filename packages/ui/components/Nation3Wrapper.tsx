@@ -1,4 +1,4 @@
-import { PencilAltIcon } from "@heroicons/react/outline";
+import { PencilSquareIcon } from "@heroicons/react/20/solid";
 import { Nation3App, DefaultLayout, DefaultSidebar } from "@nation3/components";
 import { useRouter } from "next/router";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
@@ -25,7 +25,7 @@ function Nation3Wrapper({ children }: { children: React.ReactElement | React.Rea
 						navLinks={[
 							{
 								route: "/agreements",
-								icon: <PencilAltIcon className="w-5 h-5" />,
+								icon: <PencilSquareIcon className="w-5 h-5" />,
 								name: "Agreements",
 								isActive: router.pathname.startsWith("/agreements"),
 							},
