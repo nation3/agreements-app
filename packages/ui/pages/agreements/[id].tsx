@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
-import { Badge, Card, InfoAlert } from "@nation3/components";
+import { Card, InfoAlert } from "@nation3/components";
 import { transformNumber, NumberType } from "@nation3/utils";
 import { useContractRead, useContractWrite, useSigner } from "wagmi";
 import { constants } from "ethers";
@@ -11,19 +11,10 @@ import { shortenHash } from "../../utils/strings";
 import { fetchMetadata, AgreementMetadata, parseMetadata } from "../../utils/metadata";
 import Table from "../../components/Table";
 import { Button, UploadButton } from "../../components/buttons";
+import { PositionStatusBadge } from "../../components/badges";
 import contractInterface from "../../abis/IAgreementFramework.json";
 
 const abi = contractInterface.abi;
-
-const statusMessageMap: { [key: number]: string } = {
-	0: "Not joined",
-	1: "Joined",
-	2: "Finalized",
-};
-
-const statusMessage = (status: number) => {
-	return statusMessageMap[status] || "Unknown";
-};
 
 export default function AgreementDetailPage() {
 	const router = useRouter();
@@ -170,10 +161,10 @@ export default function AgreementDetailPage() {
 				{/* Participant table */}
 				<Table
 					columns={["participant", "stake", "status"]}
-					data={Object.entries(positions ?? {}).map(([account, { balance, status }]) => [
+					data={Object.entries(positions ?? {}).map(([account, { balance, status }], index) => [
 						shortenHash(account),
-						<b> {String(transformNumber(balance, NumberType.number, 5))} $NATION</b>,
-						<Badge textColor="yellow-800" bgColor="yellow-100" text={statusMessage(status)} />,
+						<b key={index}> {String(transformNumber(balance, NumberType.number, 5))} $NATION</b>,
+						<PositionStatusBadge key={index} status={status} />,
 					])}
 				/>
 				{/* Info */}
