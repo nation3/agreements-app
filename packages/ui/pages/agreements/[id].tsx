@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
-import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 import { Card, InfoAlert } from "@nation3/components";
 import { transformNumber, NumberType } from "@nation3/utils";
 import { useContractRead, useContractWrite, useSigner } from "wagmi";
@@ -10,8 +9,8 @@ import { constants } from "ethers";
 import { shortenHash } from "../../utils/strings";
 import { fetchMetadata, AgreementMetadata, parseMetadata } from "../../utils/metadata";
 import Table from "../../components/Table";
-import { Button, UploadButton } from "../../components/buttons";
 import { PositionStatusBadge } from "../../components/badges";
+import { Button, UploadButton, BackLinkButton } from "../../components/buttons";
 import contractInterface from "../../abis/IAgreementFramework.json";
 
 const abi = contractInterface.abi;
@@ -143,12 +142,7 @@ export default function AgreementDetailPage() {
 
 	return (
 		<div>
-			<div
-				className="flex items-center gap-1 py-1 text-n3blue cursor-pointer hover:underline"
-				onClick={() => router.push("/agreements")}
-			>
-				<ChevronLeftIcon className="w-5 h-5" /> Back to your agreements
-			</div>
+			<BackLinkButton route={"/agreements"} />
 			<Card className="flex flex-col gap-8 max-w-2xl text-gray-800">
 				{/* Title and details */}
 				<div className="text-gray-700">
