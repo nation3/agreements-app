@@ -14,13 +14,15 @@
     "@nation3/utils": "^1.0.38",
     "ethers": "^5.7.0",
     "framer-motion": "^7.3.5",
+    "ipfs-car": "^0.8.1",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.2.32",
     "next": "12.2.5",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.2",
-    "wagmi": "^0.6.5"
+    "wagmi": "^0.6.5",
+    "web3.storage": "^4.4.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.7",

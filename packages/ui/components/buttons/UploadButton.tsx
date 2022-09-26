@@ -24,7 +24,7 @@ const UploadButton = ({ label, onUpload }: { label: string; onUpload: (data: obj
 			{modalOpen && (
 				<UploadModal
 					title={label}
-					onUpload={(data) => {
+					onSubmit={(data) => {
 						onUpload(data);
 						setModalOpen(false);
 					}}

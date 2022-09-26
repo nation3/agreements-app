@@ -5,11 +5,11 @@ import { Button } from "../buttons";
 
 const UploadModal = ({
 	title,
-	onUpload,
+	onSubmit,
 	onClose,
 }: {
 	title: string;
-	onUpload: (file: object) => void;
+	onSubmit: (file: object) => void;
 	onClose: () => void;
 }) => {
 	const [file, setFile] = useState<object>();
@@ -39,7 +39,7 @@ const UploadModal = ({
 					label={"Confirm"}
 					onClick={() => {
 						if (file) {
-							onUpload(file);
+							onSubmit(file);
 						}
 					}}
 				/>

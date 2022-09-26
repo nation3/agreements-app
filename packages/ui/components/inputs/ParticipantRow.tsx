@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import TextInput from "./TextInput.tsx";
+import TextInput from "./TextInput";
 import TokenBalanceInput from "./TokenBalanceInput";
 
 // TODO:
 // - Better way of updating array?
+// - Better way of updating component on changes in the array
 
 const ParticipantRow = ({
 	positions,
@@ -12,7 +13,7 @@ const ParticipantRow = ({
 }: {
 	positions: any[];
 	index: number;
-	onChange?: () => void;
+	onChange?: (e?: any) => void;
 }) => {
 	useEffect(() => {}, [positions]);
 
@@ -24,20 +25,19 @@ const ParticipantRow = ({
 				onChange={(e: any) => {
 					const positions_ = JSON.parse(JSON.stringify(positions));
 					positions_[index].address = e.target.value;
-					onChange(positions_);
+					onChange?.(positions_);
 				}}
 			/>
 			<TokenBalanceInput
 				value={positions[index].balance}
 				token={"NATION"}
 				onChange={(e: any) => {
-					if (e.target.value < 0) {
-						return false;
-					}
+					if (e.target.value < 0) return;
+
 					const positions_ = JSON.parse(JSON.stringify(positions));
 					positions_[index].balance = e.target.value;
 					console.log(positions_[index].balance.toString());
-					onChange(positions_);
+					onChange?.(positions_);
 				}}
 			/>
 		</div>

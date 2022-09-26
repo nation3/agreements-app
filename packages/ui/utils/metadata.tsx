@@ -5,12 +5,15 @@ export type AgreementMetadata = {
 	termsHash?: string;
 	termsUri?: string;
 	description?: string;
-	criteria?: {
-		root: string;
-		resolvers: {
-			[key: string]: { amount: string; proof: string[] };
-		};
-	};
+	criteria?:
+		| string
+		| {
+				root: string;
+				resolvers: {
+					[key: string]: { amount: string; proof: string[] };
+				};
+		  };
+	resolvers?: { [key: string]: { amount: string; proof: string[] } };
 };
 
 export const parseMetadata = (data: { [key: string]: any }): AgreementMetadata => {
@@ -20,6 +23,7 @@ export const parseMetadata = (data: { [key: string]: any }): AgreementMetadata =
 		termsUri: data.termsUri ?? undefined,
 		description: data.description ?? undefined,
 		criteria: data.criteria ?? undefined,
+		resolvers: data.resolvers ?? undefined,
 	};
 };
 

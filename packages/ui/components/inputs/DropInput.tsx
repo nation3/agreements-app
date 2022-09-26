@@ -1,6 +1,6 @@
 import { useDropzone } from "react-dropzone";
 
-const DropInput = ({ label, dropzoneConfig }: { label: string; dropzoneConfig: object }) => {
+const DropInput = ({ label, dropzoneConfig }: { label?: string; dropzoneConfig: object }) => {
 	const { getRootProps, getInputProps } = useDropzone({ ...dropzoneConfig });
 
 	return (
@@ -11,7 +11,7 @@ const DropInput = ({ label, dropzoneConfig }: { label: string; dropzoneConfig: o
 			})}
 		>
 			<input {...getInputProps()} />
-			{label}
+			{label ?? "Drag 'n' drop or click to select file"}
 		</div>
 	);
 };
