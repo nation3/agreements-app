@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { Card, InfoAlert } from "@nation3/components";
-import { transformNumber, NumberType } from "@nation3/utils";
 import { useContractRead, useContractWrite, useSigner } from "wagmi";
-import { constants } from "ethers";
+import { utils, constants, BigNumber } from "ethers";
 
 import { shortenHash } from "../../utils/strings";
 import { fetchMetadata, AgreementMetadata, parseMetadata } from "../../utils/metadata";
@@ -15,7 +14,7 @@ import contractInterface from "../../abis/IAgreementFramework.json";
 
 const abi = contractInterface.abi;
 
-export default function AgreementDetailPage() {
+const AgreementDetailPage = () => {
 	const router = useRouter();
 	const { id } = router.query;
 	const { data: signer } = useSigner();
@@ -57,16 +56,23 @@ export default function AgreementDetailPage() {
 	});
 
 	const setMetadata = (metadata: AgreementMetadata) => {
+		let resolvers_: object = {};
+
 		if (metadata.title) {
 			setTitle(metadata.title);
 		}
-		if (metadata.criteria?.resolvers) {
+
+		// TODO: Remove legacy format
+		if (metadata.resolvers) {
+			resolvers_ = metadata.resolvers;
+			setResolvers({ ...resolvers, ...resolvers_ });
+		} else if (typeof metadata.criteria == "object" && metadata.criteria.resolvers) {
 			const parsed: { [key: string]: { balance: string; proof: string[] } } = Object.entries(
 				metadata.criteria.resolvers,
 			).reduce(
 				(result, [account, { amount, proof }]) => ({
 					...result,
-					[account]: { balance: amount, proof: proof },
+					[account]: { balance: amount, proof },
 				}),
 				{},
 			);
@@ -107,6 +113,7 @@ export default function AgreementDetailPage() {
 	useEffect(() => {
 		let knownPositions: { [key: string]: { balance: string; status: number } } = {};
 		if (resolvers) {
+			console.log(resolvers);
 			knownPositions = Object.entries(resolvers).reduce(
 				(result, [account, { balance }]) => ({
 					...result,
@@ -130,6 +137,7 @@ export default function AgreementDetailPage() {
 				knownPositions,
 			);
 		}
+		console.log(knownPositions);
 		if (knownPositions != positions) {
 			setPositions(knownPositions);
 			signer?.getAddress().then((address) => {
@@ -157,7 +165,7 @@ export default function AgreementDetailPage() {
 					columns={["participant", "stake", "status"]}
 					data={Object.entries(positions ?? {}).map(([account, { balance, status }], index) => [
 						shortenHash(account),
-						<b key={index}> {String(transformNumber(balance, NumberType.number, 5))} $NATION</b>,
+						<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
 						<PositionStatusBadge key={index} status={status} />,
 					])}
 				/>
@@ -174,4 +182,6 @@ export default function AgreementDetailPage() {
 			</Card>
 		</div>
 	);
-}
+};
+
+export default AgreementDetailPage;
