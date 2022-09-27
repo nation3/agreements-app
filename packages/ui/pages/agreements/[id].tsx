@@ -20,6 +20,7 @@ const AgreementDetailPage = () => {
 	const { data: signer } = useSigner();
 	const contractAddress = "0xb47262C22280f361ad47Af0636086463Bd29A109";
 	const [joinable, setJoinable] = useState(false);
+	const [finalizable, setFinalizable] = useState(false);
 
 	const [title, setTitle] = useState("Agreement");
 	const [termsHash, setTermsHash] = useState<string>();
@@ -55,6 +56,15 @@ const AgreementDetailPage = () => {
 		},
 	});
 
+	const { write: finalizeAgreement } = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: contractAddress,
+		contractInterface: abi,
+		functionName: "finalizeAgreement",
+		onError(error) {
+			console.log(error);
+		},
+	});
 
 	const setMetadata = (metadata: AgreementMetadata) => {
 		if (metadata.title) {
@@ -105,6 +115,12 @@ const AgreementDetailPage = () => {
 		});
 	};
 
+	const finalize = async () => {
+		finalizeAgreement?.({
+			recklesslySetUnpreparedArgs: [id],
+		});
+	};
+
 	/* Update state when fetched agreement params */
 	useEffect(() => {
 		if (agreementParams?.termsHash && agreementParams.termsHash != termsHash) {
@@ -146,12 +162,16 @@ const AgreementDetailPage = () => {
 		if (knownPositions != positions) {
 			setPositions(knownPositions);
 			signer?.getAddress().then((address) => {
-				if (address && knownPositions[address] && knownPositions[address].status == 0) {
-					setJoinable(true);
+				if (address && knownPositions[address]) {
+					if (knownPositions[address].status == 0) {
+						setJoinable(true);
+					} else if (knownPositions[address].status == 1) {
+						setFinalizable(true);
+					}
 				}
 			});
 		}
-	}, [agreementPositions, resolvers]);
+	}, [agreementPositions, resolvers, signer]);
 
 	return (
 		<div>
@@ -188,6 +208,7 @@ const AgreementDetailPage = () => {
 				{/* Action buttons */}
 				<div className="flex gap-8 justify-between">
 					<Button label="Join" disabled={!joinable} onClick={() => join()} />
+					<Button label="Finalize" disabled={!finalizable} onClick={() => finalize()} />
 				</div>
 			</Card>
 		</div>
