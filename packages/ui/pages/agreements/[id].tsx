@@ -21,6 +21,8 @@ const AgreementDetailPage = () => {
 	const contractAddress = "0xb47262C22280f361ad47Af0636086463Bd29A109";
 	const [joinable, setJoinable] = useState(false);
 	const [finalizable, setFinalizable] = useState(false);
+	const [disputable, setDisputable] = useState(false);
+	const [withdrawable, setWithdrawable] = useState(false);
 
 	const [title, setTitle] = useState("Agreement");
 	const [termsHash, setTermsHash] = useState<string>();
@@ -61,6 +63,26 @@ const AgreementDetailPage = () => {
 		addressOrName: contractAddress,
 		contractInterface: abi,
 		functionName: "finalizeAgreement",
+		onError(error) {
+			console.log(error);
+		},
+	});
+
+	const { write: disputeAgreement } = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: contractAddress,
+		contractInterface: abi,
+		functionName: "finalizeAgreement",
+		onError(error) {
+			console.log(error);
+		},
+	});
+
+	const { write: withdrawFromAgreement } = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: contractAddress,
+		contractInterface: abi,
+		functionName: "withdrawFromAgreement",
 		onError(error) {
 			console.log(error);
 		},
@@ -115,8 +137,20 @@ const AgreementDetailPage = () => {
 		});
 	};
 
-	const finalize = async () => {
+	const finalize = () => {
 		finalizeAgreement?.({
+			recklesslySetUnpreparedArgs: [id],
+		});
+	};
+
+	const dispute = () => {
+		disputeAgreement?.({
+			recklesslySetUnpreparedArgs: [id],
+		});
+	};
+
+	const withdraw = () => {
+		withdrawFromAgreement?.({
 			recklesslySetUnpreparedArgs: [id],
 		});
 	};
@@ -166,7 +200,18 @@ const AgreementDetailPage = () => {
 					if (knownPositions[address].status == 0) {
 						setJoinable(true);
 					} else if (knownPositions[address].status == 1) {
+						setJoinable(false);
+						setDisputable(true);
 						setFinalizable(true);
+					} else if (knownPositions[address].status == 2) {
+						setJoinable(false);
+						setDisputable(false);
+						setFinalizable(false);
+						if (BigNumber.from(knownPositions[address].balance).gt(0)) {
+							setWithdrawable(true);
+						} else {
+							setWithdrawable(false);
+						}
 					}
 				}
 			});
@@ -206,9 +251,17 @@ const AgreementDetailPage = () => {
 				{/* Info */}
 				<InfoAlert message="If you are one of the parties involved in this agreement, please keep the terms file safe. You will need it to interact with this app." />
 				{/* Action buttons */}
-				<div className="flex gap-8 justify-between">
-					<Button label="Join" disabled={!joinable} onClick={() => join()} />
-					<Button label="Finalize" disabled={!finalizable} onClick={() => finalize()} />
+				<div className="flex flex-col gap-2">
+					{joinable && <Button label="Join" disabled={!joinable} onClick={() => join()} />}
+					{(disputable || finalizable) && (
+						<div className="flex gap-2 justify-between">
+							<Button label="Dispute" disabled={!disputable} onClick={() => dispute()} />
+							<Button label="Finalize" disabled={!finalizable} onClick={() => finalize()} />
+						</div>
+					)}
+					{withdrawable && (
+						<Button label="Withdraw" disabled={!withdrawable} onClick={() => withdraw()} />
+					)}
 				</div>
 			</Card>
 		</div>

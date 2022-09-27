@@ -8,7 +8,7 @@ const Agreements = () => {
 
 	const agreements = [
 		"0x72bbcec4f7f854643fcca20980eb1d48caf12d302899ccc41d78391d9d93b373",
-		"0xb2658be417fb4d4080eaaba22dab3858927481619360c2ec15db4e5d0bba9ad6",
+		// "0xb2658be417fb4d4080eaaba22dab3858927481619360c2ec15db4e5d0bba9ad6",
 		"0x6aeaa0870eee90c36c7fdc7d384a599c3ab9de415cbe5394056c03746c57f2de",
 	];
 
@@ -21,7 +21,7 @@ const Agreements = () => {
 						<Button label="Create an agreement" onClick={() => router.push("/agreements/create")} />
 					</div>
 				</div>
-				<div className="flex-row w-max">
+				<div className="flex flex-col items-center gap-2">
 					{agreements.map((agreementId) => (
 						<div key={agreementId} onClick={() => router.push(`/agreements/${agreementId}`)}>
 							{shortenHash(agreementId)}
