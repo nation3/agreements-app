@@ -13,7 +13,7 @@ export type AgreementMetadata = {
 					[key: string]: { amount: string; proof: string[] };
 				};
 		  };
-	resolvers?: { [key: string]: { amount: string; proof: string[] } };
+	resolvers?: { [key: string]: { balance: string; proof?: string[]; proofs?: string[] } };
 };
 
 export const parseMetadata = (data: { [key: string]: any }): AgreementMetadata => {

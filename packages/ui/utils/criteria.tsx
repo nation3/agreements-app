@@ -27,7 +27,7 @@ export const generateCriteria = (
 			...result,
 			[address]: {
 				balance: balance.toString(),
-				proofs: tree.getHexProof(hashPosition(address, balance.toString())),
+				proof: tree.getHexProof(hashPosition(address, balance.toString())),
 			},
 		}),
 		{},

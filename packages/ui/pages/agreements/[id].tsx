@@ -55,17 +55,24 @@ const AgreementDetailPage = () => {
 		},
 	});
 
-	const setMetadata = (metadata: AgreementMetadata) => {
-		let resolvers_: object = {};
 
+	const setMetadata = (metadata: AgreementMetadata) => {
 		if (metadata.title) {
 			setTitle(metadata.title);
 		}
 
-		// TODO: Remove legacy format
+		// TODO: Remove legacy formats
 		if (metadata.resolvers) {
-			resolvers_ = metadata.resolvers;
-			setResolvers({ ...resolvers, ...resolvers_ });
+			const parsed: { [key: string]: { balance: string; proof: string[] } } = Object.entries(
+				metadata.resolvers,
+			).reduce(
+				(result, [account, { balance, proof, proofs }]) => ({
+					...result,
+					[account]: { balance, proof: proof ?? proofs },
+				}),
+				{},
+			);
+			setResolvers({ ...resolvers, ...parsed });
 		} else if (typeof metadata.criteria == "object" && metadata.criteria.resolvers) {
 			const parsed: { [key: string]: { balance: string; proof: string[] } } = Object.entries(
 				metadata.criteria.resolvers,
@@ -87,11 +94,11 @@ const AgreementDetailPage = () => {
 		}
 
 		const resolver = { account: address, ...resolvers?.[address] };
+		console.log("Resolver", resolver);
+
 		if (!resolver.proof) {
 			return false;
 		}
-
-		console.log("Resolver", resolver);
 
 		joinAgreement?.({
 			recklesslySetUnpreparedArgs: [id, resolver],
@@ -113,7 +120,6 @@ const AgreementDetailPage = () => {
 	useEffect(() => {
 		let knownPositions: { [key: string]: { balance: string; status: number } } = {};
 		if (resolvers) {
-			console.log(resolvers);
 			knownPositions = Object.entries(resolvers).reduce(
 				(result, [account, { balance }]) => ({
 					...result,
@@ -130,14 +136,13 @@ const AgreementDetailPage = () => {
 				(result, [party, balance, status]) => ({
 					...result,
 					[party.toString()]: {
-						balance: balance,
+						balance: balance.toString(),
 						status: status,
 					},
 				}),
 				knownPositions,
 			);
 		}
-		console.log(knownPositions);
 		if (knownPositions != positions) {
 			setPositions(knownPositions);
 			signer?.getAddress().then((address) => {
@@ -154,7 +159,16 @@ const AgreementDetailPage = () => {
 			<Card className="flex flex-col gap-8 max-w-2xl text-gray-800">
 				{/* Title and details */}
 				<div className="text-gray-700">
-					<h1 className="font-display font-medium text-2xl">{title}</h1>
+					<div className="flex flex-row items-center justify-between">
+						<h1 className="font-display font-medium text-2xl truncate">{title}</h1>
+						<div className="basis-1/5 text-sm">
+							<UploadButton
+								label="Metadata"
+								heading="Upload metadata"
+								onUpload={(data) => setMetadata(parseMetadata(data))}
+							/>
+						</div>
+					</div>
 					<span>
 						ID {shortenHash(String(id) ?? constants.HashZero)} | Terms hash{" "}
 						{shortenHash(termsHash ?? constants.HashZero)}
@@ -173,10 +187,6 @@ const AgreementDetailPage = () => {
 				<InfoAlert message="If you are one of the parties involved in this agreement, please keep the terms file safe. You will need it to interact with this app." />
 				{/* Action buttons */}
 				<div className="flex gap-8 justify-between">
-					<UploadButton
-						label="Upload metadata"
-						onUpload={(data) => setMetadata(parseMetadata(data))}
-					/>
 					<Button label="Join" disabled={!joinable} onClick={() => join()} />
 				</div>
 			</Card>
