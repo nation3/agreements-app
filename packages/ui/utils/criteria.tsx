@@ -17,20 +17,38 @@ export const hashPosition = (address: string, balance: string) => {
 };
 
 export const generateCriteria = (
-	positions: { address: string; balance: ethers.BigNumber }[],
+	positions: { account: string; balance: ethers.BigNumber }[],
 ): { criteria: string; resolvers: ResolverMap } => {
-	const leaves = positions.map(({ address, balance }) => hashPosition(address, balance.toString()));
+	if (!validateCriteria(positions)) {
+		throw new Error("Invalid criteria positions");
+	}
+
+	const leaves = positions.map(({ account, balance }) => hashPosition(account, balance.toString()));
 	const tree = new MerkleTree(leaves, keccak256, { sortPairs: true });
 	const criteria = tree.getHexRoot();
 	const resolvers = positions.reduce(
-		(result, { address, balance }) => ({
+		(result, { account, balance }) => ({
 			...result,
-			[address]: {
+			[account]: {
 				balance: balance.toString(),
-				proof: tree.getHexProof(hashPosition(address, balance.toString())),
+				proof: tree.getHexProof(hashPosition(account, balance.toString())),
 			},
 		}),
 		{},
 	);
 	return { criteria, resolvers };
+};
+
+export const validateCriteria = (
+	positions: { account: string; balance: number | string | ethers.BigNumber }[],
+): boolean => {
+	let isValid = true;
+	const addresses: string[] = [];
+	positions.map(({ account }) => {
+		if (!utils.isAddress(account) || addresses.includes(account)) {
+			isValid = false;
+		}
+		addresses.push(account);
+	});
+	return isValid;
 };

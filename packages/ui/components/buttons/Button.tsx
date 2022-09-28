@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { motion } from "framer-motion";
 
 const Button = ({
@@ -6,7 +6,7 @@ const Button = ({
 	disabled,
 	onClick,
 }: {
-	label: string;
+	label: string | ReactNode;
 	disabled?: boolean;
 	onClick?: () => void;
 }) => {

@@ -1,4 +1,7 @@
-const IPFS_GATEWAY = "https://cf-ipfs.com/ipfs";
+import { generateCriteria } from "./criteria";
+import { IPFSUriToUrl } from "./ipfs";
+import { utils, BigNumber } from "ethers";
+import { hexHash } from "./hash";
 
 export type AgreementMetadata = {
 	title: string;
@@ -28,9 +31,7 @@ export const parseMetadata = (data: { [key: string]: any }): AgreementMetadata =
 };
 
 export const fetchMetadata = async (fileURI: string): Promise<AgreementMetadata> => {
-	const uri = fileURI.startsWith("ipfs://")
-		? `${IPFS_GATEWAY}/${fileURI.split("ipfs://")[1]}`
-		: fileURI;
+	const uri = fileURI.startsWith("ipfs://") ? IPFSUriToUrl(fileURI) : fileURI;
 
 	let data = parseMetadata({});
 
@@ -43,4 +44,21 @@ export const fetchMetadata = async (fileURI: string): Promise<AgreementMetadata>
 	}
 
 	return data;
+};
+
+export const generateMetadata = (
+	terms: string,
+	positions: { account: string; balance: number | BigNumber }[],
+) => {
+	const termsHash = hexHash(terms ?? "");
+	const { criteria, resolvers } = generateCriteria(
+		positions.map(({ account, balance }) => {
+			return {
+				account: account,
+				balance: utils.parseUnits(utils.formatUnits(balance), 18),
+			};
+		}),
+	);
+
+	return { termsHash: termsHash, criteria: criteria, resolvers: resolvers };
 };
