@@ -1,0 +1,50 @@
+{
+  "name": "@nation3/ui-components",
+  "author": "Nation3 Solar Guild",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "eslint src",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.0.11",
+    "flowbite": "^1.5.3",
+    "flowbite-react": "^0.1.11",
+    "framer-motion": "^7.5.1",
+    "react-blockies": "^1.4.1",
+    "react-dropzone": "^14.2.2",
+    "tailwindcss": "^3.1.8"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.3",
+    "@types/react-blockies": "^1.4.1",
+    "babel-loader": "^8.2.5",
+    "eslint": "7",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-react-app": "^7.0.1",
+    "postcss": "^8.4.17",
+    "prettier": "^2.7.1",
+    "rollup-plugin-postcss": "^4.0.2",
+    "tsdx": "^0.14.1"
+  }
+}
