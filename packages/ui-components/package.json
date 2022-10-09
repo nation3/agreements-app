@@ -16,12 +16,10 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
-    "lint": "eslint src",
-    "prepare": "tsdx build",
-    "size": "size-limit",
-    "analyze": "size-limit --why",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "lint:check": "yarn lint:check:format && yarn lint:check:eslint",
+    "lint:check:eslint": "eslint src",
+    "lint:check:format": "prettier --check **/*.tsx",
+    "lint:fix": "prettier --write **/*.tsx"
   },
   "peerDependencies": {
     "react": ">=16"

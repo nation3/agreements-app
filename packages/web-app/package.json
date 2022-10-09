@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint:check": "yarn lint:check:format && yarn lint:check:eslint",
+    "lint:check:eslint": "next lint",
+    "lint:check:format": "prettier --check **/*.tsx",
+    "lint:fix": "prettier --write **/*.tsx"
   },
   "dependencies": {
     "@nation3/ui-components": "^0.1.0",
