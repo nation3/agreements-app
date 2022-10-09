@@ -1,14 +1,11 @@
-import React, { ReactNode, ReactElement, MouseEventHandler } from "react";
-import { motion } from "framer-motion";
+import React, { ReactNode, ReactElement } from "react";
+import { motion, HTMLMotionProps } from "framer-motion";
 
-export interface ButtonBaseProps {
-	children?: ReactNode;
-	className?: string;
-	onClick?: MouseEventHandler;
+export interface ButtonBaseProps extends HTMLMotionProps<"button"> {
 	disabled?: boolean;
 }
 
-export interface ButtonProps extends ButtonBaseProps {
+export interface ButtonProps extends Omit<ButtonBaseProps, "children"> {
 	iconRight?: ReactElement;
 	iconLeft?: ReactElement;
 	textColor?: string;
@@ -40,9 +37,9 @@ export const Button = ({
 }: ButtonProps) => {
 	return (
 		<ButtonBase
-			className={`text-base font-medium text-${textColor} bg-${bgColor}-400 ${
-				!disabled && `hover:bg-${bgColor}-500`
-			} ${className && className}`}
+			className={`text-base font-medium text-${textColor} bg-${bgColor}-${
+				disabled ? "300" : "400"
+			} ${!disabled && `hover:bg-${bgColor}-500`} ${className && className}`}
 			disabled={disabled}
 			onClick={onClick}
 		>
