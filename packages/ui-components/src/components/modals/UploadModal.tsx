@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { Modal, ModalProps } from "./Modal";
-import { DropInput } from "../inputs";
+import { DropInput } from "../inputs/DropInput";
 import { Button } from "../buttons/Button";
 
 export interface UploadModalProps extends Omit<ModalProps, "children"> {

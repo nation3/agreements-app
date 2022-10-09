@@ -35,9 +35,9 @@ export const DefaultSidebar = ({
 				</div>
 				{/* Nav */}
 				<div className="px-4">
-					{navItems.map((item, index) => (
+					{navItems.map((item) => (
 						<NavButton
-							id={index.toString()}
+							key={item.label}
 							{...item}
 							onRoute={onRoute}
 							isActive={isActiveRoute?.(item.route)}

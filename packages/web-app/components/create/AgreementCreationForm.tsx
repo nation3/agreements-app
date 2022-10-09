@@ -1,11 +1,21 @@
 import { ArrowLongRightIcon } from "@heroicons/react/20/solid";
-import { Button, DropInput, TextAreaInput } from "@nation3/ui-components";
+import { Button, DropInput, InfoAlert } from "@nation3/ui-components";
 
-import { useAgreementCreation } from "./context/AgreementCreationContext";
+import {
+	AgreementCreationContextType,
+	useAgreementCreation,
+} from "./context/AgreementCreationContext";
 import { ParticipantRow } from "../ParticipantRow";
 import { CreateView } from "./context/types";
 
 import { validateCriteria } from "../../utils/criteria";
+
+const isValidAgreement = ({
+	terms,
+	positions,
+}: Pick<AgreementCreationContextType, "terms" | "positions">) => {
+	return terms && validateCriteria(positions);
+};
 
 export const AgreementCreationForm = () => {
 	const { terms, positions, changeView, setTerms, setPositions } = useAgreementCreation();
@@ -23,8 +33,9 @@ export const AgreementCreationForm = () => {
 						the parties fails to comply with these terms, their financial stake can be taken away to
 						compensate the other parties. The terms must be written in Markdown.
 					</p>
-					<a className="flex items-center gap-1 font-semibold text-n3green">
-						Learn more <ArrowLongRightIcon className="w-4 h-4" />
+					<a className="flex w-fit items-center gap-0.5 font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent">
+						Learn more
+						<ArrowLongRightIcon className="w-5 h-5 text-greensea" />
 					</a>
 				</div>
 				<div className="flex flex-col gap-2">
@@ -36,13 +47,8 @@ export const AgreementCreationForm = () => {
 								acceptedFiles[0].text().then((text: string) => setTerms(text));
 							},
 						}}
-					/>
-					<TextAreaInput
-						rows={8}
-						value={terms}
-						onChange={(e: any) => {
-							setTerms(e.target.value);
-						}}
+						showFiles={true}
+						onPreview={(file: File) => {}}
 					/>
 				</div>
 			</div>
@@ -59,11 +65,16 @@ export const AgreementCreationForm = () => {
 					<ParticipantRow positions={positions} index={1} onChange={setPositions} />
 				</div>
 			</div>
-			<Button
-				label="Create Agreement"
-				disabled={!validateCriteria(positions)}
-				onClick={() => changeView(CreateView.Preview)}
-			/>
+			<div className="flex flex-col gap-2">
+				{!validateCriteria(positions) && (
+					<InfoAlert message="You need to provide at least two valid unique addresses to create an agreement" />
+				)}
+				<Button
+					label="Create Agreement"
+					disabled={!isValidAgreement({ terms, positions })}
+					onClick={() => changeView(CreateView.Preview)}
+				/>
+			</div>
 		</>
 	);
 };

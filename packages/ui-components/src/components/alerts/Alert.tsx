@@ -10,7 +10,7 @@ export interface AlertProps {
 export const Alert = ({ message, icon, color, className }: AlertProps) => {
 	return (
 		<div
-			className={`flex items-center justify-start max-w-full p-5 py-4 text-base font-medium rounded-2xl bg-${color} ${className}`}
+			className={`flex items-center justify-start max-w-full p-5 py-4 text-base font-normal rounded-2xl bg-${color} ${className}`}
 		>
 			{icon && <div className="pr-3">{icon}</div>}
 			{message}

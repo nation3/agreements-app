@@ -9,6 +9,8 @@ module.exports = {
             pattern: /^w-.+/,
             variants: ["sm", "md", "lg"]
         },*/
+        "from-bluesky",
+        "to-greensea",
         {
             pattern: /^(bg|text)-.+/,
             variants: ["hover", "focus"]

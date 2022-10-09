@@ -225,19 +225,12 @@ const AgreementDetailPage = () => {
 
 	return (
 		<div>
-			<BackLinkButton route={"/agreements"} label={"Go back to agreements"} onRoute={router.push}/>
+			<BackLinkButton route={"/agreements"} label={"Go back to agreements"} onRoute={router.push} />
 			<Card className="flex flex-col gap-8 max-w-2xl text-gray-800">
 				{/* Title and details */}
 				<div className="text-gray-700">
 					<div className="flex flex-row items-center justify-between">
 						<h1 className="font-display font-medium text-2xl truncate">{title}</h1>
-						<div className="basis-1/5 text-sm">
-							<UploadButton
-								label="Metadata"
-								heading="Upload metadata"
-								onSubmit={(data: object) => setMetadata(parseMetadata(data))}
-							/>
-						</div>
 					</div>
 					<span>
 						ID {n3utils.shortenHash(String(id) ?? constants.HashZero)} | Terms hash{" "}

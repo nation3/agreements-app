@@ -45,17 +45,6 @@ export const AgreementCreationPreview = () => {
 			<div className="text-gray-700">
 				<div className="flex flex-row items-center justify-between">
 					<h1 className="font-display font-medium text-2xl truncate">Agreement</h1>
-					<div className="basis-1/5 text-sm">
-						<Button
-							label={
-								<div className="flex items-center gap-1">
-									<ArrowDownTrayIcon className="w-4 h-4" />
-									{"Metadata"}
-								</div>
-							}
-							disabled={true}
-						/>
-					</div>
 				</div>
 				<span>
 					ID {n3utils.shortenHash(constants.HashZero)} | Terms hash{" "}
@@ -72,7 +61,7 @@ export const AgreementCreationPreview = () => {
 				])}
 			/>
 			{/* Info */}
-			<InfoAlert message="Keep the terms file safe. You will need it to interact with this app." />
+			<InfoAlert message="Keep the terms file safe. You will need to submit it as evidence in the case of a dispute." />
 			{/* Action buttons */}
 			<div className="flex gap-2">
 				<Button
@@ -82,6 +71,7 @@ export const AgreementCreationPreview = () => {
 							{"Edit"}
 						</div>
 					}
+					bgColor="slate"
 					onClick={() => changeView(CreateView.Form)}
 				/>
 				<Button
