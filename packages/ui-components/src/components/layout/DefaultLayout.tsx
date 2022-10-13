@@ -62,7 +62,7 @@ const navItems = [
 export const DefaultLayout = ({ children, connectionButton, ...props }: DefaultLayoutProps) => {
 	return (
 		<div className="mx-auto">
-			<div className="flex w-screen bg-slate-100">
+			<div className="flex w-screen bg-gray-50">
 				<div className="flex flex-col w-72 h-screen items-center justify-center">
 					<DefaultSidebar navItems={navItems} connectionButton={connectionButton} {...props} />
 				</div>

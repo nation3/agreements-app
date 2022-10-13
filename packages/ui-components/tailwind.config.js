@@ -2,6 +2,7 @@
 module.exports = {
     content: [
         "./src/**/*.{js,ts,jsx,tsx}",
+        "./stories/**/*.{js,ts,jsx,tsx}",
         "./node_modules/flowbite-react/**/*.js"
     ],
     safelist: [
