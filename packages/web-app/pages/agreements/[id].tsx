@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
 import { useSigner } from "wagmi";
 import { Signer, utils, constants, BigNumber } from "ethers";
@@ -7,6 +8,8 @@ import {
 	Table,
 	Button,
 	BackLinkButton,
+	ActionBadge,
+	Alert,
 	InfoAlert,
 	utils as n3utils,
 } from "@nation3/ui-components";
@@ -143,19 +146,35 @@ const AgreementDetailPage = () => {
 		}
 	}, [agreementPositions, resolvers, signer]);
 
+	const copyAgreementId = useCallback(() => {
+		if (id) navigator.clipboard.writeText(String(id));
+	}, [id]);
+
+	const copyTermsHash = useCallback(() => {
+		if (termsHash) navigator.clipboard.writeText(String(termsHash));
+	}, [termsHash]);
+
 	return (
 		<div>
 			<BackLinkButton route={"/agreements"} label={"Go back to agreements"} onRoute={router.push} />
 			<Card className="flex flex-col gap-8 w-max max-w-2xl text-gray-800">
 				{/* Title and details */}
-				<div className="text-gray-700">
+				<div className="flex flex-col gap-2 text-gray-700">
 					<div className="flex flex-row items-center justify-between">
 						<h1 className="font-display font-medium text-2xl truncate">{title}</h1>
 					</div>
-					<span>
-						ID {n3utils.shortenHash(String(id) ?? constants.HashZero)} | Terms hash{" "}
-						{n3utils.shortenHash(termsHash ?? constants.HashZero)}
-					</span>
+					<div className="flex items-center gap-1">
+						<ActionBadge
+							label="ID"
+							data={n3utils.shortenHash(String(id) ?? constants.HashZero)}
+							dataAction={copyAgreementId}
+						/>
+						<ActionBadge
+							label="Terms hash"
+							data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
+							dataAction={copyTermsHash}
+						/>
+					</div>
 				</div>
 				{/* Participant table */}
 				<Table
@@ -167,7 +186,14 @@ const AgreementDetailPage = () => {
 					])}
 				/>
 				{/* Info */}
-				<InfoAlert message="If you are one of the parties involved in this agreement, please keep the terms file safe. You will need it to interact with this app." />
+				{agreementStatus == "Finalized" && (
+					<Alert
+						icon={<CheckCircleIcon className="w-5 h-5" />}
+						message="This agreement has been finalized by all the joined parties."
+						color="greensea-200"
+						className="bg-opacity-20 text-greensea-700"
+					/>
+				)}
 				{availableActions.join && (
 					<InfoAlert message="Verify the terms hash before joining and remember to keep the terms file safe. The terms file will be used as evidence in the case of a dispute." />
 				)}
