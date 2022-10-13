@@ -1,24 +1,20 @@
+import { useMemo } from "react";
 import { ArrowLongRightIcon } from "@heroicons/react/20/solid";
 import { Button, DropInput, InfoAlert } from "@nation3/ui-components";
 
-import {
-	AgreementCreationContextType,
-	useAgreementCreation,
-} from "./context/AgreementCreationContext";
+import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { ParticipantRow } from "../ParticipantRow";
 import { CreateView } from "./context/types";
 
 import { validateCriteria } from "../../utils/criteria";
 
-const isValidAgreement = ({
-	terms,
-	positions,
-}: Pick<AgreementCreationContextType, "terms" | "positions">) => {
-	return terms && validateCriteria(positions);
-};
-
 export const AgreementCreationForm = () => {
 	const { terms, positions, changeView, setTerms, setPositions } = useAgreementCreation();
+
+	const isValidAgreement = useMemo(() => {
+		if (!terms) return false;
+		return validateCriteria(positions);
+	}, [terms, positions]);
 
 	return (
 		<>
@@ -48,7 +44,6 @@ export const AgreementCreationForm = () => {
 							},
 						}}
 						showFiles={true}
-						onPreview={(file: File) => {}}
 					/>
 				</div>
 			</div>
@@ -66,12 +61,12 @@ export const AgreementCreationForm = () => {
 				</div>
 			</div>
 			<div className="flex flex-col gap-2">
-				{!validateCriteria(positions) && (
-					<InfoAlert message="You need to provide at least two valid unique addresses to create an agreement" />
+				{!isValidAgreement && (
+					<InfoAlert message="You need to provide the terms file and at least two unique valid addresses to create an agreement." />
 				)}
 				<Button
 					label="Create Agreement"
-					disabled={!isValidAgreement({ terms, positions })}
+					disabled={!isValidAgreement}
 					onClick={() => changeView(CreateView.Preview)}
 				/>
 			</div>

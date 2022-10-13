@@ -2,7 +2,7 @@ import { ArrowDownTrayIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 import { constants, utils, BigNumber } from "ethers";
 
-import { useAgreementCreate } from "../../hooks/useAgreementCreate";
+import { useAgreementCreate } from "../../hooks/useAgreement";
 
 import { hexHash, generateMetadata, preparePutToIPFS } from "../../utils";
 

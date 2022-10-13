@@ -1,33 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useContractRead, useContractWrite, useSigner } from "wagmi";
-import { utils, constants, BigNumber } from "ethers";
+import { useSigner } from "wagmi";
+import { Signer, utils, constants, BigNumber } from "ethers";
 import {
 	Card,
 	Table,
 	Button,
-	UploadButton,
 	BackLinkButton,
 	InfoAlert,
 	utils as n3utils,
 } from "@nation3/ui-components";
 
 import { PositionStatusBadge } from "../../components";
-import { fetchMetadata, AgreementMetadata, parseMetadata } from "../../utils/metadata";
+import { fetchMetadata, AgreementMetadata } from "../../utils/metadata";
 
-import contractInterface from "../../abis/IAgreementFramework.json";
-
-const abi = contractInterface.abi;
+import { useAgreementRead, useAgreementActions } from "../../hooks/useAgreement";
 
 const AgreementDetailPage = () => {
 	const router = useRouter();
 	const { id } = router.query;
 	const { data: signer } = useSigner();
-	const contractAddress = "0xb47262C22280f361ad47Af0636086463Bd29A109";
-	const [joinable, setJoinable] = useState(false);
-	const [finalizable, setFinalizable] = useState(false);
-	const [disputable, setDisputable] = useState(false);
-	const [withdrawable, setWithdrawable] = useState(false);
+	const [availableActions, setAvailableActions] = useState({
+		join: false,
+		finalize: false,
+		dispute: false,
+		withdraw: false,
+	});
 
 	const [title, setTitle] = useState("Agreement");
 	const [termsHash, setTermsHash] = useState<string>();
@@ -39,58 +37,15 @@ const AgreementDetailPage = () => {
 		[key: string]: { balance: string; status: number };
 	}>();
 
-	const { data: agreementParams } = useContractRead({
-		addressOrName: contractAddress,
-		contractInterface: abi,
-		functionName: "agreementParams",
-		args: id,
-	});
-
-	const { data: agreementPositions } = useContractRead({
-		addressOrName: contractAddress,
-		contractInterface: abi,
-		functionName: "agreementPositions",
-		args: id,
-	});
-
-	const { write: joinAgreement } = useContractWrite({
-		mode: "recklesslyUnprepared",
-		addressOrName: contractAddress,
-		contractInterface: abi,
-		functionName: "joinAgreement",
-		onError(error) {
-			console.log(error);
-		},
-	});
-
-	const { write: finalizeAgreement } = useContractWrite({
-		mode: "recklesslyUnprepared",
-		addressOrName: contractAddress,
-		contractInterface: abi,
-		functionName: "finalizeAgreement",
-		onError(error) {
-			console.log(error);
-		},
-	});
-
-	const { write: disputeAgreement } = useContractWrite({
-		mode: "recklesslyUnprepared",
-		addressOrName: contractAddress,
-		contractInterface: abi,
-		functionName: "finalizeAgreement",
-		onError(error) {
-			console.log(error);
-		},
-	});
-
-	const { write: withdrawFromAgreement } = useContractWrite({
-		mode: "recklesslyUnprepared",
-		addressOrName: contractAddress,
-		contractInterface: abi,
-		functionName: "withdrawFromAgreement",
-		onError(error) {
-			console.log(error);
-		},
+	const {
+		params: agreementParams,
+		positions: agreementPositions,
+		status: agreementStatus,
+	} = useAgreementRead({ id: String(id) });
+	const { join, finalize, dispute, withdraw } = useAgreementActions({
+		id: String(id),
+		signer: signer as Signer,
+		resolvers,
 	});
 
 	const setMetadata = (metadata: AgreementMetadata) => {
@@ -122,42 +77,6 @@ const AgreementDetailPage = () => {
 			);
 			setResolvers({ ...resolvers, ...parsed });
 		}
-	};
-
-	const join = async () => {
-		const address: string | undefined = await signer?.getAddress();
-		if (!address) {
-			return false;
-		}
-
-		const resolver = { account: address, ...resolvers?.[address] };
-		console.log("Resolver", resolver);
-
-		if (!resolver.proof) {
-			return false;
-		}
-
-		joinAgreement?.({
-			recklesslySetUnpreparedArgs: [id, resolver],
-		});
-	};
-
-	const finalize = () => {
-		finalizeAgreement?.({
-			recklesslySetUnpreparedArgs: [id],
-		});
-	};
-
-	const dispute = () => {
-		disputeAgreement?.({
-			recklesslySetUnpreparedArgs: [id],
-		});
-	};
-
-	const withdraw = () => {
-		withdrawFromAgreement?.({
-			recklesslySetUnpreparedArgs: [id],
-		});
 	};
 
 	/* Update state when fetched agreement params */
@@ -203,20 +122,21 @@ const AgreementDetailPage = () => {
 			signer?.getAddress().then((address) => {
 				if (address && knownPositions[address]) {
 					if (knownPositions[address].status == 0) {
-						setJoinable(true);
+						setAvailableActions({ ...availableActions, join: true });
 					} else if (knownPositions[address].status == 1) {
-						setJoinable(false);
-						setDisputable(true);
-						setFinalizable(true);
+						setAvailableActions({
+							...availableActions,
+							join: false,
+							dispute: true,
+							finalize: true,
+						});
 					} else if (knownPositions[address].status == 2) {
-						setJoinable(false);
-						setDisputable(false);
-						setFinalizable(false);
-						if (BigNumber.from(knownPositions[address].balance).gt(0)) {
-							setWithdrawable(true);
-						} else {
-							setWithdrawable(false);
-						}
+						setAvailableActions({
+							join: false,
+							dispute: false,
+							finalize: false,
+							withdraw: BigNumber.from(knownPositions[address].balance).gt(0),
+						});
 					}
 				}
 			});
@@ -226,7 +146,7 @@ const AgreementDetailPage = () => {
 	return (
 		<div>
 			<BackLinkButton route={"/agreements"} label={"Go back to agreements"} onRoute={router.push} />
-			<Card className="flex flex-col gap-8 max-w-2xl text-gray-800">
+			<Card className="flex flex-col gap-8 w-max max-w-2xl text-gray-800">
 				{/* Title and details */}
 				<div className="text-gray-700">
 					<div className="flex flex-row items-center justify-between">
@@ -248,27 +168,36 @@ const AgreementDetailPage = () => {
 				/>
 				{/* Info */}
 				<InfoAlert message="If you are one of the parties involved in this agreement, please keep the terms file safe. You will need it to interact with this app." />
+				{availableActions.join && (
+					<InfoAlert message="Verify the terms hash before joining and remember to keep the terms file safe. The terms file will be used as evidence in the case of a dispute." />
+				)}
 				{/* Action buttons */}
 				<div className="flex flex-col gap-2">
-					{joinable && <Button label="Join" disabled={!joinable} onClick={() => join()} />}
-					{(disputable || finalizable) && (
+					{availableActions.join && (
+						<Button label="Join" disabled={!availableActions.join} onClick={() => join()} />
+					)}
+					{(availableActions.join || availableActions.finalize) && (
 						<div className="flex gap-2 justify-between">
 							<Button
 								label="Dispute"
 								bgColor="red"
-								disabled={!disputable}
+								disabled={!availableActions.dispute}
 								onClick={() => dispute()}
 							/>
 							<Button
 								label="Finalize"
 								bgColor="greensea"
-								disabled={!finalizable}
+								disabled={!availableActions.finalize}
 								onClick={() => finalize()}
 							/>
 						</div>
 					)}
-					{withdrawable && (
-						<Button label="Withdraw" disabled={!withdrawable} onClick={() => withdraw()} />
+					{availableActions.withdraw && (
+						<Button
+							label="Withdraw"
+							disabled={!availableActions.withdraw}
+							onClick={() => withdraw()}
+						/>
 					)}
 				</div>
 			</Card>
