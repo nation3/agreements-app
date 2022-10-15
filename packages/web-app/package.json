@@ -12,10 +12,12 @@
     "lint:fix": "prettier --write **/*.tsx"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.0",
     "@nation3/ui-components": "^0.1.0",
     "@rainbow-me/rainbowkit": "^0.7.1",
     "eslint": "^7",
     "ethers": "^5.7.1",
+    "graphql": "^16.6.0",
     "ipfs-car": "^0.9.1",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.2.32",
