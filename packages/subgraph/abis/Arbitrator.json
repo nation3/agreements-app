@@ -1,0 +1,192 @@
+[
+  { "inputs": [], "name": "ExecutionStillLocked", "type": "error" },
+  { "inputs": [], "name": "NoPartOfResolution", "type": "error" },
+  { "inputs": [], "name": "ResolutionIsAppealed", "type": "error" },
+  { "inputs": [], "name": "ResolutionIsEndorsed", "type": "error" },
+  { "inputs": [], "name": "ResolutionIsExecuted", "type": "error" },
+  { "inputs": [], "name": "ResolutionMustMatch", "type": "error" },
+  { "inputs": [], "name": "ResolutionNotSubmitted", "type": "error" },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "hash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "ResolutionAppealed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "hash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "ResolutionEndorsed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "hash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "ResolutionExecuted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "framework",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "hash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "ResolutionSubmitted",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "hash", "type": "bytes32" },
+      {
+        "components": [
+          { "internalType": "address", "name": "party", "type": "address" },
+          { "internalType": "uint256", "name": "balance", "type": "uint256" }
+        ],
+        "internalType": "struct PositionParams[]",
+        "name": "settlement",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "appealResolution",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "hash", "type": "bytes32" },
+      {
+        "components": [
+          { "internalType": "address", "name": "party", "type": "address" },
+          { "internalType": "uint256", "name": "balance", "type": "uint256" }
+        ],
+        "internalType": "struct PositionParams[]",
+        "name": "settlement",
+        "type": "tuple[]"
+      },
+      {
+        "components": [
+          { "internalType": "uint256", "name": "value", "type": "uint256" },
+          { "internalType": "uint256", "name": "deadline", "type": "uint256" },
+          { "internalType": "uint8", "name": "v", "type": "uint8" },
+          { "internalType": "bytes32", "name": "r", "type": "bytes32" },
+          { "internalType": "bytes32", "name": "s", "type": "bytes32" }
+        ],
+        "internalType": "struct Permit",
+        "name": "permit",
+        "type": "tuple"
+      }
+    ],
+    "name": "appealResolutionWithPermit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "hash", "type": "bytes32" },
+      {
+        "components": [
+          { "internalType": "address", "name": "party", "type": "address" },
+          { "internalType": "uint256", "name": "balance", "type": "uint256" }
+        ],
+        "internalType": "struct PositionParams[]",
+        "name": "settlement",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "endorseResolution",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IArbitrable",
+        "name": "framework",
+        "type": "address"
+      },
+      { "internalType": "bytes32", "name": "id", "type": "bytes32" },
+      {
+        "components": [
+          { "internalType": "address", "name": "party", "type": "address" },
+          { "internalType": "uint256", "name": "balance", "type": "uint256" }
+        ],
+        "internalType": "struct PositionParams[]",
+        "name": "settlement",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "executeResolution",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IArbitrable",
+        "name": "framework",
+        "type": "address"
+      },
+      { "internalType": "bytes32", "name": "id", "type": "bytes32" },
+      { "internalType": "string", "name": "metadataURI", "type": "string" },
+      {
+        "components": [
+          { "internalType": "address", "name": "party", "type": "address" },
+          { "internalType": "uint256", "name": "balance", "type": "uint256" }
+        ],
+        "internalType": "struct PositionParams[]",
+        "name": "settlement",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "submitResolution",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

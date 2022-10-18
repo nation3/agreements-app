@@ -50,14 +50,14 @@ type AgreementPosition @entity {
     agreement: Agreement! 
 }
 
-enum ResolutionStatus {
-    Submitted
-    Appealed
-    Endorsed
-    Executed
+enum DisputeStatus {
+    ResolutionSubmitted
+    ResolutionAppealed
+    ResolutionEndorsed
+    ResolutionExecuted
 }
 
-type Resolution @entity {
+type Dispute @entity {
     "Resolution ID = Hash"
     id: String!
 
@@ -67,12 +67,15 @@ type Resolution @entity {
     "Disputed Agreement ID"
     agreement: String!
 
-    "List of accounts that have appealed the resolution"
-    appealedBy: [Bytes!]
-
-    "Unlock block number for the resolution execution"
-    unlockBlock: BigInt!
-
     "Resolution Status"
-    status: ResolutionStatus!
+    status: DisputeStatus!
+
+    "Block number for the resolution submission"
+    resSubmitBlock: BigInt
+
+    "Resolution Submission timestamp"
+    resSubmittedAt: String
+
+    "List of accounts that have appealed the resolution"
+    resAppealedBy: [Bytes!]
 }
