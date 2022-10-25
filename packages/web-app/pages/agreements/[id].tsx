@@ -155,9 +155,9 @@ const AgreementDetailPage = () => {
 	}, [termsHash]);
 
 	return (
-		<div>
+		<div className="w-full max-w-2xl">
 			<BackLinkButton route={"/agreements"} label={"Go back to agreements"} onRoute={router.push} />
-			<Card className="flex flex-col gap-8 w-max max-w-2xl text-gray-800">
+			<Card className="flex flex-col gap-8 w-full text-gray-800">
 				{/* Title and details */}
 				<div className="flex flex-col gap-2 text-gray-700">
 					<div className="flex flex-row items-center justify-between">

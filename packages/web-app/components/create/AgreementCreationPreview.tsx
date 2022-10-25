@@ -6,11 +6,12 @@ import { useAgreementCreate } from "../../hooks/useAgreement";
 
 import { hexHash, generateMetadata, preparePutToIPFS } from "../../utils";
 
-import { Button, InfoAlert, Table, utils as n3utils } from "@nation3/ui-components";
+import { Button, InfoAlert, Table, ActionBadge, utils as n3utils } from "@nation3/ui-components";
 import { PositionStatusBadge } from "../PositionStatusBadge";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { CreateView } from "./context/types";
+import { useCallback } from "react";
 
 export const AgreementCreationPreview = () => {
 	const { terms, positions, changeView } = useAgreementCreation();
@@ -40,16 +41,23 @@ export const AgreementCreationPreview = () => {
 		});
 	};
 
+	const copyTermsHash = useCallback(() => {
+		if (termsHash) navigator.clipboard.writeText(String(termsHash));
+	}, [termsHash]);
+
 	return (
 		<>
-			<div className="text-gray-700">
+			<div className="flex flex-col gap-2 text-gray-700">
 				<div className="flex flex-row items-center justify-between">
 					<h1 className="font-display font-medium text-2xl truncate">Agreement</h1>
 				</div>
-				<span>
-					ID {n3utils.shortenHash(constants.HashZero)} | Terms hash{" "}
-					{n3utils.shortenHash(termsHash ?? constants.HashZero)}
-				</span>
+				<div className="flex items-center gap-1">
+					<ActionBadge
+						label="Terms hash"
+						data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
+						dataAction={copyTermsHash}
+					/>
+				</div>
 			</div>
 			{/* Participant table */}
 			<Table
