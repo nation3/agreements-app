@@ -1,4 +1,4 @@
-import { ArrowDownTrayIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
+import { PencilSquareIcon } from "@heroicons/react/20/solid";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 import { constants, utils, BigNumber } from "ethers";
 

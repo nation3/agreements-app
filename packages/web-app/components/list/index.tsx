@@ -49,6 +49,7 @@ const useAgreementList = () => {
 		} else {
 			if (account) setAccount("");
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [signer]);
 
 	console.log(data, error);
@@ -69,7 +70,7 @@ export const AgreementList = () => {
 						<a key={agreement.id} onClick={() => router.push(`/agreements/${agreement.id}`)}>
 							{utils.shortenHash(agreement.id)}
 						</a>,
-						<Badge label={agreement.status} bgColor="slate-300" />,
+						<Badge key={agreement.status} label={agreement.status} bgColor="slate-300" />,
 					])}
 					clickHandlers={positions.map(
 						({ agreement }) =>

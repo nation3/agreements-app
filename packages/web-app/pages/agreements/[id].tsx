@@ -91,6 +91,7 @@ const AgreementDetailPage = () => {
 			setMetadataURI(agreementParams.metadataURI);
 			fetchMetadata(agreementParams.metadataURI).then((metadata) => setMetadata(metadata));
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [agreementParams]);
 
 	/* Update positions when fetched agreement positions or new resolvers */
@@ -144,6 +145,7 @@ const AgreementDetailPage = () => {
 				}
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [agreementPositions, resolvers, signer]);
 
 	const copyAgreementId = useCallback(() => {

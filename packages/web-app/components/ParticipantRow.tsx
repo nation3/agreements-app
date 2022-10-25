@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState, ChangeEvent, FocusEvent } from "react";
 import { utils } from "ethers";
 import { TextInput, TokenBalanceInput } from "@nation3/ui-components";
 
 // TODO:
 // - Better way of updating array?
-// - Better way of updating component on changes in the array
 
 const purgeFloat = (number: string, config?: { units?: number; strip?: boolean }) => {
 	const maxDecimals = config?.units ?? 18;
@@ -16,18 +15,18 @@ const purgeFloat = (number: string, config?: { units?: number; strip?: boolean }
 	return config?.strip ? purged.replace(/\.$/g, "") : purged;
 };
 
+type Position = { account: string; balance: number };
+
 export const ParticipantRow = ({
 	positions,
 	index,
 	onChange,
 }: {
-	positions: any[];
+	positions: Position[];
 	index: number;
-	onChange?: (e?: any) => void;
+	onChange?: (poistions: Position[]) => void;
 }) => {
 	const [value, setValue] = useState(utils.formatUnits(positions[index].balance));
-
-	useEffect(() => {}, [positions]);
 
 	const updatePositionAccount = (account: string) => {
 		const positions_ = JSON.parse(JSON.stringify(positions));
@@ -47,7 +46,7 @@ export const ParticipantRow = ({
 				<TextInput
 					value={positions[index].account}
 					placeholder="vitalik.eth"
-					onChange={(e: any) => {
+					onChange={(e: ChangeEvent<HTMLInputElement>) => {
 						updatePositionAccount(e.target.value);
 					}}
 				/>
@@ -56,12 +55,12 @@ export const ParticipantRow = ({
 				<TokenBalanceInput
 					value={value}
 					token={"NATION"}
-					onChange={(e: any) => {
+					onChange={(e: ChangeEvent<HTMLInputElement>) => {
 						const purged = purgeFloat(e.target.value);
 						if (parseFloat(purged) < 0) return;
 						setValue(purged);
 					}}
-					onBlur={(e: any) => {
+					onBlur={(e: FocusEvent<HTMLInputElement>) => {
 						updatePositionBalance(purgeFloat(e.target.value, { strip: true }));
 					}}
 				/>

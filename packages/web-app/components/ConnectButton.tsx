@@ -4,7 +4,9 @@ import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 	return ensImage ? (
-		<img src={ensImage} className={`w-${size} h-${size} rounded-full`} />
+		<picture>
+			<img src={ensImage} alt="ENS Avatar" className={`w-${size} h-${size} rounded-full`} />
+		</picture>
 	) : (
 		<Blockies seed={address} size={size} className="overflow-hidden rounded-full" />
 	);
