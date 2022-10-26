@@ -8,15 +8,15 @@
   "private": false,
   "devDependencies": {
     "prettier": "^2.7.1",
-    "prettier-plugin-solidity": "^1.0.0-dev.23",
+    "prettier-plugin-solidity": "^1.0.0-beta.24",
     "solhint": "^3.3.7"
   },
   "scripts": {
-      "lint:check": "yarn lint:check:format && yarn lint:check:solhint",
-      "lint:check:format": "prettier --check **/*.sol",
-      "lint:check:solhint": "solhint src/**/*.sol",
-      "lint:fix": "prettier --write **/*.sol",
-      "deploy:check": "forge script DeployAgreements --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 -vvvv --ffi",
-      "deploy:local": "forge script DeployAgreements --rpc-url http://localhost:8545  --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --ffi --broadcast"
+    "lint:check": "yarn lint:check:format && yarn lint:check:solhint",
+    "lint:check:format": "prettier --check **/*.sol",
+    "lint:check:solhint": "solhint src/**/*.sol",
+    "lint:fix": "prettier --write **/*.sol",
+    "deploy:check": "forge script DeployAgreements --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 -vvvv --ffi",
+    "deploy:local": "forge script DeployAgreements --rpc-url http://localhost:8545  --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --ffi --broadcast"
   }
 }

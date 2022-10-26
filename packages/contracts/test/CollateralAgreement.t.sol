@@ -6,6 +6,7 @@ import { MockERC20 } from "solmate/src/test/utils/mocks/MockERC20.sol";
 import {
     AgreementParams,
     AgreementPosition,
+    AgreementStatus,
     PositionParams,
     PositionStatus,
     Permit,
@@ -47,6 +48,11 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         assertEq(createdAgreement.metadataURI, metadataURI);
     }
 
+    function testAgreementStatusCreated() public {
+        bytes32 agreementId = _createAgreement();
+        assertEq(uint256(framework.agreementStatus(agreementId)), uint256(AgreementStatus.Created));
+    }
+
     /* ====================================================================== //
                                      JOIN TESTS
     // ====================================================================== */
@@ -85,6 +91,14 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         assertEq(agreementPositions[0].party, bob);
         assertEq(agreementPositions[0].balance, 2 * 1e18);
         assertEq(collateralFramework.totalBalance(), 2 * 1e18);
+    }
+
+    function testCantJoinAgreementNotCreated(bytes32 id) public {
+        hevm.startPrank(bob);
+        // Fails because on an empty agreement the criteria root is 0 so no criteria resolver would fulfill the criteria.
+        hevm.expectRevert(CriteriaResolution.InvalidProof.selector);
+        framework.joinAgreement(id, CriteriaResolver(bob, 1 * 1e18, proofs[bob]));
+        hevm.stopPrank();
     }
 
     function testCantJoinWithInvalidCriteria() public {
@@ -134,6 +148,13 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
             agreementId,
             IAgreementFramework.AgreementIsFinalized.selector
         );
+    }
+
+    function testAgreementStatusOngoing() public {
+        bytes32 agreementId = _createAgreement();
+        _bobJoinsAgreement(agreementId);
+
+        assertEq(uint256(framework.agreementStatus(agreementId)), uint256(AgreementStatus.Ongoing));
     }
 
     /* ====================================================================== //
@@ -205,6 +226,18 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         );
     }
 
+    function testAgreementStatusFinalized() public {
+        bytes32 agreementId = _createAgreement();
+        _bobJoinsAgreement(agreementId);
+        hevm.prank(bob);
+        framework.finalizeAgreement(agreementId);
+
+        assertEq(
+            uint256(framework.agreementStatus(agreementId)),
+            uint256(AgreementStatus.Finalized)
+        );
+    }
+
     /* ====================================================================== //
                                     DISPUTE TESTS
     // ====================================================================== */
@@ -266,6 +299,20 @@ contract CollateralAgreementTest is AgreementFrameworkTestBase {
         _aliceExpectsErrorWhenDisputing(
             agreementId,
             IAgreementFramework.AgreementIsFinalized.selector
+        );
+    }
+
+    function testAgreementStatusDisputed() public {
+        bytes32 agreementId = _createAgreement();
+        _bobJoinsAgreement(agreementId);
+        _aliceJoinsAgreementWithPermit(agreementId);
+        hevm.prank(bob);
+        framework.finalizeAgreement(agreementId);
+        _disputeAgreement(alice, agreementId);
+
+        assertEq(
+            uint256(framework.agreementStatus(agreementId)),
+            uint256(AgreementStatus.Disputed)
         );
     }
 
