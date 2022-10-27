@@ -4,7 +4,8 @@ import { constants, utils, BigNumber } from "ethers";
 
 import { useAgreementCreate } from "../../hooks/useAgreement";
 
-import { hexHash, generateMetadata, preparePutToIPFS } from "../../utils";
+import { hexHash, generateMetadata } from "../../utils";
+import { preparePutToIPFS } from "../../lib/ipfs";
 
 import { Button, InfoAlert, Table, ActionBadge, utils as n3utils } from "@nation3/ui-components";
 import { PositionStatusBadge } from "../PositionStatusBadge";

@@ -5,18 +5,11 @@ import { hexHash } from "./hash";
 
 export type AgreementMetadata = {
 	title: string;
+	description?: string;
 	termsHash?: string;
 	termsUri?: string;
-	description?: string;
-	criteria?:
-		| string
-		| {
-				root: string;
-				resolvers: {
-					[key: string]: { amount: string; proof: string[] };
-				};
-		  };
-	resolvers?: { [key: string]: { balance: string; proof?: string[]; proofs?: string[] } };
+	criteria?: string;
+	resolvers?: { [key: string]: { balance: string; proof: string[] } };
 };
 
 export const parseMetadata = (data: { [key: string]: any }): AgreementMetadata => {

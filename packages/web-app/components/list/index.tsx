@@ -4,33 +4,10 @@ export { AgreementListProvider } from "./context/AgreementListProvider";
 import { Table, utils, Badge } from "@nation3/ui-components";
 import { ScaleIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useSigner } from "wagmi";
 import { useEffect, useState } from "react";
-
-interface AgreementPositionsData {
-	agreementPositions: {
-		party: string;
-		balance: string;
-		agreement: {
-			id: string;
-			status: string;
-		};
-	}[];
-}
-
-const agreementsPositionsQuery = gql`
-	query GetUserAgreements($account: Bytes!) {
-		agreementPositions(where: { party: $account }) {
-			party
-			balance
-			agreement {
-				id
-				status
-			}
-		}
-	}
-`;
+import { AgreementPositionsData, agreementsPositionsQuery } from "../../lib/subgraph";
 
 const useAgreementList = () => {
 	const { data: signer } = useSigner();
