@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "yarn build:dependencies && yarn build:app",
+    "build:app": "next build",
+    "build:dependencies": "yarn workspace @nation3/ui-components build",
     "start": "next start",
     "lint:check": "yarn lint:check:format && yarn lint:check:eslint",
     "lint:check:eslint": "next lint",
