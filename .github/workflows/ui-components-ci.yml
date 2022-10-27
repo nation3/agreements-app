@@ -24,6 +24,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
           cache-dependency-path: "./yarn.lock"
-      - run: npm install yarn
-      - run: npx yarn install
-      - run: npx yarn lint:check
+      - run: npm install --global yarn
+      - run: yarn install
+      - run: yarn lint:check
