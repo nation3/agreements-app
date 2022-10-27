@@ -247,6 +247,25 @@
       "type": "function"
     },
     {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "agreementStatus",
+      "outputs": [
+        {
+          "internalType": "enum AgreementStatus",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [],
       "name": "arbitrator",
       "outputs": [
@@ -525,6 +544,7 @@
   "methodIdentifiers": {
     "agreementParams(bytes32)": "3267ad24",
     "agreementPositions(bytes32)": "ac41b751",
+    "agreementStatus(bytes32)": "f839c08d",
     "arbitrator()": "6cc6cde1",
     "createAgreement((bytes32,uint256,string))": "b229a8f7",
     "disputeAgreement(bytes32)": "061ab0bc",
@@ -537,40 +557,43 @@
   },
   "ast": {
     "absolutePath": "src/interfaces/IAgreementFramework.sol",
-    "id": 23206,
+    "id": 23114,
     "exportedSymbols": {
       "AgreementParams": [
-        23393
+        23306
       ],
       "AgreementPosition": [
-        23411
+        23324
+      ],
+      "AgreementStatus": [
+        23252
       ],
       "CriteriaResolver": [
-        23421
+        23334
       ],
       "IAgreementFramework": [
-        23205
+        23113
       ],
       "IArbitrable": [
-        23229
+        23137
       ],
       "Permit": [
-        23618
+        23531
       ],
       "PositionParams": [
-        23400
+        23313
       ],
       "PositionStatus": [
-        23343
+        23256
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "45:5539:17",
+    "src": "45:5805:16",
     "nodes": [
       {
-        "id": 23050,
+        "id": 22948,
         "nodeType": "PragmaDirective",
-        "src": "45:24:17",
+        "src": "45:24:16",
         "literals": [
           "solidity",
           "^",
@@ -579,59 +602,71 @@
         ]
       },
       {
-        "id": 23055,
+        "id": 22954,
         "nodeType": "ImportDirective",
-        "src": "70:129:17",
+        "src": "70:150:16",
         "absolutePath": "src/lib/AgreementStructs.sol",
         "file": "../lib/AgreementStructs.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 23206,
-        "sourceUnit": 23412,
+        "scope": 23114,
+        "sourceUnit": 23325,
         "symbolAliases": [
           {
             "foreign": {
-              "id": 23051,
+              "id": 22949,
+              "name": "AgreementStatus",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 23252,
+              "src": "83:15:16",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          },
+          {
+            "foreign": {
+              "id": 22950,
               "name": "AgreementParams",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 23393,
-              "src": "83:15:17",
+              "referencedDeclaration": 23306,
+              "src": "104:15:16",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
           },
           {
             "foreign": {
-              "id": 23052,
+              "id": 22951,
               "name": "AgreementPosition",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 23411,
-              "src": "104:17:17",
+              "referencedDeclaration": 23324,
+              "src": "125:17:16",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
           },
           {
             "foreign": {
-              "id": 23053,
+              "id": 22952,
               "name": "PositionParams",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 23400,
-              "src": "127:14:17",
+              "referencedDeclaration": 23313,
+              "src": "148:14:16",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
           },
           {
             "foreign": {
-              "id": 23054,
+              "id": 22953,
               "name": "PositionStatus",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 23343,
-              "src": "147:14:17",
+              "referencedDeclaration": 23256,
+              "src": "168:14:16",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
@@ -640,23 +675,23 @@
         "unitAlias": ""
       },
       {
-        "id": 23057,
+        "id": 22956,
         "nodeType": "ImportDirective",
-        "src": "200:65:17",
+        "src": "221:65:16",
         "absolutePath": "src/lib/CriteriaResolution.sol",
         "file": "../lib/CriteriaResolution.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 23206,
-        "sourceUnit": 23481,
+        "scope": 23114,
+        "sourceUnit": 23394,
         "symbolAliases": [
           {
             "foreign": {
-              "id": 23056,
+              "id": 22955,
               "name": "CriteriaResolver",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 23421,
-              "src": "209:16:17",
+              "referencedDeclaration": 23334,
+              "src": "230:16:16",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
@@ -665,23 +700,23 @@
         "unitAlias": ""
       },
       {
-        "id": 23059,
+        "id": 22958,
         "nodeType": "ImportDirective",
-        "src": "266:43:17",
+        "src": "287:43:16",
         "absolutePath": "src/lib/Permit.sol",
         "file": "../lib/Permit.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 23206,
-        "sourceUnit": 23619,
+        "scope": 23114,
+        "sourceUnit": 23532,
         "symbolAliases": [
           {
             "foreign": {
-              "id": 23058,
+              "id": 22957,
               "name": "Permit",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 23618,
-              "src": "275:6:17",
+              "referencedDeclaration": 23531,
+              "src": "296:6:16",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
@@ -690,23 +725,23 @@
         "unitAlias": ""
       },
       {
-        "id": 23061,
+        "id": 22960,
         "nodeType": "ImportDirective",
-        "src": "310:48:17",
+        "src": "331:48:16",
         "absolutePath": "src/interfaces/IArbitrable.sol",
         "file": "./IArbitrable.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 23206,
-        "sourceUnit": 23230,
+        "scope": 23114,
+        "sourceUnit": 23138,
         "symbolAliases": [
           {
             "foreign": {
-              "id": 23060,
+              "id": 22959,
               "name": "IArbitrable",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 23229,
-              "src": "319:11:17",
+              "referencedDeclaration": 23137,
+              "src": "340:11:16",
               "typeDescriptions": {}
             },
             "nameLocation": "-1:-1:-1"
@@ -715,38 +750,1084 @@
         "unitAlias": ""
       },
       {
-        "id": 23205,
+        "id": 23113,
         "nodeType": "ContractDefinition",
-        "src": "488:5095:17",
+        "src": "509:5340:16",
         "nodes": [
           {
-            "id": 23075,
+            "id": 22974,
             "nodeType": "EventDefinition",
-            "src": "1057:92:17",
+            "src": "1078:92:16",
             "anonymous": false,
             "documentation": {
-              "id": 23065,
+              "id": 22964,
               "nodeType": "StructuredDocumentation",
-              "src": "749:303:17",
+              "src": "770:303:16",
               "text": "@dev Raised when a new agreement is created.\n @param id Id of the new created agreement.\n @param termsHash Hash of the detailed terms of the agreement.\n @param criteria Criteria requirements to join the agreement.\n @param metadataURI URI of the metadata of the agreement."
             },
             "eventSelector": "861ffb1f8a23b89cd210c52d6a4bdfaa59208c7ba8916f3e23bb068e32feda9f",
             "name": "AgreementCreated",
-            "nameLocation": "1063:16:17",
+            "nameLocation": "1084:16:16",
             "parameters": {
-              "id": 23074,
+              "id": 22973,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 22966,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "1109:2:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 22974,
+                  "src": "1101:10:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 22965,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1101:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 22968,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "termsHash",
+                  "nameLocation": "1121:9:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 22974,
+                  "src": "1113:17:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 22967,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1113:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 22970,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "criteria",
+                  "nameLocation": "1140:8:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 22974,
+                  "src": "1132:16:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 22969,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1132:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 22972,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "metadataURI",
+                  "nameLocation": "1157:11:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 22974,
+                  "src": "1150:18:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 22971,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1150:6:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1100:69:16"
+            }
+          },
+          {
+            "id": 22983,
+            "nodeType": "EventDefinition",
+            "src": "1377:66:16",
+            "anonymous": false,
+            "documentation": {
+              "id": 22975,
+              "nodeType": "StructuredDocumentation",
+              "src": "1176:196:16",
+              "text": "@dev Raised when a new party joins an agreement.\n @param id Id of the agreement joined.\n @param party Address of party joined.\n @param balance Balance of the party joined."
+            },
+            "eventSelector": "314e33b9d3471b9e382d2ab35ef89aa6e094c1be576ddd9090b5d7d1195cbf70",
+            "name": "AgreementJoined",
+            "nameLocation": "1383:15:16",
+            "parameters": {
+              "id": 22982,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 22977,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "1407:2:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 22983,
+                  "src": "1399:10:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 22976,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1399:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 22979,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "party",
+                  "nameLocation": "1419:5:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 22983,
+                  "src": "1411:13:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 22978,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1411:7:16",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 22981,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "balance",
+                  "nameLocation": "1434:7:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 22983,
+                  "src": "1426:15:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 22980,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1426:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1398:44:16"
+            }
+          },
+          {
+            "id": 22995,
+            "nodeType": "EventDefinition",
+            "src": "1727:136:16",
+            "anonymous": false,
+            "documentation": {
+              "id": 22984,
+              "nodeType": "StructuredDocumentation",
+              "src": "1449:273:16",
+              "text": "@dev Raised when an existing party of an agreement updates its position.\n @param id Id of the agreement updated.\n @param party Address of the party updated.\n @param balance New balance of the party.\n @param status New status of the position."
+            },
+            "eventSelector": "f478e398a575434f5cfcff203322ebf8e4a1f357653fcde0cf89762888e099b6",
+            "name": "AgreementPositionUpdated",
+            "nameLocation": "1733:24:16",
+            "parameters": {
+              "id": 22994,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 22986,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "1775:2:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 22995,
+                  "src": "1767:10:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 22985,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1767:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 22988,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "party",
+                  "nameLocation": "1795:5:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 22995,
+                  "src": "1787:13:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 22987,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1787:7:16",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 22990,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "balance",
+                  "nameLocation": "1818:7:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 22995,
+                  "src": "1810:15:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 22989,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1810:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 22993,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "status",
+                  "nameLocation": "1850:6:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 22995,
+                  "src": "1835:21:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_PositionStatus_$23256",
+                    "typeString": "enum PositionStatus"
+                  },
+                  "typeName": {
+                    "id": 22992,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 22991,
+                      "name": "PositionStatus",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 23256,
+                      "src": "1835:14:16"
+                    },
+                    "referencedDeclaration": 23256,
+                    "src": "1835:14:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_PositionStatus_$23256",
+                      "typeString": "enum PositionStatus"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1757:105:16"
+            }
+          },
+          {
+            "id": 23000,
+            "nodeType": "EventDefinition",
+            "src": "1970:37:16",
+            "anonymous": false,
+            "documentation": {
+              "id": 22996,
+              "nodeType": "StructuredDocumentation",
+              "src": "1869:96:16",
+              "text": "@dev Raised when an agreement is finalized.\n @param id Id of the agreement finalized."
+            },
+            "eventSelector": "c1efb9b165d126a4a64b456bec4ab69b7bf85d85e16aa5acda227f2ba88126c4",
+            "name": "AgreementFinalized",
+            "nameLocation": "1976:18:16",
+            "parameters": {
+              "id": 22999,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 22998,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "2003:2:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23000,
+                  "src": "1995:10:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 22997,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1995:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1994:12:16"
+            }
+          },
+          {
+            "id": 23007,
+            "nodeType": "EventDefinition",
+            "src": "2183:51:16",
+            "anonymous": false,
+            "documentation": {
+              "id": 23001,
+              "nodeType": "StructuredDocumentation",
+              "src": "2013:165:16",
+              "text": "@dev Raised when an agreement is in dispute.\n @param id Id of the agreement in dispute.\n @param party Address of the party that raises the dispute."
+            },
+            "eventSelector": "b67e3ac5aa7b56d61e366985ea94be26db935eca5c55e0359fd36c5852b6fa39",
+            "name": "AgreementDisputed",
+            "nameLocation": "2189:17:16",
+            "parameters": {
+              "id": 23006,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23003,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "2215:2:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23007,
+                  "src": "2207:10:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 23002,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2207:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 23005,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "party",
+                  "nameLocation": "2227:5:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23007,
+                  "src": "2219:13:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 23004,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2219:7:16",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2206:27:16"
+            }
+          },
+          {
+            "id": 23009,
+            "nodeType": "ErrorDefinition",
+            "src": "2450:29:16",
+            "errorSelector": "b9e8c16f",
+            "name": "NonExistentAgreement",
+            "nameLocation": "2456:20:16",
+            "parameters": {
+              "id": 23008,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2476:2:16"
+            }
+          },
+          {
+            "id": 23011,
+            "nodeType": "ErrorDefinition",
+            "src": "2484:28:16",
+            "errorSelector": "f4d678b8",
+            "name": "InsufficientBalance",
+            "nameLocation": "2490:19:16",
+            "parameters": {
+              "id": 23010,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2509:2:16"
+            }
+          },
+          {
+            "id": 23013,
+            "nodeType": "ErrorDefinition",
+            "src": "2517:26:16",
+            "errorSelector": "3b278a7a",
+            "name": "NoPartOfAgreement",
+            "nameLocation": "2523:17:16",
+            "parameters": {
+              "id": 23012,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2540:2:16"
+            }
+          },
+          {
+            "id": 23015,
+            "nodeType": "ErrorDefinition",
+            "src": "2548:27:16",
+            "errorSelector": "6d9bf6df",
+            "name": "PartyAlreadyJoined",
+            "nameLocation": "2554:18:16",
+            "parameters": {
+              "id": 23014,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2572:2:16"
+            }
+          },
+          {
+            "id": 23017,
+            "nodeType": "ErrorDefinition",
+            "src": "2580:30:16",
+            "errorSelector": "af20ef4a",
+            "name": "PartyAlreadyFinalized",
+            "nameLocation": "2586:21:16",
+            "parameters": {
+              "id": 23016,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2607:2:16"
+            }
+          },
+          {
+            "id": 23019,
+            "nodeType": "ErrorDefinition",
+            "src": "2615:31:16",
+            "errorSelector": "7ca6acb5",
+            "name": "PartyMustMatchCriteria",
+            "nameLocation": "2621:22:16",
+            "parameters": {
+              "id": 23018,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2643:2:16"
+            }
+          },
+          {
+            "id": 23021,
+            "nodeType": "ErrorDefinition",
+            "src": "2651:28:16",
+            "errorSelector": "03144514",
+            "name": "AgreementIsDisputed",
+            "nameLocation": "2657:19:16",
+            "parameters": {
+              "id": 23020,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2676:2:16"
+            }
+          },
+          {
+            "id": 23023,
+            "nodeType": "ErrorDefinition",
+            "src": "2684:29:16",
+            "errorSelector": "8d87dbb6",
+            "name": "AgreementIsFinalized",
+            "nameLocation": "2690:20:16",
+            "parameters": {
+              "id": 23022,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2710:2:16"
+            }
+          },
+          {
+            "id": 23025,
+            "nodeType": "ErrorDefinition",
+            "src": "2718:30:16",
+            "errorSelector": "a3b1c9de",
+            "name": "AgreementNotFinalized",
+            "nameLocation": "2724:21:16",
+            "parameters": {
+              "id": 23024,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2745:2:16"
+            }
+          },
+          {
+            "id": 23027,
+            "nodeType": "ErrorDefinition",
+            "src": "2753:29:16",
+            "errorSelector": "4e16946c",
+            "name": "AgreementNotDisputed",
+            "nameLocation": "2759:20:16",
+            "parameters": {
+              "id": 23026,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2779:2:16"
+            }
+          },
+          {
+            "id": 23036,
+            "nodeType": "FunctionDefinition",
+            "src": "3194:84:16",
+            "documentation": {
+              "id": 23028,
+              "nodeType": "StructuredDocumentation",
+              "src": "2997:192:16",
+              "text": "@notice Retrieve general parameters of an agreement.\n @param id Id of the agreement to return data from.\n @return AgreementParams struct with the parameters of the agreement."
+            },
+            "functionSelector": "3267ad24",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "agreementParams",
+            "nameLocation": "3203:15:16",
+            "parameters": {
+              "id": 23031,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23030,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "3227:2:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23036,
+                  "src": "3219:10:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 23029,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3219:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3218:12:16"
+            },
+            "returnParameters": {
+              "id": 23035,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23034,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23036,
+                  "src": "3254:22:16",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_AgreementParams_$23306_memory_ptr",
+                    "typeString": "struct AgreementParams"
+                  },
+                  "typeName": {
+                    "id": 23033,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 23032,
+                      "name": "AgreementParams",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 23306,
+                      "src": "3254:15:16"
+                    },
+                    "referencedDeclaration": 23306,
+                    "src": "3254:15:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_AgreementParams_$23306_storage_ptr",
+                      "typeString": "struct AgreementParams"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3253:24:16"
+            },
+            "scope": 23113,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 23046,
+            "nodeType": "FunctionDefinition",
+            "src": "3452:91:16",
+            "documentation": {
+              "id": 23037,
+              "nodeType": "StructuredDocumentation",
+              "src": "3284:163:16",
+              "text": "@notice Retrieve positions of an agreement.\n @param id Id of the agreement to return data from.\n @return Array of the positions of the agreement."
+            },
+            "functionSelector": "ac41b751",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "agreementPositions",
+            "nameLocation": "3461:18:16",
+            "parameters": {
+              "id": 23040,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23039,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "3488:2:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23046,
+                  "src": "3480:10:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 23038,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3480:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3479:12:16"
+            },
+            "returnParameters": {
+              "id": 23045,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23044,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23046,
+                  "src": "3515:26:16",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_AgreementPosition_$23324_memory_ptr_$dyn_memory_ptr",
+                    "typeString": "struct AgreementPosition[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 23042,
+                      "nodeType": "UserDefinedTypeName",
+                      "pathNode": {
+                        "id": 23041,
+                        "name": "AgreementPosition",
+                        "nodeType": "IdentifierPath",
+                        "referencedDeclaration": 23324,
+                        "src": "3515:17:16"
+                      },
+                      "referencedDeclaration": 23324,
+                      "src": "3515:17:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_struct$_AgreementPosition_$23324_storage_ptr",
+                        "typeString": "struct AgreementPosition"
+                      }
+                    },
+                    "id": 23043,
+                    "nodeType": "ArrayTypeName",
+                    "src": "3515:19:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_struct$_AgreementPosition_$23324_storage_$dyn_storage_ptr",
+                      "typeString": "struct AgreementPosition[]"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3514:28:16"
+            },
+            "scope": 23113,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 23055,
+            "nodeType": "FunctionDefinition",
+            "src": "3711:77:16",
+            "documentation": {
+              "id": 23047,
+              "nodeType": "StructuredDocumentation",
+              "src": "3549:157:16",
+              "text": "@notice Retrieve the status of an agreement.\n @param id Id of the the agreement to return status from.\n @return AgreementStatus enum value."
+            },
+            "functionSelector": "f839c08d",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "agreementStatus",
+            "nameLocation": "3720:15:16",
+            "parameters": {
+              "id": 23050,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23049,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "3744:2:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23055,
+                  "src": "3736:10:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 23048,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3736:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3735:12:16"
+            },
+            "returnParameters": {
+              "id": 23054,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23053,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23055,
+                  "src": "3771:15:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_AgreementStatus_$23252",
+                    "typeString": "enum AgreementStatus"
+                  },
+                  "typeName": {
+                    "id": 23052,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 23051,
+                      "name": "AgreementStatus",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 23252,
+                      "src": "3771:15:16"
+                    },
+                    "referencedDeclaration": 23252,
+                    "src": "3771:15:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_enum$_AgreementStatus_$23252",
+                      "typeString": "enum AgreementStatus"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3770:17:16"
+            },
+            "scope": 23113,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 23064,
+            "nodeType": "FunctionDefinition",
+            "src": "4162:88:16",
+            "documentation": {
+              "id": 23056,
+              "nodeType": "StructuredDocumentation",
+              "src": "4006:151:16",
+              "text": "@notice Create a new agreement with given params.\n @param params Struct of agreement params.\n @return id Id of the agreement created."
+            },
+            "functionSelector": "b229a8f7",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "createAgreement",
+            "nameLocation": "4171:15:16",
+            "parameters": {
+              "id": 23060,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23059,
+                  "mutability": "mutable",
+                  "name": "params",
+                  "nameLocation": "4212:6:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23064,
+                  "src": "4187:31:16",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_AgreementParams_$23306_calldata_ptr",
+                    "typeString": "struct AgreementParams"
+                  },
+                  "typeName": {
+                    "id": 23058,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 23057,
+                      "name": "AgreementParams",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 23306,
+                      "src": "4187:15:16"
+                    },
+                    "referencedDeclaration": 23306,
+                    "src": "4187:15:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_AgreementParams_$23306_storage_ptr",
+                      "typeString": "struct AgreementParams"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4186:33:16"
+            },
+            "returnParameters": {
+              "id": 23063,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 23062,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "4246:2:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 23064,
+                  "src": "4238:10:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 23061,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "4238:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "4237:12:16"
+            },
+            "scope": 23113,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 23073,
+            "nodeType": "FunctionDefinition",
+            "src": "4478:80:16",
+            "documentation": {
+              "id": 23065,
+              "nodeType": "StructuredDocumentation",
+              "src": "4256:217:16",
+              "text": "@notice Join an existing agreement.\n @dev Requires a deposit over agreement criteria.\n @param id Id of the agreement to join.\n @param resolver Criteria data to prove sender can join agreement."
+            },
+            "functionSelector": "d50b3f5f",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "joinAgreement",
+            "nameLocation": "4487:13:16",
+            "parameters": {
+              "id": 23071,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
                   "id": 23067,
-                  "indexed": false,
                   "mutability": "mutable",
                   "name": "id",
-                  "nameLocation": "1088:2:17",
+                  "nameLocation": "4509:2:16",
                   "nodeType": "VariableDeclaration",
-                  "scope": 23075,
-                  "src": "1080:10:17",
+                  "scope": 23073,
+                  "src": "4501:10:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -757,7 +1838,7 @@
                     "id": 23066,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1080:7:17",
+                    "src": "4501:7:16",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -767,1010 +1848,60 @@
                 },
                 {
                   "constant": false,
-                  "id": 23069,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "termsHash",
-                  "nameLocation": "1100:9:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23075,
-                  "src": "1092:17:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_bytes32",
-                    "typeString": "bytes32"
-                  },
-                  "typeName": {
-                    "id": 23068,
-                    "name": "bytes32",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1092:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_bytes32",
-                      "typeString": "bytes32"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 23071,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "criteria",
-                  "nameLocation": "1119:8:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23075,
-                  "src": "1111:16:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 23070,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1111:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 23073,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "metadataURI",
-                  "nameLocation": "1136:11:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23075,
-                  "src": "1129:18:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string"
-                  },
-                  "typeName": {
-                    "id": 23072,
-                    "name": "string",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1129:6:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1079:69:17"
-            }
-          },
-          {
-            "id": 23084,
-            "nodeType": "EventDefinition",
-            "src": "1356:66:17",
-            "anonymous": false,
-            "documentation": {
-              "id": 23076,
-              "nodeType": "StructuredDocumentation",
-              "src": "1155:196:17",
-              "text": "@dev Raised when a new party joins an agreement.\n @param id Id of the agreement joined.\n @param party Address of party joined.\n @param balance Balance of the party joined."
-            },
-            "eventSelector": "314e33b9d3471b9e382d2ab35ef89aa6e094c1be576ddd9090b5d7d1195cbf70",
-            "name": "AgreementJoined",
-            "nameLocation": "1362:15:17",
-            "parameters": {
-              "id": 23083,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 23078,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "id",
-                  "nameLocation": "1386:2:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23084,
-                  "src": "1378:10:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_bytes32",
-                    "typeString": "bytes32"
-                  },
-                  "typeName": {
-                    "id": 23077,
-                    "name": "bytes32",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1378:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_bytes32",
-                      "typeString": "bytes32"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 23080,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "party",
-                  "nameLocation": "1398:5:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23084,
-                  "src": "1390:13:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 23079,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1390:7:17",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 23082,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "balance",
-                  "nameLocation": "1413:7:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23084,
-                  "src": "1405:15:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 23081,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1405:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1377:44:17"
-            }
-          },
-          {
-            "id": 23096,
-            "nodeType": "EventDefinition",
-            "src": "1706:136:17",
-            "anonymous": false,
-            "documentation": {
-              "id": 23085,
-              "nodeType": "StructuredDocumentation",
-              "src": "1428:273:17",
-              "text": "@dev Raised when an existing party of an agreement updates its position.\n @param id Id of the agreement updated.\n @param party Address of the party updated.\n @param balance New balance of the party.\n @param status New status of the position."
-            },
-            "eventSelector": "f478e398a575434f5cfcff203322ebf8e4a1f357653fcde0cf89762888e099b6",
-            "name": "AgreementPositionUpdated",
-            "nameLocation": "1712:24:17",
-            "parameters": {
-              "id": 23095,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 23087,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "id",
-                  "nameLocation": "1754:2:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23096,
-                  "src": "1746:10:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_bytes32",
-                    "typeString": "bytes32"
-                  },
-                  "typeName": {
-                    "id": 23086,
-                    "name": "bytes32",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1746:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_bytes32",
-                      "typeString": "bytes32"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 23089,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "party",
-                  "nameLocation": "1774:5:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23096,
-                  "src": "1766:13:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 23088,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1766:7:17",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 23091,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "balance",
-                  "nameLocation": "1797:7:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23096,
-                  "src": "1789:15:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 23090,
-                    "name": "uint256",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1789:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 23094,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "status",
-                  "nameLocation": "1829:6:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23096,
-                  "src": "1814:21:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_PositionStatus_$23343",
-                    "typeString": "enum PositionStatus"
-                  },
-                  "typeName": {
-                    "id": 23093,
-                    "nodeType": "UserDefinedTypeName",
-                    "pathNode": {
-                      "id": 23092,
-                      "name": "PositionStatus",
-                      "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 23343,
-                      "src": "1814:14:17"
-                    },
-                    "referencedDeclaration": 23343,
-                    "src": "1814:14:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_enum$_PositionStatus_$23343",
-                      "typeString": "enum PositionStatus"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1736:105:17"
-            }
-          },
-          {
-            "id": 23101,
-            "nodeType": "EventDefinition",
-            "src": "1949:37:17",
-            "anonymous": false,
-            "documentation": {
-              "id": 23097,
-              "nodeType": "StructuredDocumentation",
-              "src": "1848:96:17",
-              "text": "@dev Raised when an agreement is finalized.\n @param id Id of the agreement finalized."
-            },
-            "eventSelector": "c1efb9b165d126a4a64b456bec4ab69b7bf85d85e16aa5acda227f2ba88126c4",
-            "name": "AgreementFinalized",
-            "nameLocation": "1955:18:17",
-            "parameters": {
-              "id": 23100,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 23099,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "id",
-                  "nameLocation": "1982:2:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23101,
-                  "src": "1974:10:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_bytes32",
-                    "typeString": "bytes32"
-                  },
-                  "typeName": {
-                    "id": 23098,
-                    "name": "bytes32",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1974:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_bytes32",
-                      "typeString": "bytes32"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1973:12:17"
-            }
-          },
-          {
-            "id": 23108,
-            "nodeType": "EventDefinition",
-            "src": "2162:51:17",
-            "anonymous": false,
-            "documentation": {
-              "id": 23102,
-              "nodeType": "StructuredDocumentation",
-              "src": "1992:165:17",
-              "text": "@dev Raised when an agreement is in dispute.\n @param id Id of the agreement in dispute.\n @param party Address of the party that raises the dispute."
-            },
-            "eventSelector": "b67e3ac5aa7b56d61e366985ea94be26db935eca5c55e0359fd36c5852b6fa39",
-            "name": "AgreementDisputed",
-            "nameLocation": "2168:17:17",
-            "parameters": {
-              "id": 23107,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 23104,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "id",
-                  "nameLocation": "2194:2:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23108,
-                  "src": "2186:10:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_bytes32",
-                    "typeString": "bytes32"
-                  },
-                  "typeName": {
-                    "id": 23103,
-                    "name": "bytes32",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "2186:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_bytes32",
-                      "typeString": "bytes32"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 23106,
-                  "indexed": false,
-                  "mutability": "mutable",
-                  "name": "party",
-                  "nameLocation": "2206:5:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23108,
-                  "src": "2198:13:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 23105,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "2198:7:17",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "2185:27:17"
-            }
-          },
-          {
-            "id": 23110,
-            "nodeType": "ErrorDefinition",
-            "src": "2429:29:17",
-            "errorSelector": "b9e8c16f",
-            "name": "NonExistentAgreement",
-            "nameLocation": "2435:20:17",
-            "parameters": {
-              "id": 23109,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2455:2:17"
-            }
-          },
-          {
-            "id": 23112,
-            "nodeType": "ErrorDefinition",
-            "src": "2463:28:17",
-            "errorSelector": "f4d678b8",
-            "name": "InsufficientBalance",
-            "nameLocation": "2469:19:17",
-            "parameters": {
-              "id": 23111,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2488:2:17"
-            }
-          },
-          {
-            "id": 23114,
-            "nodeType": "ErrorDefinition",
-            "src": "2496:26:17",
-            "errorSelector": "3b278a7a",
-            "name": "NoPartOfAgreement",
-            "nameLocation": "2502:17:17",
-            "parameters": {
-              "id": 23113,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2519:2:17"
-            }
-          },
-          {
-            "id": 23116,
-            "nodeType": "ErrorDefinition",
-            "src": "2527:27:17",
-            "errorSelector": "6d9bf6df",
-            "name": "PartyAlreadyJoined",
-            "nameLocation": "2533:18:17",
-            "parameters": {
-              "id": 23115,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2551:2:17"
-            }
-          },
-          {
-            "id": 23118,
-            "nodeType": "ErrorDefinition",
-            "src": "2559:30:17",
-            "errorSelector": "af20ef4a",
-            "name": "PartyAlreadyFinalized",
-            "nameLocation": "2565:21:17",
-            "parameters": {
-              "id": 23117,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2586:2:17"
-            }
-          },
-          {
-            "id": 23120,
-            "nodeType": "ErrorDefinition",
-            "src": "2594:31:17",
-            "errorSelector": "7ca6acb5",
-            "name": "PartyMustMatchCriteria",
-            "nameLocation": "2600:22:17",
-            "parameters": {
-              "id": 23119,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2622:2:17"
-            }
-          },
-          {
-            "id": 23122,
-            "nodeType": "ErrorDefinition",
-            "src": "2630:28:17",
-            "errorSelector": "03144514",
-            "name": "AgreementIsDisputed",
-            "nameLocation": "2636:19:17",
-            "parameters": {
-              "id": 23121,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2655:2:17"
-            }
-          },
-          {
-            "id": 23124,
-            "nodeType": "ErrorDefinition",
-            "src": "2663:29:17",
-            "errorSelector": "8d87dbb6",
-            "name": "AgreementIsFinalized",
-            "nameLocation": "2669:20:17",
-            "parameters": {
-              "id": 23123,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2689:2:17"
-            }
-          },
-          {
-            "id": 23126,
-            "nodeType": "ErrorDefinition",
-            "src": "2697:30:17",
-            "errorSelector": "a3b1c9de",
-            "name": "AgreementNotFinalized",
-            "nameLocation": "2703:21:17",
-            "parameters": {
-              "id": 23125,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2724:2:17"
-            }
-          },
-          {
-            "id": 23128,
-            "nodeType": "ErrorDefinition",
-            "src": "2732:29:17",
-            "errorSelector": "4e16946c",
-            "name": "AgreementNotDisputed",
-            "nameLocation": "2738:20:17",
-            "parameters": {
-              "id": 23127,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "2758:2:17"
-            }
-          },
-          {
-            "id": 23137,
-            "nodeType": "FunctionDefinition",
-            "src": "3173:84:17",
-            "documentation": {
-              "id": 23129,
-              "nodeType": "StructuredDocumentation",
-              "src": "2976:192:17",
-              "text": "@notice Retrieve general parameters of an agreement.\n @param id Id of the agreement to return data from.\n @return AgreementParams struct with the parameters of the agreement."
-            },
-            "functionSelector": "3267ad24",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "agreementParams",
-            "nameLocation": "3182:15:17",
-            "parameters": {
-              "id": 23132,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 23131,
-                  "mutability": "mutable",
-                  "name": "id",
-                  "nameLocation": "3206:2:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23137,
-                  "src": "3198:10:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_bytes32",
-                    "typeString": "bytes32"
-                  },
-                  "typeName": {
-                    "id": 23130,
-                    "name": "bytes32",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "3198:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_bytes32",
-                      "typeString": "bytes32"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "3197:12:17"
-            },
-            "returnParameters": {
-              "id": 23136,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 23135,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23137,
-                  "src": "3233:22:17",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_AgreementParams_$23393_memory_ptr",
-                    "typeString": "struct AgreementParams"
-                  },
-                  "typeName": {
-                    "id": 23134,
-                    "nodeType": "UserDefinedTypeName",
-                    "pathNode": {
-                      "id": 23133,
-                      "name": "AgreementParams",
-                      "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 23393,
-                      "src": "3233:15:17"
-                    },
-                    "referencedDeclaration": 23393,
-                    "src": "3233:15:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_AgreementParams_$23393_storage_ptr",
-                      "typeString": "struct AgreementParams"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "3232:24:17"
-            },
-            "scope": 23205,
-            "stateMutability": "view",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 23147,
-            "nodeType": "FunctionDefinition",
-            "src": "3431:91:17",
-            "documentation": {
-              "id": 23138,
-              "nodeType": "StructuredDocumentation",
-              "src": "3263:163:17",
-              "text": "@notice Retrieve positions of an agreement.\n @param id Id of the agreement to return data from.\n @return Array of the positions of the agreement."
-            },
-            "functionSelector": "ac41b751",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "agreementPositions",
-            "nameLocation": "3440:18:17",
-            "parameters": {
-              "id": 23141,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 23140,
-                  "mutability": "mutable",
-                  "name": "id",
-                  "nameLocation": "3467:2:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23147,
-                  "src": "3459:10:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_bytes32",
-                    "typeString": "bytes32"
-                  },
-                  "typeName": {
-                    "id": 23139,
-                    "name": "bytes32",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "3459:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_bytes32",
-                      "typeString": "bytes32"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "3458:12:17"
-            },
-            "returnParameters": {
-              "id": 23146,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 23145,
-                  "mutability": "mutable",
-                  "name": "",
-                  "nameLocation": "-1:-1:-1",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23147,
-                  "src": "3494:26:17",
-                  "stateVariable": false,
-                  "storageLocation": "memory",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_AgreementPosition_$23411_memory_ptr_$dyn_memory_ptr",
-                    "typeString": "struct AgreementPosition[]"
-                  },
-                  "typeName": {
-                    "baseType": {
-                      "id": 23143,
-                      "nodeType": "UserDefinedTypeName",
-                      "pathNode": {
-                        "id": 23142,
-                        "name": "AgreementPosition",
-                        "nodeType": "IdentifierPath",
-                        "referencedDeclaration": 23411,
-                        "src": "3494:17:17"
-                      },
-                      "referencedDeclaration": 23411,
-                      "src": "3494:17:17",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_AgreementPosition_$23411_storage_ptr",
-                        "typeString": "struct AgreementPosition"
-                      }
-                    },
-                    "id": 23144,
-                    "nodeType": "ArrayTypeName",
-                    "src": "3494:19:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_array$_t_struct$_AgreementPosition_$23411_storage_$dyn_storage_ptr",
-                      "typeString": "struct AgreementPosition[]"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "3493:28:17"
-            },
-            "scope": 23205,
-            "stateMutability": "view",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 23156,
-            "nodeType": "FunctionDefinition",
-            "src": "3896:88:17",
-            "documentation": {
-              "id": 23148,
-              "nodeType": "StructuredDocumentation",
-              "src": "3740:151:17",
-              "text": "@notice Create a new agreement with given params.\n @param params Struct of agreement params.\n @return id Id of the agreement created."
-            },
-            "functionSelector": "b229a8f7",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "createAgreement",
-            "nameLocation": "3905:15:17",
-            "parameters": {
-              "id": 23152,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 23151,
-                  "mutability": "mutable",
-                  "name": "params",
-                  "nameLocation": "3946:6:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23156,
-                  "src": "3921:31:17",
-                  "stateVariable": false,
-                  "storageLocation": "calldata",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_AgreementParams_$23393_calldata_ptr",
-                    "typeString": "struct AgreementParams"
-                  },
-                  "typeName": {
-                    "id": 23150,
-                    "nodeType": "UserDefinedTypeName",
-                    "pathNode": {
-                      "id": 23149,
-                      "name": "AgreementParams",
-                      "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 23393,
-                      "src": "3921:15:17"
-                    },
-                    "referencedDeclaration": 23393,
-                    "src": "3921:15:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_AgreementParams_$23393_storage_ptr",
-                      "typeString": "struct AgreementParams"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "3920:33:17"
-            },
-            "returnParameters": {
-              "id": 23155,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 23154,
-                  "mutability": "mutable",
-                  "name": "id",
-                  "nameLocation": "3980:2:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23156,
-                  "src": "3972:10:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_bytes32",
-                    "typeString": "bytes32"
-                  },
-                  "typeName": {
-                    "id": 23153,
-                    "name": "bytes32",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "3972:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_bytes32",
-                      "typeString": "bytes32"
-                    }
-                  },
-                  "visibility": "internal"
-                }
-              ],
-              "src": "3971:12:17"
-            },
-            "scope": 23205,
-            "stateMutability": "nonpayable",
-            "virtual": false,
-            "visibility": "external"
-          },
-          {
-            "id": 23165,
-            "nodeType": "FunctionDefinition",
-            "src": "4212:80:17",
-            "documentation": {
-              "id": 23157,
-              "nodeType": "StructuredDocumentation",
-              "src": "3990:217:17",
-              "text": "@notice Join an existing agreement.\n @dev Requires a deposit over agreement criteria.\n @param id Id of the agreement to join.\n @param resolver Criteria data to prove sender can join agreement."
-            },
-            "functionSelector": "d50b3f5f",
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "joinAgreement",
-            "nameLocation": "4221:13:17",
-            "parameters": {
-              "id": 23163,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 23159,
-                  "mutability": "mutable",
-                  "name": "id",
-                  "nameLocation": "4243:2:17",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 23165,
-                  "src": "4235:10:17",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_bytes32",
-                    "typeString": "bytes32"
-                  },
-                  "typeName": {
-                    "id": 23158,
-                    "name": "bytes32",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "4235:7:17",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_bytes32",
-                      "typeString": "bytes32"
-                    }
-                  },
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 23162,
+                  "id": 23070,
                   "mutability": "mutable",
                   "name": "resolver",
-                  "nameLocation": "4273:8:17",
+                  "nameLocation": "4539:8:16",
                   "nodeType": "VariableDeclaration",
-                  "scope": 23165,
-                  "src": "4247:34:17",
+                  "scope": 23073,
+                  "src": "4513:34:16",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_CriteriaResolver_$23421_calldata_ptr",
+                    "typeIdentifier": "t_struct$_CriteriaResolver_$23334_calldata_ptr",
                     "typeString": "struct CriteriaResolver"
                   },
                   "typeName": {
-                    "id": 23161,
+                    "id": 23069,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 23160,
+                      "id": 23068,
                       "name": "CriteriaResolver",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 23421,
-                      "src": "4247:16:17"
+                      "referencedDeclaration": 23334,
+                      "src": "4513:16:16"
                     },
-                    "referencedDeclaration": 23421,
-                    "src": "4247:16:17",
+                    "referencedDeclaration": 23334,
+                    "src": "4513:16:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_CriteriaResolver_$23421_storage_ptr",
+                      "typeIdentifier": "t_struct$_CriteriaResolver_$23334_storage_ptr",
                       "typeString": "struct CriteriaResolver"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "4234:48:17"
+              "src": "4500:48:16"
             },
             "returnParameters": {
-              "id": 23164,
+              "id": 23072,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "4291:0:17"
+              "src": "4557:0:16"
             },
-            "scope": 23205,
+            "scope": 23113,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 23177,
+            "id": 23085,
             "nodeType": "FunctionDefinition",
-            "src": "4635:144:17",
+            "src": "4901:144:16",
             "documentation": {
-              "id": 23166,
+              "id": 23074,
               "nodeType": "StructuredDocumentation",
-              "src": "4298:332:17",
+              "src": "4564:332:16",
               "text": "@notice Join an existing agreement with EIP-2612 permit.\n         Allow to approve and transfer funds on the same transaction.\n @param id Id of the agreement to join.\n @param resolver Criteria data to prove sender can join agreement.\n @param permit EIP-2612 permit data to approve transfer of tokens."
             },
             "functionSelector": "3b7c9061",
@@ -1778,20 +1909,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "joinAgreementWithPermit",
-            "nameLocation": "4644:23:17",
+            "nameLocation": "4910:23:16",
             "parameters": {
-              "id": 23175,
+              "id": 23083,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 23168,
+                  "id": 23076,
                   "mutability": "mutable",
                   "name": "id",
-                  "nameLocation": "4685:2:17",
+                  "nameLocation": "4951:2:16",
                   "nodeType": "VariableDeclaration",
-                  "scope": 23177,
-                  "src": "4677:10:17",
+                  "scope": 23085,
+                  "src": "4943:10:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1799,10 +1930,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 23167,
+                    "id": 23075,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4677:7:17",
+                    "src": "4943:7:16",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1812,33 +1943,33 @@
                 },
                 {
                   "constant": false,
-                  "id": 23171,
+                  "id": 23079,
                   "mutability": "mutable",
                   "name": "resolver",
-                  "nameLocation": "4723:8:17",
+                  "nameLocation": "4989:8:16",
                   "nodeType": "VariableDeclaration",
-                  "scope": 23177,
-                  "src": "4697:34:17",
+                  "scope": 23085,
+                  "src": "4963:34:16",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_CriteriaResolver_$23421_calldata_ptr",
+                    "typeIdentifier": "t_struct$_CriteriaResolver_$23334_calldata_ptr",
                     "typeString": "struct CriteriaResolver"
                   },
                   "typeName": {
-                    "id": 23170,
+                    "id": 23078,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 23169,
+                      "id": 23077,
                       "name": "CriteriaResolver",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 23421,
-                      "src": "4697:16:17"
+                      "referencedDeclaration": 23334,
+                      "src": "4963:16:16"
                     },
-                    "referencedDeclaration": 23421,
-                    "src": "4697:16:17",
+                    "referencedDeclaration": 23334,
+                    "src": "4963:16:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_CriteriaResolver_$23421_storage_ptr",
+                      "typeIdentifier": "t_struct$_CriteriaResolver_$23334_storage_ptr",
                       "typeString": "struct CriteriaResolver"
                     }
                   },
@@ -1846,60 +1977,60 @@
                 },
                 {
                   "constant": false,
-                  "id": 23174,
+                  "id": 23082,
                   "mutability": "mutable",
                   "name": "permit",
-                  "nameLocation": "4757:6:17",
+                  "nameLocation": "5023:6:16",
                   "nodeType": "VariableDeclaration",
-                  "scope": 23177,
-                  "src": "4741:22:17",
+                  "scope": 23085,
+                  "src": "5007:22:16",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Permit_$23618_calldata_ptr",
+                    "typeIdentifier": "t_struct$_Permit_$23531_calldata_ptr",
                     "typeString": "struct Permit"
                   },
                   "typeName": {
-                    "id": 23173,
+                    "id": 23081,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 23172,
+                      "id": 23080,
                       "name": "Permit",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 23618,
-                      "src": "4741:6:17"
+                      "referencedDeclaration": 23531,
+                      "src": "5007:6:16"
                     },
-                    "referencedDeclaration": 23618,
-                    "src": "4741:6:17",
+                    "referencedDeclaration": 23531,
+                    "src": "5007:6:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Permit_$23618_storage_ptr",
+                      "typeIdentifier": "t_struct$_Permit_$23531_storage_ptr",
                       "typeString": "struct Permit"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "4667:102:17"
+              "src": "4933:102:16"
             },
             "returnParameters": {
-              "id": 23176,
+              "id": 23084,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "4778:0:17"
+              "src": "5044:0:16"
             },
-            "scope": 23205,
+            "scope": 23113,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 23183,
+            "id": 23091,
             "nodeType": "FunctionDefinition",
-            "src": "4906:48:17",
+            "src": "5172:48:16",
             "documentation": {
-              "id": 23178,
+              "id": 23086,
               "nodeType": "StructuredDocumentation",
-              "src": "4785:116:17",
+              "src": "5051:116:16",
               "text": "@notice Signal the will of the caller to finalize an agreement.\n @param id Id of the agreement to settle."
             },
             "functionSelector": "8135fe23",
@@ -1907,20 +2038,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "finalizeAgreement",
-            "nameLocation": "4915:17:17",
+            "nameLocation": "5181:17:16",
             "parameters": {
-              "id": 23181,
+              "id": 23089,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 23180,
+                  "id": 23088,
                   "mutability": "mutable",
                   "name": "id",
-                  "nameLocation": "4941:2:17",
+                  "nameLocation": "5207:2:16",
                   "nodeType": "VariableDeclaration",
-                  "scope": 23183,
-                  "src": "4933:10:17",
+                  "scope": 23091,
+                  "src": "5199:10:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1928,10 +2059,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 23179,
+                    "id": 23087,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "4933:7:17",
+                    "src": "5199:7:16",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -1940,27 +2071,27 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "4932:12:17"
+              "src": "5198:12:16"
             },
             "returnParameters": {
-              "id": 23182,
+              "id": 23090,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "4953:0:17"
+              "src": "5219:0:16"
             },
-            "scope": 23205,
+            "scope": 23113,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 23189,
+            "id": 23097,
             "nodeType": "FunctionDefinition",
-            "src": "5061:47:17",
+            "src": "5327:47:16",
             "documentation": {
-              "id": 23184,
+              "id": 23092,
               "nodeType": "StructuredDocumentation",
-              "src": "4960:96:17",
+              "src": "5226:96:16",
               "text": "@notice Raise a dispute over an agreement.\n @param id Id of the agreement to dispute."
             },
             "functionSelector": "061ab0bc",
@@ -1968,20 +2099,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "disputeAgreement",
-            "nameLocation": "5070:16:17",
+            "nameLocation": "5336:16:16",
             "parameters": {
-              "id": 23187,
+              "id": 23095,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 23186,
+                  "id": 23094,
                   "mutability": "mutable",
                   "name": "id",
-                  "nameLocation": "5095:2:17",
+                  "nameLocation": "5361:2:16",
                   "nodeType": "VariableDeclaration",
-                  "scope": 23189,
-                  "src": "5087:10:17",
+                  "scope": 23097,
+                  "src": "5353:10:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1989,10 +2120,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 23185,
+                    "id": 23093,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5087:7:17",
+                    "src": "5353:7:16",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2001,27 +2132,27 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5086:12:17"
+              "src": "5352:12:16"
             },
             "returnParameters": {
-              "id": 23188,
+              "id": 23096,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "5107:0:17"
+              "src": "5373:0:16"
             },
-            "scope": 23205,
+            "scope": 23113,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 23198,
+            "id": 23106,
             "nodeType": "FunctionDefinition",
-            "src": "5327:81:17",
+            "src": "5593:81:16",
             "documentation": {
-              "id": 23190,
+              "id": 23098,
               "nodeType": "StructuredDocumentation",
-              "src": "5114:208:17",
+              "src": "5380:208:16",
               "text": "@notice Raise a dispute over an agreement with EIP-2612 permit for posible fees.\n @param id Id of the agreement to dispute.\n @param permit EIP-2612 permit data to approve transfer of tokens."
             },
             "functionSelector": "cf4fef13",
@@ -2029,20 +2160,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "disputeAgreementWithPermit",
-            "nameLocation": "5336:26:17",
+            "nameLocation": "5602:26:16",
             "parameters": {
-              "id": 23196,
+              "id": 23104,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 23192,
+                  "id": 23100,
                   "mutability": "mutable",
                   "name": "id",
-                  "nameLocation": "5371:2:17",
+                  "nameLocation": "5637:2:16",
                   "nodeType": "VariableDeclaration",
-                  "scope": 23198,
-                  "src": "5363:10:17",
+                  "scope": 23106,
+                  "src": "5629:10:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2050,10 +2181,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 23191,
+                    "id": 23099,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5363:7:17",
+                    "src": "5629:7:16",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2063,60 +2194,60 @@
                 },
                 {
                   "constant": false,
-                  "id": 23195,
+                  "id": 23103,
                   "mutability": "mutable",
                   "name": "permit",
-                  "nameLocation": "5391:6:17",
+                  "nameLocation": "5657:6:16",
                   "nodeType": "VariableDeclaration",
-                  "scope": 23198,
-                  "src": "5375:22:17",
+                  "scope": 23106,
+                  "src": "5641:22:16",
                   "stateVariable": false,
                   "storageLocation": "calldata",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_Permit_$23618_calldata_ptr",
+                    "typeIdentifier": "t_struct$_Permit_$23531_calldata_ptr",
                     "typeString": "struct Permit"
                   },
                   "typeName": {
-                    "id": 23194,
+                    "id": 23102,
                     "nodeType": "UserDefinedTypeName",
                     "pathNode": {
-                      "id": 23193,
+                      "id": 23101,
                       "name": "Permit",
                       "nodeType": "IdentifierPath",
-                      "referencedDeclaration": 23618,
-                      "src": "5375:6:17"
+                      "referencedDeclaration": 23531,
+                      "src": "5641:6:16"
                     },
-                    "referencedDeclaration": 23618,
-                    "src": "5375:6:17",
+                    "referencedDeclaration": 23531,
+                    "src": "5641:6:16",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Permit_$23618_storage_ptr",
+                      "typeIdentifier": "t_struct$_Permit_$23531_storage_ptr",
                       "typeString": "struct Permit"
                     }
                   },
                   "visibility": "internal"
                 }
               ],
-              "src": "5362:36:17"
+              "src": "5628:36:16"
             },
             "returnParameters": {
-              "id": 23197,
+              "id": 23105,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "5407:0:17"
+              "src": "5673:0:16"
             },
-            "scope": 23205,
+            "scope": 23113,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           },
           {
-            "id": 23204,
+            "id": 23112,
             "nodeType": "FunctionDefinition",
-            "src": "5529:52:17",
+            "src": "5795:52:16",
             "documentation": {
-              "id": 23199,
+              "id": 23107,
               "nodeType": "StructuredDocumentation",
-              "src": "5414:110:17",
+              "src": "5680:110:16",
               "text": "@notice Withdraw your position from the agreement.\n @param id Id of the agreement to withdraw from."
             },
             "functionSelector": "186799a4",
@@ -2124,20 +2255,20 @@
             "kind": "function",
             "modifiers": [],
             "name": "withdrawFromAgreement",
-            "nameLocation": "5538:21:17",
+            "nameLocation": "5804:21:16",
             "parameters": {
-              "id": 23202,
+              "id": 23110,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 23201,
+                  "id": 23109,
                   "mutability": "mutable",
                   "name": "id",
-                  "nameLocation": "5568:2:17",
+                  "nameLocation": "5834:2:16",
                   "nodeType": "VariableDeclaration",
-                  "scope": 23204,
-                  "src": "5560:10:17",
+                  "scope": 23112,
+                  "src": "5826:10:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2145,10 +2276,10 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 23200,
+                    "id": 23108,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
-                    "src": "5560:7:17",
+                    "src": "5826:7:16",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
@@ -2157,15 +2288,15 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "5559:12:17"
+              "src": "5825:12:16"
             },
             "returnParameters": {
-              "id": 23203,
+              "id": 23111,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "5580:0:17"
+              "src": "5846:0:16"
             },
-            "scope": 23205,
+            "scope": 23113,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -2175,50 +2306,50 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 23063,
+              "id": 22962,
               "name": "IArbitrable",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 23229,
-              "src": "521:11:17"
+              "referencedDeclaration": 23137,
+              "src": "542:11:16"
             },
-            "id": 23064,
+            "id": 22963,
             "nodeType": "InheritanceSpecifier",
-            "src": "521:11:17"
+            "src": "542:11:16"
           }
         ],
         "canonicalName": "IAgreementFramework",
         "contractDependencies": [],
         "contractKind": "interface",
         "documentation": {
-          "id": 23062,
+          "id": 22961,
           "nodeType": "StructuredDocumentation",
-          "src": "360:128:17",
+          "src": "381:128:16",
           "text": "@notice Interface for agreements frameworks.\n @dev Implementations must write the logic to manage individual agreements."
         },
         "fullyImplemented": false,
         "linearizedBaseContracts": [
-          23205,
-          23229
+          23113,
+          23137
         ],
         "name": "IAgreementFramework",
-        "nameLocation": "498:19:17",
-        "scope": 23206,
+        "nameLocation": "519:19:16",
+        "scope": 23114,
         "usedErrors": [
-          23110,
-          23112,
-          23114,
-          23116,
-          23118,
-          23120,
-          23122,
-          23124,
-          23126,
-          23128,
-          23212
+          23009,
+          23011,
+          23013,
+          23015,
+          23017,
+          23019,
+          23021,
+          23023,
+          23025,
+          23027,
+          23120
         ]
       }
     ],
     "license": "GPL-3.0-or-later"
   },
-  "id": 17
+  "id": 16
 }
