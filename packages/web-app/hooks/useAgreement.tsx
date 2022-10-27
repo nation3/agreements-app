@@ -1,39 +1,56 @@
 import { Signer } from "ethers";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useContractRead, useContractWrite } from "wagmi";
 import contractInterface from "../abis/IAgreementFramework.json";
 
 const abi = contractInterface.abi;
-const contractAddress = "0xb47262C22280f361ad47Af0636086463Bd29A109";
+const contractAddress = "0x51b024Ca13F6E044df4932431bF8DD0E5d4b81ba";
 
-export const useAgreementRead = ({ id }: { id: string }) => {
+export const useAgreementRead = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
 	const { data: params } = useContractRead({
 		addressOrName: contractAddress,
 		contractInterface: abi,
 		functionName: "agreementParams",
-		args: id,
+		args: [id],
+		enabled,
 	});
 
 	const { data: positions } = useContractRead({
 		addressOrName: contractAddress,
 		contractInterface: abi,
 		functionName: "agreementPositions",
-		args: id,
+		args: [id],
+		enabled,
 	});
 
-	/* TODO: Fetch status through a view in the contract */
-	const status: string = useMemo(() => {
-		if (!positions) return "Unknown";
+	const { data: status } = useContractRead({
+		addressOrName: contractAddress,
+		contractInterface: abi,
+		functionName: "agreementStatus",
+		args: [id],
+		enabled,
+	});
 
-		const finalized = positions.reduce((finalized, position) => {
-			if (position.status == 2) return finalized + 1;
-		}, 0);
-		if (finalized == positions.length) return "Finalized";
+	const parsedStatus: string = useMemo(() => {
+		if (typeof status === "number") {
+			switch (status) {
+				case 0:
+					return "Created";
+				case 1:
+					return "Ongoing";
+				case 2:
+					return "Finalized";
+				case 3:
+					return "Disputed";
+				default:
+					return "Unknown";
+			}
+		}
+		return "Unknown";
+	}, [status]);
 
-		return "Ongoing";
-	}, [positions]);
-
-	return { params, positions, status };
+	return { params, positions, status: parsedStatus };
+	// return { params, positions: undefined, status: undefined };
 };
 
 export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess: () => void }) => {
