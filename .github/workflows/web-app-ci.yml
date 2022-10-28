@@ -66,4 +66,5 @@ jobs:
           cache-dependency-path: "./yarn.lock"
       - run: npm install --global yarn
       - run: yarn install
+      - run: yarn build
       - run: yarn e2e:headless
