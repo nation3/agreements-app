@@ -6,7 +6,7 @@ const Agreements = () => {
 	const router = useRouter();
 
 	return (
-		<div className="w-full max-w-3xl h-2/3">
+		<div id="agreementsPage" className="w-full max-w-3xl h-2/3">
 			<AgreementListProvider>
 				<Card className="flex flex-col w-full h-full items-center items-stretch gap-8 text-gray-800">
 					<div className="flex flex-row items-center justify-between gap-2 text-gray-700">
