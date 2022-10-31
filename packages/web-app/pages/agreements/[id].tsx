@@ -21,7 +21,7 @@ import { useAgreementRead, useAgreementActions } from "../../hooks/useAgreement"
 
 const AgreementDetailPage = () => {
 	const router = useRouter();
-	const { id } = router.query;
+	const { query, isReady } = router;
 	const { data: signer } = useSigner();
 	const [availableActions, setAvailableActions] = useState({
 		join: false,
@@ -44,9 +44,10 @@ const AgreementDetailPage = () => {
 		params: agreementParams,
 		positions: agreementPositions,
 		status: agreementStatus,
-	} = useAgreementRead({ id: String(id) });
+	} = useAgreementRead({ id: String(query.id), enabled: isReady });
+
 	const { join, finalize, dispute, withdraw } = useAgreementActions({
-		id: String(id),
+		id: String(query.id),
 		signer: signer as Signer,
 		resolvers,
 	});
@@ -56,29 +57,8 @@ const AgreementDetailPage = () => {
 			setTitle(metadata.title);
 		}
 
-		// TODO: Remove legacy formats
 		if (metadata.resolvers) {
-			const parsed: { [key: string]: { balance: string; proof: string[] } } = Object.entries(
-				metadata.resolvers,
-			).reduce(
-				(result, [account, { balance, proof, proofs }]) => ({
-					...result,
-					[account]: { balance, proof: proof ?? proofs },
-				}),
-				{},
-			);
-			setResolvers({ ...resolvers, ...parsed });
-		} else if (typeof metadata.criteria == "object" && metadata.criteria.resolvers) {
-			const parsed: { [key: string]: { balance: string; proof: string[] } } = Object.entries(
-				metadata.criteria.resolvers,
-			).reduce(
-				(result, [account, { amount, proof }]) => ({
-					...result,
-					[account]: { balance: amount, proof },
-				}),
-				{},
-			);
-			setResolvers({ ...resolvers, ...parsed });
+			setResolvers({ ...resolvers, ...metadata.resolvers });
 		}
 	};
 
@@ -91,6 +71,7 @@ const AgreementDetailPage = () => {
 			setMetadataURI(agreementParams.metadataURI);
 			fetchMetadata(agreementParams.metadataURI).then((metadata) => setMetadata(metadata));
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [agreementParams]);
 
 	/* Update positions when fetched agreement positions or new resolvers */
@@ -144,20 +125,21 @@ const AgreementDetailPage = () => {
 				}
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [agreementPositions, resolvers, signer]);
 
 	const copyAgreementId = useCallback(() => {
-		if (id) navigator.clipboard.writeText(String(id));
-	}, [id]);
+		if (query.id) navigator.clipboard.writeText(String(query.id));
+	}, [query.id]);
 
 	const copyTermsHash = useCallback(() => {
 		if (termsHash) navigator.clipboard.writeText(String(termsHash));
 	}, [termsHash]);
 
 	return (
-		<div>
+		<div className="w-full max-w-2xl">
 			<BackLinkButton route={"/agreements"} label={"Go back to agreements"} onRoute={router.push} />
-			<Card className="flex flex-col gap-8 w-max max-w-2xl text-gray-800">
+			<Card className="flex flex-col gap-8 w-full text-gray-800">
 				{/* Title and details */}
 				<div className="flex flex-col gap-2 text-gray-700">
 					<div className="flex flex-row items-center justify-between">
@@ -166,7 +148,7 @@ const AgreementDetailPage = () => {
 					<div className="flex items-center gap-1">
 						<ActionBadge
 							label="ID"
-							data={n3utils.shortenHash(String(id) ?? constants.HashZero)}
+							data={n3utils.shortenHash(String(query.id) ?? constants.HashZero)}
 							dataAction={copyAgreementId}
 						/>
 						<ActionBadge
@@ -202,7 +184,7 @@ const AgreementDetailPage = () => {
 					{availableActions.join && (
 						<Button label="Join" disabled={!availableActions.join} onClick={() => join()} />
 					)}
-					{(availableActions.join || availableActions.finalize) && (
+					{(availableActions.dispute || availableActions.finalize) && (
 						<div className="flex gap-2 justify-between">
 							<Button
 								label="Dispute"

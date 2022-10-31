@@ -11,6 +11,7 @@ import {
     Agreement,
     AgreementParams,
     AgreementPosition,
+    AgreementStatus,
     Position,
     PositionParams,
     PositionStatus
@@ -73,7 +74,7 @@ contract CollateralAgreementFramework is
     /*                                  VIEWS
     /* ====================================================================== */
 
-    /// Retrieve parameters of an agreement.
+    /// @dev Retrieve an AgreementParams struct with the data of a given agreement.
     /// @inheritdoc IAgreementFramework
     function agreementParams(bytes32 id)
         external
@@ -88,7 +89,7 @@ contract CollateralAgreementFramework is
         );
     }
 
-    /// Retrieve positions of an agreement.
+    /// @dev Retrieve the array of positions of given agreement with its balance and status.
     /// @inheritdoc IAgreementFramework
     function agreementPositions(bytes32 id)
         external
@@ -112,11 +113,26 @@ contract CollateralAgreementFramework is
         return positions;
     }
 
+    /// @dev Retrieve a simplified status of the agreement from its attributes.
+    /// @inheritdoc IAgreementFramework
+    function agreementStatus(bytes32 id) external view override returns (AgreementStatus) {
+        if (agreement[id].party.length > 0) {
+            if (agreement[id].finalizations >= agreement[id].party.length)
+                return AgreementStatus.Finalized;
+            if (agreement[id].disputed) return AgreementStatus.Disputed;
+            // else
+            return AgreementStatus.Ongoing;
+        } else if (agreement[id].criteria != 0) {
+            return AgreementStatus.Created;
+        }
+        revert NonExistentAgreement();
+    }
+
     /* ====================================================================== */
     /*                                USER LOGIC
     /* ====================================================================== */
 
-    /// Create a new agreement with given params.
+    /// @dev Create a new agreement with given params.
     /// @inheritdoc IAgreementFramework
     function createAgreement(AgreementParams calldata params)
         external
@@ -134,7 +150,7 @@ contract CollateralAgreementFramework is
         emit AgreementCreated(agreementId, params.termsHash, params.criteria, params.metadataURI);
     }
 
-    /// Join an existent agreement.
+    /// @dev Join an existent agreement providing a valid criteria resolver.
     /// @inheritdoc IAgreementFramework
     function joinAgreement(bytes32 id, CriteriaResolver calldata resolver) external override {
         _canJoinAgreement(id, resolver);
@@ -152,9 +168,8 @@ contract CollateralAgreementFramework is
         emit AgreementJoined(id, msg.sender, resolver.balance);
     }
 
-    /// @notice Join an existent agreement with EIP-2612 permit.
     /// @inheritdoc IAgreementFramework
-    /// @dev Approve tokens transfer on the same transaction by permit.
+    /// @dev Approve tokens & transfer on the same transaction by permit.
     function joinAgreementWithPermit(
         bytes32 id,
         CriteriaResolver calldata resolver,
@@ -184,7 +199,6 @@ contract CollateralAgreementFramework is
         emit AgreementJoined(id, msg.sender, resolver.balance);
     }
 
-    /// Signal the will of the caller to finalize an agreement.
     /// @inheritdoc IAgreementFramework
     /// @dev Requires the caller to be part of the agreement and not have finalized before.
     /// @dev Can't be perform on disputed agreements.
@@ -207,7 +221,6 @@ contract CollateralAgreementFramework is
         if (_isFinalized(id)) emit AgreementFinalized(id);
     }
 
-    /// Raise a dispute over an agreement.
     /// @inheritdoc IAgreementFramework
     function disputeAgreement(bytes32 id) external override {
         _canDisputeAgreement(id);
@@ -243,7 +256,7 @@ contract CollateralAgreementFramework is
     /// @inheritdoc IAgreementFramework
     /// @dev Requires the caller to be part of the agreement.
     /// @dev Requires the agreement to be finalized.
-    /// @dev Clear your position balance and transfer funds.
+    /// @dev Draw funds from the position of the caller.
     function withdrawFromAgreement(bytes32 id) external override {
         if (!_isFinalized(id)) revert AgreementNotFinalized();
         if (!_isPartOfAgreement(id, msg.sender)) revert NoPartOfAgreement();

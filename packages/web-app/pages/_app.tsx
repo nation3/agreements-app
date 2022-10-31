@@ -4,22 +4,12 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { useEffect } from "react";
 import Head from "next/head";
 import type { AppProps } from "next/app";
-import { getDefaultWallets, RainbowKitProvider, lightTheme } from "@rainbow-me/rainbowkit";
-import { createClient, WagmiConfig, configureChains, chain } from "wagmi";
-import { publicProvider } from "wagmi/providers/public";
+import { RainbowKitProvider, lightTheme } from "@rainbow-me/rainbowkit";
+import { createClient, WagmiConfig } from "wagmi";
 import { DefaultLayout } from "@nation3/ui-components";
 import { ConnectButton, AccountAvatar } from "../components/ConnectButton";
 import { useRouter } from "next/router";
-
-const { chains, provider, webSocketProvider } = configureChains(
-	[chain.goerli, chain.foundry],
-	[publicProvider()],
-);
-
-const { connectors } = getDefaultWallets({
-	appName: "My RainbowKit App",
-	chains,
-});
+import { chains, provider, webSocketProvider, connectors } from "../lib/connectors";
 
 const client = createClient({
 	autoConnect: true,

@@ -18,6 +18,9 @@ export const PositionStatusBadge = ({
 	...props
 }: PositionStatusBadgeProps) => {
 	const { message, color } = statusBadgeMap[status] ?? { message: "Unknown", color: "gray" };
+	textColor = `${color}-800`;
+	bgColor = `${color}-100`;
+	label = message;
 
-	return <Badge textColor={`${color}-800`} bgColor={`${color}-100`} label={message} {...props} />;
+	return <Badge textColor={textColor} bgColor={bgColor} label={label} {...props} />;
 };

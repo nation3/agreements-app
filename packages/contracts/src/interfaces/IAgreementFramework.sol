@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.15;
 import {
+    AgreementStatus,
     AgreementParams,
     AgreementPosition,
     PositionParams,
@@ -79,6 +80,11 @@ interface IAgreementFramework is IArbitrable {
     /// @param id Id of the agreement to return data from.
     /// @return Array of the positions of the agreement.
     function agreementPositions(bytes32 id) external view returns (AgreementPosition[] memory);
+
+    /// @notice Retrieve the status of an agreement.
+    /// @param id Id of the the agreement to return status from.
+    /// @return AgreementStatus enum value.
+    function agreementStatus(bytes32 id) external view returns (AgreementStatus);
 
     /* ====================================================================== //
                                     USER ACTIONS

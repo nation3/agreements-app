@@ -7,10 +7,10 @@ const AgreementCreationPage = () => {
 	const router = useRouter();
 
 	return (
-		<div>
+		<div className="w-full max-w-3xl">
 			<AgreementCreationProvider>
 				<BackLinkButton route="/agreements" label="Go back to agreements" onRoute={router.push} />
-				<Card className="flex flex-col items-center items-stretch gap-8 w-full max-w-3xl text-gray-700">
+				<Card className="flex flex-col items-center items-stretch gap-8 w-full text-gray-700">
 					<AgreementCreation />
 				</Card>
 			</AgreementCreationProvider>

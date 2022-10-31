@@ -18,6 +18,7 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 		setTerms,
 		setPositions,
 	};
+
 	return (
 		<AgreementCreationContext.Provider value={provider}>
 			{children}
