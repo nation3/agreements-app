@@ -39,7 +39,7 @@ export const Button = ({
 		<ButtonBase
 			className={`text-base font-medium text-${textColor} bg-${bgColor}-${
 				disabled ? "300" : "400"
-			} ${!disabled && `hover:bg-${bgColor}-500`} ${className && className}`}
+			} ${!disabled && `hover:bg-${bgColor}-500 hover:cursor-pointer`} ${className && className}`}
 			disabled={disabled}
 			onClick={onClick}
 		>
