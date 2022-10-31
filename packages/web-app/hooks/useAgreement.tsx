@@ -1,15 +1,63 @@
-import { Signer } from "ethers";
-import { useMemo } from "react";
+import { Signer, BigNumber } from "ethers";
+import { useMemo, useState, useEffect } from "react";
 import { useContractRead, useContractWrite } from "wagmi";
 import contractInterface from "../abis/IAgreementFramework.json";
+import tokenInterface from "../abis/ERC20.json";
 
-const abi = contractInterface.abi;
+const contractAbi = contractInterface.abi;
+const tokenAbi = tokenInterface.abi;
 const contractAddress = "0x51b024Ca13F6E044df4932431bF8DD0E5d4b81ba";
+const tokenAddress = "0x333A4823466879eeF910A04D473505da62142069";
+
+export const useAgreementToken = ({ signer }: { signer: Signer }) => {
+	const [address, setAddress] = useState<string>();
+
+	useEffect(() => {
+		signer?.getAddress().then((address_) => {
+			if (address_ != address) setAddress(address_);
+		});
+	}, [signer]);
+
+	const { data: balance } = useContractRead({
+		addressOrName: tokenAddress,
+		contractInterface: tokenAbi,
+		functionName: "balanceOf",
+		args: [address],
+		enabled: address != undefined,
+	});
+
+	const { data: allowance } = useContractRead({
+		addressOrName: tokenAddress,
+		contractInterface: tokenAbi,
+		functionName: "allowance",
+		args: [address, contractAddress],
+		enabled: address != undefined,
+	});
+
+	const { write: approveToken } = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: tokenAddress,
+		contractInterface: tokenAbi,
+		functionName: "approve",
+		overrides: {
+			gasLimit: 52000,
+		},
+		onError(error) {
+			console.log(error);
+		},
+	});
+
+	const approve = ({ amount }: { amount: BigNumber }) => {
+		approveToken?.({ recklesslySetUnpreparedArgs: [contractAddress, amount] });
+	};
+
+	return { balance, allowance, approve };
+};
 
 export const useAgreementRead = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
 	const { data: params } = useContractRead({
 		addressOrName: contractAddress,
-		contractInterface: abi,
+		contractInterface: contractAbi,
 		functionName: "agreementParams",
 		args: [id],
 		enabled,
@@ -17,7 +65,7 @@ export const useAgreementRead = ({ id, enabled = true }: { id: string; enabled?:
 
 	const { data: positions } = useContractRead({
 		addressOrName: contractAddress,
-		contractInterface: abi,
+		contractInterface: contractAbi,
 		functionName: "agreementPositions",
 		args: [id],
 		enabled,
@@ -25,7 +73,7 @@ export const useAgreementRead = ({ id, enabled = true }: { id: string; enabled?:
 
 	const { data: status } = useContractRead({
 		addressOrName: contractAddress,
-		contractInterface: abi,
+		contractInterface: contractAbi,
 		functionName: "agreementStatus",
 		args: [id],
 		enabled,
@@ -57,7 +105,7 @@ export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess: () 
 	return useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: contractAddress,
-		contractInterface: abi,
+		contractInterface: contractAbi,
 		functionName: "createAgreement",
 		onSettled(data, error) {
 			if (data) {
@@ -81,7 +129,7 @@ export const useAgreementActions = ({
 	const { write: joinAgreement } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: contractAddress,
-		contractInterface: abi,
+		contractInterface: contractAbi,
 		functionName: "joinAgreement",
 		onError(error) {
 			console.log(error);
@@ -91,7 +139,7 @@ export const useAgreementActions = ({
 	const { write: finalizeAgreement } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: contractAddress,
-		contractInterface: abi,
+		contractInterface: contractAbi,
 		functionName: "finalizeAgreement",
 		onError(error) {
 			console.log(error);
@@ -101,26 +149,26 @@ export const useAgreementActions = ({
 	const join = async () => {
 		const address: string | undefined = await signer?.getAddress();
 		if (!address) {
-			return false;
+			return;
 		}
 
 		const resolver = { account: address, ...resolvers?.[address] };
 		console.log("Resolver", resolver);
 
 		if (!resolver.proof) {
-			return false;
+			return;
+		} else {
+			return joinAgreement?.({
+				recklesslySetUnpreparedArgs: [id, resolver],
+			});
 		}
-
-		joinAgreement?.({
-			recklesslySetUnpreparedArgs: [id, resolver],
-		});
 	};
 
 	const { write: disputeAgreement } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: contractAddress,
-		contractInterface: abi,
-		functionName: "finalizeAgreement",
+		contractInterface: contractAbi,
+		functionName: "disputeAgreement",
 		onError(error) {
 			console.log(error);
 		},
@@ -129,7 +177,7 @@ export const useAgreementActions = ({
 	const { write: withdrawFromAgreement } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: contractAddress,
-		contractInterface: abi,
+		contractInterface: contractAbi,
 		functionName: "withdrawFromAgreement",
 		onError(error) {
 			console.log(error);
