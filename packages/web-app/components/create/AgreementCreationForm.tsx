@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { ArrowLongRightIcon } from "@heroicons/react/20/solid";
+import { useMemo, useState } from "react";
+import { ArrowLongRightIcon, PlusCircleIcon, MinusCircleIcon } from "@heroicons/react/20/solid";
 import { Button, DropInput, InfoAlert } from "@nation3/ui-components";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
@@ -15,6 +15,20 @@ export const AgreementCreationForm = () => {
 		if (!terms) return false;
 		return validateCriteria(positions);
 	}, [terms, positions]);
+
+	const [participantRow, setParticipantRow] = useState([ParticipantRow]);
+
+	// handle click event to add button.
+	const handleAddClick = () => {
+		setParticipantRow([...participantRow, ParticipantRow]);
+	}
+
+	// handle click event to remove button.
+	const handleRemoveClick = (index: number) => {
+		const list = [...participantRow];
+		list.splice(index, 1);
+		setParticipantRow(list);
+	};
 
 	return (
 		<>
@@ -56,8 +70,42 @@ export const AgreementCreationForm = () => {
 					</p>
 				</div>
 				<div className="flex flex-col gap-2">
-					<ParticipantRow positions={positions} index={0} onChange={setPositions} />
-					<ParticipantRow positions={positions} index={1} onChange={setPositions} />
+					{participantRow.map((singleParticipantRow, index) => (
+
+						<div className="flex w-full space-x-2">
+							<div className="flex-1">
+								{/* TODO index > 2 = break code */}
+								<ParticipantRow positions={positions} index={0} onChange={setPositions} />
+							</div>
+
+							<div className="flex space-x-2 w-[70px] items-center">
+							<div className="w-[30px] h-full">
+								{participantRow.length - 1 === index && (
+									<button
+										type="button"
+										onClick={handleAddClick}
+										className="h-full flex items-center"
+									>
+										<PlusCircleIcon className="w-7 h-7 text-[#69C9FF]" />
+									</button>
+								)}
+							</div>
+
+							<div className="w-[30px]">
+								{participantRow.length !== 1 && participantRow.length !== 2 && (
+									<button
+										type="button"
+										onClick={() => handleRemoveClick(index)}
+										className="h-full flex items-center"
+									>
+										<MinusCircleIcon className="w-7 h-7 text-[#F87272]" />
+									</button>
+								)}
+							</div>
+							</div>
+						</div>
+
+					))}
 				</div>
 			</div>
 			<div className="flex flex-col gap-2">

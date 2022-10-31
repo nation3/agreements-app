@@ -42,8 +42,8 @@ export const ParticipantRow = ({
 	};
 
 	return (
-		<div className="flex gap-2">
-			<div className="basis-1/2">
+		<div className="flex gap-2 justify-between space-x-2">
+			<div className="flex-1 basis-1/2">
 				<TextInput
 					value={positions[index].account}
 					placeholder="vitalik.eth"
