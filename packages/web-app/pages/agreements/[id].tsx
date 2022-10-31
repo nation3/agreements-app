@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
 import { useSigner } from "wagmi";
 import { Signer, utils, constants, BigNumber } from "ethers";
@@ -17,7 +17,7 @@ import {
 import { PositionStatusBadge } from "../../components";
 import { fetchMetadata, AgreementMetadata } from "../../utils/metadata";
 
-import { useAgreementRead, useAgreementActions } from "../../hooks/useAgreement";
+import { useAgreementRead, useAgreementActions, useAgreementToken } from "../../hooks/useAgreement";
 
 const AgreementDetailPage = () => {
 	const router = useRouter();
@@ -33,6 +33,11 @@ const AgreementDetailPage = () => {
 	const [title, setTitle] = useState("Agreement");
 	const [termsHash, setTermsHash] = useState<string>();
 	const [metadataURI, setMetadataURI] = useState<string>();
+
+	const [enoughBalance, setEnoughBalance] = useState<boolean>(true);
+	const [enoughAllowance, setEnoughAllowance] = useState<boolean>(true);
+	const [requiredBalance, setRequiredBalance] = useState<BigNumber>();
+
 	const [resolvers, setResolvers] = useState<{
 		[key: string]: { balance: string; proof: string[] };
 	}>();
@@ -45,6 +50,12 @@ const AgreementDetailPage = () => {
 		positions: agreementPositions,
 		status: agreementStatus,
 	} = useAgreementRead({ id: String(query.id), enabled: isReady });
+
+	const {
+		balance: userAgreementTokenBalance,
+		allowance: userAgreementTokenAllowance,
+		approve: approveAgreementToken,
+	} = useAgreementToken({ signer: signer as Signer });
 
 	const { join, finalize, dispute, withdraw } = useAgreementActions({
 		id: String(query.id),
@@ -103,30 +114,41 @@ const AgreementDetailPage = () => {
 		}
 		if (knownPositions != positions) {
 			setPositions(knownPositions);
-			signer?.getAddress().then((address) => {
-				if (address && knownPositions[address]) {
-					if (knownPositions[address].status == 0) {
-						setAvailableActions({ ...availableActions, join: true });
-					} else if (knownPositions[address].status == 1) {
-						setAvailableActions({
-							...availableActions,
-							join: false,
-							dispute: true,
-							finalize: true,
-						});
-					} else if (knownPositions[address].status == 2) {
-						setAvailableActions({
-							join: false,
-							dispute: false,
-							finalize: false,
-							withdraw: BigNumber.from(knownPositions[address].balance).gt(0),
-						});
-					}
-				}
-			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [agreementPositions, resolvers, signer]);
+
+	/* Update available actions when positions or signer changes */
+	useEffect(() => {
+		signer?.getAddress().then((address) => {
+			if (address && positions && positions[address]) {
+				if (positions[address].status == 0) {
+					const criteriaBalance = utils.parseUnits(positions[address].balance);
+					const userBalance = utils.parseUnits(userAgreementTokenBalance?.toString() || "0");
+					const userAllowance = utils.parseUnits(userAgreementTokenAllowance?.toString() || "0");
+
+					setRequiredBalance(criteriaBalance);
+					setEnoughBalance(criteriaBalance < userBalance);
+					setEnoughAllowance(criteriaBalance < userAllowance);
+					setAvailableActions((prevActions) => ({ ...prevActions, join: true }));
+				} else if (positions[address].status == 1) {
+					setAvailableActions((prevActions) => ({
+						...prevActions,
+						join: false,
+						dispute: true,
+						finalize: true,
+					}));
+				} else if (positions[address].status == 2) {
+					setAvailableActions({
+						join: false,
+						dispute: false,
+						finalize: false,
+						withdraw: BigNumber.from(positions[address].balance).gt(0),
+					});
+				}
+			}
+		});
+	}, [positions, signer, userAgreementTokenBalance, userAgreementTokenAllowance]);
 
 	const copyAgreementId = useCallback(() => {
 		if (query.id) navigator.clipboard.writeText(String(query.id));
@@ -176,29 +198,73 @@ const AgreementDetailPage = () => {
 						className="bg-opacity-20 text-greensea-700"
 					/>
 				)}
+				{agreementStatus == "Disputed" && (
+					<Alert
+						icon={<CheckCircleIcon className="w-5 h-5" />}
+						message="This agreement has been disputed and will be arbitrated by the court."
+						color="purple-200"
+						className="bg-opacity-20 text-purple-700"
+					/>
+				)}
 				{availableActions.join && (
 					<InfoAlert message="Verify the terms hash before joining and remember to keep the terms file safe. The terms file will be used as evidence in the case of a dispute." />
 				)}
 				{/* Action buttons */}
 				<div className="flex flex-col gap-2">
 					{availableActions.join && (
-						<Button label="Join" disabled={!availableActions.join} onClick={() => join()} />
+						<Button
+							label="Join"
+							disabled={!availableActions.join || !enoughBalance || !enoughAllowance}
+							onClick={() => join()}
+						/>
 					)}
-					{(availableActions.dispute || availableActions.finalize) && (
-						<div className="flex gap-2 justify-between">
-							<Button
-								label="Dispute"
-								bgColor="red"
-								disabled={!availableActions.dispute}
-								onClick={() => dispute()}
-							/>
-							<Button
-								label="Finalize"
-								bgColor="greensea"
-								disabled={!availableActions.finalize}
-								onClick={() => finalize()}
-							/>
-						</div>
+					{!enoughBalance && (
+						<Alert
+							icon={<ExclamationTriangleIcon className="w-5 h-5" />}
+							color="yellow-200"
+							className="bg-opacity-20 text-yellow-500"
+							message="You don't have enough balance to join"
+						/>
+					)}
+					{!enoughAllowance && (
+						<Alert
+							icon={<ExclamationTriangleIcon className="w-5 h-5" />}
+							color="yellow-200"
+							className="bg-opacity-20 text-yellow-500"
+							message="You don't have enough tokens approved to join"
+						>
+							<div className="px-3">
+								<Badge
+									label="Approve now"
+									textColor="yellow-50"
+									bgColor="yellow-500"
+									className="hover:cursor-pointer"
+									onClick={() =>
+										approveAgreementToken({ amount: requiredBalance ?? BigNumber.from("0") })
+									}
+								/>
+							</div>
+						</Alert>
+					)}
+					{agreementStatus != "Disputed" &&
+						(availableActions.dispute || availableActions.finalize) && (
+							<div className="flex gap-2 justify-between">
+								<Button
+									label="Dispute"
+									bgColor="red"
+									disabled={!availableActions.dispute}
+									onClick={() => dispute()}
+								/>
+								<Button
+									label="Finalize"
+									bgColor="greensea"
+									disabled={!availableActions.finalize}
+									onClick={() => finalize()}
+								/>
+							</div>
+						)}
+					{agreementStatus == "Disputed" && (
+						<Button label="Send evidence" disabled={true} bgColor="slate" />
 					)}
 					{availableActions.withdraw && (
 						<Button
