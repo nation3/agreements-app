@@ -1,4 +1,4 @@
-import { generateCriteria } from "./criteria";
+import { generateCriteria, ResolverMap } from "./criteria";
 import { IPFSUriToUrl } from "./ipfs";
 import { utils, BigNumber } from "ethers";
 import { hexHash } from "./hash";
@@ -9,7 +9,7 @@ export type AgreementMetadata = {
 	termsHash?: string;
 	termsUri?: string;
 	criteria?: string;
-	resolvers?: { [key: string]: { balance: string; proof: string[] } };
+	resolvers?: ResolverMap;
 };
 
 export const parseMetadata = (data: { [key: string]: any }): AgreementMetadata => {

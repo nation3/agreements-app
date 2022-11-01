@@ -1,0 +1,2 @@
+export const NATION = "0x333A4823466879eeF910A04D473505da62142069";
+export const frameworkAddress = "0x51b024Ca13F6E044df4932431bF8DD0E5d4b81ba";
