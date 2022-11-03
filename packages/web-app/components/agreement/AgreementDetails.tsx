@@ -21,7 +21,7 @@ const AgreementHeader = ({ title, status }: { title: string; status: string }) =
 	);
 };
 
-const ParticipantsTable = ({ positions }: { positions: PositionMap | undefined }) => {
+const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) => {
 	return (
 		<Table
 			columns={["participant", "stake", "status"]}
@@ -75,7 +75,7 @@ export const AgreementDetails = () => {
 				termsHash={termsHash || constants.HashZero}
 			/>
 			{/* Participants table */}
-			<ParticipantsTable positions={positions} />
+			<PositionsTable positions={positions} />
 		</>
 	);
 };

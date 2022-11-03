@@ -29,8 +29,6 @@ const useAgreementList = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [signer]);
 
-	console.log(data, error);
-
 	return { data: data?.agreementPositions, error };
 };
 

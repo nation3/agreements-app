@@ -16,7 +16,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		params: agreementParams,
 		positions: agreementPositions,
 		status,
-	} = useAgreementRead({ id: id, enabled: typeof id !== "undefined" });
+	} = useAgreementRead({ id: id, enabled: id != "undefined" });
 
 	/* Update state when fetched agreement params */
 	useEffect(() => {

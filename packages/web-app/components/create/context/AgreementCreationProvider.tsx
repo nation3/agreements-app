@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { AgreementCreationContext } from "./AgreementCreationContext";
+import { AgreementCreationContext, AgreementCreationContextType } from "./AgreementCreationContext";
 import { CreateView } from "./types";
 
 export const AgreementCreationProvider = ({ children }: { children: ReactNode }) => {
@@ -10,7 +10,7 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 		{ account: "", balance: 0 },
 	]);
 
-	const provider = {
+	const provider: AgreementCreationContextType = {
 		view,
 		terms,
 		positions,

@@ -100,14 +100,14 @@ export const useAgreementRead = ({ id, enabled = true }: { id: string; enabled?:
 	return { params, positions, status: status };
 };
 
-export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess: () => void }) => {
+export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess?: () => void }) => {
 	return useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: frameworkAddress,
 		contractInterface: frameworkAbi,
 		functionName: "createAgreement",
 		onSettled(data, error) {
-			if (data) {
+			if (onSettledSuccess && data) {
 				onSettledSuccess();
 			} else {
 				console.log(error);
