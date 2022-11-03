@@ -26,8 +26,6 @@ export const ParticipantRow = ({
 	index: number;
 	onChange?: (poistions: Position[]) => void;
 }) => {
-	const [value, setValue] = useState(utils.formatUnits(positions[index].balance));
-
 	const updatePositionAccount = (account: string) => {
 		const positions_ = JSON.parse(JSON.stringify(positions));
 		positions_[index].account = account;
@@ -53,14 +51,17 @@ export const ParticipantRow = ({
 			</div>
 			<div className="basis-2/5">
 				<TokenBalanceInput
-					value={value}
+					defaultValue={positions[index].balance}
 					token={"NATION"}
 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
 						const purged = purgeFloat(e.target.value);
 						if (parseFloat(purged) < 0) return;
-						setValue(purged);
+						e.target.value = purged;
 					}}
 					onBlur={(e: FocusEvent<HTMLInputElement>) => {
+						if (!e.target.value) {
+							e.target.value = e.target.placeholder;
+						}
 						updatePositionBalance(purgeFloat(e.target.value, { strip: true }));
 					}}
 				/>
