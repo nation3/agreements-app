@@ -16,7 +16,7 @@ export interface ButtonProps extends Omit<ButtonBaseProps, "children"> {
 export const ButtonBase = ({ children, className, ...props }: ButtonBaseProps) => {
 	return (
 		<motion.button
-			className={`flex items-center justify-center w-full p-2 py-3 transition rounded-lg gap-1 ${className}`}
+			className={`flex items-center justify-center w-full transition rounded-lg ${className}`}
 			whileTap={{ scale: 0.95 }}
 			{...props}
 		>
@@ -37,7 +37,7 @@ export const Button = ({
 }: ButtonProps) => {
 	return (
 		<ButtonBase
-			className={`text-base font-medium text-${textColor} bg-${bgColor}-${
+			className={`px-2 py-3 gap-1 text-base font-medium text-${textColor} bg-${bgColor}-${
 				disabled ? "300" : "400"
 			} ${!disabled && `hover:bg-${bgColor}-500 hover:cursor-pointer`} ${className && className}`}
 			disabled={disabled}

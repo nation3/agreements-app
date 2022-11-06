@@ -15,7 +15,7 @@ export const NavButton = ({ route, icon, label, onRoute, isActive }: NavButtonPr
 		<div className="py-2 font-display">
 			<a
 				onClick={() => onRoute(route)}
-				className={`flex items-center justify-between p-2 py-4 text-base rounded-lg cursor-pointer ${
+				className={`flex items-center justify-between px-2 py-4 text-base rounded-lg cursor-pointer ${
 					isActive ? "bg-bluesky-400 text-white" : "hover:bg-gray-200 text-gray-800"
 				}`}
 			>
