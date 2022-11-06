@@ -23,7 +23,7 @@ export const ActionBadge = ({
 }: ActionBadgeProps) => {
 	return (
 		<span
-			className={`flex items-center gap-2 px-1.5 py-1 rounded-lg text-${textColor} bg-${bgColor} ${className}`}
+			className={`flex w-fit items-center gap-2 px-1.5 py-1 rounded-lg text-${textColor} bg-${bgColor} ${className}`}
 			{...props}
 		>
 			<span className="pl-1">{label}</span>

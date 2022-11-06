@@ -46,7 +46,7 @@ const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDis
 	return (
 		<div className="flex flex-col gap-2 text-gray-700">
 			<AgreementHeader title={title} status={status} />
-			<div className="flex items-center gap-1">
+			<div className="flex flex-col md:flex-row gap-1">
 				<ActionBadge
 					label="ID"
 					data={n3utils.shortenHash(id ?? constants.HashZero)}
