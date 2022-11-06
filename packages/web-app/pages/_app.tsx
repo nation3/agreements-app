@@ -2,12 +2,13 @@ import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
 import { useEffect } from "react";
+
 import Head from "next/head";
 import type { AppProps } from "next/app";
 import { RainbowKitProvider, lightTheme } from "@rainbow-me/rainbowkit";
 import { createClient, WagmiConfig } from "wagmi";
 import { DefaultLayout } from "@nation3/ui-components";
-import { ConnectButton, AccountAvatar } from "../components/ConnectButton";
+import { ConnectButton } from "../components/ConnectButton";
 import { useRouter } from "next/router";
 import { chains, provider, webSocketProvider, connectors } from "../lib/connectors";
 
@@ -34,7 +35,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 					accentColor: "#44b7f9",
 					fontStack: "system",
 				})}
-				avatar={AccountAvatar}
 			>
 				<Head>
 					<title>Nation3 Court</title>
