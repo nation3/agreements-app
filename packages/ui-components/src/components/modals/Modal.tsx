@@ -17,7 +17,7 @@ export const Modal = ({ children, onClose }: ModalProps) => {
 				<motion.div
 					initial={{ scale: 0.5, opacity: 0 }}
 					animate={{ scale: 1, opacity: 1 }}
-					className="relative w-full max-w-lg p-4 py-6 m-auto text-gray-800 bg-white shadow cursor-default rounded-2xl"
+					className="relative w-full max-w-lg px-4 py-6 m-auto text-gray-800 bg-white shadow cursor-default rounded-2xl"
 					onClick={(e) => e.stopPropagation()}
 				>
 					<button

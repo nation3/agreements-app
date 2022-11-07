@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FocusEvent } from "react";
+import { ChangeEvent, FocusEvent } from "react";
 import { utils } from "ethers";
 import { TextInput, TokenBalanceInput } from "@nation3/ui-components";
 

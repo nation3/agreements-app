@@ -6,12 +6,10 @@ import {
 	useResolutionExecute,
 	useResolutionSubmit,
 } from "../../hooks/useArbitrator";
-import { useAgreementCreate } from "../../hooks/useAgreement";
 
 import { useAgreementData } from "../../components/agreement/context/AgreementDataContext";
-import { PositionStatusBadge } from "../../components";
 import { Table, TokenBalanceInput, utils as n3utils } from "@nation3/ui-components";
-import { BigNumber, constants, utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import { ChangeEvent, FocusEvent, useEffect, useMemo, useState } from "react";
 import { frameworkAddress } from "../../lib/constants";
 import keccak256 from "keccak256";
@@ -146,6 +144,7 @@ const Settlement = () => {
 							settlement?.map(({ party, balance }, index) => [
 								n3utils.shortenHash(party),
 								<TokenBalanceInput
+									key={index}
 									defaultValue={utils.formatUnits(balance)}
 									token={"NATION"}
 									onChange={(e: ChangeEvent<HTMLInputElement>) => {

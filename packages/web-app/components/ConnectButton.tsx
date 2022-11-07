@@ -1,5 +1,5 @@
 import Blockies from "react-blockies";
-import { AccountButton, Button, ButtonBase } from "@nation3/ui-components";
+import { AccountButton, ButtonBase } from "@nation3/ui-components";
 import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow-me/rainbowkit";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UserIcon } from "@heroicons/react/24/solid";
