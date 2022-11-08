@@ -3,7 +3,7 @@ import { useAccount } from "wagmi";
 import { BigNumber, constants } from "ethers";
 import { Button } from "@nation3/ui-components";
 
-import { NotEnoughBalanceAlert, NotEnoughAllowanceAlert } from "../../alerts";
+import { NotEnoughBalanceAlert } from "../../alerts";
 import { useToken, useAgreementJoin } from "../../../hooks/useAgreement";
 import { NATION } from "../../../lib/constants";
 import { UserPosition } from "../context/types";
@@ -20,7 +20,9 @@ export const JoinableAgreementActions = ({
 	const {
 		balance: accountTokenBalance,
 		allowance: accountTokenAllowance,
-		// approve,
+		approve,
+		approvalLoading,
+		approvalProcessing,
 	} = useToken({
 		address: NATION,
 		account: address || constants.AddressZero,
@@ -38,36 +40,44 @@ export const JoinableAgreementActions = ({
 
 	const { join, isLoading: joinLoading, isProcessing: joinProcessing } = useAgreementJoin();
 
-	const enoughBalance = useMemo(() => {
+	const requiredBalance = useMemo((): BigNumber => {
+		return BigNumber.from(userPosition.resolver?.balance || 0);
+	}, [userPosition]);
+
+	const enoughBalance = useMemo((): boolean => {
 		if (accountTokenBalance) {
-			return (
-				BigNumber.from(userPosition.resolver?.balance || 0) < BigNumber.from(accountTokenBalance)
-			);
+			return requiredBalance.lt(BigNumber.from(accountTokenBalance));
 		} else {
 			return true;
 		}
-	}, [accountTokenBalance, userPosition]);
+	}, [accountTokenBalance, requiredBalance]);
 
 	const enoughAllowance = useMemo(() => {
 		if (accountTokenAllowance) {
-			return (
-				BigNumber.from(userPosition.resolver?.balance || 0) < BigNumber.from(accountTokenAllowance)
-			);
+			return requiredBalance.lt(BigNumber.from(accountTokenAllowance));
 		} else {
 			return true;
 		}
-	}, [accountTokenAllowance, userPosition]);
+	}, [accountTokenAllowance, requiredBalance]);
 
 	return (
 		<div className="flex flex-col gap-1">
+			{!enoughAllowance ? (
+				<Button
+					label="Approve"
+					disabled={approvalLoading || approvalProcessing}
+					isLoading={approvalLoading || approvalProcessing}
+					onClick={() => approve({ amount: requiredBalance })}
+				/>
+			) : (
 				<Button
 					label="Join"
 					disabled={joinLoading || joinProcessing || !enoughBalance || !enoughAllowance}
 					isLoading={joinLoading || joinProcessing}
 					onClick={() => join({ id, resolver: userResolver })}
 				/>
+			)}
 			{!enoughBalance && <NotEnoughBalanceAlert />}
-			{!enoughAllowance && <NotEnoughAllowanceAlert />}
 		</div>
 	);
 };
