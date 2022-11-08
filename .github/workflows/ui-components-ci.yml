@@ -1,0 +1,69 @@
+name: UI Components CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  lint:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [16.x]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./packages/ui-components
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: "./yarn.lock"
+      - run: npm install --global yarn
+      - run: yarn install
+      - run: yarn lint:check
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [16.x]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./packages/ui-components
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: "./yarn.lock"
+      - run: npm install --global yarn
+      - run: yarn install
+      - run: yarn build
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [16.x]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./packages/ui-components
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: "./yarn.lock"
+      - run: npm install --global yarn
+      - run: yarn install
+      - run: yarn test

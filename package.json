@@ -1,0 +1,22 @@
+{
+  "name": "@nation3/court",
+  "version": "0.1.0",
+  "description": "Nation3 Court client",
+  "repository": "https://github.com/nation3/court.git",
+  "author": "Nation3 Solar Guild",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+      "packages": [
+          "packages/ui-components",
+          "packages/web-app"
+      ],
+      "nohoist": [
+          "flowbite",
+          "flowbite-react"
+      ]
+  },
+  "engines": {
+      "node": ">=16.0.0"
+  }
+}

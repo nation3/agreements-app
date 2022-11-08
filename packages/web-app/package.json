@@ -1,0 +1,51 @@
+{
+  "name": "nation3-court-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "yarn build:dependencies && yarn build:app",
+    "build:app": "next build",
+    "build:dependencies": "yarn workspace @nation3/ui-components build",
+    "start": "next start",
+    "lint:check": "yarn lint:check:format && yarn lint:check:eslint",
+    "lint:check:eslint": "next lint",
+    "lint:check:format": "prettier --check **/*.tsx",
+    "lint:fix": "prettier --write **/*.tsx",
+    "cypress": "cypress open",
+    "cypress:headless": "cypress run",
+    "e2e": "start-server-and-test dev http://localhost:3000 cypress",
+    "e2e:headless": "start-server-and-test dev http://localhost:3000 cypress:headless"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.7.0",
+    "@nation3/ui-components": "^0.1.0",
+    "@rainbow-me/rainbowkit": "^0.7.1",
+    "eslint": "^8.26.0",
+    "ethers": "^5.7.1",
+    "graphql": "^16.6.0",
+    "ipfs-car": "^0.9.1",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.2.32",
+    "next": "latest",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "wagmi": "^0.6.7",
+    "web3.storage": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.35",
+    "@types/react": "18.0.9",
+    "@types/react-dom": "18.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "autoprefixer": "^10.4.7",
+    "cypress": "^10.11.0",
+    "eslint-config-next": "^12.3.1",
+    "eslint-config-prettier": "^8.5.0",
+    "postcss": "^8.4.14",
+    "prettier": "^2.7.1",
+    "start-server-and-test": "^1.14.0",
+    "tailwindcss": "^3.1.2",
+    "typescript": "4.7.2"
+  }
+}
