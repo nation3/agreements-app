@@ -136,9 +136,9 @@ export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess?: ()
 	});
 
 	const {
-        data: receipt,
+		data: receipt,
 		isLoading: isProcessing,
-        isSuccess: txSuccess,
+		isSuccess: txSuccess,
 	} = useWaitForTransaction({
 		hash: data?.hash,
 	});
