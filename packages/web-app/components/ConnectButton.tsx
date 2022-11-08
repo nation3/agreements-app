@@ -50,10 +50,10 @@ export const ConnectButton = () => {
 							if (!connected) {
 								return (
 									<ButtonBase
-										className="p-3 gap-1 text-white bg-bluesky-400"
+										className="p-4 gap-1 text-white bg-bluesky-400"
 										onClick={openConnectModal}
 									>
-										<UserIcon className="w-10 h-10" />
+										<UserIcon className="w-8 h-8" />
 										<span className="hidden md:inline">Connect</span>
 									</ButtonBase>
 								);
@@ -61,8 +61,8 @@ export const ConnectButton = () => {
 
 							if (chain.unsupported) {
 								return (
-									<ButtonBase className="p-3 gap-1 text-white bg-red-400" onClick={openChainModal}>
-										<ExclamationTriangleIcon className="w-10 h-10" />
+									<ButtonBase className="p-4 gap-1 text-white bg-red-400" onClick={openChainModal}>
+										<ExclamationTriangleIcon className="w-8 h-8" />
 										<span className="hidden md:inline">Wrong network</span>
 									</ButtonBase>
 								);
@@ -70,7 +70,7 @@ export const ConnectButton = () => {
 
 							return (
 								<AccountButton
-									className="p-2 gap-1 bg-white"
+									className="p-2 gap-1 bg-white hover:bg-gray-100"
 									avatar={
 										<AccountAvatar
 											address={account.address}

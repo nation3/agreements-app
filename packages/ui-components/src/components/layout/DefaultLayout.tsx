@@ -124,21 +124,19 @@ export const NavBar = ({ ...props }: NavBarProps) => {
 const NavMenuButton = () => {
 	return (
 		<div className="w-fit">
-			<ButtonBase className="px-3 py-3 bg-white">
-				<Bars3Icon className="w-10 h-10" />
+			<ButtonBase className="p-4 bg-white">
+				<Bars3Icon className="w-8 h-8" />
 			</ButtonBase>
 		</div>
 	);
 };
 
 export const DefaultLayout = ({ children, ...props }: DefaultLayoutProps) => {
-    console.log(navItems)
-    console.log(props)
 	return (
 		<div className="mx-auto">
 			<div className="flex">
 				<NavBar navItems={navItems} {...props} />
-				<div className="grow flex flex-col h-screen items-center p-4 md:justify-center">
+				<div className="grow flex flex-col min-h-screen items-center px-4 pt-2 pb-24 lg:pt-4 lg:pb-4 justify-center">
 					{children}
 				</div>
 			</div>
