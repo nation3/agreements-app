@@ -27,19 +27,19 @@ export const AgreementCreationPreview = () => {
 		console.log(`metadata uploaded to ${cid}`);
 	};
 
-	const { write: createAgreement } = useAgreementCreate({ onSettledSuccess: uploadMetadataToIPFS });
+	const {
+		create,
+		isLoading: createLoading,
+		isProcessing: createProcessing,
+	} = useAgreementCreate({ onSettledSuccess: uploadMetadataToIPFS });
 
-	const create = async () => {
+	const submit = async () => {
 		const metadata = generateMetadata(terms, positions);
 
 		const { cid } = await preparePutToIPFS(metadata);
 		const metadataURI = `ipfs://${cid}`;
 
-		createAgreement?.({
-			recklesslySetUnpreparedArgs: [
-				{ termsHash: metadata.termsHash, criteria: metadata.criteria, metadataURI: metadataURI },
-			],
-		});
+		create({ termsHash: metadata.termsHash, criteria: metadata.criteria, metadataURI });
 	};
 
 	const copyTermsHash = useCallback(() => {
@@ -90,7 +90,9 @@ export const AgreementCreationPreview = () => {
 							{"Submit"}
 						</div>
 					}
-					onClick={() => create()}
+					isLoading={createLoading || createProcessing}
+					disabled={createLoading || createProcessing}
+					onClick={() => submit()}
 				/>
 			</div>
 		</>

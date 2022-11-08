@@ -1,6 +1,6 @@
-import { BigNumber } from "ethers";
+import { BigNumber, utils } from "ethers";
 import { useMemo } from "react";
-import { useContractRead, useContractWrite } from "wagmi";
+import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import frameworkInterface from "../abis/IAgreementFramework.json";
 import tokenInterface from "../abis/ERC20.json";
 import { Resolver } from "../utils/criteria";
@@ -34,7 +34,11 @@ export const useToken = ({
 		enabled: enabled,
 	});
 
-	const { write: approveToken } = useContractWrite({
+	const {
+		write: approveToken,
+		isLoading: approvalLoading,
+		data: approvalTx,
+	} = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: address,
 		contractInterface: tokenAbi,
@@ -47,11 +51,15 @@ export const useToken = ({
 		},
 	});
 
+	const { isLoading: approvalProcessing } = useWaitForTransaction({
+		hash: approvalTx?.hash,
+	});
+
 	const approve = ({ amount }: { amount: BigNumber }) => {
 		approveToken?.({ recklesslySetUnpreparedArgs: [frameworkAddress, amount] });
 	};
 
-	return { balance, allowance, approve };
+	return { balance, allowance, approve, approvalLoading, approvalProcessing };
 };
 
 export const useAgreementRead = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
@@ -101,7 +109,7 @@ export const useAgreementRead = ({ id, enabled = true }: { id: string; enabled?:
 };
 
 export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess?: () => void }) => {
-	return useContractWrite({
+	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: frameworkAddress,
 		contractInterface: frameworkAbi,
@@ -114,10 +122,36 @@ export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess?: ()
 			}
 		},
 	});
+
+	const {
+		isLoading: isProcessing,
+	} = useWaitForTransaction({
+		hash: data?.hash,
+	});
+
+	const create = ({
+		termsHash,
+		criteria,
+		metadataURI,
+	}: {
+		termsHash: string;
+		criteria: string;
+		metadataURI: string;
+	}) => {
+		write?.({
+			recklesslySetUnpreparedArgs: [{ termsHash, criteria, metadataURI }],
+		});
+	};
+
+    return { create, isProcessing, data, ...args }
 };
 
-export const useAgreementJoin = ({ id, resolver }: { id: string; resolver: Resolver }) => {
-	const { write: joinAgreement, ...args } = useContractWrite({
+export const useAgreementJoin = () => {
+	const {
+		write: joinAgreement,
+		data,
+		...args
+	} = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: frameworkAddress,
 		contractInterface: frameworkAbi,
@@ -127,7 +161,11 @@ export const useAgreementJoin = ({ id, resolver }: { id: string; resolver: Resol
 		},
 	});
 
-	const join = async () => {
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
+
+	const join = async ({ id, resolver }: { id: string; resolver: Resolver }) => {
 		if (!resolver.proof) {
 			return;
 		} else {
@@ -137,11 +175,15 @@ export const useAgreementJoin = ({ id, resolver }: { id: string; resolver: Resol
 		}
 	};
 
-	return { join, ...args };
+	return { join, data, isProcessing, ...args };
 };
 
 export const useAgreementDispute = ({ id }: { id: string }) => {
-	const { write: disputeAgreement, ...args } = useContractWrite({
+	const {
+		write: disputeAgreement,
+		data,
+		...args
+	} = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: frameworkAddress,
 		contractInterface: frameworkAbi,
@@ -151,17 +193,25 @@ export const useAgreementDispute = ({ id }: { id: string }) => {
 		},
 	});
 
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
+
 	const dispute = () => {
 		disputeAgreement?.({
 			recklesslySetUnpreparedArgs: [id],
 		});
 	};
 
-	return { dispute, ...args };
+	return { dispute, data, isProcessing, ...args };
 };
 
 export const useAgreementFinalize = ({ id }: { id: string }) => {
-	const { write: finalizeAgreement, ...args } = useContractWrite({
+	const {
+		write: finalizeAgreement,
+		data,
+		...args
+	} = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: frameworkAddress,
 		contractInterface: frameworkAbi,
@@ -171,17 +221,25 @@ export const useAgreementFinalize = ({ id }: { id: string }) => {
 		},
 	});
 
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
+
 	const finalize = () => {
 		finalizeAgreement?.({
 			recklesslySetUnpreparedArgs: [id],
 		});
 	};
 
-	return { finalize, ...args };
+	return { finalize, data, isProcessing, ...args };
 };
 
 export const useAgreementWithdraw = ({ id }: { id: string }) => {
-	const { write: withdrawFromAgreement, ...args } = useContractWrite({
+	const {
+		write: withdrawFromAgreement,
+		data,
+		...args
+	} = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: frameworkAddress,
 		contractInterface: frameworkAbi,
@@ -191,11 +249,15 @@ export const useAgreementWithdraw = ({ id }: { id: string }) => {
 		},
 	});
 
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
+
 	const withdraw = () => {
 		withdrawFromAgreement?.({
 			recklesslySetUnpreparedArgs: [id],
 		});
 	};
 
-	return { withdraw, ...args };
+	return { withdraw, data, isProcessing, ...args };
 };

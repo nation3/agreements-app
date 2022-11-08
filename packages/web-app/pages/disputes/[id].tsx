@@ -27,8 +27,16 @@ const purgeFloat = (number: string, config?: { units?: number; strip?: boolean }
 
 const Settlement = () => {
 	const { id: agreementId, positions } = useAgreementData();
-	const { submit } = useResolutionSubmit();
-	const { execute } = useResolutionExecute();
+	const {
+		submit,
+		isLoading: submissionLoading,
+		isProcessing: submissionProcessing,
+	} = useResolutionSubmit();
+	const {
+		execute,
+		isLoading: executionLoading,
+		isProcessing: executionProcessing,
+	} = useResolutionExecute();
 
 	const [settlement, setSettlement] = useState<{ party: string; balance: BigNumber }[]>();
 	const [targetBalance, setTargetBalance] = useState<BigNumber>();
@@ -165,20 +173,27 @@ const Settlement = () => {
 					{canExecute ? (
 						<Button
 							label="Execute"
-							disabled={!canExecute}
-							onClick={() =>
-								execute?.({
-									recklesslySetUnpreparedArgs: [frameworkAddress, agreementId, settlement],
-								})
-							}
+							disabled={executionLoading || executionProcessing || !canExecute}
+							isLoading={executionLoading || executionProcessing}
+							onClick={() => {
+								execute({
+									framework: frameworkAddress,
+									id: agreementId,
+									settlement: settlement || [],
+								});
+							}}
 						/>
 					) : (
 						<Button
 							label="Submit"
-							disabled={!isValidSettlement}
+							disabled={submissionLoading || submissionProcessing || !isValidSettlement}
+							isLoading={submissionLoading || submissionProcessing}
 							onClick={() => {
-								submit?.({
-									recklesslySetUnpreparedArgs: [frameworkAddress, agreementId, "", settlement],
+								submit({
+									framework: frameworkAddress,
+									id: agreementId,
+									metadata: "",
+									settlement: settlement || [],
 								});
 							}}
 						/>

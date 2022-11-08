@@ -1,4 +1,4 @@
-import { useContractRead, useContractWrite } from "wagmi";
+import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import arbitratorInterface from "../abis/Arbitrator.json";
 import { arbitratorAddress } from "../lib/constants";
 import { useMemo } from "react";
@@ -52,7 +52,7 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 };
 
 export const useResolutionSubmit = () => {
-	const { write: submitResolution, ...args } = useContractWrite({
+	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		// addressOrName: arbitratorAddress,
 		addressOrName: "0xA723Fc96d9180637B21048168D0344CC677da64c",
@@ -63,11 +63,31 @@ export const useResolutionSubmit = () => {
 		},
 	});
 
-	return { submit: submitResolution, ...args };
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
+
+	const submit = ({
+		framework,
+		id,
+		metadata,
+		settlement,
+	}: {
+		framework: string;
+		id: string;
+		metadata: string;
+		settlement: { party: string; balance: BigNumber }[];
+	}) => {
+		write?.({
+			recklesslySetUnpreparedArgs: [framework, id, metadata, settlement],
+		});
+	};
+
+	return { submit, data, isProcessing, ...args };
 };
 
 export const useResolutionExecute = () => {
-	const { write: executeResolution, ...args } = useContractWrite({
+	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		// addressOrName: arbitratorAddress,
 		addressOrName: "0xA723Fc96d9180637B21048168D0344CC677da64c",
@@ -78,5 +98,23 @@ export const useResolutionExecute = () => {
 		},
 	});
 
-	return { execute: executeResolution, ...args };
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
+
+	const execute = ({
+		framework,
+		id,
+		settlement,
+	}: {
+		framework: string;
+		id: string;
+		settlement: { party: string; balance: BigNumber }[];
+	}) => {
+		write?.({
+			recklesslySetUnpreparedArgs: [framework, id, settlement],
+		});
+	};
+
+	return { execute, data, isProcessing, ...args };
 };

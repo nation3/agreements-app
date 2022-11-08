@@ -27,14 +27,16 @@ export const JoinableAgreementActions = ({
 		enabled: typeof address !== "undefined",
 	});
 
-	const { join } = useAgreementJoin({
-		id,
-		resolver: {
+	const userResolver = useMemo(
+		() => ({
 			account: address || constants.AddressZero,
 			balance: userPosition.resolver?.balance || "0",
 			proof: userPosition.resolver?.proof || [],
-		},
-	});
+		}),
+		[address, userPosition],
+	);
+
+	const { join, isLoading: joinLoading, isProcessing: joinProcessing } = useAgreementJoin();
 
 	const enoughBalance = useMemo(() => {
 		if (accountTokenBalance) {
@@ -58,7 +60,12 @@ export const JoinableAgreementActions = ({
 
 	return (
 		<div className="flex flex-col gap-1">
-			<Button label="Join" disabled={!enoughBalance || !enoughAllowance} onClick={() => join()} />
+				<Button
+					label="Join"
+					disabled={joinLoading || joinProcessing || !enoughBalance || !enoughAllowance}
+					isLoading={joinLoading || joinProcessing}
+					onClick={() => join({ id, resolver: userResolver })}
+				/>
 			{!enoughBalance && <NotEnoughBalanceAlert />}
 			{!enoughAllowance && <NotEnoughAllowanceAlert />}
 		</div>

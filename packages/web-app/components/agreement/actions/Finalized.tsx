@@ -11,10 +11,21 @@ export const FinalizedAgreementActions = ({
 	id: string;
 	userPosition: UserPosition;
 }) => {
-	const { withdraw } = useAgreementWithdraw({ id });
+	const {
+		withdraw,
+		isLoading: withdrawLoading,
+		isProcessing: withdrawProcessing,
+	} = useAgreementWithdraw({ id });
 
 	if (BigNumber.from(userPosition.balance).gt(0))
-		return <Button label="Withdraw" onClick={() => withdraw()} />;
+		return (
+			<Button
+				label="Withdraw"
+				disabled={withdrawLoading || withdrawProcessing}
+				isLoading={withdrawLoading || withdrawProcessing}
+				onClick={() => withdraw()}
+			/>
+		);
 
 	return <></>;
 };

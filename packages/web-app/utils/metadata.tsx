@@ -4,11 +4,11 @@ import { utils, BigNumber } from "ethers";
 import { hexHash } from "./hash";
 
 export type AgreementMetadata = {
-	title: string;
+	termsHash: string;
+	criteria: string;
+	title?: string;
 	description?: string;
-	termsHash?: string;
 	termsUri?: string;
-	criteria?: string;
 	resolvers?: ResolverMap;
 };
 
@@ -42,8 +42,9 @@ export const fetchMetadata = async (fileURI: string): Promise<AgreementMetadata>
 export const generateMetadata = (
 	terms: string,
 	positions: { account: string; balance: number | BigNumber }[],
-) => {
-	const termsHash = hexHash(terms ?? "");
+	title?: string,
+): AgreementMetadata => {
+	const termsHash = hexHash(terms);
 	const { criteria, resolvers } = generateCriteria(
 		positions.map(({ account, balance }) => {
 			return {
@@ -53,5 +54,10 @@ export const generateMetadata = (
 		}),
 	);
 
-	return { termsHash: termsHash, criteria: criteria, resolvers: resolvers };
+	return {
+		title: title ?? "Agreement",
+		termsHash: termsHash,
+		criteria: criteria,
+		resolvers: resolvers,
+	};
 };
