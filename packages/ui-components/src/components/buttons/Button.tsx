@@ -1,5 +1,6 @@
 import React, { ReactNode, ReactElement } from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
+import { Spinner } from "../svgs";
 
 export interface ButtonBaseProps extends HTMLMotionProps<"button"> {
 	disabled?: boolean;
@@ -11,6 +12,7 @@ export interface ButtonProps extends Omit<ButtonBaseProps, "children"> {
 	textColor?: string;
 	bgColor?: string;
 	label?: ReactNode;
+	isLoading?: boolean;
 }
 
 export const ButtonBase = ({ children, className, ...props }: ButtonBaseProps) => {
@@ -33,6 +35,7 @@ export const Button = ({
 	bgColor = "bluesky",
 	disabled,
 	className,
+	isLoading = false,
 	onClick,
 }: ButtonProps) => {
 	return (
@@ -43,9 +46,15 @@ export const Button = ({
 			disabled={disabled}
 			onClick={onClick}
 		>
-			{iconLeft && iconLeft}
-			{label && label}
-			{!iconLeft && iconRight && iconRight}
+			{isLoading ? (
+				<Spinner className="w-5 h-5" />
+			) : (
+				<>
+					{iconLeft && iconLeft}
+					{label && label}
+					{!iconLeft && iconRight && iconRight}
+				</>
+			)}
 		</ButtonBase>
 	);
 };

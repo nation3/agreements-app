@@ -8,5 +8,6 @@ export * from "./components/modals";
 export * from "./components/table";
 export * from "./components/alerts";
 export * from "./components/layout";
+export * from "./components/svgs";
 
 export * as utils from "./utils";
