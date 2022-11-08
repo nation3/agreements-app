@@ -108,6 +108,18 @@ export const useAgreementRead = ({ id, enabled = true }: { id: string; enabled?:
 	return { params, positions, status: status };
 };
 
+/* Temporal workarround to process agreement creation event */
+const eventAbi = [
+	"event AgreementCreated(bytes32 id, bytes32 termsHash, uint256 criteria, string metadataURI)",
+];
+interface CreatedEventArgs {
+	id: string;
+	termsHash: string;
+	criteria: BigNumber;
+	metadataURI: string;
+}
+const iface = new utils.Interface(eventAbi);
+
 export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess?: () => void }) => {
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
@@ -124,10 +136,23 @@ export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess?: ()
 	});
 
 	const {
+        data: receipt,
 		isLoading: isProcessing,
+        isSuccess: txSuccess,
 	} = useWaitForTransaction({
 		hash: data?.hash,
 	});
+
+	/* Temporal patch to fetch the creation event */
+	const created = useMemo((): CreatedEventArgs | undefined => {
+		if (txSuccess && receipt) {
+			const args = iface.parseLog(receipt.logs[0]).args;
+			if (args.length == 4) {
+				return { id: args[0], termsHash: args[1], criteria: args[2], metadataURI: args[3] };
+			}
+		}
+		return undefined;
+	}, [txSuccess, receipt]);
 
 	const create = ({
 		termsHash,
@@ -143,7 +168,7 @@ export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess?: ()
 		});
 	};
 
-    return { create, isProcessing, data, ...args }
+	return { create, created, isProcessing, data, ...args };
 };
 
 export const useAgreementJoin = () => {

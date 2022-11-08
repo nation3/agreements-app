@@ -12,9 +12,11 @@ import { PositionStatusBadge } from "../PositionStatusBadge";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { CreateView } from "./context/types";
-import { useCallback } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useCallback } from "react";
 
 export const AgreementCreationPreview = () => {
+	const router = useRouter();
 	const { terms, positions, changeView } = useAgreementCreation();
 	const termsHash = hexHash(terms);
 
@@ -29,6 +31,7 @@ export const AgreementCreationPreview = () => {
 
 	const {
 		create,
+		created,
 		isLoading: createLoading,
 		isProcessing: createProcessing,
 	} = useAgreementCreate({ onSettledSuccess: uploadMetadataToIPFS });
@@ -45,6 +48,11 @@ export const AgreementCreationPreview = () => {
 	const copyTermsHash = useCallback(() => {
 		if (termsHash) navigator.clipboard.writeText(String(termsHash));
 	}, [termsHash]);
+
+	/* Redirect to the agreement page on creation event */
+	useEffect(() => {
+		if (created?.id) router.push(`/agreements/${created.id}`);
+	}, [created, router]);
 
 	return (
 		<>
