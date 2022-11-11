@@ -1,6 +1,6 @@
 import { generateCriteria, ResolverMap } from "./criteria";
 import { IPFSUriToUrl } from "./ipfs";
-import { utils, BigNumber } from "ethers";
+import { BigNumber } from "ethers";
 import { hexHash } from "./hash";
 
 export type AgreementMetadata = {
@@ -41,18 +41,11 @@ export const fetchMetadata = async (fileURI: string): Promise<AgreementMetadata>
 
 export const generateMetadata = (
 	terms: string,
-	positions: { account: string; balance: number | BigNumber }[],
+	positions: { account: string; balance: BigNumber }[],
 	title?: string,
 ): AgreementMetadata => {
 	const termsHash = hexHash(terms);
-	const { criteria, resolvers } = generateCriteria(
-		positions.map(({ account, balance }) => {
-			return {
-				account: account,
-				balance: utils.parseUnits(utils.formatUnits(balance), 18),
-			};
-		}),
-	);
+	const { criteria, resolvers } = generateCriteria(positions);
 
 	return {
 		title: title ?? "Agreement",

@@ -1,5 +1,5 @@
 import { ChangeEvent, FocusEvent } from "react";
-import { utils } from "ethers";
+import { utils, BigNumber } from "ethers";
 import { TextInput, TokenBalanceInput } from "@nation3/ui-components";
 
 // TODO:
@@ -15,7 +15,7 @@ const purgeFloat = (number: string, config?: { units?: number; strip?: boolean }
 	return config?.strip ? purged.replace(/\.$/g, "") : purged;
 };
 
-type Position = { account: string; balance: number };
+type Position = { account: string; balance: BigNumber };
 
 export const ParticipantRow = ({
 	positions,
@@ -27,13 +27,15 @@ export const ParticipantRow = ({
 	onChange?: (poistions: Position[]) => void;
 }) => {
 	const updatePositionAccount = (account: string) => {
-		const positions_ = JSON.parse(JSON.stringify(positions));
+		// Deep copy of the array
+		const positions_ = positions.map((position) => ({ ...position }));
 		positions_[index].account = account;
 		onChange?.(positions_);
 	};
 
 	const updatePositionBalance = (balance: string) => {
-		const positions_ = JSON.parse(JSON.stringify(positions));
+		// Deep copy of the array
+		const positions_ = positions.map((position) => ({ ...position }));
 		positions_[index].balance = utils.parseUnits(balance || "0");
 		onChange?.(positions_);
 	};
@@ -51,7 +53,7 @@ export const ParticipantRow = ({
 			</div>
 			<div className="basis-2/5">
 				<TokenBalanceInput
-					defaultValue={positions[index].balance}
+					defaultValue={utils.formatUnits(positions[index].balance)}
 					token={"NATION"}
 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
 						const purged = purgeFloat(e.target.value);
