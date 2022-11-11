@@ -1,17 +1,20 @@
 import clsx from "clsx";
 import React, { ChangeEvent, InputHTMLAttributes } from "react";
-import { validateAddress } from "../../utils";
+import { ethers } from "ethers";
 
 export interface AddressInputProps extends InputHTMLAttributes<HTMLInputElement> {
 	focusColor?: string;
+	onBlur?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const AddressInput = ({ focusColor = "bluesky", ...props }: AddressInputProps) => {
+export const AddressInput = ({ focusColor = "bluesky", onBlur, ...props }: AddressInputProps) => {
 	const [isValid, setIsValid] = React.useState(true);
 
-	const checkAddress = (value: ChangeEvent<HTMLInputElement>) => {
-		setIsValid(validateAddress(value.target.value));
+	const checkAddress = (address: string) => {
+		setIsValid(ethers.utils.isAddress(address));
+		onBlur?.({ target: { value: address } } as ChangeEvent<HTMLInputElement>);
 	};
+
 	return (
 		<div>
 			<input
@@ -23,7 +26,7 @@ export const AddressInput = ({ focusColor = "bluesky", ...props }: AddressInputP
 						? `border border-gray-300 focus:border-${focusColor} focus:ring-${focusColor}`
 						: "border-solid ring-1 border-red-600 ring-red-600 focus:border-red-600 focus:ring-red-600",
 				)}
-				onBlur={(e) => checkAddress(e)}
+				onBlur={(e) => checkAddress(e.target.value)}
 				{...props}
 			/>
 		</div>
