@@ -12,7 +12,6 @@ export const AddressInput = ({ focusColor = "bluesky", onBlur, ...props }: Addre
 
 	const checkAddress = (address: string) => {
 		setIsValid(ethers.utils.isAddress(address));
-		onBlur?.({ target: { value: address } } as ChangeEvent<HTMLInputElement>);
 	};
 
 	return (
@@ -26,7 +25,10 @@ export const AddressInput = ({ focusColor = "bluesky", onBlur, ...props }: Addre
 						? `border border-gray-300 focus:border-${focusColor} focus:ring-${focusColor}`
 						: "border-solid ring-1 border-red-600 ring-red-600 focus:border-red-600 focus:ring-red-600",
 				)}
-				onBlur={(e) => checkAddress(e.target.value)}
+				onBlur={(e) => {
+					checkAddress(e.target.value);
+					onBlur?.(e);
+				}}
 				{...props}
 			/>
 		</div>
