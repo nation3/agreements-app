@@ -24,6 +24,7 @@ export const useToken = ({
 		functionName: "balanceOf",
 		args: [account],
 		enabled: enabled,
+		watch: true,
 	});
 
 	const { data: allowance } = useContractRead({
@@ -32,6 +33,7 @@ export const useToken = ({
 		functionName: "allowance",
 		args: [account, frameworkAddress],
 		enabled: enabled,
+		watch: true,
 	});
 
 	const {

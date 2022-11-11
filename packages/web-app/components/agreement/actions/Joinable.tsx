@@ -46,7 +46,7 @@ export const JoinableAgreementActions = ({
 
 	const enoughBalance = useMemo((): boolean => {
 		if (accountTokenBalance) {
-			return requiredBalance.lt(BigNumber.from(accountTokenBalance));
+			return requiredBalance.lte(BigNumber.from(accountTokenBalance));
 		} else {
 			return true;
 		}
@@ -54,7 +54,7 @@ export const JoinableAgreementActions = ({
 
 	const enoughAllowance = useMemo(() => {
 		if (accountTokenAllowance) {
-			return requiredBalance.lt(BigNumber.from(accountTokenAllowance));
+			return requiredBalance.lte(BigNumber.from(accountTokenAllowance));
 		} else {
 			return true;
 		}
