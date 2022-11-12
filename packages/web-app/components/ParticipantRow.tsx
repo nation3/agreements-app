@@ -1,6 +1,7 @@
-import { ChangeEvent, FocusEvent } from "react";
+import { ChangeEvent, FocusEvent, useEffect, useState } from "react";
 import { utils, BigNumber } from "ethers";
 import { AddressInput, TokenBalanceInput } from "@nation3/ui-components";
+import { useEnsAddress } from "wagmi";
 import { purgeFloat } from "../utils";
 
 // TODO:
@@ -15,8 +16,11 @@ export const ParticipantRow = ({
 }: {
 	positions: Position[];
 	index: number;
-	onChange?: (poistions: Position[]) => void;
+	onChange?: (positions: Position[]) => void;
 }) => {
+	const [addressInput, setAddressInput] = useState<string>("");
+	const { data: ensAddress } = useEnsAddress({ name: addressInput, chainId: 1 });
+
 	const updatePositionAccount = (account: string) => {
 		// Deep copy of the array
 		const positions_ = positions.map((position) => ({ ...position }));
@@ -31,6 +35,13 @@ export const ParticipantRow = ({
 		onChange?.(positions_);
 	};
 
+	// use resolved ENS address if valid
+	useEffect(() => {
+		console.log("ensAddress: ", ensAddress);
+		ensAddress ? updatePositionAccount(ensAddress) : updatePositionAccount(addressInput);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ensAddress, addressInput]);
+
 	return (
 		<div className="flex grow gap-2">
 			<div className="basis-3/5">
@@ -38,7 +49,7 @@ export const ParticipantRow = ({
 					value={positions[index].account}
 					placeholder="vitalik.eth"
 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
-						updatePositionAccount(e.target.value);
+						setAddressInput(e.target.value);
 					}}
 				/>
 			</div>
