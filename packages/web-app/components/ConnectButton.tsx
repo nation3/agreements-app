@@ -3,7 +3,6 @@ import { AccountButton, ButtonBase } from "@nation3/ui-components";
 import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow-me/rainbowkit";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UserIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 	return ensImage ? (
