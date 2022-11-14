@@ -27,7 +27,7 @@
     "react": ">=16"
   },
   "dependencies": {
-    "@heroicons/react": "^2.0.11",
+    "@heroicons/react": "^2.0.13",
     "clsx": "^1.2.1",
     "ethers": "^5.7.2",
     "flowbite": "^1.5.3",
