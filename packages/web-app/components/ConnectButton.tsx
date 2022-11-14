@@ -3,12 +3,11 @@ import { AccountButton, ButtonBase } from "@nation3/ui-components";
 import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow-me/rainbowkit";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UserIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 	return ensImage ? (
-		<picture>
-			<img src={ensImage} alt="ENS Avatar" className={`w-${size} h-${size} rounded-full`} />
-		</picture>
+		<Image src={ensImage} width={48} height={48} alt="ENS Avatar" className={`rounded-full`} />
 	) : (
 		<Blockies seed={address} size={size} className="overflow-hidden rounded-full" />
 	);
@@ -50,7 +49,7 @@ export const ConnectButton = () => {
 							if (!connected) {
 								return (
 									<ButtonBase
-										className="p-4 gap-1 text-white bg-bluesky-400"
+										className="gap-1 p-4 text-white bg-bluesky-400"
 										onClick={openConnectModal}
 									>
 										<UserIcon className="w-8 h-8" />
@@ -61,7 +60,7 @@ export const ConnectButton = () => {
 
 							if (chain.unsupported) {
 								return (
-									<ButtonBase className="p-4 gap-1 text-white bg-red-400" onClick={openChainModal}>
+									<ButtonBase className="gap-1 p-4 text-white bg-red-400" onClick={openChainModal}>
 										<ExclamationTriangleIcon className="w-8 h-8" />
 										<span className="hidden md:inline">Wrong network</span>
 									</ButtonBase>
@@ -70,7 +69,7 @@ export const ConnectButton = () => {
 
 							return (
 								<AccountButton
-									className="p-2 gap-1 bg-white hover:bg-gray-100"
+									className="gap-1 p-2 bg-white hover:bg-gray-100"
 									avatar={
 										<AccountAvatar
 											address={account.address}
