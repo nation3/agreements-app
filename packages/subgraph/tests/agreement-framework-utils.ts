@@ -131,26 +131,24 @@ export function createAgreementPositionUpdatedEvent(
 }
 
 export function assertAgreement(
-  id: String,
-  termsHash: String,
-  criteria: String,
-  positions: String,
-  status: String,
-  metadataURI: String
+  id: string,
+  termsHash: string,
+  criteria: string,
+  status: string,
+  metadataURI: string,
 ): void {
   assert.fieldEquals("Agreement", id, "status", status);
   assert.fieldEquals("Agreement", id, "termsHash", termsHash);
   assert.fieldEquals("Agreement", id, "criteria", criteria);
-  assert.fieldEquals("Agreement", id, "positions", positions);
   assert.fieldEquals("Agreement", id, "metadataURI", metadataURI);
 }
 
 export function assertAgreementPosition(
-  id: String,
-  party: String,
-  balance: String,
-  status: String,
-  agreement: String
+  id: string,
+  party: string,
+  balance: string,
+  status: string,
+  agreement: string
 ): void {
   assert.fieldEquals("AgreementPosition", id, "party", party);
   assert.fieldEquals("AgreementPosition", id, "balance", balance);

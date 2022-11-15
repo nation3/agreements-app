@@ -9,7 +9,7 @@ enum AgreementStatus {
 }
 
 enum PositionStatus {
-    Idle
+    Joined
     Finalized
 }
 
