@@ -18,6 +18,7 @@ dataSources:
       entities:
         - Agreement
         - AgreementPosition
+        - Dispute
       abis:
         - name: AgreementFramework
           file: ./abis/IAgreementFramework.json
@@ -46,16 +47,17 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Dispute
+        - Resolution
       abis:
         - name: Arbitrator
-          file: ./abis/Arbitrator.json
+          file: ./abis/IArbitrator.json
       eventHandlers:
+        - event: ResolutionSubmitted(indexed address,indexed bytes32,indexed bytes32)
+          handler: handleResolutionSubmitted
         - event: ResolutionAppealed(indexed bytes32,address)
           handler: handleResolutionAppealed
         - event: ResolutionEndorsed(indexed bytes32)
           handler: handleResolutionEndorsed
         - event: ResolutionExecuted(indexed bytes32)
           handler: handleResolutionExecuted
-        - event: ResolutionSubmitted(indexed address,indexed bytes32,indexed bytes32)
-          handler: handleResolutionSubmitted
       file: ./src/arbitrator.ts

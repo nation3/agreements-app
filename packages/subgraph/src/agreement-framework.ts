@@ -1,4 +1,3 @@
-import { BigInt } from "@graphprotocol/graph-ts";
 import {
     AgreementCreated,
     AgreementFinalized,
@@ -6,7 +5,7 @@ import {
     AgreementPositionUpdated,
     AgreementDisputed,
 } from "../generated/AgreementFramework/AgreementFramework";
-import { Agreement, AgreementPosition } from "../generated/schema";
+import { Agreement, AgreementPosition, Dispute } from "../generated/schema";
 
 export function handleAgreementCreated(event: AgreementCreated): void {
     let agreement = new Agreement(event.params.id.toHexString());
@@ -61,9 +60,19 @@ export function handleAgreementPositionUpdated(
 }
 
 export function handleAgreementDisputed(event: AgreementDisputed): void {
-    let agreement = Agreement.load(event.params.id.toHexString());
-    if (agreement) {
-        agreement.status = "Disputed";
-        agreement.save();
+    let id = event.params.id.toHexString()
+    let dispute = Dispute.load(id)
+    let agreement = Agreement.load(id);
+
+    if (dispute == null) {
+        dispute = new Dispute(id)
     }
+
+    if (agreement) {
+        dispute.agreement = agreement.id
+        agreement.status = "Disputed"
+        agreement.save()
+    }
+
+    dispute.save()
 }

@@ -4,7 +4,7 @@ import {
   ResolutionAppealed,
   ResolutionEndorsed,
   ResolutionExecuted,
-  ResolutionSubmitted
+  ResolutionSubmitted,
 } from "../generated/Arbitrator/Arbitrator"
 
 export function createResolutionAppealedEvent(
@@ -65,7 +65,7 @@ export function createResolutionSubmittedEvent(
     new ethereum.EventParam("id", ethereum.Value.fromFixedBytes(id))
   )
   resolutionSubmittedEvent.parameters.push(
-    new ethereum.EventParam("hash", ethereum.Value.fromFixedBytes(hash))
+      new ethereum.EventParam("hash", ethereum.Value.fromFixedBytes(hash))
   )
 
   return resolutionSubmittedEvent

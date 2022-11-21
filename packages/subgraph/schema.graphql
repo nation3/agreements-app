@@ -1,5 +1,4 @@
 # Subgraph Schema: Agreement Framework
-# Version: 0.0.2
 
 enum AgreementStatus {
     Created
@@ -23,14 +22,17 @@ type Agreement @entity {
     "Required amount to join or merkle root of (address,amount)"
     criteria: BigInt!
 
-    "Status of the agreement"
-    status: AgreementStatus!
-
     "Agreement Metadata URI"
     metadataURI: String!
 
+    "Status of the agreement"
+    status: AgreementStatus!
+
     "Positions of the agreement"
     positions: [AgreementPosition!] @derivedFrom(field: "agreement")
+
+    "Submitted resolution for a dispute, if available"
+    dispute: Dispute @derivedFrom(field: "agreement")
 }
 
 type AgreementPosition @entity {
@@ -50,32 +52,34 @@ type AgreementPosition @entity {
     agreement: Agreement! 
 }
 
-enum DisputeStatus {
-    ResolutionSubmitted
-    ResolutionAppealed
-    ResolutionEndorsed
-    ResolutionExecuted
+enum ResolutionStatus {
+    Submitted
+    Appealed
+    Endorsed
+    Executed
 }
 
 type Dispute @entity {
-    "Resolution ID = Hash"
+    "Dispute id"
     id: String!
 
-    "Address of the framework of the agreement in dispute"
-    framework: Bytes!
+    "Agreement in dispute"
+    agreement: Agreement
 
-    "Disputed Agreement ID"
-    agreement: String!
+    "Current active resolution"
+    resolution: Resolution
+
+    "All resolutions linked to a dispute"
+    resolutions: [Resolution!] @derivedFrom(field: "dispute")
+}
+
+type Resolution @entity {
+    "Resolution ID"
+    id: String!
+
+    "Disputed ID"
+    dispute: Dispute!
 
     "Resolution Status"
-    status: DisputeStatus!
-
-    "Block number for the resolution submission"
-    resSubmitBlock: BigInt
-
-    "Resolution Submission timestamp"
-    resSubmittedAt: String
-
-    "List of accounts that have appealed the resolution"
-    resAppealedBy: [Bytes!]
+    status: ResolutionStatus!
 }

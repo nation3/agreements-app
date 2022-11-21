@@ -13,7 +13,7 @@ export function createAgreementCreatedEvent(
   id: Bytes,
   termsHash: Bytes,
   criteria: BigInt,
-  metadataURI: String
+  metadataURI: string
 ): AgreementCreated {
   let agreementCreatedEvent = changetype<AgreementCreated>(newMockEvent());
 

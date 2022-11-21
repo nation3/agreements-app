@@ -308,10 +308,13 @@ describe("handling of AgreementDisputed", () => {
 
         assert.entityCount("Agreement", 1);
         assert.entityCount("AgreementPosition", 2);
+        assert.entityCount("Dispute", 1);
 
         assertAgreement(created.id.toHexString(), created.termsHash.toHexString(), created.criteria.toString(), "Disputed", created.metadataURI.toString());
 
         assertAgreementPosition(joined.id.toHexString().concat(joined.party.toHexString()), joined.party.toHexString(), joined.balance.toString(), "Joined", joined.id.toHexString())
         assertAgreementPosition(joined2.id.toHexString().concat(joined2.party.toHexString()), joined2.party.toHexString(), joined2.balance.toString(), "Joined", joined2.id.toHexString())
+
+        assert.fieldEquals("Dispute", created.id.toHexString(), "agreement", created.id.toHexString());
     });
 });

@@ -1,58 +1,100 @@
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
 import {
-  assert,
-  describe,
-  test,
-  clearStore,
-  beforeAll,
-  afterAll
+    assert,
+    describe,
+    test,
+    clearStore,
+    afterAll,
+    beforeEach,
+    beforeAll
 } from "matchstick-as/assembly/index"
-import { Bytes, Address } from "@graphprotocol/graph-ts"
-import { ResolutionAppealed } from "../generated/schema"
-import { ResolutionAppealed as ResolutionAppealedEvent } from "../generated/Arbitrator/Arbitrator"
-import { handleResolutionAppealed } from "../src/arbitrator"
-import { createResolutionAppealedEvent } from "./arbitrator-utils"
+import { handleResolutionSubmitted, handleResolutionAppealed, handleResolutionEndorsed, handleResolutionExecuted } from "../src/arbitrator"
+import { createResolutionSubmittedEvent, createResolutionExecutedEvent, createResolutionAppealedEvent, createResolutionEndorsedEvent } from "./arbitrator-utils"
+import { Dispute } from "../generated/schema"
 
-// Tests structure (matchstick-as >=0.5.0)
-// https://thegraph.com/docs/en/developer/matchstick/#tests-structure-0-5-0
+const FRAMEWORK_ADDRESS = "0x8888888888888888888888888888888888888888";
+const SAMPLE_ADDRESS = "0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7";
 
-describe("Describe entity assertions", () => {
-  beforeAll(() => {
-    let hash = Bytes.fromI32(1234567890)
-    let account = Address.fromString(
-      "0x0000000000000000000000000000000000000001"
-    )
-    let newResolutionAppealedEvent = createResolutionAppealedEvent(
-      hash,
-      account
-    )
-    handleResolutionAppealed(newResolutionAppealedEvent)
-  })
+const RESOLUTION_SUBMITTED_EVENT = createResolutionSubmittedEvent(
+    Address.fromString(FRAMEWORK_ADDRESS),
+    Bytes.fromI32(314),
+    Bytes.fromI32(111)
+)
 
-  afterAll(() => {
-    clearStore()
-  })
+const RESOLUTION_SUBMITTED_EVENT_2 = createResolutionSubmittedEvent(
+    Address.fromString(FRAMEWORK_ADDRESS),
+    Bytes.fromI32(314),
+    Bytes.fromI32(112)
+)
 
-  // For more test scenarios, see:
-  // https://thegraph.com/docs/en/developer/matchstick/#write-a-unit-test
+describe("handling of submitResolution", () => {
+    beforeAll(() => {
+        let dispute = new Dispute(Bytes.fromI32(314).toHexString())
+        dispute.createdAt = BigInt.fromI32(0)
+        dispute.save()
+    })
+    afterAll(() => {
+        clearStore()
+    })
 
-  test("ResolutionAppealed created and stored", () => {
-    assert.entityCount("ResolutionAppealed", 1)
+    test("resolution submitted", () => {
+        const submitted = RESOLUTION_SUBMITTED_EVENT
 
-    // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
-    assert.fieldEquals(
-      "ResolutionAppealed",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "hash",
-      "1234567890"
-    )
-    assert.fieldEquals(
-      "ResolutionAppealed",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "account",
-      "0x0000000000000000000000000000000000000001"
-    )
+        handleResolutionSubmitted(submitted);
 
-    // More assert options:
-    // https://thegraph.com/docs/en/developer/matchstick/#asserts
-  })
+        assert.entityCount("Resolution", 1);
+
+        assert.fieldEquals("Resolution", submitted.params.hash.toHexString(), "dispute", submitted.params.id.toHexString());
+        assert.fieldEquals("Resolution", submitted.params.hash.toHexString(), "status", "Submitted");
+        assert.fieldEquals("Dispute", submitted.params.id.toHexString(), "resolution", submitted.params.hash.toHexString());
+    });
+
+    describe("one resolution submitted", () => {
+        beforeEach(() => {
+            handleResolutionSubmitted(RESOLUTION_SUBMITTED_EVENT);
+        });
+
+        test("resolution appealed", () => {
+            const appealed = createResolutionAppealedEvent(
+                Bytes.fromI32(111),
+                Address.fromString(SAMPLE_ADDRESS)
+            )
+
+            handleResolutionAppealed(appealed)
+
+            assert.fieldEquals("Resolution", appealed.params.hash.toHexString(), "status", "Appealed");
+        });
+
+        test("resolution endorsed", () => {
+            const endorsed = createResolutionEndorsedEvent(
+                Bytes.fromI32(111)
+            )
+
+            handleResolutionEndorsed(endorsed)
+
+            assert.fieldEquals("Resolution", endorsed.params.hash.toHexString(), "status", "Endorsed");
+        });
+
+        test("resolution executed", () => {
+            const executed = createResolutionExecutedEvent(
+                Bytes.fromI32(111)
+            )
+
+            handleResolutionExecuted(executed)
+
+            assert.fieldEquals("Resolution", executed.params.hash.toHexString(), "status", "Executed");
+        });
+
+        test("new resolution submitted", () => {
+            const submitted_1 = RESOLUTION_SUBMITTED_EVENT
+            const submitted_2 = RESOLUTION_SUBMITTED_EVENT_2
+
+            assert.fieldEquals("Dispute", submitted_1.params.id.toHexString(), "resolution", submitted_1.params.hash.toHexString());
+
+            handleResolutionSubmitted(submitted_2)
+
+            assert.entityCount("Resolution", 2);
+            assert.fieldEquals("Dispute", submitted_1.params.id.toHexString(), "resolution", submitted_2.params.hash.toHexString());
+        });
+    });
 })
