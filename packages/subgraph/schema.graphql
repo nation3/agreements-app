@@ -1,5 +1,5 @@
 # Subgraph Schema: Agreement Framework
-# Version: 0.0.2
+# Version: 0.1.0
 
 enum AgreementStatus {
     Created
@@ -9,7 +9,7 @@ enum AgreementStatus {
 }
 
 enum PositionStatus {
-    Idle
+    Joined
     Finalized
 }
 
@@ -23,14 +23,20 @@ type Agreement @entity {
     "Required amount to join or merkle root of (address,amount)"
     criteria: BigInt!
 
-    "Status of the agreement"
-    status: AgreementStatus!
-
     "Agreement Metadata URI"
     metadataURI: String!
 
+    "Status of the agreement"
+    status: AgreementStatus!
+
+    "Time of the agreement creation"
+    createdAt: BigInt!
+
     "Positions of the agreement"
     positions: [AgreementPosition!] @derivedFrom(field: "agreement")
+
+    "Submitted resolution for a dispute, if available"
+    dispute: Dispute @derivedFrom(field: "agreement")
 }
 
 type AgreementPosition @entity {
@@ -48,4 +54,42 @@ type AgreementPosition @entity {
 
     "Agreement this position belongs to"
     agreement: Agreement! 
+}
+
+enum ResolutionStatus {
+    Submitted
+    Appealed
+    Endorsed
+    Executed
+}
+
+type Dispute @entity {
+    "Dispute id"
+    id: String!
+
+    "Agreement in dispute"
+    agreement: Agreement
+
+    "Time of the dispute creation"
+    createdAt: BigInt!
+
+    "Current active resolution"
+    resolution: Resolution
+
+    "All resolutions linked to a dispute"
+    resolutions: [Resolution!] @derivedFrom(field: "dispute")
+}
+
+type Resolution @entity {
+    "Resolution ID"
+    id: String!
+
+    "Disputed ID"
+    dispute: Dispute!
+
+    "Block of the submission"
+    submittedAtBlock: BigInt!
+
+    "Resolution Status"
+    status: ResolutionStatus!
 }

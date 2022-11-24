@@ -18,6 +18,7 @@ dataSources:
       entities:
         - Agreement
         - AgreementPosition
+        - Dispute
       abis:
         - name: AgreementFramework
           file: ./abis/IAgreementFramework.json
@@ -33,3 +34,30 @@ dataSources:
         - event: AgreementDisputed(bytes32,address)
           handler: handleAgreementDisputed
       file: ./src/agreement-framework.ts
+  - kind: ethereum
+    name: Arbitrator
+    network: goerli
+    source:
+      address: "0xA723Fc96d9180637B21048168D0344CC677da64c"
+      abi: Arbitrator
+      startBlock: 7843026
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Dispute
+        - Resolution
+      abis:
+        - name: Arbitrator
+          file: ./abis/IArbitrator.json
+      eventHandlers:
+        - event: ResolutionSubmitted(indexed address,indexed bytes32,indexed bytes32)
+          handler: handleResolutionSubmitted
+        - event: ResolutionAppealed(indexed bytes32,address)
+          handler: handleResolutionAppealed
+        - event: ResolutionEndorsed(indexed bytes32)
+          handler: handleResolutionEndorsed
+        - event: ResolutionExecuted(indexed bytes32)
+          handler: handleResolutionExecuted
+      file: ./src/arbitrator.ts
