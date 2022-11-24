@@ -41,6 +41,7 @@ export function handleResolutionSubmitted(event: ResolutionSubmittedEvent): void
         if (resolution == null) {
             resolution = new Resolution(event.params.hash.toHexString());
         }
+        resolution.submittedAtBlock = event.block.number;
         resolution.status = "Submitted";
         resolution.dispute = dispute.id;
         resolution.save();

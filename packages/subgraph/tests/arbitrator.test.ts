@@ -46,6 +46,7 @@ describe("handling of submitResolution", () => {
 
         assert.fieldEquals("Resolution", submitted.params.hash.toHexString(), "dispute", submitted.params.id.toHexString());
         assert.fieldEquals("Resolution", submitted.params.hash.toHexString(), "status", "Submitted");
+        assert.fieldEquals("Resolution", submitted.params.hash.toHexString(), "submittedAtBlock", submitted.block.number.toString())
         assert.fieldEquals("Dispute", submitted.params.id.toHexString(), "resolution", submitted.params.hash.toHexString());
     });
 

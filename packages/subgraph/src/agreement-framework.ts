@@ -13,6 +13,7 @@ export function handleAgreementCreated(event: AgreementCreated): void {
     agreement.criteria = event.params.criteria;
     agreement.status = "Created";
     agreement.metadataURI = event.params.metadataURI;
+    agreement.createdAt = event.block.timestamp;
     agreement.save();
 }
 
@@ -66,6 +67,7 @@ export function handleAgreementDisputed(event: AgreementDisputed): void {
 
     if (dispute == null) {
         dispute = new Dispute(id)
+        dispute.createdAt = event.block.timestamp
     }
 
     if (agreement) {
