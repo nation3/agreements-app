@@ -56,8 +56,14 @@ export const AgreementCreationForm = () => {
 					</p>
 				</div>
 				<div className="flex flex-col gap-2">
-					<ParticipantRow positions={positions} index={0} onChange={setPositions} />
-					<ParticipantRow positions={positions} index={1} onChange={setPositions} />
+					{positions.map((_, index) => (
+						<ParticipantRow
+							positions={positions}
+							key={index}
+							index={index}
+							onChange={setPositions}
+						/>
+					))}
 				</div>
 			</div>
 			<div className="flex flex-col gap-2">
