@@ -1,6 +1,8 @@
 import { ChangeEvent, FocusEvent } from "react";
 import { utils, BigNumber } from "ethers";
-import { AddressInput, TokenBalanceInput } from "@nation3/ui-components";
+import { AddressInput, IconButton, TokenBalanceInput } from "@nation3/ui-components";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import { MinusIcon } from "@heroicons/react/24/solid";
 import { purgeFloat } from "../utils";
 
 // TODO:
@@ -57,6 +59,19 @@ export const ParticipantRow = ({
 						}
 						updatePositionBalance(purgeFloat(e.target.value, { strip: true }));
 					}}
+				/>
+			</div>
+			<div className="basis-1/12 flex items-center space-x-1">
+				<IconButton
+					icon={<PlusIcon className="w-5 h-5" />}
+					onClick={() =>
+						onChange?.([...positions, { account: "", balance: utils.parseUnits("0") }])
+					}
+				/>
+				<IconButton
+					icon={<MinusIcon className="w-5 h-5" />}
+					disabled={positions.length <= 2}
+					onClick={() => onChange?.(positions.filter((_, i) => i !== index))}
 				/>
 			</div>
 		</div>
