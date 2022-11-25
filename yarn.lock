@@ -15258,6 +15258,14 @@ react-dropzone@^14.2.2:
     file-selector "^0.6.0"
     prop-types "^15.8.1"
 
+react-edit-text@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/react-edit-text/-/react-edit-text-5.0.2.tgz#e1418a16f615cc5b833f455ccffd24d18c566ab2"
+  integrity sha512-V3M4KhgQDbKa1I6F5OLrhqu9w/T4XONFEyC4RijdSxDs+L5srpsCH6V5CSWGNT6pu6f4VG03n736RB3lMCTUkw==
+  dependencies:
+    classnames "^2.2.6"
+    prop-types "^15.8.1"
+
 react-element-to-jsx-string@^14.3.4:
   version "14.3.4"
   resolved "https://registry.yarnpkg.com/react-element-to-jsx-string/-/react-element-to-jsx-string-14.3.4.tgz#709125bc72f06800b68f9f4db485f2c7d31218a8"
