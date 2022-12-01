@@ -1,9 +1,23 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useAgreementData } from "./context/AgreementDataContext";
 import { PositionMap } from "./context/types";
 import { PositionStatusBadge } from "../../components";
 import { Table, Badge, ActionBadge, utils as n3utils } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
+import { EditText, EditTextarea } from 'react-edit-text';
+import 'react-edit-text/dist/index.css';
+
+const useLocalStorage = (key, defaultValue) => {
+	const [value, setValue] = useState(defaultValue);
+	useEffect(() => {
+		const localValue = localStorage.getItem(key);
+		localValue && setValue(localValue);
+	})
+	useEffect(() => {
+		localStorage.setItem(key, value);
+	}, [value]);
+	return [value, setValue];
+}
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -12,10 +26,12 @@ interface AgreementDataDisplayProps {
 	termsHash: string;
 }
 
-const AgreementHeader = ({ title, status }: { title: string; status: string }) => {
+const AgreementHeader = ({ title, status, id }: { title: string; status: string, id: number }) => {
+	const [localTitle, setLocalTitle] = useLocalStorage(`agreement-${id}-title`, title);
+
 	return (
 		<div className="flex flex-row items-center justify-between">
-			<h1 className="font-display font-medium text-2xl truncate">{title}</h1>
+			<EditText showEditButton defaultValue={localTitle} className="font-display font-medium text-2xl truncate" editButtonProps={{style: {background: 'white'}}} onSave={(e) => setLocalTitle(e.value)} />
 			<Badge textColor="gray-800" bgColor="gray-100" className="font-semibold" label={status} />
 		</div>
 	);
@@ -45,7 +61,7 @@ const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDis
 
 	return (
 		<div className="flex flex-col gap-2 text-gray-700">
-			<AgreementHeader title={title} status={status} />
+			<AgreementHeader title={title} status={status} id={id} />
 			<div className="flex flex-col md:flex-row gap-1">
 				<ActionBadge
 					label="ID"
@@ -71,7 +87,7 @@ export const AgreementDetails = () => {
 			<AgreementDataDisplay
 				id={id}
 				title={title || "Agreement"}
-				status={status || "Unknonw"}
+				status={status || "Unknown"}
 				termsHash={termsHash || constants.HashZero}
 			/>
 			{/* Participants table */}
