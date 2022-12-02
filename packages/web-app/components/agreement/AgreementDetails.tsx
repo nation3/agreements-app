@@ -4,16 +4,16 @@ import { PositionMap } from "./context/types";
 import { PositionStatusBadge } from "../../components";
 import { Table, Badge, ActionBadge, utils as n3utils } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
-import { EditText, EditTextarea } from 'react-edit-text';
+import { EditText } from 'react-edit-text';
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import 'react-edit-text/dist/index.css';
 
-const useLocalStorage = (key, defaultValue) => {
+const useLocalStorage = (key: string, defaultValue: string) => {
 	const [value, setValue] = useState(defaultValue);
 	useEffect(() => {
 		const localValue = localStorage.getItem(key);
 		localValue && setValue(localValue);
-	})
+	}, [])
 	useEffect(() => {
 		localStorage.setItem(key, value);
 	}, [value]);
