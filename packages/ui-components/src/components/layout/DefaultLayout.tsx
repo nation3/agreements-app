@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { ButtonBase, NavButton, NavButtonProps } from "../buttons";
 import { PencilSquareIcon } from "@heroicons/react/20/solid";
 import { Bars3Icon } from "@heroicons/react/24/solid";
+import { Badge } from 'flowbite-react'
 // import { constants } from 'ethers'
 
 enum ScreenType {
@@ -67,6 +68,9 @@ export const SideNav = ({
 						<div className="w-full flex items-center justify-start gap-2 py-8">
 							<img className="w-16" src="/logo.svg" />
 							<h3>{title}</h3>
+							<Badge color="info">
+								BETA
+							</Badge>
 						</div>
 					</div>
 					{/* Nav */}
