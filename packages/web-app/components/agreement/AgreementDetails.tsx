@@ -5,6 +5,7 @@ import { PositionStatusBadge } from "../../components";
 import { Table, Badge, ActionBadge, utils as n3utils } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
 import { EditText, EditTextarea } from 'react-edit-text';
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import 'react-edit-text/dist/index.css';
 
 const useLocalStorage = (key, defaultValue) => {
@@ -31,7 +32,7 @@ const AgreementHeader = ({ title, status, id }: { title: string; status: string,
 
 	return (
 		<div className="flex flex-row items-center justify-between">
-			<EditText showEditButton defaultValue={localTitle} className="font-display font-medium text-2xl truncate" editButtonProps={{style: {background: 'white'}}} onSave={(e) => setLocalTitle(e.value)} />
+			<EditText showEditButton defaultValue={localTitle} className="font-display font-medium text-2xl truncate" onSave={(e) => setLocalTitle(e.value)} editButtonContent={<PencilSquareIcon width={16} />} />
 			<Badge textColor="gray-800" bgColor="gray-100" className="font-semibold" label={status} />
 		</div>
 	);
