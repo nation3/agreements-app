@@ -29,7 +29,22 @@ const useAgreementList = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [signer]);
 
-	return { data: data?.agreementPositions, error };
+	const [agreements, setAgreements] = useState(data?.agreementPositions)
+
+	useEffect(() => {
+		data?.agreementPositions &&
+			setAgreements(data?.agreementPositions.map((position) => {
+				return {
+					...position,
+					agreement: {
+						...position.agreement,
+						title: localStorage.getItem(`agreement-${position.agreement.id}-title`)
+					}
+				}
+			}))
+	}, [data?.agreementPositions])
+
+	return { data: agreements, error };
 };
 
 export const AgreementList = () => {
@@ -40,8 +55,11 @@ export const AgreementList = () => {
 		<>
 			{positions && positions.length > 0 ? (
 				<Table
-					columns={["Id", "Status"]}
+					columns={["Title", "ID", "Status"]}
 					data={positions.map(({ agreement }) => [
+						<p>
+							{agreement.title}
+						</p>,
 						<a key={agreement.id} onClick={() => router.push(`/agreements/${agreement.id}`)}>
 							{utils.shortenHash(agreement.id)}
 						</a>,

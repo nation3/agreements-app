@@ -8,31 +8,18 @@ import { EditText } from 'react-edit-text';
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import 'react-edit-text/dist/index.css';
 
-const useLocalStorage = (key: string, defaultValue: string) => {
-	const [value, setValue] = useState(defaultValue);
-	useEffect(() => {
-		const localValue = localStorage.getItem(key);
-		key && localValue && setValue(localValue);
-	}, [key])
-	useEffect(() => {
-		key && localStorage.setItem(key, value);
-	}, [key, value]);
-	return [value, setValue] as const;
-}
-
 interface AgreementDataDisplayProps {
 	id: string;
 	title: string;
 	status: string;
 	termsHash: string;
+	setTitle: Function;
 }
 
-const AgreementHeader = ({ title, status, id }: { title: string; status: string, id: string }) => {
-	const [localTitle, setLocalTitle] = useLocalStorage(`agreement-${id}-title`, title);
-
+const AgreementHeader = ({ title, status, id, setTitle }: { title: string; status: string, id: string, setTitle: Function }) => {
 	return (
 		<div className="flex flex-row items-center justify-between">
-			<EditText showEditButton defaultValue={localTitle} className="font-display font-medium text-2xl truncate" onSave={({ value }) => { setLocalTitle(value) }} editButtonContent={<PencilSquareIcon width={'16'} />} />
+			<EditText showEditButton defaultValue={title} className="font-display font-medium text-2xl truncate" onSave={({ value }) => { setTitle(value) }} editButtonContent={<PencilSquareIcon width={'16'} />} />
 			<Badge textColor="gray-800" bgColor="gray-100" className="font-semibold" label={status} />
 		</div>
 	);
@@ -51,7 +38,7 @@ const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) =
 	);
 };
 
-const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDisplayProps) => {
+const AgreementDataDisplay = ({ id, title, status, termsHash, setTitle }: AgreementDataDisplayProps) => {
 	const copyAgreementId = useCallback(() => {
 		if (id) navigator.clipboard.writeText(id);
 	}, [id]);
@@ -62,7 +49,7 @@ const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDis
 
 	return (
 		<div className="flex flex-col gap-2 text-gray-700">
-			<AgreementHeader title={title} status={status} id={id} />
+			<AgreementHeader title={title} status={status} id={id} setTitle={setTitle} />
 			<div className="flex flex-col md:flex-row gap-1">
 				<ActionBadge
 					label="ID"
@@ -80,7 +67,7 @@ const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDis
 };
 
 export const AgreementDetails = () => {
-	const { id, title, status, termsHash, positions } = useAgreementData();
+	const { id, title, status, termsHash, positions, setTitle } = useAgreementData();
 
 	return (
 		<>
@@ -90,6 +77,7 @@ export const AgreementDetails = () => {
 				title={title || "Agreement"}
 				status={status || "Unknown"}
 				termsHash={termsHash || constants.HashZero}
+				setTitle={setTitle}
 			/>
 			{/* Participants table */}
 			<PositionsTable positions={positions} />

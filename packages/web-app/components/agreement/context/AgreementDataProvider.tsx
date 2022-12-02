@@ -5,8 +5,22 @@ import { ResolverMap, PositionMap } from "./types";
 import { useAgreementRead } from "../../../hooks/useAgreement";
 import { fetchMetadata } from "../../../utils/metadata";
 
+const useLocalStorage = (key: string, defaultValue: string) => {
+	const [value, setStateValue] = useState(defaultValue);
+	useEffect(() => {
+		const localValue = localStorage.getItem(key);
+		key && localValue && setStateValue(localValue);
+	}, [key])
+	const setValue = (value: string) => {
+		if (!key) return
+		setStateValue(value)
+		localStorage.setItem(key, value)
+	}
+	return [value, setValue] as const;
+}
+
 export const AgreementDataProvider = ({ id, children }: { id: string; children: ReactNode }) => {
-	const [title, setTitle] = useState("Agreement");
+	const [title, setTitle] = useLocalStorage(`agreement-${id}-title`, "Agreement")
 	const [termsHash, setTermsHash] = useState<string>();
 	const [metadataURI, setMetadataURI] = useState<string>();
 	const [resolvers, setResolvers] = useState<ResolverMap>();
@@ -74,6 +88,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		termsHash,
 		resolvers,
 		positions,
+		setTitle,
 	};
 
 	return <AgreementDataContext.Provider value={provider}>{children}</AgreementDataContext.Provider>;
