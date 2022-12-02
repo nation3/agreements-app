@@ -15,9 +15,9 @@ const useLocalStorage = (key: string, defaultValue: string) => {
 		key && localValue && setValue(localValue);
 	}, [key])
 	useEffect(() => {
-		localStorage.setItem(key, value);
-	}, [value]);
-	return [value, setValue];
+		key && localStorage.setItem(key, value);
+	}, [key, value]);
+	return [value, setValue] as const;
 }
 
 interface AgreementDataDisplayProps {
@@ -27,12 +27,12 @@ interface AgreementDataDisplayProps {
 	termsHash: string;
 }
 
-const AgreementHeader = ({ title, status, id }: { title: string; status: string, id: number }) => {
+const AgreementHeader = ({ title, status, id }: { title: string; status: string, id: string }) => {
 	const [localTitle, setLocalTitle] = useLocalStorage(`agreement-${id}-title`, title);
 
 	return (
 		<div className="flex flex-row items-center justify-between">
-			<EditText showEditButton defaultValue={localTitle} className="font-display font-medium text-2xl truncate" onSave={(e) => setLocalTitle(e.value)} editButtonContent={<PencilSquareIcon width={16} />} />
+			<EditText showEditButton defaultValue={localTitle} className="font-display font-medium text-2xl truncate" onSave={({ value }) => { setLocalTitle(value) }} editButtonContent={<PencilSquareIcon width={'16'} />} />
 			<Badge textColor="gray-800" bgColor="gray-100" className="font-semibold" label={status} />
 		</div>
 	);
