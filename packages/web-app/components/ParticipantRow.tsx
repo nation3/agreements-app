@@ -32,8 +32,8 @@ export const ParticipantRow = ({
 	};
 
 	return (
-		<div className="flex gap-2">
-			<div className="basis-1/2">
+		<div className="flex grow gap-2">
+			<div className="basis-3/5">
 				<AddressInput
 					value={positions[index].account}
 					placeholder="vitalik.eth"
