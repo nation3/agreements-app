@@ -1,19 +1,10 @@
 import { ChangeEvent, FocusEvent } from "react";
 import { utils, BigNumber } from "ethers";
 import { AddressInput, TokenBalanceInput } from "@nation3/ui-components";
+import { purgeFloat } from "../utils";
 
 // TODO:
 // - Better way of updating array?
-
-const purgeFloat = (number: string, config?: { units?: number; strip?: boolean }) => {
-	const maxDecimals = config?.units ?? 18;
-	const purged = number
-		.replace(/[^0-9,.]/g, "")
-		.replace(/,/g, ".")
-		.replace(new RegExp(`^(\\d*(\\.\\d{0,${maxDecimals}})?)\\d*$`, "g"), "$1");
-
-	return config?.strip ? purged.replace(/\.$/g, "") : purged;
-};
 
 type Position = { account: string; balance: BigNumber };
 

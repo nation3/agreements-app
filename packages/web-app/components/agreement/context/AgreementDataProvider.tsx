@@ -3,7 +3,7 @@ import { ReactNode, useState, useEffect } from "react";
 import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataContext";
 import { ResolverMap, PositionMap } from "./types";
 import { useAgreementRead } from "../../../hooks/useAgreement";
-import { fetchMetadata } from "../../../utils/metadata";
+import { fetchAgreementMetadata } from "../../../utils/metadata";
 
 export const AgreementDataProvider = ({ id, children }: { id: string; children: ReactNode }) => {
 	const [title, setTitle] = useState("Agreement");
@@ -25,7 +25,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		}
 		if (agreementParams?.metadataURI && agreementParams.metadataURI != metadataURI) {
 			setMetadataURI(agreementParams.metadataURI);
-			fetchMetadata(agreementParams.metadataURI).then((metadata) => {
+			fetchAgreementMetadata(agreementParams.metadataURI).then((metadata) => {
 				if (metadata.title && metadata.title != title) setTitle(metadata.title);
 				if (metadata.resolvers)
 					setResolvers((prevResolvers) => ({ ...prevResolvers, ...metadata.resolvers }));

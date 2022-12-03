@@ -12,7 +12,12 @@ export type AgreementMetadata = {
 	resolvers?: ResolverMap;
 };
 
-export const parseMetadata = (data: { [key: string]: any }): AgreementMetadata => {
+export type ResolutionMetadata = {
+	settlement: { party: string; balance: string }[];
+	reasons?: string;
+};
+
+export const parseAgreementMetadata = (data: { [key: string]: any }): AgreementMetadata => {
 	return {
 		title: data.title ?? "Agreement",
 		termsHash: data.termsHash ?? undefined,
@@ -23,15 +28,25 @@ export const parseMetadata = (data: { [key: string]: any }): AgreementMetadata =
 	};
 };
 
-export const fetchMetadata = async (fileURI: string): Promise<AgreementMetadata> => {
+export const parseResolutionMetadata = (data: { [key: string]: any }): ResolutionMetadata => {
+	return {
+		settlement: data.settlement ?? [],
+		reasons: data.reasons ?? undefined,
+	};
+};
+
+export const fetchMetadata = async <T extends object>(
+	fileURI: string,
+	parser: (data: object) => T,
+): Promise<T> => {
 	const uri = fileURI.startsWith("ipfs://") ? IPFSUriToUrl(fileURI) : fileURI;
 
-	let data = parseMetadata({});
+	let data = parser({});
 
 	try {
 		const response = await fetch(uri);
 		const raw = await response.json();
-		data = parseMetadata(raw);
+		data = parser(raw);
 	} catch (error) {
 		console.debug(`Failed to fetch metadata: ${uri}`, error);
 	}
@@ -39,7 +54,15 @@ export const fetchMetadata = async (fileURI: string): Promise<AgreementMetadata>
 	return data;
 };
 
-export const generateMetadata = (
+export const fetchAgreementMetadata = async (fileURI: string): Promise<AgreementMetadata> => {
+	return fetchMetadata<AgreementMetadata>(fileURI, parseAgreementMetadata);
+};
+
+export const fetchResolutionMetadata = async (fileURI: string): Promise<ResolutionMetadata> => {
+	return fetchMetadata<ResolutionMetadata>(fileURI, parseResolutionMetadata);
+};
+
+export const generateAgreementMetadata = (
 	terms: string,
 	positions: { account: string; balance: BigNumber }[],
 	title?: string,
@@ -52,5 +75,13 @@ export const generateMetadata = (
 		termsHash: termsHash,
 		criteria: criteria,
 		resolvers: resolvers,
+	};
+};
+
+export const generateResolutionMetadata = (
+	settlement: { party: string; balance: BigNumber }[],
+): ResolutionMetadata => {
+	return {
+		settlement: settlement.map(({ party, balance }) => ({ party, balance: balance.toString() })),
 	};
 };
