@@ -4,7 +4,7 @@ import { constants, utils, BigNumber } from "ethers";
 
 import { useAgreementCreate } from "../../hooks/useAgreement";
 
-import { hexHash, generateMetadata } from "../../utils";
+import { hexHash, generateAgreementMetadata } from "../../utils";
 import { preparePutToIPFS } from "../../lib/ipfs";
 
 import { Button, InfoAlert, Table, ActionBadge, utils as n3utils } from "@nation3/ui-components";
@@ -21,7 +21,7 @@ export const AgreementCreationPreview = () => {
 	const termsHash = hexHash(terms);
 
 	const uploadMetadataToIPFS = async () => {
-		const metadata = generateMetadata(terms, positions);
+		const metadata = generateAgreementMetadata(terms, positions);
 
 		const { put } = await preparePutToIPFS(metadata);
 
@@ -37,7 +37,7 @@ export const AgreementCreationPreview = () => {
 	} = useAgreementCreate({ onSettledSuccess: uploadMetadataToIPFS });
 
 	const submit = async () => {
-		const metadata = generateMetadata(terms, positions);
+		const metadata = generateAgreementMetadata(terms, positions);
 
 		const { cid } = await preparePutToIPFS(metadata);
 		const metadataURI = `ipfs://${cid}`;
