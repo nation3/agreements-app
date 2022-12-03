@@ -16,6 +16,7 @@ export interface AgreementPositionsData {
 		agreement: {
 			id: string;
 			status: string;
+			title: string | undefined;
 		};
 	}[];
 }

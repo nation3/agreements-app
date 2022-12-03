@@ -33,12 +33,12 @@ const useAgreementList = () => {
 
 	useEffect(() => {
 		data?.agreementPositions &&
-			setAgreements(data?.agreementPositions.map((position) => {
+			setAgreements(data.agreementPositions.map((position) => {
 				return {
 					...position,
 					agreement: {
 						...position.agreement,
-						title: localStorage.getItem(`agreement-${position.agreement.id}-title`)
+						title: localStorage.getItem(`agreement-${position.agreement.id}-title`) || undefined
 					}
 				}
 			}))
@@ -57,7 +57,7 @@ export const AgreementList = () => {
 				<Table
 					columns={["Title", "ID", "Status"]}
 					data={positions.map(({ agreement }) => [
-						<p>
+						<p key={`${agreement.title}-${agreement.id}`} >
 							{agreement.title}
 						</p>,
 						<a key={agreement.id} onClick={() => router.push(`/agreements/${agreement.id}`)}>

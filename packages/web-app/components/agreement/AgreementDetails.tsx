@@ -13,10 +13,10 @@ interface AgreementDataDisplayProps {
 	title: string;
 	status: string;
 	termsHash: string;
-	setTitle: Function;
+	setTitle: (title: string) => void;
 }
 
-const AgreementHeader = ({ title, status, id, setTitle }: { title: string; status: string, id: string, setTitle: Function }) => {
+const AgreementHeader = ({ title, status, id, setTitle }: { title: string; status: string, id: string, setTitle: (title: string) => void }) => {
 	return (
 		<div className="flex flex-row items-center justify-between">
 			<EditText showEditButton defaultValue={title} className="font-display font-medium text-2xl truncate" onSave={({ value }) => { setTitle(value) }} editButtonContent={<PencilSquareIcon width={'16'} />} />

@@ -8,7 +8,7 @@ export type AgreementDataContextType = {
 	termsHash: string | undefined;
 	positions: PositionMap | undefined;
 	resolvers: ResolverMap | undefined;
-	setTitle: Function | undefined;
+	setTitle: (title: string) => void | undefined;
 };
 
 export const AgreementDataContext = createContext<AgreementDataContextType | null>(null);
