@@ -1,6 +1,6 @@
 import { Card, Button } from "@nation3/ui-components";
 import { useRouter } from "next/router";
-import { AgreementList, AgreementListProvider } from "../../components/list";
+import { AgreementList, AgreementListProvider } from "../../components/agreements-list";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../../lib/subgraph";
 
