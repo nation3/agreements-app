@@ -1,4 +1,4 @@
-import { Button, Table, TokenBalanceInput, utils as n3utils } from "@nation3/ui-components";
+import { Button, Table, TokenBalanceInput, AddressDisplay } from "@nation3/ui-components";
 import { useState, useMemo, ChangeEvent, FocusEvent } from "react";
 import { utils, BigNumber } from "ethers";
 
@@ -8,8 +8,10 @@ import { purgeFloat, generateResolutionMetadata, ResolutionMetadata } from "../.
 import { preparePutToIPFS } from "../../lib/ipfs";
 
 import { frameworkAddress } from "../../lib/constants";
+import { useProvider } from "wagmi";
 
 export const ResolutionForm = () => {
+	const provider = useProvider({ chainId: 1 });
 	const { dispute } = useDispute();
 	const [metadata, setMetadata] = useState<ResolutionMetadata>();
 	const [settlement, setSettlement] = useState<Position[]>(dispute.positions ?? []);
@@ -68,7 +70,7 @@ export const ResolutionForm = () => {
 				columns={["participant", "stake"]}
 				data={
 					settlement?.map(({ party, balance }, index) => [
-						n3utils.shortenHash(party),
+						<AddressDisplay key={index} ensProvider={provider} address={party} />,
 						<TokenBalanceInput
 							key={index}
 							defaultValue={utils.formatUnits(balance)}
