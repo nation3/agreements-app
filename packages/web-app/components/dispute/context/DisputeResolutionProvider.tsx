@@ -54,7 +54,7 @@ export const DisputeResolutionProvider = ({
 
 	useEffect(() => {
 		if (resolutionData?.metadataURI && resolutionData.metadataURI != metadataURI) {
-			setMetadataURI(metadataURI);
+			setMetadataURI(resolutionData.metadataURI);
 			fetchResolutionMetadata(resolutionData.metadataURI).then((metadata) => {
 				setSettlement(
 					metadata.settlement.map(({ party, balance }) => ({
@@ -64,7 +64,7 @@ export const DisputeResolutionProvider = ({
 				);
 			});
 		}
-	}, [resolutionData?.metadataURI]);
+	}, [resolutionData?.metadataURI, metadataURI]);
 
 	const dispute = {
 		id,
@@ -83,7 +83,7 @@ export const DisputeResolutionProvider = ({
 				settlement: settlement,
 			};
 		}
-	}, [resolutionData, settlement]);
+	}, [resolutionId, resolutionData, settlement]);
 
 	const provider: DisputeResolutionContextType = {
 		dispute,
