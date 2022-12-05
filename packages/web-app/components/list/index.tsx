@@ -2,56 +2,37 @@
 export { AgreementListProvider } from "./context/AgreementListProvider";
 
 import { Table, utils, Badge } from "@nation3/ui-components";
+import { ethers, BigNumber } from "ethers";
+
 import { ScaleIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import { useQuery } from "@apollo/client";
-import { useSigner } from "wagmi";
-import { useEffect, useState } from "react";
-import { AgreementPositionsData, agreementsPositionsQuery } from "../../lib/subgraph";
-
-const useAgreementList = () => {
-	const { data: signer } = useSigner();
-	const [account, setAccount] = useState<string>("");
-
-	const { data, error } = useQuery<AgreementPositionsData>(agreementsPositionsQuery, {
-		variables: { account: account },
-		skip: account ? false : true,
-	});
-
-	useEffect(() => {
-		if (signer) {
-			signer.getAddress().then((address) => {
-				if (address != account) setAccount(address);
-			});
-		} else {
-			if (account) setAccount("");
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [signer]);
-
-	return { data: data?.agreementPositions, error };
-};
+import { useAgreementList } from "./context/AgreementListContext";
 
 export const AgreementList = () => {
 	const router = useRouter();
-	const { data: positions } = useAgreementList();
+	const { agreements } = useAgreementList();
 
 	return (
 		<>
-			{positions && positions.length > 0 ? (
+			{agreements && agreements.length > 0 ? (
 				<Table
-					columns={["Id", "Created on", "Status"]}
-					data={positions.map(({ agreement }) => [
-						<span key={agreement.id}>{utils.shortenHash(agreement.id)}</span>,
-						<span key={`${agreement.id}-date`}>
-							{new Date(Number(agreement.createdAt) * 1000).toLocaleDateString()}
+					className={"max-h-full"}
+					columns={["Id", "Created on", "Your stake", "Status"]}
+					data={agreements.map(({ id, createdAt, userBalance, status }) => [
+						<span key={id}>{utils.shortenHash(id)}</span>,
+						<span key={`${id}-date`}>
+							{new Date(Number(createdAt) * 1000).toLocaleDateString()}
 						</span>,
-						<Badge key={`${agreement.id}-status`} label={agreement.status} bgColor="slate-300" />,
+						<b key={`${id}-position`}>
+							{" "}
+							{ethers.utils.formatUnits(BigNumber.from(userBalance))} $NATION{" "}
+						</b>,
+						<Badge key={`${id}-status`} label={status} bgColor="slate-300" />,
 					])}
-					clickHandlers={positions.map(
-						({ agreement }) =>
+					clickHandlers={agreements.map(
+						({ id }) =>
 							() =>
-								router.push(`/agreements/${agreement.id}`),
+								router.push(`/agreements/${id}`),
 					)}
 				/>
 			) : (
