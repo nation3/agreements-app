@@ -1,13 +1,22 @@
-import { Table, ActionBadge, Badge, utils as n3utils } from "@nation3/ui-components";
+import {
+	Table,
+	ActionBadge,
+	Badge,
+	AddressDisplay,
+	utils as n3utils,
+} from "@nation3/ui-components";
 import { utils } from "ethers";
 import { Position, useDispute } from "./context/DisputeResolutionContext";
+import { useProvider } from "wagmi";
 
 const SettlementTable = ({ positions }: { positions: Position[] }) => {
+	const provider = useProvider({ chainId: 1 });
+
 	return (
 		<Table
 			columns={["participant", "stake"]}
 			data={positions.map(({ party, balance }, index) => [
-				n3utils.shortenHash(party),
+				<AddressDisplay key={index} ensProvider={provider} address={party} />,
 				<b key={index}> {utils.formatUnits(balance)} $NATION</b>,
 			])}
 		/>

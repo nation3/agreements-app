@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { ArrowLongRightIcon, PlusIcon, MinusIcon } from "@heroicons/react/20/solid";
 import { Button, IconButton, DropInput, InfoAlert } from "@nation3/ui-components";
 import { utils } from "ethers";
+import { useProvider } from "wagmi";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { ParticipantRow } from "../ParticipantRow";
@@ -10,6 +11,7 @@ import { CreateView } from "./context/types";
 import { validateCriteria } from "../../utils/criteria";
 
 export const AgreementCreationForm = () => {
+	const provider = useProvider({ chainId: 1 });
 	const { terms, positions, changeView, setTerms, setPositions } = useAgreementCreation();
 
 	const isValidAgreement = useMemo(() => {
@@ -59,7 +61,12 @@ export const AgreementCreationForm = () => {
 				<div className="flex flex-col gap-2">
 					{positions.map((_, index) => (
 						<div key={index} className="flex items-center">
-							<ParticipantRow positions={positions} index={index} onChange={setPositions} />
+							<ParticipantRow
+								ensProvider={provider}
+								positions={positions}
+								index={index}
+								onChange={setPositions}
+							/>
 							<div className="px-2">
 								<IconButton
 									icon={<MinusIcon className="w-6 h-6" />}

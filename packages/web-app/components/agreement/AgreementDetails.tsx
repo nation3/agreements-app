@@ -2,8 +2,15 @@ import React, { useCallback } from "react";
 import { useAgreementData } from "./context/AgreementDataContext";
 import { PositionMap } from "./context/types";
 import { PositionStatusBadge } from "../../components";
-import { Table, Badge, ActionBadge, utils as n3utils } from "@nation3/ui-components";
+import {
+	Table,
+	Badge,
+	ActionBadge,
+	AddressDisplay,
+	utils as n3utils,
+} from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
+import { useProvider } from "wagmi";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -22,11 +29,13 @@ const AgreementHeader = ({ title, status }: { title: string; status: string }) =
 };
 
 const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) => {
+	const provider = useProvider({ chainId: 1 });
+
 	return (
 		<Table
 			columns={["participant", "stake", "status"]}
 			data={Object.entries(positions ?? {}).map(([account, { balance, status }], index) => [
-				n3utils.shortenHash(account),
+				<AddressDisplay key={index} ensProvider={provider} address={account} />,
 				<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
 				<PositionStatusBadge key={index} status={status} />,
 			])}

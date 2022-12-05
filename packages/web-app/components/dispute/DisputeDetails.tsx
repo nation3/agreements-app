@@ -1,13 +1,23 @@
 import React, { useCallback } from "react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
-import { Table, Alert, Badge, ActionBadge, Button, utils as n3utils } from "@nation3/ui-components";
+import {
+	Table,
+	Alert,
+	Badge,
+	ActionBadge,
+	Button,
+	AddressDisplay,
+	utils as n3utils,
+} from "@nation3/ui-components";
 import { BigNumber, utils, constants } from "ethers";
 import { ResolutionDetails } from "../../components/dispute/ResolutionDetails";
 import { useDispute } from "./context/DisputeResolutionContext";
 import { frameworkAddress } from "../../lib/constants";
 import { useResolutionExecute } from "../../hooks/useArbitrator";
+import { useProvider } from "wagmi";
 
 export const DisputeDetails = () => {
+	const provider = useProvider({ chainId: 1 });
 	const { dispute, resolution } = useDispute();
 	const { execute } = useResolutionExecute();
 
@@ -43,7 +53,7 @@ export const DisputeDetails = () => {
 				columns={["participant", "stake"]}
 				data={
 					dispute.positions?.map(({ party, balance }, index) => [
-						n3utils.shortenHash(party),
+						<AddressDisplay key={index} ensProvider={provider} address={party} />,
 						<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
 					]) || []
 				}

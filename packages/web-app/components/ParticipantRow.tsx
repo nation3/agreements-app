@@ -1,6 +1,7 @@
 import { ChangeEvent, FocusEvent } from "react";
-import { utils, BigNumber } from "ethers";
+import { utils, BigNumber, providers } from "ethers";
 import { AddressInput, TokenBalanceInput } from "@nation3/ui-components";
+
 import { purgeFloat } from "../utils";
 
 // TODO:
@@ -12,10 +13,12 @@ export const ParticipantRow = ({
 	positions,
 	index,
 	onChange,
+	ensProvider,
 }: {
 	positions: Position[];
 	index: number;
-	onChange?: (poistions: Position[]) => void;
+	onChange?: (positions: Position[]) => void;
+	ensProvider?: providers.BaseProvider;
 }) => {
 	const updatePositionAccount = (account: string) => {
 		// Deep copy of the array
@@ -35,9 +38,10 @@ export const ParticipantRow = ({
 		<div className="flex grow gap-2">
 			<div className="basis-3/5">
 				<AddressInput
-					value={positions[index].account}
+					defaultValue={positions[index].account}
 					placeholder="vitalik.eth"
-					onChange={(e: ChangeEvent<HTMLInputElement>) => {
+					ensProvider={ensProvider}
+					onBlur={(e: ChangeEvent<HTMLInputElement>) => {
 						updatePositionAccount(e.target.value);
 					}}
 				/>
