@@ -21,6 +21,16 @@ export interface AgreementPositionsData {
 	}[];
 }
 
+export interface DisputesData {
+	disputes: {
+		id: string;
+		createdAt: string;
+		resolution: {
+			status: string;
+		} | null;
+	}[];
+}
+
 export const agreementsPositionsQuery = gql`
 	query GetUserAgreements($account: Bytes!) {
 		agreementPositions(where: { party: $account }) {
@@ -29,6 +39,18 @@ export const agreementsPositionsQuery = gql`
 			agreement {
 				id
 				createdAt
+				status
+			}
+		}
+	}
+`;
+
+export const disputesQuery = gql`
+	query GetOpenDisputes {
+		disputes {
+			id
+			createdAt
+			resolution {
 				status
 			}
 		}
