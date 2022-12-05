@@ -40,12 +40,13 @@ export const AgreementList = () => {
 		<>
 			{positions && positions.length > 0 ? (
 				<Table
-					columns={["Id", "Status"]}
+					columns={["Id", "Created on", "Status"]}
 					data={positions.map(({ agreement }) => [
-						<a key={agreement.id} onClick={() => router.push(`/agreements/${agreement.id}`)}>
-							{utils.shortenHash(agreement.id)}
-						</a>,
-						<Badge key={agreement.status} label={agreement.status} bgColor="slate-300" />,
+						<span key={agreement.id}>{utils.shortenHash(agreement.id)}</span>,
+						<span key={`${agreement.id}-date`}>
+							{new Date(Number(agreement.createdAt) * 1000).toLocaleDateString()}
+						</span>,
+						<Badge key={`${agreement.id}-status`} label={agreement.status} bgColor="slate-300" />,
 					])}
 					clickHandlers={positions.map(
 						({ agreement }) =>

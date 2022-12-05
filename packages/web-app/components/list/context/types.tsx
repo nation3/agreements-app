@@ -3,6 +3,7 @@ export interface Agreement {
 	termsHash: string;
 	criteria: string;
 	status: string;
+	createdAt: number;
 }
 
 export type AgreementList = Agreement[];
