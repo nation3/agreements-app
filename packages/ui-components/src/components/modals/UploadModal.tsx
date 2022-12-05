@@ -23,7 +23,12 @@ export const UploadModal = ({ title, onSubmit, onClose }: UploadModalProps) => {
 						},
 						maxFiles: 1,
 						onDrop: (acceptedFiles: File[]) => {
-							acceptedFiles[0].text().then((text: string) => setFile(JSON.parse(text))).catch((error) => { console.log(error)});
+							acceptedFiles[0]
+								.text()
+								.then((text: string) => setFile(JSON.parse(text)))
+								.catch((error) => {
+									console.log(error);
+								});
 						},
 					}}
 				/>
