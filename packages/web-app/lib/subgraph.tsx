@@ -15,6 +15,7 @@ export interface AgreementPositionsData {
 		balance: string;
 		agreement: {
 			id: string;
+			createdAt: string;
 			status: string;
 		};
 	}[];
@@ -27,6 +28,7 @@ export const agreementsPositionsQuery = gql`
 			balance
 			agreement {
 				id
+				createdAt
 				status
 			}
 		}

@@ -1,7 +1,7 @@
 export interface Agreement {
 	id: string;
-	termsHash: string;
-	criteria: string;
+	createdAt: string;
+	userBalance: string;
 	status: string;
 }
 

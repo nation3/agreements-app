@@ -11,7 +11,7 @@ export const Table = ({ columns, data, clickHandlers, className }: TableProps) =
 	return (
 		<div className={`relative overflow-x-auto ${className}`}>
 			<table className="w-full text-left">
-				<thead className="text-xs text-gray-500 uppercase">
+				<thead className="sticky top-0 text-xs text-gray-500 uppercase">
 					<tr>
 						{columns.map((column, index) => (
 							<th
@@ -26,7 +26,7 @@ export const Table = ({ columns, data, clickHandlers, className }: TableProps) =
 						))}
 					</tr>
 				</thead>
-				<tbody className="text-black">
+				<tbody className="text-black overflow-y-auto">
 					{data.map((row, index) => (
 						<tr
 							key={index}
