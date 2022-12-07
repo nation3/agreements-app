@@ -1,19 +1,11 @@
 import { ChangeEvent, FocusEvent } from "react";
-import { utils, BigNumber } from "ethers";
+import { utils, BigNumber, providers } from "ethers";
 import { AddressInput, TokenBalanceInput } from "@nation3/ui-components";
+
+import { purgeFloat } from "../utils";
 
 // TODO:
 // - Better way of updating array?
-
-const purgeFloat = (number: string, config?: { units?: number; strip?: boolean }) => {
-	const maxDecimals = config?.units ?? 18;
-	const purged = number
-		.replace(/[^0-9,.]/g, "")
-		.replace(/,/g, ".")
-		.replace(new RegExp(`^(\\d*(\\.\\d{0,${maxDecimals}})?)\\d*$`, "g"), "$1");
-
-	return config?.strip ? purged.replace(/\.$/g, "") : purged;
-};
 
 type Position = { account: string; balance: BigNumber };
 
@@ -21,10 +13,12 @@ export const ParticipantRow = ({
 	positions,
 	index,
 	onChange,
+	ensProvider,
 }: {
 	positions: Position[];
 	index: number;
-	onChange?: (poistions: Position[]) => void;
+	onChange?: (positions: Position[]) => void;
+	ensProvider?: providers.BaseProvider;
 }) => {
 	const updatePositionAccount = (account: string) => {
 		// Deep copy of the array
@@ -41,12 +35,13 @@ export const ParticipantRow = ({
 	};
 
 	return (
-		<div className="flex gap-2">
-			<div className="basis-1/2">
+		<div className="flex grow gap-2">
+			<div className="basis-3/5">
 				<AddressInput
-					value={positions[index].account}
+					defaultValue={positions[index].account}
 					placeholder="vitalik.eth"
-					onChange={(e: ChangeEvent<HTMLInputElement>) => {
+					ensProvider={ensProvider}
+					onBlur={(e: ChangeEvent<HTMLInputElement>) => {
 						updatePositionAccount(e.target.value);
 					}}
 				/>

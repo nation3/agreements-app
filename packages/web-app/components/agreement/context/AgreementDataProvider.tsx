@@ -3,24 +3,25 @@ import { ReactNode, useState, useEffect } from "react";
 import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataContext";
 import { ResolverMap, PositionMap } from "./types";
 import { useAgreementRead } from "../../../hooks/useAgreement";
-import { fetchMetadata } from "../../../utils/metadata";
+import { fetchAgreementMetadata } from "../../../utils/metadata";
 
-const useLocalStorage = (key: string, defaultValue: string) => {
-	const [value, setStateValue] = useState(defaultValue);
+const useLocalStorage = (key: string) => {
+	const [value, setStateValue] = useState("");
 	useEffect(() => {
 		const localValue = localStorage.getItem(key);
 		key && localValue && setStateValue(localValue);
-	}, [key])
+	}, [key]);
 	const setValue = (value: string) => {
-		if (!key) return
-		setStateValue(value)
-		localStorage.setItem(key, value)
-	}
+		if (!key || !value) return;
+		setStateValue(value);
+		localStorage.setItem(key, value);
+	};
 	return [value, setValue] as const;
-}
+};
 
 export const AgreementDataProvider = ({ id, children }: { id: string; children: ReactNode }) => {
-	const [title, setTitle] = useLocalStorage(`agreement-${id}-title`, "Agreement")
+	const [localTitle, setLocalTitle] = useLocalStorage(`agreement-${id}-title`);
+	const [title, setTitle] = useState(localTitle);
 	const [termsHash, setTermsHash] = useState<string>();
 	const [metadataURI, setMetadataURI] = useState<string>();
 	const [resolvers, setResolvers] = useState<ResolverMap>();
@@ -39,7 +40,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		}
 		if (agreementParams?.metadataURI && agreementParams.metadataURI != metadataURI) {
 			setMetadataURI(agreementParams.metadataURI);
-			fetchMetadata(agreementParams.metadataURI).then((metadata) => {
+			fetchAgreementMetadata(agreementParams.metadataURI).then((metadata) => {
 				if (metadata.title && metadata.title != title) setTitle(metadata.title);
 				if (metadata.resolvers)
 					setResolvers((prevResolvers) => ({ ...prevResolvers, ...metadata.resolvers }));
@@ -47,6 +48,10 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [agreementParams]);
+
+	useEffect(() => {
+		localTitle && localTitle !== title && setTitle(localTitle);
+	}, [localTitle, title]);
 
 	/* Update positions when fetched agreement positions or new resolvers */
 	useEffect(() => {
@@ -88,7 +93,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		termsHash,
 		resolvers,
 		positions,
-		setTitle,
+		setTitle: setLocalTitle,
 	};
 
 	return <AgreementDataContext.Provider value={provider}>{children}</AgreementDataContext.Provider>;

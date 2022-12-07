@@ -3,7 +3,6 @@ import { AgreementList } from "./types";
 
 export type AgreementListContextType = {
 	agreements: AgreementList;
-	setAgreements: (agreements: AgreementList) => void;
 };
 
 export const AgreementListContext = createContext<AgreementListContextType | null>(null);

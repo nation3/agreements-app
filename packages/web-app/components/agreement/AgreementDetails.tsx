@@ -2,11 +2,18 @@ import React, { useCallback, useState, useEffect } from "react";
 import { useAgreementData } from "./context/AgreementDataContext";
 import { PositionMap } from "./context/types";
 import { PositionStatusBadge } from "../../components";
-import { Table, Badge, ActionBadge, utils as n3utils } from "@nation3/ui-components";
+import {
+	Table,
+	Badge,
+	ActionBadge,
+	AddressDisplay,
+	utils as n3utils,
+} from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
-import { EditText } from 'react-edit-text';
+import { EditText } from "react-edit-text";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import 'react-edit-text/dist/index.css';
+import "react-edit-text/dist/index.css";
+import { useProvider } from "wagmi";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -16,21 +23,41 @@ interface AgreementDataDisplayProps {
 	setTitle: (title: string) => void;
 }
 
-const AgreementHeader = ({ title, status, id, setTitle }: { title: string; status: string, id: string, setTitle: (title: string) => void }) => {
+const AgreementHeader = ({
+	title,
+	status,
+	id,
+	setTitle,
+}: {
+	title: string;
+	status: string;
+	id: string;
+	setTitle: (title: string) => void;
+}) => {
 	return (
 		<div className="flex flex-row items-center justify-between">
-			<EditText showEditButton defaultValue={title} className="font-display font-medium text-2xl truncate" onSave={({ value }) => { setTitle(value) }} editButtonContent={<PencilSquareIcon width={'16'} />} />
+			<EditText
+				showEditButton
+				defaultValue={title}
+				className="font-display font-medium text-2xl truncate"
+				onSave={({ value }) => {
+					setTitle(value);
+				}}
+				editButtonContent={<PencilSquareIcon width={"16"} />}
+			/>
 			<Badge textColor="gray-800" bgColor="gray-100" className="font-semibold" label={status} />
 		</div>
 	);
 };
 
 const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) => {
+	const provider = useProvider({ chainId: 1 });
+
 	return (
 		<Table
 			columns={["participant", "stake", "status"]}
 			data={Object.entries(positions ?? {}).map(([account, { balance, status }], index) => [
-				n3utils.shortenHash(account),
+				<AddressDisplay key={index} ensProvider={provider} address={account} />,
 				<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
 				<PositionStatusBadge key={index} status={status} />,
 			])}
@@ -38,7 +65,13 @@ const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) =
 	);
 };
 
-const AgreementDataDisplay = ({ id, title, status, termsHash, setTitle }: AgreementDataDisplayProps) => {
+const AgreementDataDisplay = ({
+	id,
+	title,
+	status,
+	termsHash,
+	setTitle,
+}: AgreementDataDisplayProps) => {
 	const copyAgreementId = useCallback(() => {
 		if (id) navigator.clipboard.writeText(id);
 	}, [id]);

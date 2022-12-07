@@ -1,6 +1,8 @@
 import { useMemo } from "react";
-import { ArrowLongRightIcon } from "@heroicons/react/20/solid";
-import { Button, DropInput, InfoAlert } from "@nation3/ui-components";
+import { ArrowLongRightIcon, PlusIcon, MinusIcon } from "@heroicons/react/20/solid";
+import { Button, IconButton, DropInput, InfoAlert } from "@nation3/ui-components";
+import { utils } from "ethers";
+import { useProvider } from "wagmi";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { ParticipantRow } from "../ParticipantRow";
@@ -9,6 +11,7 @@ import { CreateView } from "./context/types";
 import { validateCriteria } from "../../utils/criteria";
 
 export const AgreementCreationForm = () => {
+	const provider = useProvider({ chainId: 1 });
 	const { terms, positions, changeView, setTerms, setPositions } = useAgreementCreation();
 
 	const isValidAgreement = useMemo(() => {
@@ -56,8 +59,34 @@ export const AgreementCreationForm = () => {
 					</p>
 				</div>
 				<div className="flex flex-col gap-2">
-					<ParticipantRow positions={positions} index={0} onChange={setPositions} />
-					<ParticipantRow positions={positions} index={1} onChange={setPositions} />
+					{positions.map((_, index) => (
+						<div key={index} className="flex items-center">
+							<ParticipantRow
+								ensProvider={provider}
+								positions={positions}
+								index={index}
+								onChange={setPositions}
+							/>
+							<div className="px-2">
+								<IconButton
+									icon={<MinusIcon className="w-6 h-6" />}
+									rounded={true}
+									bgColor="red"
+									disabled={positions.length <= 2}
+									onClick={() => setPositions(positions.filter((_, i) => i !== index))}
+								/>
+							</div>
+						</div>
+					))}
+					<div className="flex justify-center">
+						<IconButton
+							icon={<PlusIcon className="w-6 h-6" />}
+							rounded={true}
+							onClick={() =>
+								setPositions([...positions, { account: "", balance: utils.parseUnits("0") }])
+							}
+						/>
+					</div>
 				</div>
 			</div>
 			<div className="flex flex-col gap-2">

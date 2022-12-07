@@ -15,7 +15,7 @@ export const providers = () => {
 };
 
 export const chainsToUse = () => {
-	return [chain.goerli];
+	return [chain.goerli, chain.mainnet];
 };
 
 export const { chains, provider, webSocketProvider } = configureChains(chainsToUse(), providers());

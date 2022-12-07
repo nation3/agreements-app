@@ -4,11 +4,19 @@ import { constants, utils, BigNumber } from "ethers";
 
 import { useAgreementCreate } from "../../hooks/useAgreement";
 
-import { hexHash, generateMetadata } from "../../utils";
+import { hexHash, generateAgreementMetadata } from "../../utils";
 import { preparePutToIPFS } from "../../lib/ipfs";
 
-import { Button, InfoAlert, Table, ActionBadge, utils as n3utils } from "@nation3/ui-components";
+import {
+	Button,
+	InfoAlert,
+	Table,
+	ActionBadge,
+	AddressDisplay,
+	utils as n3utils,
+} from "@nation3/ui-components";
 import { PositionStatusBadge } from "../PositionStatusBadge";
+import { useProvider } from "wagmi";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { CreateView } from "./context/types";
@@ -17,11 +25,12 @@ import { useEffect, useCallback } from "react";
 
 export const AgreementCreationPreview = () => {
 	const router = useRouter();
+	const provider = useProvider({ chainId: 1 });
 	const { terms, positions, changeView } = useAgreementCreation();
 	const termsHash = hexHash(terms);
 
 	const uploadMetadataToIPFS = async () => {
-		const metadata = generateMetadata(terms, positions);
+		const metadata = generateAgreementMetadata(terms, positions);
 
 		const { put } = await preparePutToIPFS(metadata);
 
@@ -37,7 +46,7 @@ export const AgreementCreationPreview = () => {
 	} = useAgreementCreate({ onSettledSuccess: uploadMetadataToIPFS });
 
 	const submit = async () => {
-		const metadata = generateMetadata(terms, positions);
+		const metadata = generateAgreementMetadata(terms, positions);
 
 		const { cid } = await preparePutToIPFS(metadata);
 		const metadataURI = `ipfs://${cid}`;
@@ -72,7 +81,7 @@ export const AgreementCreationPreview = () => {
 			<Table
 				columns={["participant", "stake", "status"]}
 				data={positions.map(({ account, balance }, index) => [
-					n3utils.shortenHash(account),
+					<AddressDisplay key={index} ensProvider={provider} address={account} />,
 					<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
 					<PositionStatusBadge key={index} status={0} />,
 				])}

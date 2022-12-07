@@ -6,6 +6,14 @@ import { BigNumber } from "ethers";
 
 const arbitratorAbi = arbitratorInterface.abi;
 
+type ResolutionData = { status: string; mark: string; metadataURI: string; unlockBlock: number };
+
+type ResolutionInput = {
+	framework: string;
+	id: string;
+	settlement: { party: string; balance: BigNumber }[];
+};
+
 export const useResolution = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
 	const { data: rawResolution, ...args } = useContractRead({
 		addressOrName: arbitratorAddress,
@@ -21,9 +29,9 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 	const statusMessage = (resolutionStatus: number) => {
 		switch (resolutionStatus) {
 			case 0:
-				return "Default";
-			case 1:
 				return "Pending";
+			case 1:
+				return "Submitted";
 			case 2:
 				return "Endorsed";
 			case 3:
@@ -35,9 +43,7 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 		}
 	};
 
-	const resolution:
-		| { status: string; mark: string; metadataURI: string; unlockBlock: number }
-		| undefined = useMemo(() => {
+	const resolution: ResolutionData | undefined = useMemo(() => {
 		if (rawResolution) {
 			return {
 				status: statusMessage(parseInt(rawResolution[0])),
@@ -51,15 +57,19 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 	return { resolution, ...args };
 };
 
-export const useResolutionSubmit = () => {
+export const useResolutionSubmit = ({ onSettledSuccess }: { onSettledSuccess?: () => void }) => {
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
-		// addressOrName: arbitratorAddress,
-		addressOrName: "0xA723Fc96d9180637B21048168D0344CC677da64c",
+		addressOrName: arbitratorAddress,
 		contractInterface: arbitratorAbi,
 		functionName: "submitResolution",
-		onError(error) {
-			console.log(error);
+		onSettled(data, error) {
+			if (onSettledSuccess && data) {
+				onSettledSuccess();
+			}
+			if (error) {
+				console.log(error);
+			}
 		},
 	});
 
@@ -70,16 +80,11 @@ export const useResolutionSubmit = () => {
 	const submit = ({
 		framework,
 		id,
-		metadata,
+		metadataURI,
 		settlement,
-	}: {
-		framework: string;
-		id: string;
-		metadata: string;
-		settlement: { party: string; balance: BigNumber }[];
-	}) => {
+	}: ResolutionInput & { metadataURI: string }) => {
 		write?.({
-			recklesslySetUnpreparedArgs: [framework, id, metadata, settlement],
+			recklesslySetUnpreparedArgs: [framework, id, metadataURI, settlement],
 		});
 	};
 
@@ -89,8 +94,7 @@ export const useResolutionSubmit = () => {
 export const useResolutionExecute = () => {
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
-		// addressOrName: arbitratorAddress,
-		addressOrName: "0xA723Fc96d9180637B21048168D0344CC677da64c",
+		addressOrName: arbitratorAddress,
 		contractInterface: arbitratorAbi,
 		functionName: "executeResolution",
 		onError(error) {
@@ -102,19 +106,35 @@ export const useResolutionExecute = () => {
 		hash: data?.hash,
 	});
 
-	const execute = ({
-		framework,
-		id,
-		settlement,
-	}: {
-		framework: string;
-		id: string;
-		settlement: { party: string; balance: BigNumber }[];
-	}) => {
+	const execute = ({ framework, id, settlement }: ResolutionInput) => {
 		write?.({
 			recklesslySetUnpreparedArgs: [framework, id, settlement],
 		});
 	};
 
 	return { execute, data, isProcessing, ...args };
+};
+
+export const useResolutionAppeal = () => {
+	const { write, data, ...args } = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: arbitratorAddress,
+		contractInterface: arbitratorAbi,
+		functionName: "appealResolution",
+		onError(error) {
+			console.log(error);
+		},
+	});
+
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
+
+	const appeal = ({ id, settlement }: Pick<ResolutionInput, "id" | "settlement">) => {
+		write?.({
+			recklesslySetUnpreparedArgs: [id, settlement],
+		});
+	};
+
+	return { appeal, data, isProcessing, ...args };
 };

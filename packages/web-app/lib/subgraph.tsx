@@ -15,9 +15,20 @@ export interface AgreementPositionsData {
 		balance: string;
 		agreement: {
 			id: string;
+			createdAt: string;
 			status: string;
 			title: string | undefined;
 		};
+	}[];
+}
+
+export interface DisputesData {
+	disputes: {
+		id: string;
+		createdAt: string;
+		resolution: {
+			status: string;
+		} | null;
 	}[];
 }
 
@@ -28,6 +39,19 @@ export const agreementsPositionsQuery = gql`
 			balance
 			agreement {
 				id
+				createdAt
+				status
+			}
+		}
+	}
+`;
+
+export const disputesQuery = gql`
+	query GetOpenDisputes {
+		disputes {
+			id
+			createdAt
+			resolution {
 				status
 			}
 		}

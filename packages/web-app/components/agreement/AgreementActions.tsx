@@ -2,11 +2,10 @@ import { useState, useEffect, ReactElement } from "react";
 import { useAccount } from "wagmi";
 import { useAgreementData } from "./context/AgreementDataContext";
 import { UserPosition } from "./context/types";
-import { AgreementFinalizedAlert, AgreementDisputedAlert, TermsVerificationAlert } from "../alerts";
+import { AgreementFinalizedAlert, TermsVerificationAlert } from "../alerts";
 import { JoinableAgreementActions } from "./actions/Joinable";
 import { JoinedAgreementActions } from "./actions/Joined";
 import { FinalizedAgreementActions } from "./actions/Finalized";
-import { DisputedAgreementActions } from "./actions/Disputed";
 
 export const AgreementActions = (): ReactElement => {
 	const { address: userAddress } = useAccount();
@@ -51,14 +50,6 @@ export const AgreementActions = (): ReactElement => {
 				{userPosition && <FinalizedAgreementActions id={id} userPosition={userPosition} />}
 			</>
 		);
-	} else if (String(agreementStatus) == "Disputed") {
-		return (
-			<>
-				<AgreementDisputedAlert />
-				<DisputedAgreementActions />
-			</>
-		);
 	}
-
-	return <span></span>;
+	return <></>;
 };
