@@ -3,7 +3,7 @@ export interface Agreement {
 	createdAt: string;
 	userBalance: string;
 	status: string;
-	title: string;
+	title: string | undefined;
 }
 
 export type AgreementList = Agreement[];

@@ -24,36 +24,19 @@ const useAgreementPositions = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [signer]);
 
-	const [agreements, setAgreements] = useState(data?.agreementPositions);
-
-	useEffect(() => {
-		data?.agreementPositions &&
-			setAgreements(
-				data.agreementPositions.map((position) => {
-					return {
-						...position,
-						agreement: {
-							...position.agreement,
-							title: localStorage.getItem(`agreement-${position.agreement.id}-title`) || undefined,
-						},
-					};
-				}),
-			);
-	}, [data?.agreementPositions]);
-
-	return { data: agreements, error };
+	return { data: data?.agreementPositions, error };
 };
 
 export const AgreementListProvider = ({ children }: { children: ReactNode }) => {
 	const { data: positions } = useAgreementPositions();
 
 	const agreements =
-		positions?.map(({ balance, agreement: { id, createdAt, status, title } }) => ({
+		positions?.map(({ balance, agreement: { id, createdAt, status } }) => ({
 			id,
 			createdAt,
 			userBalance: balance,
 			status,
-			title,
+			title: localStorage.getItem(`agreement-${id}-title`) || undefined,
 		})) || [];
 	agreements.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 

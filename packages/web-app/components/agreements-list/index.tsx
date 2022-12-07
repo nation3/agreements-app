@@ -1,7 +1,7 @@
 // import { useEffect, useMemo } from 'react';
 export { AgreementListProvider } from "./context/AgreementListProvider";
 
-import { Table, utils, Badge } from "@nation3/ui-components";
+import { Table, Badge } from "@nation3/ui-components";
 import { ethers, BigNumber } from "ethers";
 
 import { ScaleIcon } from "@heroicons/react/24/outline";
