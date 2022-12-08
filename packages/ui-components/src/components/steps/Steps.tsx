@@ -6,7 +6,7 @@ const Badge = ({ active, children }: { active: boolean; children: ReactNode }) =
 	<span
 		className={`text-sm text-center w-6 h-6 block rounded-full flex items-center justify-center cursor-help ${
 			active ? "border border-bluesky-200" : "border border-gray-200"
-		} text-bluesky dark:bg-bluesky-200 dark:text-bluesky-800`}
+		} text-bluesky`}
 	>
 		{children}
 	</span>
@@ -28,7 +28,7 @@ export const Steps = ({ steps }: { steps: Step[] }) => {
 						return (
 							<React.Fragment key={i}>
 								<a
-									className="flex flex-col items-center text-center"
+									className="flex flex-col items-center text-center dark:text-white"
 									href={link}
 									target="_blank"
 									rel="noreferrer noopener"
@@ -41,9 +41,7 @@ export const Steps = ({ steps }: { steps: Step[] }) => {
 									</Tooltip>
 									{name}
 								</a>
-								{i !== steps.length - 1 && (
-									<div className="mt-3 h-0.5 w-full bg-bluesky-100 text-bluesky-800 dark:bg-bluesky-200 dark:text-bluesky-800"></div>
-								)}
+								{i !== steps.length - 1 && <div className="mt-3 h-0.5 w-full bg-bluesky-100"></div>}
 							</React.Fragment>
 						);
 					})}
