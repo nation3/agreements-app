@@ -38,6 +38,10 @@ const useTimeLeft = (
 		const futureDate = new Date(+new Date() + secondsDiff);
 		const diff = +futureDate - +new Date();
 
+		if (diff < 0) {
+			return setTimeLeft({ days: 0, hours: 0, minutes: 0 });
+		}
+
 		setTimeLeft({
 			days: Math.floor(diff / (1000 * 60 * 60 * 24)),
 			hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
@@ -59,7 +63,6 @@ const ResolutionDataDisplay = ({
 	unlockBlock: number;
 }) => {
 	const { data: timeLeft } = useTimeLeft(unlockBlock);
-	console.log(timeLeft);
 
 	return (
 		<div className="flex flex-col gap-5">
@@ -72,7 +75,7 @@ const ResolutionDataDisplay = ({
 					<ActionBadge label="Fingerprint" data={n3utils.shortenHash(mark)} />
 
 					<ActionBadge
-						label="Time to enactment"
+						label="Time remaining to appeal"
 						data={`${timeLeft.days}d:${timeLeft.hours}h:${timeLeft.minutes}m`}
 						icon={
 							<a href="https://docs.nation3.org" target="_blank" rel="noreferrer noopener">
