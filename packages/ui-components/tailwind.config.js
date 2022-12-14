@@ -5,6 +5,18 @@ module.exports = {
 		"./stories/**/*.{js,ts,jsx,tsx}",
 		"../../node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
 	],
+	safelist: [
+		/*{
+				pattern: /^w-.+/,
+				variants: ["sm", "md", "lg"]
+		},*/
+		"from-bluesky",
+		"to-greensea",
+		{
+			pattern: /^(bg|text)-.+/,
+			variants: ["hover", "focus"],
+		},
+	],
 	theme: {
 		extend: {
 			colors: {
