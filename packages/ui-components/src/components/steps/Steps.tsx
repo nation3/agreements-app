@@ -5,7 +5,7 @@ import "flowbite";
 const Badge = ({ active, children }: { active: boolean; children: ReactNode }) => (
 	<span
 		className={`text-sm text-center w-6 h-6 block rounded-full flex items-center justify-center cursor-help ${
-			active ? "border border-bluesky-200" : "border border-gray-200"
+			active ? "border-2 border-bluesky-200" : "border-2 border-gray-200"
 		} text-bluesky`}
 	>
 		{children}
@@ -33,13 +33,17 @@ export const Steps = ({ steps }: { steps: Step[] }) => {
 									target="_blank"
 									rel="noreferrer noopener"
 								>
-									<Tooltip
-										content={`${tooltipText}${link ? ". Click to learn more." : ""}`}
-										style="light"
-									>
+									{tooltipText ? (
+										<Tooltip
+											content={`${tooltipText}${link ? ". Click to learn more." : ""}`}
+											style="light"
+										>
+											<Badge active={active}>{i}</Badge>
+										</Tooltip>
+									) : (
 										<Badge active={active}>{i}</Badge>
-									</Tooltip>
-									{name}
+									)}
+									{name && <span className="text-gray-600">{name}</span>}
 								</a>
 								{i !== steps.length - 1 && <div className="mt-3 h-0.5 w-full bg-bluesky-100"></div>}
 							</React.Fragment>
