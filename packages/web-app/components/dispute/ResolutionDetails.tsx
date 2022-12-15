@@ -136,7 +136,7 @@ export const ProposedResolutionDetails = () => {
 								of {confirmationsRequired} confirmations
 							</Accordion.Title>
 							<Accordion.Content>
-								<div className="py-4">
+								<div>
 									<ResolutionDataDisplay
 										mark={resolution.id}
 										status={resolution.status}
@@ -144,7 +144,10 @@ export const ProposedResolutionDetails = () => {
 										unlockBlock={resolution.unlockBlock}
 									/>
 									{confirmationsRequired > confirmations.length && (
-										<Button label="Approve" bgColor="green" />
+										<div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
+											<Button label="Reject" bgColor="red" />
+											<Button label="Approve" bgColor="green" />
+										</div>
 									)}
 								</div>
 							</Accordion.Content>
