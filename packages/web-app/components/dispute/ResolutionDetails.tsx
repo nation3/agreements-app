@@ -88,10 +88,8 @@ export const ProposedResolutionDetails = () => {
 							<Accordion.Content>
 								<div className="py-4">
 									<ResolutionDataDisplay
-										mark={resolution.id}
 										status="Proposed"
 										settlement={resolution.settlement ?? []}
-										unlockBlock={0}
 									/>
 									{confirmationsRequired > confirmations.length && (
 										<div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
