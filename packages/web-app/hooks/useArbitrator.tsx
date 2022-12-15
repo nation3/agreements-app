@@ -1,8 +1,16 @@
-import { useSigner, useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
+import {
+	useAccount,
+	useSigner,
+	useContractRead,
+	useContractWrite,
+	useWaitForTransaction,
+} from "wagmi";
+import Safe from "@safe-global/safe-core-sdk";
 import SafeServiceClient, {
 	SafeMultisigTransactionListResponse,
 	SafeMultisigConfirmationResponse,
 } from "@safe-global/safe-service-client";
+import { SafeTransactionDataPartial } from "@safe-global/safe-core-sdk-types";
 import EthersAdapter from "@safe-global/safe-ethers-lib";
 
 import arbitratorInterface from "../abis/Arbitrator.json";
@@ -70,37 +78,50 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 };
 
 export const useResolutionSubmit = ({ onSettledSuccess }: { onSettledSuccess?: () => void }) => {
-	const { write, data, ...args } = useContractWrite({
-		mode: "recklesslyUnprepared",
-		addressOrName: arbitratorAddress,
-		contractInterface: arbitratorAbi,
-		functionName: "submitResolution",
-		onSettled(data, error) {
-			if (onSettledSuccess && data) {
-				onSettledSuccess();
-			}
-			if (error) {
-				console.log(error);
-			}
-		},
-	});
+	const { safeSDK, safeServiceClient } = useSafe();
+	const arbitratorInterface = new ethers.utils.Interface(arbitratorAbi);
+	const { address } = useAccount();
+	const [data, setData] = useState({});
+	const [isProcessing, setIsProcessing] = useState(false);
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
-		hash: data?.hash,
-	});
-
-	const submit = ({
+	const submit = async ({
 		framework,
 		id,
 		metadataURI,
 		settlement,
 	}: ResolutionInput & { metadataURI: string }) => {
-		write?.({
-			recklesslySetUnpreparedArgs: [framework, id, metadataURI, settlement],
+		if (!address || !safeSDK || !safeServiceClient) return;
+
+		const data = arbitratorInterface.encodeFunctionData("submitResolution", [
+			framework,
+			id,
+			metadataURI,
+			settlement,
+		]);
+		const safeNextNonce = await safeServiceClient.getNextNonce(cohortAddress);
+		const safeTransactionData: SafeTransactionDataPartial = {
+			to: arbitratorAddress,
+			value: "0",
+			data: data,
+			operation: 0,
+			nonce: safeNextNonce,
+		};
+		const safeTransaction = await safeSDK.createTransaction({ safeTransactionData });
+		const safeTransactionHash = await safeSDK.getTransactionHash(safeTransaction);
+		const senderSignature = await safeSDK.signTransactionHash(safeTransactionHash);
+		setIsProcessing(true);
+		const tx = await safeServiceClient.proposeTransaction({
+			safeAddress: cohortAddress,
+			safeTxHash: safeTransactionHash,
+			safeTransactionData: safeTransaction.data,
+			senderAddress: address,
+			senderSignature: senderSignature.data,
+			origin: "Nation3 Judge app",
 		});
+		setIsProcessing(false);
 	};
 
-	return { submit, data, isProcessing, ...args };
+	return { submit, data, isProcessing };
 };
 
 export const useResolutionExecute = () => {
@@ -151,9 +172,10 @@ export const useResolutionAppeal = () => {
 	return { appeal, data, isProcessing, ...args };
 };
 
-export const useResolutionProposals = ({ id }: { id: string }) => {
+const useSafe = () => {
 	const { data: signer } = useSigner();
-	const [proposals, setProposals] = useState<ResolutionProposal[]>();
+	const [safeSDK, setSafeSDK] = useState<Safe | undefined>();
+	const [safeServiceClient, setSafeServiceClient] = useState<SafeServiceClient | undefined>();
 
 	useEffect(() => {
 		if (signer) {
@@ -163,11 +185,28 @@ export const useResolutionProposals = ({ id }: { id: string }) => {
 				signerOrProvider: signer,
 			});
 
-			const safeService = new SafeServiceClient({
-				txServiceUrl: "https://safe-transaction-goerli.safe.global",
-				ethAdapter,
+			Safe.create({ ethAdapter, safeAddress: cohortAddress }).then((safe) => {
+				setSafeSDK(safe);
 			});
-			safeService
+
+			setSafeServiceClient(
+				new SafeServiceClient({
+					txServiceUrl: "https://safe-transaction-goerli.safe.global",
+					ethAdapter,
+				}),
+			);
+		}
+	}, [signer]);
+	return { safeSDK, safeServiceClient };
+};
+
+export const useResolutionProposals = ({ id }: { id: string }) => {
+	const { safeServiceClient } = useSafe();
+	const [proposals, setProposals] = useState<ResolutionProposal[]>();
+
+	useEffect(() => {
+		if (safeServiceClient) {
+			safeServiceClient
 				.getPendingTransactions(cohortAddress)
 				.then((pendingTxs: SafeMultisigTransactionListResponse) => {
 					const proposals_ = pendingTxs.results
@@ -200,7 +239,7 @@ export const useResolutionProposals = ({ id }: { id: string }) => {
 					setProposals(proposals_);
 				});
 		}
-	}, [signer]);
+	}, [safeServiceClient]);
 
 	return { proposals };
 };
