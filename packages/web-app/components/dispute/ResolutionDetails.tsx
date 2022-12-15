@@ -31,10 +31,10 @@ const ResolutionDataDisplay = ({
 	settlement,
 	unlockBlock,
 }: {
-	mark: string;
+	mark?: string;
 	status: string;
 	settlement: Position[];
-	unlockBlock: number;
+	unlockBlock?: number;
 }) => {
 	return (
 		<div className="flex flex-col gap-5">
@@ -43,10 +43,12 @@ const ResolutionDataDisplay = ({
 					<h1 className="font-display font-medium text-lg truncate">Resolution</h1>
 					<Badge textColor="gray-800" bgColor="gray-100" className="font-semibold" label={status} />
 				</div>
-				<div className="flex flex-col md:flex-row gap-1">
-					<ActionBadge label="Fingerprint" data={n3utils.shortenHash(mark)} />
-					<ActionBadge label="Executable block" data={unlockBlock} />
-				</div>
+				{mark && unlockBlock && (
+					<div className="flex flex-col md:flex-row gap-1">
+						<ActionBadge label="Fingerprint" data={n3utils.shortenHash(mark)} />
+						<ActionBadge label="Executable block" data={unlockBlock} />
+					</div>
+				)}
 			</div>
 			{settlement && <SettlementTable positions={settlement} />}
 		</div>
