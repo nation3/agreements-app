@@ -31,7 +31,7 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 			case 0:
 				return "Pending";
 			case 1:
-				return "Submitted";
+				return "Approved";
 			case 2:
 				return "Endorsed";
 			case 3:

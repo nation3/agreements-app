@@ -10,7 +10,7 @@ import {
 	utils as n3utils,
 } from "@nation3/ui-components";
 import { BigNumber, utils, constants } from "ethers";
-import { ResolutionDetails } from "../../components/dispute/ResolutionDetails";
+import { ResolutionDetails, ProposedResolutionDetails } from "./ResolutionDetails";
 import { useDispute } from "./context/DisputeResolutionContext";
 import { frameworkAddress } from "../../lib/constants";
 import { useResolutionExecute } from "../../hooks/useArbitrator";
@@ -18,7 +18,8 @@ import { useProvider } from "wagmi";
 
 export const DisputeDetails = () => {
 	const provider = useProvider({ chainId: 1 });
-	const { dispute, resolution } = useDispute();
+	const { dispute, resolution: approvedResolution } = useDispute();
+	const proposedResolutions = [true];
 	const { execute } = useResolutionExecute();
 
 	const copyAgreementId = useCallback(() => {
@@ -58,23 +59,25 @@ export const DisputeDetails = () => {
 					]) || []
 				}
 			/>
-			{resolution ? (
+			{approvedResolution && (
 				<div className="flex flex-col gap-2 p-4 pb-2 border-4 border-gray-100 rounded-xl bg-white">
 					<ResolutionDetails />
-					{resolution.status != "Appealed" && (
+					{approvedResolution.status != "Appealed" && (
 						<Button
 							label="Execute"
 							onClick={() =>
 								execute({
 									framework: frameworkAddress,
 									id: dispute.id,
-									settlement: resolution.settlement || [],
+									settlement: approvedResolution.settlement || [],
 								})
 							}
 						/>
 					)}
 				</div>
-			) : (
+			)}
+			{proposedResolutions && <ProposedResolutionDetails />}
+			{!approvedResolution && !proposedResolutions && (
 				<Alert
 					icon={<ExclamationTriangleIcon className="w-5 h-5" />}
 					message={"No resolution has been submitted yet."}
