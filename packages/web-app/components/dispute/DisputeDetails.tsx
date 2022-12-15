@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import {
 	Table,
@@ -18,8 +18,7 @@ import { useProvider } from "wagmi";
 
 export const DisputeDetails = () => {
 	const provider = useProvider({ chainId: 1 });
-	const { dispute, resolution: approvedResolution } = useDispute();
-	const proposedResolutions = [true];
+	const { dispute, resolution: approvedResolution, proposedResolutions } = useDispute();
 	const { execute } = useResolutionExecute();
 
 	const copyAgreementId = useCallback(() => {
@@ -29,6 +28,10 @@ export const DisputeDetails = () => {
 	const copyTermsHash = useCallback(() => {
 		if (dispute.termsHash) navigator.clipboard.writeText(String(dispute.termsHash));
 	}, [dispute.termsHash]);
+
+	useEffect(() => {
+		console.log(proposedResolutions);
+	}, [proposedResolutions]);
 
 	return (
 		<>
@@ -76,11 +79,11 @@ export const DisputeDetails = () => {
 					)}
 				</div>
 			)}
-			{proposedResolutions && <ProposedResolutionDetails />}
+			<ProposedResolutionDetails />
 			{!approvedResolution && !proposedResolutions && (
 				<Alert
 					icon={<ExclamationTriangleIcon className="w-5 h-5" />}
-					message={"No resolution has been submitted yet."}
+					message={"No resolution has been approved yet."}
 					color="gray-200"
 					className="text-gray-700"
 				/>

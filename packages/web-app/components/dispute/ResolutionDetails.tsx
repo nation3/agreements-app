@@ -71,77 +71,25 @@ export const ResolutionDetails = () => {
 };
 
 export const ProposedResolutionDetails = () => {
-	const { proposedResolutions } = {
-		proposedResolutions: [
-			{
-				id: "0x93c8145808231925bdfb0b683804920aede62d87c74ef10c77b5efac024aa441",
-				status: "Proposed",
-				mark: "0x7deef04c24a23df6c64099fdef1f570cd10eed944d4c74f67c44953e2b1b81d5",
-				unlockBlock: 8062732,
-				settlement: [
-					{
-						party: "0x69ef1478651A439546F8A673a5760069eC981A9b",
-						balance: { type: "BigNumber", hex: "0x10a741a462780000" },
-					},
-					{
-						party: "0xE4dceb72667a5a705DE0B2a4F51Fb2B51584A7a7",
-						balance: { type: "BigNumber", hex: "0x0b1a2bc2ec500000" },
-					},
-				],
-			},
-			{
-				id: "0x93c8145808231925bdfb0b683804920aede62d87c74ef10c77b5efac024aa441",
-				status: "Proposed",
-				mark: "0x7deef04c24a23df6c64099fdef1f570cd10eed944d4c74f67c44953e2b1b81d5",
-				unlockBlock: 8062732,
-				settlement: [
-					{
-						party: "0x69ef1478651A439546F8A673a5760069eC981A9b",
-						balance: { type: "BigNumber", hex: "0x10a741a462780000" },
-					},
-					{
-						party: "0xE4dceb72667a5a705DE0B2a4F51Fb2B51584A7a7",
-						balance: { type: "BigNumber", hex: "0x0b1a2bc2ec500000" },
-					},
-				],
-			},
-			{
-				id: "0x93c8145808231925bdfb0b683804920aede62d87c74ef10c77b5efac024aa441",
-				status: "Approved",
-				mark: "0x7deef04c24a23df6c64099fdef1f570cd10eed944d4c74f67c44953e2b1b81d5",
-				unlockBlock: 8062732,
-				settlement: [
-					{
-						party: "0x69ef1478651A439546F8A673a5760069eC981A9b",
-						balance: { type: "BigNumber", hex: "0x10a741a462780000" },
-					},
-					{
-						party: "0xE4dceb72667a5a705DE0B2a4F51Fb2B51584A7a7",
-						balance: { type: "BigNumber", hex: "0x0b1a2bc2ec500000" },
-					},
-				],
-			},
-		],
-	};
+	const { proposedResolutions } = useDispute();
+
 	if (proposedResolutions) {
-		const confirmationsRequired = 3;
-		const confirmations = [0, 0];
 		return (
 			<Accordion alwaysOpen={true}>
-				{proposedResolutions.map((resolution, i) => {
+				{proposedResolutions.map(({ confirmationsRequired, confirmations, resolution }, i) => {
 					return (
 						<Accordion.Panel key={i}>
 							<Accordion.Title>
-								Resolution proposed by {resolution.origin || "test.eth"}, {confirmations.length} out
-								of {confirmationsRequired} confirmations
+								Resolution proposed by {n3utils.shortenHash(confirmations[0].owner)} |{" "}
+								{confirmations.length}/{confirmationsRequired} approvals
 							</Accordion.Title>
 							<Accordion.Content>
-								<div>
+								<div className="py-4">
 									<ResolutionDataDisplay
 										mark={resolution.id}
-										status={resolution.status}
+										status="Proposed"
 										settlement={resolution.settlement ?? []}
-										unlockBlock={resolution.unlockBlock}
+										unlockBlock={0}
 									/>
 									{confirmationsRequired > confirmations.length && (
 										<div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">

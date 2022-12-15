@@ -2637,6 +2637,15 @@
     web3-core "^1.8.1"
     web3-utils "^1.8.1"
 
+"@safe-global/safe-core-sdk-utils@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-utils/-/safe-core-sdk-utils-1.5.0.tgz#78a7fde170dcb8e98802b27c7ad16d3b74170c4a"
+  integrity sha512-3tEdXaVTSXlz9Ppo9H/qz/PBxSQYZoV7a1w9csq9yYElgHXDNhCK+0qWiZRLEEUYE41W3x5rAvxzbuKYkyIijg==
+  dependencies:
+    "@safe-global/safe-core-sdk-types" "^1.7.0"
+    semver "^7.3.8"
+    web3-utils "^1.8.1"
+
 "@safe-global/safe-core-sdk@^3.2.1":
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk/-/safe-core-sdk-3.2.1.tgz#dab0cfd6f88ea81e9884f8c1ea87435b43fab30e"
@@ -2648,6 +2657,15 @@
     ethereumjs-util "^7.1.5"
     semver "^7.3.8"
     web3-utils "^1.8.1"
+
+"@safe-global/safe-ethers-lib@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-ethers-lib/-/safe-ethers-lib-1.7.0.tgz#a53253cf33b3bd5d477722ba70a15064bebee18f"
+  integrity sha512-s4OD5C15JvCxuXpye700e+i4diOfdfyObZmnciNmkwNW5NfLdHDwWl5O6EdqSAP2iJd4mhwwAh3FmtYpujfE3A==
+  dependencies:
+    "@safe-global/safe-core-sdk-types" "^1.7.0"
+    "@safe-global/safe-core-sdk-utils" "^1.5.0"
+    ethers "^5.7.2"
 
 "@safe-global/safe-service-client@^1.4.0":
   version "1.4.0"

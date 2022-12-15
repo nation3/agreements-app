@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import { BigNumber } from "ethers";
+import { ResolutionProposal } from "../../../hooks/useArbitrator";
 
 export type Position = { party: string; balance: BigNumber };
 
@@ -21,6 +22,7 @@ export type Resolution = {
 export type DisputeResolutionContextType = {
 	dispute: Dispute;
 	resolution: Resolution | undefined;
+	proposedResolutions: ResolutionProposal[];
 };
 
 export const DisputeResolutionContext = createContext<DisputeResolutionContextType | null>(null);

@@ -1,8 +1,14 @@
-import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
+import { useSigner, useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
+import SafeServiceClient, {
+	SafeMultisigTransactionListResponse,
+	SafeMultisigConfirmationResponse,
+} from "@safe-global/safe-service-client";
+import EthersAdapter from "@safe-global/safe-ethers-lib";
+
 import arbitratorInterface from "../abis/Arbitrator.json";
-import { arbitratorAddress } from "../lib/constants";
-import { useMemo } from "react";
-import { BigNumber } from "ethers";
+import { arbitratorAddress, cohortAddress } from "../lib/constants";
+import { useEffect, useMemo, useState } from "react";
+import { ethers, BigNumber, constants } from "ethers";
 
 const arbitratorAbi = arbitratorInterface.abi;
 
@@ -12,6 +18,12 @@ type ResolutionInput = {
 	framework: string;
 	id: string;
 	settlement: { party: string; balance: BigNumber }[];
+};
+
+export type ResolutionProposal = {
+	confirmationsRequired: number;
+	confirmations: SafeMultisigConfirmationResponse[];
+	resolution: ResolutionInput;
 };
 
 export const useResolution = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
@@ -137,4 +149,58 @@ export const useResolutionAppeal = () => {
 	};
 
 	return { appeal, data, isProcessing, ...args };
+};
+
+export const useResolutionProposals = ({ id }: { id: string }) => {
+	const { data: signer } = useSigner();
+	const [proposals, setProposals] = useState<ResolutionProposal[]>();
+
+	useEffect(() => {
+		if (signer) {
+			const ethAdapter = new EthersAdapter({
+				// @ts-ignore
+				ethers,
+				signerOrProvider: signer,
+			});
+
+			const safeService = new SafeServiceClient({
+				txServiceUrl: "https://safe-transaction-goerli.safe.global",
+				ethAdapter,
+			});
+			safeService
+				.getPendingTransactions(cohortAddress)
+				.then((pendingTxs: SafeMultisigTransactionListResponse) => {
+					const proposals_ = pendingTxs.results
+						.filter((tx) => tx.data?.startsWith("0x02fd597d"))
+						.map((tx) => {
+							// dataDecoded has (string | undefined) as typing when in this case should be (object | undefined)
+							// @ts-ignore
+							const data: { name: string; value: any }[] = tx.dataDecoded.parameters ?? [];
+							return {
+								confirmationsRequired: tx.confirmationsRequired,
+								confirmations: tx.confirmations ?? [],
+								resolution: {
+									framework:
+										String(data.find(({ name }) => name === "framework")?.value) ||
+										constants.AddressZero,
+									id:
+										String(data.find(({ name }) => name === "id")?.value) || constants.AddressZero,
+									settlement:
+										data
+											.find(({ name }) => name === "settlement")
+											?.value.map(([party, balance]: [party: string, balance: string]) => ({
+												party,
+												balance: BigNumber.from(balance),
+											})) || [],
+								},
+							};
+						})
+						.filter(({ resolution }) => resolution.id === id);
+					// @ts-ignore
+					setProposals(proposals_);
+				});
+		}
+	}, [signer]);
+
+	return { proposals };
 };
