@@ -1,38 +1,50 @@
 import React from 'react';
 
-import { Steps } from "../src/components/steps";
+import Steps from '../src/components/steps/Steps';
 
 export default {
-    title: 'Example/Steps',
+    title: 'Example/steps',
     component: Steps,
+}
+
+const defaultProps = {
+	steps: [
+		{
+			action: null,
+			title: "This is a title",
+			description:
+				"Lorem ipsum dolor sit amet consectetur. Aliquam rutrum est metus dolor nam eu sed ultricies.",
+			image: "https://picsum.photos/200",
+            stepCTA: "Approve stake"
+		},
+		{
+			action: null,
+			title: "This is a title 2",
+			description:<div>
+                <p className='text-xs mb-1 font-light'>Lorem ipsum dolor sit amet consectetur.</p>
+                <p>0.02 $NATION Involved</p>
+            </div>,
+			image: "https://picsum.photos/200",
+            stepCTA: "Approve stake 2"
+		},
+		{
+			action: null,
+			title: "This is a title 3",
+			description:
+				"Lorem ipsum dolor sit amet consectetur. Aliquam rutrum est metus dolor nam eu sed ultricies. ",
+			image: "https://picsum.photos/200",
+            stepCTA: "Approve stake 3"
+		},
+	],
+	icon: "https://picsum.photos/50",
+	title: "Join Agreement",
+	stepModifier: null,
+	stepIndex: 2,
 };
 
-const Template = (args) => <div className='mt-32'><Steps {...args} /></div>;
 
-export const WithNames = Template.bind({});
-WithNames.args = {
-    steps: [{
-        name: 'Approve',
-        tooltipText: 'Help text',
-        active: true
-    },{
-        name: 'Lock',
-        tooltipText: 'Help text',
-        link: 'https://wiki.nation3.org'
-    },{
-        name: 'Join and enjoy',
-        tooltipText: 'Help text'
-    }]
-}
+const StepsStory = (args) => <Steps {...args}/>;
 
+export const StepsExample = StepsStory.bind({});
 
-export const WithoutNames = Template.bind({});
-WithoutNames.args = {
-    steps: [{
-    },{
-        tooltipText: 'Help text',
-        active: true
-    },{
-        tooltipText: 'Help text'
-    }]
-}
+StepsExample.args = defaultProps;

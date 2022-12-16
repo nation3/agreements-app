@@ -17,6 +17,7 @@ const data = [
 const Template = (args) => <Table {...args}/>;
 
 export const Example = Template.bind({});
+
 Example.args = {
     data: data,
     columns: columns
