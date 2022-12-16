@@ -7,7 +7,9 @@ import {
 } from "@nation3/ui-components";
 import { utils } from "ethers";
 import { Position, useDispute } from "./context/DisputeResolutionContext";
-import { useProvider } from "wagmi";
+import { useProvider, useBlockNumber } from "wagmi";
+import { useState, useEffect } from "react";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 const SettlementTable = ({ positions }: { positions: Position[] }) => {
 	const provider = useProvider({ chainId: 1 });
@@ -23,6 +25,32 @@ const SettlementTable = ({ positions }: { positions: Position[] }) => {
 	);
 };
 
+const useTimeLeft = (
+	futureBlock: number,
+): { data: { days: number; hours: number; minutes: number } } => {
+	const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
+	const { data: currentBlock } = useBlockNumber();
+
+	useEffect(() => {
+		if (!currentBlock) return;
+		const blockTime = 12;
+		const secondsDiff = (futureBlock - currentBlock) * blockTime * 1000;
+		const futureDate = new Date(+new Date() + secondsDiff);
+		const diff = +futureDate - +new Date();
+
+		if (diff < 0) {
+			return setTimeLeft({ days: 0, hours: 0, minutes: 0 });
+		}
+
+		setTimeLeft({
+			days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+			hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+			minutes: Math.floor((diff / 1000 / 60) % 60),
+		});
+	}, [futureBlock, currentBlock]);
+	return { data: timeLeft };
+};
+
 const ResolutionDataDisplay = ({
 	mark,
 	status,
@@ -34,6 +62,8 @@ const ResolutionDataDisplay = ({
 	settlement: Position[];
 	unlockBlock: number;
 }) => {
+	const { data: timeLeft } = useTimeLeft(unlockBlock);
+
 	return (
 		<div className="flex flex-col gap-5">
 			<div className="flex flex-col gap-1">
@@ -43,7 +73,16 @@ const ResolutionDataDisplay = ({
 				</div>
 				<div className="flex flex-col md:flex-row gap-1">
 					<ActionBadge label="Fingerprint" data={n3utils.shortenHash(mark)} />
-					<ActionBadge label="Executable block" data={unlockBlock} />
+
+					<ActionBadge
+						label="Time remaining to appeal"
+						data={`${timeLeft.days}d:${timeLeft.hours}h:${timeLeft.minutes}m`}
+						icon={
+							<a href="https://docs.nation3.org" target="_blank" rel="noreferrer noopener">
+								<InformationCircleIcon width={16} />
+							</a>
+						}
+					/>
 				</div>
 			</div>
 			{settlement && <SettlementTable positions={settlement} />}
