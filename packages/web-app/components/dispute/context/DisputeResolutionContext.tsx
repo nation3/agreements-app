@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { BigNumber } from "ethers";
-import { ResolutionProposal } from "../../../hooks/useArbitrator";
+import { ResolutionProposal } from "../../../hooks/useCohort";
 
 export type Position = { party: string; balance: BigNumber };
 

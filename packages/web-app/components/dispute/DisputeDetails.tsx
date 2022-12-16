@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import {
 	Table,
@@ -28,10 +28,6 @@ export const DisputeDetails = () => {
 	const copyTermsHash = useCallback(() => {
 		if (dispute.termsHash) navigator.clipboard.writeText(String(dispute.termsHash));
 	}, [dispute.termsHash]);
-
-	useEffect(() => {
-		console.log(proposedResolutions);
-	}, [proposedResolutions]);
 
 	return (
 		<>
@@ -63,20 +59,26 @@ export const DisputeDetails = () => {
 				}
 			/>
 			{approvedResolution && (
-				<div className="flex flex-col gap-2 p-4 pb-2 border-4 border-gray-100 rounded-xl bg-white">
-					<ResolutionDetails />
-					{approvedResolution.status != "Appealed" && (
-						<Button
-							label="Execute"
-							onClick={() =>
-								execute({
-									framework: frameworkAddress,
-									id: dispute.id,
-									settlement: approvedResolution.settlement || [],
-								})
-							}
-						/>
-					)}
+				<div className="flex flex-col gap-2">
+					<div>
+						<div className="text-md font-display">Approved resolution</div>
+						<div className="border-2 rounded-xl"></div>
+					</div>
+					<div className="flex flex-col gap-2 p-4 pb-2 border-4 border-gray-100 rounded-xl bg-white">
+						<ResolutionDetails />
+						{approvedResolution.status != "Appealed" && (
+							<Button
+								label="Enact"
+								onClick={() =>
+									execute({
+										framework: frameworkAddress,
+										id: dispute.id,
+										settlement: approvedResolution.settlement || [],
+									})
+								}
+							/>
+						)}
+					</div>
 				</div>
 			)}
 			<ProposedResolutionDetails />

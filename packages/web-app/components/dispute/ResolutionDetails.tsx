@@ -10,6 +10,7 @@ import { utils } from "ethers";
 import { Position, useDispute } from "./context/DisputeResolutionContext";
 import { useProvider } from "wagmi";
 import { Accordion } from "flowbite-react";
+import { useCohort } from "../../hooks/useCohort";
 
 const SettlementTable = ({ positions }: { positions: Position[] }) => {
 	const provider = useProvider({ chainId: 1 });
@@ -73,36 +74,51 @@ export const ResolutionDetails = () => {
 };
 
 export const ProposedResolutionDetails = () => {
+	const provider = useProvider({ chainId: 1 });
 	const { proposedResolutions } = useDispute();
+	const { approve, reject } = useCohort();
 
 	if (proposedResolutions) {
 		return (
-			<Accordion alwaysOpen={true}>
-				{proposedResolutions.map(({ confirmationsRequired, confirmations, resolution }, i) => {
-					return (
-						<Accordion.Panel key={i}>
-							<Accordion.Title>
-								Resolution proposed by {n3utils.shortenHash(confirmations[0].owner)} |{" "}
-								{confirmations.length}/{confirmationsRequired} approvals
-							</Accordion.Title>
-							<Accordion.Content>
-								<div className="py-4">
-									<ResolutionDataDisplay
-										status="Proposed"
-										settlement={resolution.settlement ?? []}
-									/>
-									{confirmationsRequired > confirmations.length && (
-										<div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
-											<Button label="Reject" bgColor="red" />
-											<Button label="Approve" bgColor="green" />
+			<div className="flex flex-col gap-2">
+				<div>
+					<div className="text-md font-display">Proposed settlements</div>
+					<div className="border-2 rounded-xl"></div>
+				</div>
+				<Accordion alwaysOpen={true}>
+					{proposedResolutions.map(
+						({ txHash, txNonce, confirmationsRequired, confirmations, resolution }, i) => {
+							return (
+								<Accordion.Panel key={i}>
+									<Accordion.Title>
+										#{txNonce} Settlement proposed by{" "}
+										<AddressDisplay ensProvider={provider} address={confirmations[0].owner} /> |{" "}
+										{confirmations.length}/{confirmationsRequired} approvals
+									</Accordion.Title>
+									<Accordion.Content>
+										<div className="flex flex-col gap-8">
+											<ResolutionDataDisplay
+												status="Proposed"
+												settlement={resolution.settlement ?? []}
+											/>
+											{confirmationsRequired > confirmations.length && (
+												<div className="flex flex-col md:flex-row gap-2">
+													<Button label="Reject" bgColor="red" onClick={() => reject(txNonce)} />
+													<Button
+														label="Approve"
+														bgColor="greensea"
+														onClick={() => approve(txHash)}
+													/>
+												</div>
+											)}
 										</div>
-									)}
-								</div>
-							</Accordion.Content>
-						</Accordion.Panel>
-					);
-				})}
-			</Accordion>
+									</Accordion.Content>
+								</Accordion.Panel>
+							);
+						},
+					)}
+				</Accordion>
+			</div>
 		);
 	} else {
 		return <></>;

@@ -1,7 +1,8 @@
 import { BigNumber } from "ethers";
 import { ReactNode, useMemo, useState, useEffect } from "react";
 import { useAgreementRead } from "../../../hooks/useAgreement";
-import { useResolution, useResolutionProposals } from "../../../hooks/useArbitrator";
+import { useResolution } from "../../../hooks/useArbitrator";
+import { useResolutionProposals } from "../../../hooks/useCohort";
 import { abiEncodingPacked, hashEncoding } from "../../../utils/hash";
 import { fetchResolutionMetadata } from "../../../utils";
 
