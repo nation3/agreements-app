@@ -24,16 +24,16 @@ export const CountDown = ({ seconds }: { seconds: number }) => {
 	const [timer, setTimer] = useState<ReturnType<typeof setInterval>>();
 
 	useEffect(() => {
+		setCountDown(seconds);
 		const interval = setInterval(() => {
 			setCountDown((prevCountDown) => prevCountDown - 1);
 		}, 1000);
 		setTimer(interval);
 
 		return () => clearInterval(interval);
-	}, []);
+	}, [seconds]);
 
 	useEffect(() => {
-		console.log(countDown);
 		if (countDown < 1) {
 			clearInterval(timer);
 		}
