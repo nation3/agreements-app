@@ -8,10 +8,11 @@ import {
 } from "@nation3/ui-components";
 import { utils } from "ethers";
 import { Position, useDispute } from "./context/DisputeResolutionContext";
-import { useProvider, useBlockNumber } from "wagmi";
-import { useState, useEffect } from "react";
+import { useProvider } from "wagmi";
 import { Accordion } from "flowbite-react";
 import { useCohort } from "../../hooks/useCohort";
+import { useTimeToBlock } from "../../hooks/useTime";
+import { CountDown } from "../../components/CountDown";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 const SettlementTable = ({ positions }: { positions: Position[] }) => {
@@ -28,32 +29,6 @@ const SettlementTable = ({ positions }: { positions: Position[] }) => {
 	);
 };
 
-const useTimeLeft = (
-	futureBlock: number,
-): { data: { days: number; hours: number; minutes: number } } => {
-	const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
-	const { data: currentBlock } = useBlockNumber();
-
-	useEffect(() => {
-		if (!currentBlock) return;
-		const blockTime = 12;
-		const secondsDiff = (futureBlock - currentBlock) * blockTime * 1000;
-		const futureDate = new Date(+new Date() + secondsDiff);
-		const diff = +futureDate - +new Date();
-
-		if (diff < 0) {
-			return setTimeLeft({ days: 0, hours: 0, minutes: 0 });
-		}
-
-		setTimeLeft({
-			days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-			hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-			minutes: Math.floor((diff / 1000 / 60) % 60),
-		});
-	}, [futureBlock, currentBlock]);
-	return { data: timeLeft };
-};
-
 const ResolutionDataDisplay = ({
 	mark,
 	status,
@@ -65,7 +40,7 @@ const ResolutionDataDisplay = ({
 	settlement: Position[];
 	unlockBlock?: number;
 }) => {
-	const { data: timeLeft } = useTimeLeft(unlockBlock);
+	const { time: timeLeft } = useTimeToBlock(unlockBlock ?? 0);
 
 	return (
 		<div className="flex flex-col gap-5">
@@ -75,18 +50,14 @@ const ResolutionDataDisplay = ({
 					<Badge textColor="gray-800" bgColor="gray-100" className="font-semibold" label={status} />
 				</div>
 				<div className="flex flex-col md:flex-row gap-1">
-          { mark && (<ActionBadge label="Fingerprint" data={n3utils.shortenHash(mark)} />) }
-					{ unlockBlock && (
-            <ActionBadge
-						  label="Time remaining to appeal"
-						  data={`${timeLeft.days}d:${timeLeft.hours}h:${timeLeft.minutes}m`}
-						  icon={
-							  <a href="https://docs.nation3.org" target="_blank" rel="noreferrer noopener">
-								  <InformationCircleIcon width={16} />
-							  </a>
-						  }
-					  />
-          )}
+					{mark && <ActionBadge label="Fingerprint" data={n3utils.shortenHash(mark)} />}
+					{unlockBlock && (
+						<ActionBadge
+							label="Appeal time left"
+							data={<CountDown seconds={timeLeft} />}
+							icon={<InformationCircleIcon width={16} />}
+						/>
+					)}
 				</div>
 			</div>
 			{settlement && <SettlementTable positions={settlement} />}
