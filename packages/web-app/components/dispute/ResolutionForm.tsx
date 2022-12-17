@@ -42,7 +42,7 @@ export const ResolutionForm = () => {
 		]);
 
 		propose(data)
-			.then(() => put())
+			.then(async () => await put())
 			.catch((error) => console.log(error));
 	};
 

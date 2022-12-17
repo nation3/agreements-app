@@ -14,10 +14,11 @@ import { ResolutionDetails, ProposedResolutionDetails } from "./ResolutionDetail
 import { useDispute } from "./context/DisputeResolutionContext";
 import { frameworkAddress } from "../../lib/constants";
 import { useResolutionExecute } from "../../hooks/useArbitrator";
-import { useProvider } from "wagmi";
+import { useBlockNumber, useProvider } from "wagmi";
 
 export const DisputeDetails = () => {
 	const provider = useProvider({ chainId: 1 });
+	const { data: currentBlock } = useBlockNumber();
 	const { dispute, resolution: approvedResolution, proposedResolutions } = useDispute();
 	const { execute } = useResolutionExecute();
 
@@ -66,22 +67,24 @@ export const DisputeDetails = () => {
 					</div>
 					<div className="flex flex-col gap-2 p-4 pb-2 border-4 border-gray-100 rounded-xl bg-white">
 						<ResolutionDetails />
-						{approvedResolution.status != "Appealed" && (
-							<Button
-								label="Enact"
-								onClick={() =>
-									execute({
-										framework: frameworkAddress,
-										id: dispute.id,
-										settlement: approvedResolution.settlement || [],
-									})
-								}
-							/>
-						)}
+						<Button
+							label="Enact"
+							disabled={
+								(currentBlock ?? 0) < approvedResolution.unlockBlock ||
+								approvedResolution.status == "Appealed"
+							}
+							onClick={() =>
+								execute({
+									framework: frameworkAddress,
+									id: dispute.id,
+									settlement: approvedResolution.settlement || [],
+								})
+							}
+						/>
 					</div>
 				</div>
 			)}
-			<ProposedResolutionDetails />
+			{proposedResolutions.length > 0 && <ProposedResolutionDetails />}
 			{!approvedResolution && !proposedResolutions && (
 				<Alert
 					icon={<ExclamationTriangleIcon className="w-5 h-5" />}
