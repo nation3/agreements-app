@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import {
 	Table,
@@ -29,6 +29,12 @@ export const DisputeDetails = () => {
 	const copyTermsHash = useCallback(() => {
 		if (dispute.termsHash) navigator.clipboard.writeText(String(dispute.termsHash));
 	}, [dispute.termsHash]);
+
+	const canBeEnacted = useMemo(() => {
+		if (!approvedResolution) return false;
+		if (approvedResolution.status == "Appealed") return false;
+		return currentBlock ? approvedResolution.unlockBlock < currentBlock : false;
+	}, [currentBlock, approvedResolution]);
 
 	return (
 		<>
@@ -69,10 +75,7 @@ export const DisputeDetails = () => {
 						<ResolutionDetails />
 						<Button
 							label="Enact"
-							disabled={
-								(currentBlock ?? 0) < approvedResolution.unlockBlock ||
-								approvedResolution.status == "Appealed"
-							}
+							disabled={!canBeEnacted}
 							onClick={() =>
 								execute({
 									framework: frameworkAddress,
