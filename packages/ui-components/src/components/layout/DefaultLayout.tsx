@@ -59,7 +59,7 @@ export const SideNav = ({
 	connectionButton,
 }: NavBarProps) => {
 	return (
-		<div className="flex flex-col w-72 h-screen items-center justify-center">
+		<div className="flex flex-col w-72 h-screen items-center justify-center fixed">
 			<aside className="flex flex-col w-full h-full items-center justify-between bg-white">
 				<div className="w-full">
 					{/* Header */}
