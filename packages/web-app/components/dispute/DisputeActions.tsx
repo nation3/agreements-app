@@ -14,9 +14,9 @@ export const DisputeArbitrationActions = () => {
 	if (mode == "edit") {
 		return <ResolutionForm />;
 	} else if (resolution == undefined) {
-		return <Button label="Submit a resolution" onClick={() => setMode("edit")} />;
+		return <Button label="Propose a settlement" onClick={() => setMode("edit")} />;
 	} else {
-		return <Button label="Submit a new resolution" onClick={() => setMode("edit")} />;
+		return <Button label="Propose a new settlement" onClick={() => setMode("edit")} />;
 	}
 };
 
@@ -35,7 +35,7 @@ export const DisputeActions = () => {
 						<div className="flex flex-col gap-2 p-4 pb-2 border-4 border-gray-100 rounded-xl bg-white">
 							<ResolutionDetails />
 
-							{resolution.status == "Submitted" && (
+							{resolution.status == "Approved" && (
 								<Button
 									label="Appeal"
 									onClick={() =>

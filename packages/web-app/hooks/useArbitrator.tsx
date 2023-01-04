@@ -1,14 +1,16 @@
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
-import arbitratorInterface from "../abis/Arbitrator.json";
+
+import Arbitrator from "../abis/Arbitrator.json";
 import { arbitratorAddress } from "../lib/constants";
 import { useMemo } from "react";
-import { BigNumber } from "ethers";
+import { ethers, BigNumber } from "ethers";
 
-const arbitratorAbi = arbitratorInterface.abi;
+const arbitratorAbi = Arbitrator.abi;
+export const arbitratorInterface = new ethers.utils.Interface(arbitratorAbi);
 
 type ResolutionData = { status: string; mark: string; metadataURI: string; unlockBlock: number };
 
-type ResolutionInput = {
+export type ResolutionInput = {
 	framework: string;
 	id: string;
 	settlement: { party: string; balance: BigNumber }[];
@@ -31,13 +33,13 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 			case 0:
 				return "Pending";
 			case 1:
-				return "Submitted";
+				return "Approved";
 			case 2:
 				return "Endorsed";
 			case 3:
 				return "Appealed";
 			case 4:
-				return "Executed";
+				return "Enacted";
 			default:
 				return "Unknown";
 		}
@@ -55,40 +57,6 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 	}, [rawResolution]);
 
 	return { resolution, ...args };
-};
-
-export const useResolutionSubmit = ({ onSettledSuccess }: { onSettledSuccess?: () => void }) => {
-	const { write, data, ...args } = useContractWrite({
-		mode: "recklesslyUnprepared",
-		addressOrName: arbitratorAddress,
-		contractInterface: arbitratorAbi,
-		functionName: "submitResolution",
-		onSettled(data, error) {
-			if (onSettledSuccess && data) {
-				onSettledSuccess();
-			}
-			if (error) {
-				console.log(error);
-			}
-		},
-	});
-
-	const { isLoading: isProcessing } = useWaitForTransaction({
-		hash: data?.hash,
-	});
-
-	const submit = ({
-		framework,
-		id,
-		metadataURI,
-		settlement,
-	}: ResolutionInput & { metadataURI: string }) => {
-		write?.({
-			recklesslySetUnpreparedArgs: [framework, id, metadataURI, settlement],
-		});
-	};
-
-	return { submit, data, isProcessing, ...args };
 };
 
 export const useResolutionExecute = () => {

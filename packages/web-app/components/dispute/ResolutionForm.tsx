@@ -3,8 +3,9 @@ import { useState, useMemo, ChangeEvent, FocusEvent } from "react";
 import { utils, BigNumber } from "ethers";
 
 import { useDispute, Position } from "./context/DisputeResolutionContext";
-import { useResolutionSubmit } from "../../hooks/useArbitrator";
-import { purgeFloat, generateResolutionMetadata, ResolutionMetadata } from "../../utils";
+import { arbitratorInterface } from "../../hooks/useArbitrator";
+import { useCohort } from "../../hooks/useCohort";
+import { purgeFloat, generateResolutionMetadata } from "../../utils";
 import { preparePutToIPFS } from "../../lib/ipfs";
 
 import { frameworkAddress } from "../../lib/constants";
@@ -13,7 +14,7 @@ import { useProvider } from "wagmi";
 export const ResolutionForm = () => {
 	const provider = useProvider({ chainId: 1 });
 	const { dispute } = useDispute();
-	const [metadata, setMetadata] = useState<ResolutionMetadata>();
+	const { propose } = useCohort();
 	const [settlement, setSettlement] = useState<Position[]>(dispute.positions ?? []);
 
 	const settlementBalance = useMemo(() => {
@@ -27,32 +28,22 @@ export const ResolutionForm = () => {
 		return false;
 	}, [dispute.balance, settlementBalance]);
 
-	const uploadMetadataToIPFS = async () => {
-		const { put } = await preparePutToIPFS(metadata ?? {});
-
-		const cid = await put();
-		console.log(`metadata uploaded to ${cid}`);
-	};
-
-	const {
-		submit: submitResolution,
-		isLoading: submissionLoading,
-		isProcessing: submissionProcessing,
-	} = useResolutionSubmit({ onSettledSuccess: uploadMetadataToIPFS });
-
 	const submit = async () => {
 		const metadata = generateResolutionMetadata(settlement ?? []);
-		setMetadata(metadata);
 
-		const { cid } = await preparePutToIPFS(metadata);
+		const { put, cid } = await preparePutToIPFS(metadata);
 		const metadataURI = `ipfs://${cid}`;
 
-		submitResolution({
-			framework: frameworkAddress,
-			id: dispute.id,
-			metadataURI: metadataURI,
-			settlement: settlement || [],
-		});
+		const data = arbitratorInterface.encodeFunctionData("submitResolution", [
+			frameworkAddress,
+			dispute.id,
+			metadataURI,
+			settlement || [],
+		]);
+
+		propose(data)
+			.then(async () => await put())
+			.catch((error) => console.log(error));
 	};
 
 	const updateBalance = (index: number, balance: string) => {
@@ -65,7 +56,11 @@ export const ResolutionForm = () => {
 	};
 
 	return (
-		<>
+		<div className="flex flex-col gap-2">
+			<div>
+				<div className="text-md font-display">Settlement proposal</div>
+				<div className="border-2 rounded-xl"></div>
+			</div>
 			<Table
 				columns={["participant", "stake"]}
 				data={
@@ -90,12 +85,7 @@ export const ResolutionForm = () => {
 					]) || []
 				}
 			/>
-			<Button
-				label="Submit"
-				disabled={submissionLoading || submissionProcessing || !isValidSettlement}
-				isLoading={submissionLoading || submissionProcessing}
-				onClick={() => submit()}
-			/>
-		</>
+			<Button label="Propose" disabled={!isValidSettlement} onClick={() => submit()} />
+		</div>
 	);
 };
