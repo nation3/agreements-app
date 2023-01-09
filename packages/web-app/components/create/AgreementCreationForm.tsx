@@ -32,9 +32,9 @@ export const AgreementCreationForm = () => {
 						the parties fails to comply with these terms, their financial stake can be taken away to
 						compensate the other parties. The terms must be written in Markdown.
 					</p>
-					<a className="flex w-fit items-center gap-0.5 font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent">
+					<a className="group flex w-fit items-center gap-0.5 font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent mt-2 cursor-pointer">
 						Learn more
-						<ArrowLongRightIcon className="w-5 h-5 text-greensea" />
+						<span className="group-hover:ml-1 transition-all">→</span>
 					</a>
 				</div>
 				<div className="flex flex-col gap-2">

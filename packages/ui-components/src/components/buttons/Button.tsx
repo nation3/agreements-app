@@ -40,7 +40,7 @@ export const Button = ({
 }: ButtonProps) => {
 	return (
 		<ButtonBase
-			className={`px-2 py-3 gap-1 text-base font-medium text-${textColor} bg-${bgColor}-${
+			className={`px-2 py-3 gap-1 text-base transition-colors font-medium text-${textColor} bg-${bgColor}-${
 				disabled ? "300" : "400"
 			} ${!disabled && `hover:bg-${bgColor}-500 hover:cursor-pointer`} ${className && className}`}
 			disabled={disabled}
