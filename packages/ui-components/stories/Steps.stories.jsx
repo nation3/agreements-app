@@ -50,8 +50,9 @@ const defaultProps = {
 </div>,
 };
 
+
+StepsExample.args = defaultProps;
+
 const StepsStory = (args) => <Steps {...args}/>;
 
 export const StepsExample = StepsStory.bind({});
-
-StepsExample.args = defaultProps;

@@ -1,7 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 import { BigNumber, constants } from "ethers";
-import { Button } from "@nation3/ui-components";
+import { Button, Modal, Steps } from "@nation3/ui-components";
 
 import { NotEnoughBalanceAlert } from "../../alerts";
 import { useToken, useAgreementJoin } from "../../../hooks/useAgreement";
@@ -15,6 +15,8 @@ export const JoinableAgreementActions = ({
 	id: string;
 	userPosition: UserPosition;
 }) => {
+	const [isJoinAgreementStarted, setisJoinAgreementStarted] = useState<boolean>(false);
+
 	const { address } = useAccount();
 
 	const {
@@ -60,6 +62,8 @@ export const JoinableAgreementActions = ({
 		}
 	}, [accountTokenAllowance, requiredBalance]);
 
+	const steps = [{}];
+
 	return (
 		<div className="flex flex-col gap-1">
 			{!enoughAllowance ? (
@@ -77,6 +81,13 @@ export const JoinableAgreementActions = ({
 					onClick={() => join({ id, resolver: userResolver })}
 				/>
 			)}
+			{/* 
+TODO: 
+{
+				<Modal open={isJoinAgreementStarted}>
+					<Steps steps={steps} icon={""} title={""} stepIndex={0} loadingIndex={null} />
+				</Modal>
+			} */}
 			{!enoughBalance && <NotEnoughBalanceAlert />}
 		</div>
 	);
