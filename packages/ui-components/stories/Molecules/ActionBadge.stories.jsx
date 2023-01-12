@@ -1,11 +1,11 @@
 import React from 'react';
 import { CheckBadgeIcon } from "@heroicons/react/24/outline"
 
-import { ActionBadge } from "../src/components/badges";
+import { ActionBadge } from "../../src/components/badges";
 
 
 export default {
-    title: 'Example/ActionBadge',
+    title: 'Molecules/ActionBadge',
     component: ActionBadge,
 };
 
@@ -16,8 +16,8 @@ const copyAddressAction = () => {
 
 const Template = (args) => <ActionBadge {...args} />;
 
-export const LabelDataIcon = Template.bind({});
-LabelDataIcon.args = {
+export const Default = Template.bind({});
+Default.args = {
     label: 'Hash',
     data: '0x000...000',
     icon: <CheckBadgeIcon className="w-4 h-4"/>,

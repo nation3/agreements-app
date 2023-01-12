@@ -39,9 +39,9 @@ export const AgreementList = () => {
 				/>
 			) : (
 				<div className="flex justify-center w-full h-full">
-					<div className="flex justify-center w-full h-full">
-						<div className="w-full p-2 pl-6">
-							<p className=" text-slate-500 font-medium text-2xl w-4/5 pt-16 tracking-wide">
+					<div className="flex items-center justify-center w-full h-full">
+						<div className="w-full p-2 pl-6 pb-16 ">
+							<p className=" text-slate-500 font-medium text-2xl w-4/5 tracking-wide">
 								Nation3 has its own system of law, enforced by its own court and secured by economic
 								incentives.
 							</p>
@@ -51,10 +51,7 @@ export const AgreementList = () => {
 								</a>
 							</div>
 						</div>
-						{/* TODO: change Image */}
 						<div className="w-full flex items-center justify-center">
-							{/* <ScaleIcon className="text-slate-500 w-1/2" strokeWidth="1" /> */}
-							{/* <img className="" src={courtIll} /> */}
 							<Image
 								className="w-2/3"
 								src={courtIll}

@@ -1,16 +1,20 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAgreementData } from "./context/AgreementDataContext";
 import { PositionMap } from "./context/types";
 import { PositionStatusBadge } from "../../components";
 import {
 	Table,
 	Badge,
+	Button,
 	ActionBadge,
 	AddressDisplay,
 	utils as n3utils,
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
 import { useProvider } from "wagmi";
+import { Tooltip, Badge as FlowBadge, Modal } from "flowbite-react";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { AgreementConstants } from "./AgreementConstants";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -44,30 +48,77 @@ const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) =
 };
 
 const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDisplayProps) => {
+	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
+	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
+	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
+
 	const copyAgreementId = useCallback(() => {
-		if (id) navigator.clipboard.writeText(id);
+		if (id) {
+			setIsAgreementId(true);
+			navigator.clipboard.writeText(window.location.href);
+			setTimeout(() => setIsAgreementId(false), 1000);
+		}
 	}, [id]);
 
 	const copyTermsHash = useCallback(() => {
-		if (termsHash) navigator.clipboard.writeText(String(termsHash));
+		if (termsHash) {
+			setIsHashCopied(true);
+			navigator.clipboard.writeText(String(termsHash));
+			setTimeout(() => setIsHashCopied(false), 1000);
+		}
 	}, [termsHash]);
 
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	useEffect(() => {}, [isHashCopied, isAgreementId]);
+
 	return (
-		<div className="flex flex-col gap-2 text-gray-700">
-			<AgreementHeader title={title} status={status} />
-			<div className="flex flex-col md:flex-row gap-1">
-				<ActionBadge
-					label="ID"
-					data={n3utils.shortenHash(id ?? constants.HashZero)}
-					dataAction={copyAgreementId}
-				/>
-				<ActionBadge
-					label="Terms hash"
-					data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
-					dataAction={copyTermsHash}
-				/>
+		<>
+			<div className="flex flex-col gap-2 text-gray-700">
+				<AgreementHeader title={title} status={status} />
+				<div className="flex flex-col md:flex-row gap-1 items-center">
+					<Tooltip
+						style="light"
+						animation="duration-150"
+						content={isAgreementId ? "Copied" : "Click to copy"}
+					>
+						<ActionBadge
+							label="ID"
+							data={n3utils.shortenHash(id ?? constants.HashZero)}
+							dataAction={copyAgreementId}
+						/>
+					</Tooltip>
+					<Tooltip
+						style="light"
+						animation="duration-150"
+						content={isHashCopied ? "Copied" : "Click to copy"}
+					>
+						<ActionBadge
+							label="Terms hash"
+							data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
+							dataAction={copyTermsHash}
+						/>
+					</Tooltip>
+					<div onClick={() => setIsTermsModalUp(true)} className="cursor-pointer">
+						<FlowBadge color="gray" size="sm" icon={InformationCircleIcon} />
+					</div>
+				</div>
 			</div>
-		</div>
+
+			{/* TERMS HASH INFO MOCAL */}
+			<Modal show={isTermsModalUp} onClose={() => setIsTermsModalUp(false)}>
+				<Modal.Header>{AgreementConstants.termsHash}</Modal.Header>
+				<Modal.Body>
+					<div className="space-y-6">
+						<p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+							{AgreementConstants.termsDescription}
+						</p>
+					</div>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button label="Close" onClick={() => setIsTermsModalUp(false)}></Button>
+				</Modal.Footer>
+			</Modal>
+		</>
 	);
 };
 

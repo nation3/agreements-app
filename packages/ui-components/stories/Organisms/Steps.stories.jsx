@@ -1,13 +1,20 @@
 import React from 'react';
 
-import Steps from '../src/components/steps/Steps';
+import Steps from '../../src/components/steps/Steps';
 
 export default {
-    title: 'Example/steps',
-    component: Steps,
+	component: Steps,
+    title: 'Organisms/Steps',
 }
 
-const defaultProps = {
+const Template = (args) => <Steps {...args}/>;
+
+/* 
+THREE STEPS, THREE IMAGES
+ */ 
+
+export const Default = Template.bind({});
+Default.args = {
 	steps: [
 		{
 			action: null,
@@ -51,8 +58,8 @@ const defaultProps = {
 };
 
 
-StepsExample.args = defaultProps;
-
-const StepsStory = (args) => <Steps {...args}/>;
-
-export const StepsExample = StepsStory.bind({});
+export const Finished = Template.bind({});
+Finished.args = {
+	...Default.args,
+	areStepsFinished: true
+};

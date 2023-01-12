@@ -97,6 +97,7 @@ export const AgreementCreationPreview = () => {
 							{"Edit"}
 						</div>
 					}
+					disabled={createLoading || createProcessing}
 					bgColor="slate"
 					onClick={() => changeView(CreateView.Form)}
 				/>

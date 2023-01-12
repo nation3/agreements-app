@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { CheckCircleIcon, ArrowRightIcon } from "@heroicons/react/24/outline"
-import { Button } from '../src/components/buttons';
+import { Button } from '../../src/components/buttons';
 // import { Button } from './Button';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-    title: 'Example/Button',
+    title: 'Molecules/Button',
     component: Button,
     argTypes: {
         iconLeft: {
@@ -34,6 +34,7 @@ Default.args = {
 };
 
 export const Icon = Template.bind({});
+
 Icon.args = {
     iconLeft: 'check',
     bgColor: 'greensea'

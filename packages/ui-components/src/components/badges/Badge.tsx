@@ -17,16 +17,13 @@ const BadgeBase = ({ label, className, ...props }: BadgeBaseProps) => {
 	);
 };
 
-export const Badge = ({
-	textColor = "white",
-	bgColor = "black",
-	className,
-	...props
-}: BadgeProps) => {
+export const Badge = (props: BadgeProps) => {
+	const { textColor = "white", bgColor = "black", className, ...args } = props;
+
 	return (
 		<BadgeBase
 			className={`font-normal text-${textColor} bg-${bgColor} ${className && className}`}
-			{...props}
+			{...args}
 		/>
 	);
 };

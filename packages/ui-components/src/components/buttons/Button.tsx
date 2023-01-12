@@ -1,6 +1,7 @@
 import React, { ReactNode, ReactElement } from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
 import { Spinner } from "../svgs";
+import cx from "classnames";
 
 export interface ButtonBaseProps extends HTMLMotionProps<"button"> {
 	disabled?: boolean;
@@ -11,6 +12,7 @@ export interface ButtonProps extends Omit<ButtonBaseProps, "children"> {
 	iconLeft?: ReactElement;
 	textColor?: string;
 	bgColor?: string;
+	outlined?: boolean;
 	label?: ReactNode;
 	isLoading?: boolean;
 }
@@ -27,22 +29,30 @@ export const ButtonBase = ({ children, className, ...props }: ButtonBaseProps) =
 	);
 };
 
-export const Button = ({
-	iconLeft,
-	iconRight,
-	label,
-	textColor = "white",
-	bgColor = "bluesky",
-	disabled,
-	className,
-	isLoading = false,
-	onClick,
-}: ButtonProps) => {
+export const Button = (props: ButtonProps) => {
+	const {
+		iconLeft,
+		iconRight,
+		label,
+		textColor = "white",
+		bgColor = "bluesky",
+		outlined,
+		disabled,
+		className,
+		isLoading = false,
+		onClick,
+	} = props;
+
 	return (
 		<ButtonBase
-			className={`px-2 py-3 gap-1 text-base transition-colors font-medium text-${textColor} bg-${bgColor}-${
-				disabled ? "300" : "400"
-			} ${!disabled && `hover:bg-${bgColor}-500 hover:cursor-pointer`} ${className && className}`}
+			className={cx(
+				"px-2 py-3 transition-colors gap-1 text-base font-medium border-2 border-bluesky",
+				`text-${textColor}`,
+				`bg-${bgColor}-${disabled ? "300" : "400"}`,
+				`${!disabled && `hover:bg-${bgColor}-500 hover:cursor-pointer`}`,
+				outlined && "bg-color-white text-bluesky",
+				`${className && className}`,
+			)}
 			disabled={disabled}
 			onClick={onClick}
 		>

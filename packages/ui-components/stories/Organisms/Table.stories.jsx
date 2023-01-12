@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { Table } from '../src/components/table';
+import { Table } from '../../src/components/table';
 
 export default {
-    title: 'Example/Table',
+    title: 'Organisms/Table',
     component: Table,
 }
 
@@ -18,7 +18,7 @@ const Template = (args) => <Table {...args}/>;
 
 export const Example = Template.bind({});
 
-Example.args = {
+Template.args = {
     data: data,
     columns: columns
 }

@@ -41,7 +41,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<DefaultLayout
-					title="Nation3"
+					title="Nation 3"
+					appName="Court"
 					onRoute={(route: string) => {
 						router.push(route);
 					}}

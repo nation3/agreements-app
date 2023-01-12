@@ -6,7 +6,7 @@ import { UserIcon } from "@heroicons/react/24/solid";
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 	return ensImage ? (
-		<img src={ensImage} width={48} height={48} alt="ENS Avatar" className={`rounded-full`} />
+		<img src={ensImage} width={30} height={30} alt="ENS Avatar" className={`rounded-full`} />
 	) : (
 		<Blockies seed={address} size={size} className="overflow-hidden rounded-full" />
 	);

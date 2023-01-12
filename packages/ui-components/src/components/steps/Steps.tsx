@@ -107,21 +107,19 @@ const Steps: React.FC<IStepsProps> = (props) => {
 	} = props;
 
 	return (
-		<section className="max-w-3xl w-full bg-white rounded-lg relative">
-			<div className="flex justify-between items-center w-full p-8 pl-10">
-				<h3 className="text-slate-600 text-3xl font-semibold">{title}</h3>
+		<section className="max-w-3xl w-full bg-white rounded-lg relative shadow-xl">
+			<div className="flex justify-between items-center w-full md:p-8 p-4 pl-6 md:pl-10">
+				<h3 className="text-slate-600 md:text-3xl text-xl font-semibold">{title}</h3>
 				{icon && (
-					<div>
-						<div className="rounded-full overflow-hidden flex items-center justify-center">
-							<img className="w-full" src={icon} />
-						</div>
+					<div className="rounded-full overflow-hidden flex items-center justify-center h-1/2">
+						<img className="h-full" src={icon} />
 					</div>
 				)}
 			</div>
 			{areStepsFinished ? (
-				<div className="border-t-2 border-bluesky-200 p-8 flex flex-col">
-					<div className="">{finishMessage}</div>
-					<div className="pt-5 pb-16">
+				<div className="border-t-2 border-bluesky-200 md:p-8 p-4 pl-6 md:pl-10 flex flex-col">
+					<div className="mt-2 md:mt-0">{finishMessage}</div>
+					<div className="pt-5 pb-28">
 						<div className="w-full rounded-lg overflow-hidden">
 							{finishImage && <img className="" src={finishImage} />}
 						</div>

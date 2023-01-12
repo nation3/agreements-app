@@ -1,1 +1,1 @@
-export { DefaultLayout, SideNav, BottonNav } from "./DefaultLayout";
+export { DefaultLayout } from "./DefaultLayout";

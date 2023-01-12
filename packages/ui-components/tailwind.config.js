@@ -20,6 +20,10 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
+				nation3: {
+					bg_dark: "#1f2938",
+					bg_light: "#f4faff",
+				},
 				bluesky: {
 					100: "#D9F1FF",
 					200: "#A1DDFF",
