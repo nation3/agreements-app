@@ -10,5 +10,6 @@ export * from "./components/alerts";
 export * from "./components/layout";
 export * from "./components/svgs";
 export * from "./components/displays";
+export * from "./components/steps";
 
 export * as utils from "./utils";
