@@ -26,13 +26,16 @@ export const AgreementCreationForm = () => {
 			</div>
 			<div className="flex flex-col gap-4">
 				<div>
-					<h2 className="font-display font-medium text-xl">Agreement Terms</h2>
+					<h2 className="font-display font-medium text-xl">1. Agreement Terms</h2>
 					<p>
 						These are the terms that the parties who enter the agreement will abide by. If one of
 						the parties fails to comply with these terms, their financial stake can be taken away to
 						compensate the other parties. The terms must be written in Markdown.
 					</p>
-					<a className="group flex w-fit items-center gap-0.5 font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent mt-2 cursor-pointer">
+					<a
+						className="group flex w-fit items-center gap-0.5 font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent mt-2 cursor-pointer"
+						href="https://docs.nation3.org/agreements/creating-an-agreement"
+					>
 						Learn more
 						<span className="group-hover:ml-1 transition-all">→</span>
 					</a>
@@ -50,9 +53,10 @@ export const AgreementCreationForm = () => {
 					/>
 				</div>
 			</div>
+			<hr />
 			<div className="flex flex-col gap-4">
 				<div>
-					<h2 className="font-display font-medium text-xl">Positions and stakes</h2>
+					<h2 className="font-display font-medium text-xl">2. Positions and stakes</h2>
 					<p>
 						These are the participants that can enter the agreement, and how much $NATION they must
 						deposit to enter it.

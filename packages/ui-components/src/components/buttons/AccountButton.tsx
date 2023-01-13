@@ -11,11 +11,11 @@ export interface AccountButtonProps extends ButtonBaseProps {
 export const AccountButton = ({ avatar, account, ...props }: AccountButtonProps) => {
 	return (
 		<ButtonBase {...props}>
-			<div className="flex items-center gap-3 rounded-xl">
-				{avatar}
+			<div className="flex items-center gap-2 rounded-full">
 				<span className="hidden md:inline">
 					{account.ensName ? account.ensName : shortenHash((account.address as string) ?? "")}
 				</span>
+				{avatar}
 			</div>
 		</ButtonBase>
 	);

@@ -75,7 +75,7 @@ const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDis
 		<>
 			<div className="flex flex-col gap-2 text-gray-700">
 				<AgreementHeader title={title} status={status} />
-				<div className="flex flex-col md:flex-row gap-1 items-center">
+				<div className="flex flex-col md:flex-row gap-1 justify-start md:items-center">
 					<Tooltip
 						style="light"
 						animation="duration-150"
@@ -87,19 +87,21 @@ const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDis
 							dataAction={copyAgreementId}
 						/>
 					</Tooltip>
-					<Tooltip
-						style="light"
-						animation="duration-150"
-						content={isHashCopied ? "Copied" : "Click to copy"}
-					>
-						<ActionBadge
-							label="Terms hash"
-							data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
-							dataAction={copyTermsHash}
-						/>
-					</Tooltip>
-					<div onClick={() => setIsTermsModalUp(true)} className="cursor-pointer">
-						<FlowBadge color="gray" size="sm" icon={InformationCircleIcon} />
+					<div className="flex items-center">
+						<Tooltip
+							style="light"
+							animation="duration-150"
+							content={isHashCopied ? "Copied" : "Click to copy"}
+						>
+							<ActionBadge
+								label="Terms hash"
+								data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
+								dataAction={copyTermsHash}
+							/>
+						</Tooltip>
+						<div onClick={() => setIsTermsModalUp(true)} className="cursor-pointer flex ml-1">
+							<FlowBadge color="gray" size="sm" icon={InformationCircleIcon} />
+						</div>
 					</div>
 				</div>
 			</div>

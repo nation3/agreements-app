@@ -42,7 +42,7 @@ export const DefaultLayout = ({ children, ...props }: DefaultLayoutProps) => {
 		<div className="mx-auto bg-nation3-bg_light">
 			<div className="flex relative">
 				<NavBar />
-				<div className="grow flex min-h-screen bg-nation3-bg_light w-full items-center px-4 pt-2 pb-24 lg:pt-4 lg:pb-4 justify-center">
+				<div className="grow flex min-h-screen bg-nation3-bg_light w-full px-4 pt-2 pb-24 lg:pt-4 lg:pb-4 justify-center">
 					{children}
 				</div>
 			</div>

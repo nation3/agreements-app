@@ -51,8 +51,8 @@ export const ConnectButton = () => {
 										className="gap-1 p-4 text-white bg-bluesky-400"
 										onClick={openConnectModal}
 									>
-										<UserIcon className="w-8 h-8" />
 										<span className="hidden md:inline">Connect</span>
+										<UserIcon className="w-8 h-8" />
 									</ButtonBase>
 								);
 							}
@@ -68,12 +68,12 @@ export const ConnectButton = () => {
 
 							return (
 								<AccountButton
-									className="gap-1 p-2 bg-white hover:bg-gray-100"
+									className="font-semibold text-slate-600 tracking-wide shadow rounded-full md:pl-5 md:pr-2 md:py-2 p-2 bg-white hover:bg-gray-100"
 									avatar={
 										<AccountAvatar
 											address={account.address}
 											ensImage={account.ensAvatar ?? ""}
-											size={12}
+											size={10}
 										/>
 									}
 									account={account}
