@@ -2,7 +2,7 @@ import Blockies from "react-blockies";
 import { AccountButton, ButtonBase } from "@nation3/ui-components";
 import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow-me/rainbowkit";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { UserIcon } from "@heroicons/react/24/solid";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 	return ensImage ? (
@@ -48,13 +48,13 @@ export const ConnectButton = () => {
 							if (!connected) {
 								return (
 									<ButtonBase
-										className="gap-1 p-3 px-6 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
+										className="gap-1 p-2 px-5 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
 										onClick={openConnectModal}
 									>
-										<span className="hidden font-regular tracking-wide md:inline md:mr-2">
+										<span className="hidden pl-2 font-regular tracking-wide md:inline md:mr-2">
 											Connect
 										</span>
-										<UserIcon className="w-8 h-8" />
+										<UserCircleIcon className="w-8 h-8" />
 									</ButtonBase>
 								);
 							}
