@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { utils, providers } from "ethers";
-import { shortenHash } from "../../utils";
+import { shortenHash } from "../../../utils";
 
 export const AddressDisplay = ({
 	address,

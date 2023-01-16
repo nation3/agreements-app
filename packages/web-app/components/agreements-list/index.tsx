@@ -39,9 +39,16 @@ export const AgreementList = () => {
 				/>
 			) : (
 				<div className="flex justify-center w-full h-full">
-					<div className="flex items-center justify-center w-full h-full">
-						<div className="w-full p-2 pl-6 pb-16 ">
-							<p className=" text-slate-500 font-medium text-2xl w-4/5 tracking-wide">
+					<div className="flex flex-col items-center w-full h-full">
+						<div className="w-full flex items-center justify-center my-6">
+							<Image
+								className="w-28"
+								src={courtIll}
+								alt="GFG logo served with static path of public directory"
+							/>
+						</div>
+						<div className="w-full flex justify-center flex-col items-center p-2">
+							<p className="text-slate-400 font-medium text-xl w-1/2 tracking-wide text-center">
 								Nation3 has its own system of law, enforced by its own court and secured by economic
 								incentives.
 							</p>
@@ -53,13 +60,6 @@ export const AgreementList = () => {
 									Learn more <span className="group-hover:ml-1 transition-all">→</span>
 								</a>
 							</div>
-						</div>
-						<div className="w-full flex items-center justify-center">
-							<Image
-								className="w-2/3"
-								src={courtIll}
-								alt="GFG logo served with static path of public directory"
-							/>
 						</div>
 					</div>
 				</div>

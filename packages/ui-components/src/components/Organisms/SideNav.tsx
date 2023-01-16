@@ -1,8 +1,8 @@
 import React from "react";
-import { NavButton, NavButtonProps } from "../components/buttons";
 import { ReactNode } from "react";
-import Nation3Logo from "../components/svgs/Nation3Logo";
+import Nation3Logo from "../Atoms/Nation3Logo";
 import AppHeader from "../Molecules/AppHeader";
+import { NavButton, NavButtonProps } from "../Molecules/buttons";
 
 export type NavItem = Pick<NavButtonProps, "route" | "icon" | "label">;
 

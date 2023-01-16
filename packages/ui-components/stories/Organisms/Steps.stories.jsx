@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Steps from '../../src/components/steps/Steps';
+import Steps from '../../src/components/Organisms/steps/Steps';
 
 export default {
 	component: Steps,
@@ -8,10 +8,6 @@ export default {
 }
 
 const Template = (args) => <Steps {...args}/>;
-
-/* 
-THREE STEPS, THREE IMAGES
- */ 
 
 export const Default = Template.bind({});
 Default.args = {
@@ -56,7 +52,6 @@ Default.args = {
 	<p>You finished the steps</p>
 </div>,
 };
-
 
 export const Finished = Template.bind({});
 Finished.args = {

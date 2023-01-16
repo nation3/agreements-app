@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, ModalProps } from "./Modal";
-import { TransparentButton } from "../buttons/TransparentButton";
 import { UserIcon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
+import { TransparentButton } from "../../Molecules/buttons/TransparentButton";
 
 export interface Account {
 	address: string;

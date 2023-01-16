@@ -49,9 +49,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 					isActiveRoute={(route: string) => router.pathname.startsWith(route)}
 					connectionButton={<ConnectButton />}
 				>
-					<section className="md:pt-32 pt-24">
-						<Component {...pageProps} />
-					</section>
+					<Component {...pageProps} />
 				</DefaultLayout>
 			</RainbowKitProvider>
 		</WagmiConfig>

@@ -96,6 +96,8 @@ const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDis
 							<ActionBadge
 								label="Terms hash"
 								data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
+								icon={<InformationCircleIcon />}
+								iconAction={() => setIsTermsModalUp(true)}
 								dataAction={copyTermsHash}
 							/>
 						</Tooltip>

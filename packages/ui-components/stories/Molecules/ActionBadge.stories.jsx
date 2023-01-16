@@ -1,8 +1,7 @@
 import React from 'react';
 import { CheckBadgeIcon } from "@heroicons/react/24/outline"
 
-import { ActionBadge } from "../../src/components/badges";
-
+import { ActionBadge } from "../../src/components/Molecules/badges";
 
 export default {
     title: 'Molecules/ActionBadge',
@@ -11,6 +10,7 @@ export default {
 
 const address = "0x0";
 const copyAddressAction = () => {
+    // eslint-disable-next-line no-undef
     navigator.clipboard.writeText(address);
 };
 

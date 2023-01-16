@@ -1,6 +1,5 @@
 import React from 'react';
-import { Badge } from "../../src/components/badges";
-
+import { Badge } from "../../src/components/Molecules/badges";
 
 export default {
     title: 'Molecules/Badge',

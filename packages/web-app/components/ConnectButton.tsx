@@ -48,10 +48,12 @@ export const ConnectButton = () => {
 							if (!connected) {
 								return (
 									<ButtonBase
-										className="gap-1 p-4 text-white bg-bluesky-400"
+										className="gap-1 p-3 px-6 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
 										onClick={openConnectModal}
 									>
-										<span className="hidden md:inline">Connect</span>
+										<span className="hidden font-regular tracking-wide md:inline md:mr-2">
+											Connect
+										</span>
 										<UserIcon className="w-8 h-8" />
 									</ButtonBase>
 								);
@@ -59,9 +61,12 @@ export const ConnectButton = () => {
 
 							if (chain.unsupported) {
 								return (
-									<ButtonBase className="gap-1 p-4 text-white bg-red-400" onClick={openChainModal}>
+									<ButtonBase
+										className="gap-1 p-3 px-6 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
+										onClick={openChainModal}
+									>
 										<ExclamationTriangleIcon className="w-8 h-8" />
-										<span className="hidden md:inline">Wrong network</span>
+										<span className="hidden md:inline"> ⚠️ Wrong network</span>
 									</ButtonBase>
 								);
 							}

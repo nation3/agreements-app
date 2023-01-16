@@ -1,7 +1,6 @@
 import React, { ReactNode } from "react";
-import { shortenHash } from "../../utils/strings";
+import { shortenHash } from "../../../utils/strings";
 import { ButtonBase, ButtonBaseProps } from "./Button";
-export { Account } from "../modals";
 
 export interface AccountButtonProps extends ButtonBaseProps {
 	avatar: ReactNode;

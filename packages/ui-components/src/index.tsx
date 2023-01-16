@@ -1,15 +1,13 @@
 import "./styles.css";
 
-export * from "./components/cards";
-export * from "./components/buttons";
-export * from "./components/badges";
-export * from "./components/inputs";
-export * from "./components/modals";
-export * from "./components/table";
-export * from "./components/alerts";
-export * from "./components/layout";
-export * from "./components/svgs";
-export * from "./components/displays";
-export * from "./components/steps";
+export * from "./components/Molecules/cards";
+export * from "./components/Molecules/buttons";
+export * from "./components/Molecules/badges";
+export * from "./components/Molecules/inputs";
+export * from "./components/Organisms/modals";
+export * from "./components/Organisms/table";
+export * from "./components/Molecules/alerts";
+export * from "./Templates/layout";
+export * from "./components/Atoms/displays";
 
 export * as utils from "./utils";

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, ReactElement } from "react";
-import { Spinner } from "../svgs";
+import React, { ReactElement } from "react";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import cx from "classnames";
+import Spinner from "../../Atoms/Spinner";
 
 interface IStep {
 	action: () => void | null;
@@ -71,7 +71,7 @@ const Step = (props: IStepInfo) => {
 					)}
 				>
 					{index === loadingIndex && (
-						<Spinner className="w-full h-full absolute left-0 top-0 text-bluesky" />
+						<Spinner className="w-11 h-11 absolute -left-1 -top-1 text-bluesky" />
 					)}
 					{index + 1}
 				</div>

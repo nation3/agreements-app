@@ -1,7 +1,7 @@
 import React, { ReactNode, ReactElement } from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
-import { Spinner } from "../svgs";
 import cx from "classnames";
+import Spinner from "../../Atoms/Spinner";
 
 export interface ButtonBaseProps extends HTMLMotionProps<"button"> {
 	disabled?: boolean;
@@ -34,8 +34,6 @@ export const Button = (props: ButtonProps) => {
 		iconLeft,
 		iconRight,
 		label,
-		textColor = "white",
-		bgColor = "bluesky",
 		outlined,
 		disabled,
 		className,
@@ -46,11 +44,13 @@ export const Button = (props: ButtonProps) => {
 	return (
 		<ButtonBase
 			className={cx(
-				"px-2 py-3 transition-colors gap-1 text-base font-medium border-2 border-bluesky",
-				`text-${textColor}`,
-				`bg-${bgColor}-${disabled ? "300" : "400"}`,
-				`${!disabled && `hover:bg-${bgColor}-500 hover:cursor-pointer`}`,
-				outlined && "bg-color-white text-bluesky",
+				"px-2 py-3 transition-colors gap-1 tracking-wide text-base font-medium border-2",
+				disabled && "bg-bluesky-100 border-bluesky-100",
+				!disabled &&
+					"hover:bg-bluesky-500 hover:border-bluesky-500 hover:cursor-pointer border-bluesky-400",
+				outlined &&
+					`bg-white text-bluesky-400 hover:text-white hover:bg-bluesky-500 hover:border-bluesky-500`,
+				!outlined && "text-white bg-bluesky-400 border-bluesky-400",
 				`${className && className}`,
 			)}
 			disabled={disabled}

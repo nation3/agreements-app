@@ -1,6 +1,5 @@
 import React from 'react';
-import { CheckCircleIcon, ArrowRightIcon } from "@heroicons/react/24/outline"
-import { AccountButton } from '../../src/components/buttons';
+import { AccountButton } from '../../src/components/Molecules/buttons';
 
 export default {
     title: 'Molecules/Account Button',

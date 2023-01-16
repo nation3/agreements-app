@@ -1,5 +1,5 @@
 import React from "react";
-import Nation3Logo from "../components/svgs/Nation3Logo";
+import Nation3Logo from "../Atoms/Nation3Logo";
 
 type IAppHeaderProps = {
 	title: string;

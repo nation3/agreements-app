@@ -1,7 +1,6 @@
 import React from "react";
-import { useState, useEffect, ReactNode } from "react";
-import { NavMenuButton } from "../components/buttons/NavMenuButton";
-import Nation3Logo from "../components/svgs/Nation3Logo";
+import { ReactNode } from "react";
+import Nation3Logo from "../Atoms/Nation3Logo";
 
 type IBottomNavProps = {
 	connectionButton?: ReactNode;
@@ -15,8 +14,9 @@ const BottomNav: React.FC<IBottomNavProps> = (props) => {
 	return (
 		<React.Fragment>
 			<div className="flex flex-col fixed left-0 top-0 w-full">
-				<nav className="px-2 flex w-full justify-between items-center p-2">
-					{/* 					<div className="flex flex-1 flex-col items-start">
+				<nav className="px-2 flex w-full justify-between items-center p-2 bg-white border-b border-bluesky-100 h-18">
+					{/* 					
+					<div className="flex flex-1 flex-col items-start">
 						<NavMenuButton />
 					</div> */}
 					<div className="w-12">

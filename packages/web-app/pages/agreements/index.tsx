@@ -13,7 +13,7 @@ const Agreements = () => {
 				<AgreementListProvider>
 					<Card className="flex flex-col w-full h-full items-stretch gap-8 text-gray-800">
 						<div className="flex flex-row items-center justify-between gap-2 text-gray-700">
-							<h1 className="pl-2 font-display font-medium text-3xl text-slate-700">Agreements</h1>
+							<h1 className="pl-2 font-display font-medium text-3xl text-slate-600">Agreements</h1>
 							<div className="flex gap-2 basis-1/3">
 								<Button label="New Agreement" onClick={() => router.push("/agreements/create")} />
 							</div>

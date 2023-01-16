@@ -1,7 +1,6 @@
 import React from 'react';
 
-import BottomNav from '../../src/Organisms/BottomNav';
-import { Button } from '../../src/components/buttons';
+import BottomNav from '../../src/components/Organisms/BottomNav';
 
 export default {
 	component: BottomNav,
