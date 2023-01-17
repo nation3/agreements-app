@@ -10,10 +10,10 @@ export default {
 const Template = (args) => (
 	<div className="w-full h-full flex items-center justify-center">
 		<Card {...args}>
-			<div className="flex border-b justify-between items-center w-full md:p-8 p-4 pl-6 md:pl-10">
+			<div className="flex justify-between items-center w-full p-4">
 				<h3 className="text-slate-600 md:text-3xl text-xl font-semibold">Title</h3>
 			</div>
-			<div>
+			<div className="p-4">
 				<p>
 					Lorem ipsum dolor sit amet consectetur. Lectus phasellus et diam gravida convallis. Mauris
 					tincidunt risus interdum praesent neque enim vel in lorem. Et sed leo magna adipiscing

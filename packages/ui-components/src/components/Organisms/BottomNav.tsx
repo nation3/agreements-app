@@ -26,7 +26,7 @@ const BottomNav: React.FC<IBottomNavProps> = (props) => {
 						<p className="text-lg text-slate-800 font-bold">Court</p>
 						<p className="text-xs text-slate-500">Nation3</p>
 					</div>
-					{connectionButton && <div className="flex  flex-col items-end">{connectionButton}</div>}
+					{connectionButton && <div className="flex flex-col items-end">{connectionButton}</div>}
 				</nav>
 			</div>
 		</React.Fragment>
