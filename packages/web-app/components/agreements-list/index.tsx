@@ -8,9 +8,11 @@ import { ethers, BigNumber } from "ethers";
 import { useRouter } from "next/router";
 import { useAgreementList } from "./context/AgreementListContext";
 import courtIll from "./../../public/court-ill.png";
+import { useScreen, ScreenType } from "../../hooks/useScreen";
 
 export const AgreementList = () => {
 	const router = useRouter();
+	const { screen } = useScreen();
 	const { agreements } = useAgreementList();
 
 	return (
@@ -18,18 +20,32 @@ export const AgreementList = () => {
 			{agreements && agreements.length > 0 ? (
 				<Table
 					className={"max-h-full"}
-					columns={["Id", "Created on", "Your stake", "Status"]}
-					data={agreements.map(({ id, createdAt, userBalance, status }) => [
-						<span key={id}>{utils.shortenHash(id)}</span>,
-						<span key={`${id}-date`}>
-							{new Date(Number(createdAt) * 1000).toLocaleDateString()}
-						</span>,
-						<b key={`${id}-position`}>
-							{" "}
-							{ethers.utils.formatUnits(BigNumber.from(userBalance))} $NATION{" "}
-						</b>,
-						<Badge key={`${id}-status`} label={status} bgColor="slate-300" />,
-					])}
+					columns={
+						screen === ScreenType.Desktop
+							? ["Id", "Created on", "Your stake", "Status"]
+							: ["Id", "Stake"]
+					}
+					data={agreements.map(({ id, createdAt, userBalance, status }) =>
+						screen === ScreenType.Desktop
+							? [
+									<span key={id}>{utils.shortenHash(id)}</span>,
+									<span key={`${id}-date`}>
+										{new Date(Number(createdAt) * 1000).toLocaleDateString()}
+									</span>,
+									<b key={`${id}-position`}>
+										{" "}
+										{ethers.utils.formatUnits(BigNumber.from(userBalance))} $NATION{" "}
+									</b>,
+									<Badge key={`${id}-status`} label={status} bgColor="slate-300" />,
+							  ]
+							: [
+									<span key={id}>{utils.shortenHash(id)}</span>,
+									<b key={`${id}-position`}>
+										{" "}
+										{ethers.utils.formatUnits(BigNumber.from(userBalance))} $NATION{" "}
+									</b>,
+							  ],
+					)}
 					clickHandlers={agreements.map(
 						({ id }) =>
 							() =>

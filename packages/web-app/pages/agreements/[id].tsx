@@ -13,7 +13,6 @@ import { useAgreementData } from "../../components/agreement/context/AgreementDa
 
 const Agreement = () => {
 	const { status } = useAgreementData();
-
 	return (
 		<>
 			<AgreementDetails />
@@ -35,7 +34,7 @@ const AgreementPage = () => {
 						label={"Go back to agreements"}
 						onRoute={router.push}
 					/>
-					<Card className="flex flex-col gap-8 w-full text-gray-800">
+					<Card className="flex flex-col gap-8 text-gray-800">
 						<Agreement />
 					</Card>
 				</DisputeResolutionProvider>

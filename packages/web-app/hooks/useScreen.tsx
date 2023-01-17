@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-enum ScreenType {
+
+export enum ScreenType {
 	Mobile,
 	Desktop,
 }

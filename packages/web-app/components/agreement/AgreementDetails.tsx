@@ -12,9 +12,10 @@ import {
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
 import { useProvider } from "wagmi";
-import { Tooltip, Badge as FlowBadge, Modal } from "flowbite-react";
+import { Tooltip, Badge as FlowBadge, Modal, TooltipProps } from "flowbite-react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { AgreementConstants } from "./AgreementConstants";
+import { useScreen, ScreenType } from "../../hooks/useScreen";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -34,15 +35,27 @@ const AgreementHeader = ({ title, status }: { title: string; status: string }) =
 
 const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) => {
 	const provider = useProvider({ chainId: 1 });
+	const { screen } = useScreen();
 
 	return (
 		<Table
-			columns={["participant", "stake", "status"]}
-			data={Object.entries(positions ?? {}).map(([account, { balance, status }], index) => [
-				<AddressDisplay key={index} ensProvider={provider} address={account} />,
-				<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
-				<PositionStatusBadge key={index} status={status} />,
-			])}
+			columns={
+				screen === ScreenType.Desktop
+					? ["participant", "stake", "status"]
+					: ["participant", "stake"]
+			}
+			data={Object.entries(positions ?? {}).map(([account, { balance, status }], index) =>
+				screen === ScreenType.Desktop
+					? [
+							<AddressDisplay key={index} ensProvider={provider} address={account} />,
+							<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
+							<PositionStatusBadge key={index} status={status} />,
+					  ]
+					: [
+							<AddressDisplay key={index} ensProvider={provider} address={account} />,
+							<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
+					  ],
+			)}
 		/>
 	);
 };
@@ -88,22 +101,19 @@ const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDis
 						/>
 					</Tooltip>
 					<div className="flex items-center">
-						<Tooltip
-							style="light"
-							animation="duration-150"
-							content={isHashCopied ? "Copied" : "Click to copy"}
-						>
-							<ActionBadge
-								label="Terms hash"
-								data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
-								icon={<InformationCircleIcon />}
-								iconAction={() => setIsTermsModalUp(true)}
-								dataAction={copyTermsHash}
-							/>
-						</Tooltip>
-						<div onClick={() => setIsTermsModalUp(true)} className="cursor-pointer flex ml-1">
-							<FlowBadge color="gray" size="sm" icon={InformationCircleIcon} />
-						</div>
+						<ActionBadge
+							tooltip
+							tooltipProps={{
+								style: "light",
+								animation: "duration-150",
+								content: isHashCopied ? "Copied" : "Click to copy",
+							}}
+							label="Terms hash"
+							data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
+							icon={<InformationCircleIcon className="w-4 h-4" />}
+							iconAction={() => setIsTermsModalUp(true)}
+							dataAction={copyTermsHash}
+						/>
 					</div>
 				</div>
 			</div>
