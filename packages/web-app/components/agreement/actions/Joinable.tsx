@@ -1,7 +1,7 @@
 import { useMemo, useState, useCallback, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { BigNumber, constants } from "ethers";
-import { Button, Steps, Badge } from "@nation3/ui-components";
+import { Button } from "@nation3/ui-components/";
 import { Modal } from "flowbite-react";
 import { NotEnoughBalanceAlert } from "../../alerts";
 import { useToken, useAgreementJoin } from "../../../hooks/useAgreement";

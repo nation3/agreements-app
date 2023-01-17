@@ -1,1 +1,1 @@
-export { AddressDisplay } from "./Address";
+export * from "./AddressDisplay";

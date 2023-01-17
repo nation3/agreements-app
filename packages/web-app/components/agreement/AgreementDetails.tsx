@@ -7,8 +7,8 @@ import {
 	Badge,
 	Button,
 	ActionBadge,
-	AddressDisplay,
 	utils as n3utils,
+	AddressDisplay,
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
 import { useProvider } from "wagmi";

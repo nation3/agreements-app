@@ -1,15 +1,14 @@
 import React from "react";
 import { ReactNode } from "react";
-import Nation3Logo from "../Atoms/Nation3Logo";
 import AppHeader from "../Molecules/AppHeader";
 import { NavButton, NavButtonProps } from "../Molecules/buttons";
 
-export type NavItem = Pick<NavButtonProps, "route" | "icon" | "label">;
+export type SideNavItem = Pick<NavButtonProps, "route" | "icon" | "label">;
 
 export interface SideBarProps extends Pick<NavButtonProps, "onRoute"> {
 	title: string;
 	appName: string;
-	navItems: NavItem[];
+	navItems: SideNavItem[];
 	isActiveRoute: (route: string) => boolean;
 	connectionButton?: ReactNode;
 }

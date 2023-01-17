@@ -2,8 +2,7 @@ import React from "react";
 import { ScreenType, useScreen } from "../../hooks/useScreen";
 import BottonNav from "./BottomNav";
 import { SideNav } from "./SideNav";
-import TopBar from "./TopBar";
-import { NavBarProps } from "../../Templates/layout/DefaultLayout";
+import { NavBarProps } from "../../Templates/defaultLayout/DefaultLayout";
 
 export const NavBar = ({ ...props }: NavBarProps) => {
 	const { screen } = useScreen();

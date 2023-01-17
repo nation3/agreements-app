@@ -18,14 +18,6 @@ export interface NavBarProps extends Pick<NavButtonProps, "onRoute"> {
 	isActiveRoute: (route: string) => boolean;
 	connectionButton?: ReactNode;
 }
-/* 
-const navItems = [
-	{
-		route: "/agreements",
-		icon: <PencilSquareIcon className="w-5 h-5" />,
-		label: "Agreements",
-	},
-]; */
 
 export const DefaultLayout = ({ children, ...props }: DefaultLayoutProps) => {
 	const { title, appName, connectionButton } = props;

@@ -3,10 +3,11 @@ import { AccountButton, ButtonBase } from "@nation3/ui-components";
 import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow-me/rainbowkit";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 	return ensImage ? (
-		<img src={ensImage} width={30} height={30} alt="ENS Avatar" className={`rounded-full`} />
+		<Image src={ensImage} width={30} height={30} alt="ENS Avatar" className={`rounded-full`} />
 	) : (
 		<Blockies seed={address} size={size} className="overflow-hidden rounded-full" />
 	);

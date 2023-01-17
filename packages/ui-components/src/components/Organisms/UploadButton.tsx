@@ -1,9 +1,8 @@
 import React from "react";
-
 import { ArrowUpTrayIcon } from "@heroicons/react/20/solid";
-import { Button, ButtonProps } from "./Button";
+import { Button, ButtonProps } from "../Molecules/buttons/Button";
 import { useState } from "react";
-import { UploadModal, UploadModalProps } from "../../Organisms/modals/UploadModal";
+import { UploadModal, UploadModalProps } from "./modals/UploadModal";
 
 export interface UploadButtonProps
 	extends Pick<ButtonProps, "label">,
