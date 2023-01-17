@@ -1,7 +1,7 @@
 import React from "react";
-import { DefaultLayout } from "../../src/Templates/layout/DefaultLayout";
 import { ConnectButton } from "../../../web-app/components/ConnectButton";
 import { Button } from "../../src/components/Molecules/buttons/Button";
+import { DefaultLayout } from "../../src/Templates/defaultLayout/DefaultLayout";
 
 export default {
 	title: "Templates/Layout",

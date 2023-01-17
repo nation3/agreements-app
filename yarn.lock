@@ -2633,7 +2633,7 @@
     "@safe-global/safe-core-sdk-utils" "^1.6.0"
     ethers "5.7.2"
 
-"@safe-global/safe-service-client@^1.4.0":
+"@safe-global/safe-service-client@^1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@safe-global/safe-service-client/-/safe-service-client-1.5.0.tgz#83bbeb261841733b031428bfd527fbad7ad2ba67"
   integrity sha512-Ra0ZbkBH4YjD8Rq4YONgsxH05yIK8trdPZdS8ou2ZxPuEAKymnPWCjU5qEhpEvDBVv9INrYHcXjlP7o6WfqJRw==
