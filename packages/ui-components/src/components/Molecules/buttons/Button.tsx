@@ -45,9 +45,10 @@ export const Button = (props: ButtonProps) => {
 		<ButtonBase
 			className={cx(
 				"px-2 py-3 transition-colors gap-1 tracking-wide text-base font-medium border-2",
-				disabled && "opacity-30",
+				disabled && "bg-bluesky-100 border-bluesky-100",
+				!disabled && "bg-bluesky-500 border-bluesky-500",
 				outlined &&
-					`bg-white text-bluesky-400 hover:text-white hover:bg-bluesky-500 hover:border-bluesky-500`,
+					`bg-white border-bluesky-500 text-bluesky-400 hover:text-white hover:bg-bluesky-500`,
 				!outlined && "text-white bg-bluesky-400 border-bluesky-400",
 				`${className && className}`,
 			)}

@@ -40,7 +40,14 @@ export const DefaultLayout = ({ children, ...props }: DefaultLayoutProps) => {
 						"grow flex min-h-screen w-full px-4 pt-2 pb-24 lg:pt-4 lg:pb-4 justify-center",
 					)}
 				>
-					<div className={cx(screen === ScreenType.Desktop ? "pt-28" : "pt-24")}>{children}</div>
+					<div
+						className={cx(
+							screen === ScreenType.Desktop ? "pt-28" : "pt-24",
+							"w-full flex justify-center",
+						)}
+					>
+						{children}
+					</div>
 				</div>
 			</div>
 		</div>
