@@ -1,7 +1,7 @@
-import React, { HTMLAttributes, ReactNode } from "react";
-import { Tooltip, TooltipProps } from "flowbite-react";
+import React, { ReactNode } from "react";
+import { Tooltip } from "flowbite-react";
 
-export interface ActionBadgeProps extends HTMLAttributes<HTMLSpanElement> {
+export interface ActionBadgeProps {
 	label?: ReactNode;
 	data?: ReactNode;
 	icon?: ReactNode;
