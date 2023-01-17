@@ -1,8 +1,7 @@
 import { SafeTransaction } from "@safe-global/safe-core-sdk-types";
 import Safe from "@safe-global/safe-core-sdk";
-import SafeServiceClient, {
-	SafeMultisigConfirmationResponse,
-} from "@safe-global/safe-service-client";
+import { SafeMultisigConfirmationResponse } from "@safe-global/safe-core-sdk-types";
+import SafeServiceClient from "@safe-global/safe-service-client";
 import EthersAdapter from "@safe-global/safe-ethers-lib";
 import { arbitratorAddress, cohortAddress, safeTxServiceUrl } from "../lib/constants";
 import { useEffect, useState } from "react";

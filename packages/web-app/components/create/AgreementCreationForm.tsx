@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ArrowLongRightIcon, PlusIcon, MinusIcon } from "@heroicons/react/20/solid";
+import { PlusIcon, MinusIcon } from "@heroicons/react/20/solid";
 import { Button, IconButton, DropInput, InfoAlert } from "@nation3/ui-components";
 import { utils } from "ethers";
 import { useProvider } from "wagmi";

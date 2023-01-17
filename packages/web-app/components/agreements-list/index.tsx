@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Table, utils, Badge } from "@nation3/ui-components";
 import { ethers, BigNumber } from "ethers";
 
-import { ScaleIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 import { useAgreementList } from "./context/AgreementListContext";
 import courtIll from "./../../public/court-ill.png";

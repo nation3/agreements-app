@@ -16,7 +16,7 @@ export const JoinableAgreementActions = ({
 	id: string;
 	userPosition: UserPosition;
 }) => {
-	const [isJoinAgreementStarted, setisJoinAgreementStarted] = useState<boolean>(false);
+	// const [isJoinAgreementStarted, setisJoinAgreementStarted] = useState<boolean>(false);
 	const [isAgreementIdCopied, setIsAgreementIdCopied] = useState<boolean>(false);
 	const { address } = useAccount();
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
@@ -64,7 +64,7 @@ export const JoinableAgreementActions = ({
 		}
 	}, [accountTokenAllowance, requiredBalance]);
 
-	const steps = [{}];
+	// const steps = [{}];
 
 	const copyAgreementId = useCallback(() => {
 		if (id) {
