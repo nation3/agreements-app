@@ -5,7 +5,7 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
 export const Card = ({ children, className }: CardProps) => {
 	return (
-		<div className={`p-6 w-full md:max-w-2xl bg-white rounded-lg shadow-md ${className}`}>
+		<div className={`p-6 w-full md:max-w-3xl bg-white rounded-lg shadow-md ${className}`}>
 			{children}
 		</div>
 	);

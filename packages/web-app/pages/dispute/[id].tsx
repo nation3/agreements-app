@@ -10,7 +10,7 @@ const DisputePage = () => {
 	const { query } = router;
 
 	return (
-		<div className="w-full max-w-2xl">
+		<div className="w-full max-w-3xl">
 			<DisputeResolutionProvider framework={frameworkAddress} id={String(query.id)}>
 				<BackLinkButton route={"/disputes"} label={"Go back to disputes"} onRoute={router.push} />
 				<Card className="flex flex-col gap-8 w-full text-gray-800">

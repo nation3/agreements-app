@@ -27,7 +27,7 @@ const AgreementPage = () => {
 	const { query } = router;
 
 	return (
-		<div className="w-full max-w-2xl">
+		<div className="w-full max-w-3xl">
 			<AgreementDataProvider id={String(query.id)}>
 				<DisputeResolutionProvider framework={frameworkAddress} id={String(query.id)}>
 					<BackLinkButton

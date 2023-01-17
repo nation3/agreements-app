@@ -89,17 +89,17 @@ const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDis
 			<div className="flex flex-col gap-2 text-gray-700">
 				<AgreementHeader title={title} status={status} />
 				<div className="flex flex-col md:flex-row gap-1 justify-start md:items-center">
-					<Tooltip
-						style="light"
-						animation="duration-150"
-						content={isAgreementId ? "Copied" : "Click to copy"}
-					>
-						<ActionBadge
-							label="ID"
-							data={n3utils.shortenHash(id ?? constants.HashZero)}
-							dataAction={copyAgreementId}
-						/>
-					</Tooltip>
+					<ActionBadge
+						label="ID"
+						tooltip
+						tooltipProps={{
+							style: "light",
+							animation: "duration-150",
+							content: isAgreementId ? "Copied" : "Click to copy",
+						}}
+						data={n3utils.shortenHash(id ?? constants.HashZero)}
+						dataAction={copyAgreementId}
+					/>
 					<div className="flex items-center">
 						<ActionBadge
 							tooltip
