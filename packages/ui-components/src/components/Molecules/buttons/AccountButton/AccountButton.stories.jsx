@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccountButton } from '../../src/components/Molecules/buttons';
+import { AccountButton } from '..';
 
 export default {
     title: 'Molecules/Account Button',

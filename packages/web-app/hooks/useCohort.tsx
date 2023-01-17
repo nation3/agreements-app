@@ -32,6 +32,7 @@ const useSafe = ({
 	useEffect(() => {
 		if (signer) {
 			const ethAdapter = new EthersAdapter({
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				ethers,
 				signerOrProvider: signer,
@@ -138,6 +139,7 @@ export const useResolutionProposals = ({ id }: { id: string }) => {
 			.filter((tx) => tx.data?.startsWith("0x02fd597d"))
 			.map(({ safeTxHash, nonce, confirmationsRequired, confirmations, dataDecoded }) => {
 				// dataDecoded has (string | undefined) as typing when in this case should be (object | undefined)
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				const parameters: SafeDecodedParameters = dataDecoded.parameters ?? [];
 				const resolutionParams: { [key: string]: any } = parameters.reduce(

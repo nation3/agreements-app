@@ -1,11 +1,3 @@
-import {
-	Table,
-	ActionBadge,
-	Badge,
-	AddressDisplay,
-	utils as n3utils,
-	Button,
-} from "@nation3/ui-components";
 import { utils } from "ethers";
 import { Position, useDispute } from "./context/DisputeResolutionContext";
 import { useProvider } from "wagmi";
@@ -14,6 +6,14 @@ import { useCohort } from "../../hooks/useCohort";
 import { useTimeToBlock } from "../../hooks/useTime";
 import { CountDown } from "../../components/CountDown";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import {
+	ActionBadge,
+	AddressDisplay,
+	Badge,
+	Button,
+	Table,
+	utils as n3utils,
+} from "@nation3/ui-components";
 
 const SettlementTable = ({ positions }: { positions: Position[] }) => {
 	const provider = useProvider({ chainId: 1 });
