@@ -1,1 +1,0 @@
-export { AddressDisplay } from "./Address";

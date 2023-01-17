@@ -1,15 +1,18 @@
 // import { useEffect, useMemo } from 'react';
 export { AgreementListProvider } from "./context/AgreementListProvider";
+import Image from "next/image";
 
 import { Table, utils, Badge } from "@nation3/ui-components";
 import { ethers, BigNumber } from "ethers";
 
-import { ScaleIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 import { useAgreementList } from "./context/AgreementListContext";
+import courtIll from "./../../public/court-ill.png";
+import { useScreen, ScreenType } from "../../hooks/useScreen";
 
 export const AgreementList = () => {
 	const router = useRouter();
+	const { screen } = useScreen();
 	const { agreements } = useAgreementList();
 
 	return (
@@ -17,18 +20,32 @@ export const AgreementList = () => {
 			{agreements && agreements.length > 0 ? (
 				<Table
 					className={"max-h-full"}
-					columns={["Id", "Created on", "Your stake", "Status"]}
-					data={agreements.map(({ id, createdAt, userBalance, status }) => [
-						<span key={id}>{utils.shortenHash(id)}</span>,
-						<span key={`${id}-date`}>
-							{new Date(Number(createdAt) * 1000).toLocaleDateString()}
-						</span>,
-						<b key={`${id}-position`}>
-							{" "}
-							{ethers.utils.formatUnits(BigNumber.from(userBalance))} $NATION{" "}
-						</b>,
-						<Badge key={`${id}-status`} label={status} bgColor="slate-300" />,
-					])}
+					columns={
+						screen === ScreenType.Desktop
+							? ["Id", "Created on", "Your stake", "Status"]
+							: ["Id", "Stake"]
+					}
+					data={agreements.map(({ id, createdAt, userBalance, status }) =>
+						screen === ScreenType.Desktop
+							? [
+									<span key={id}>{utils.shortenHash(id)}</span>,
+									<span key={`${id}-date`}>
+										{new Date(Number(createdAt) * 1000).toLocaleDateString()}
+									</span>,
+									<b key={`${id}-position`}>
+										{" "}
+										{ethers.utils.formatUnits(BigNumber.from(userBalance))} $NATION{" "}
+									</b>,
+									<Badge key={`${id}-status`} label={status} bgColor="slate-300" />,
+							  ]
+							: [
+									<span key={id}>{utils.shortenHash(id)}</span>,
+									<b key={`${id}-position`}>
+										{" "}
+										{ethers.utils.formatUnits(BigNumber.from(userBalance))} $NATION{" "}
+									</b>,
+							  ],
+					)}
 					clickHandlers={agreements.map(
 						({ id }) =>
 							() =>
@@ -36,17 +53,28 @@ export const AgreementList = () => {
 					)}
 				/>
 			) : (
-				<div className="flex flex-col items-center justify-center w-full h-full">
-					<div className="flex flex-row items-center justify-center gap-1 max-w-md h-min">
-						<ScaleIcon className="w-64 text-slate-500" strokeWidth="1" />
-						<div>
-							<p className="text-justify">
+				<div className="flex justify-center w-full h-full">
+					<div className="flex flex-col items-center w-full h-full">
+						<div className="w-full flex items-center justify-center my-6">
+							<Image
+								className="w-28"
+								src={courtIll}
+								alt="GFG logo served with static path of public directory"
+							/>
+						</div>
+						<div className="w-full flex justify-center flex-col items-center p-2">
+							<p className="text-slate-400 font-medium text-xl md:w-1/2 tracking-wide text-center">
 								Nation3 has its own system of law, enforced by its own court and secured by economic
 								incentives.
 							</p>
-							<a className="font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent">
-								Learn more →
-							</a>
+							<div className="mt-3">
+								<a
+									className="group font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent cursor-pointer"
+									href="https://docs.nation3.org/jurisdiction/supreme-court"
+								>
+									Learn more <span className="group-hover:ml-1 transition-all">→</span>
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>

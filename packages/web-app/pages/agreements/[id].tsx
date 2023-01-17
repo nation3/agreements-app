@@ -27,7 +27,7 @@ const AgreementPage = () => {
 	const { query } = router;
 
 	return (
-		<div className="w-full max-w-2xl">
+		<div className="w-full max-w-3xl">
 			<AgreementDataProvider id={String(query.id)}>
 				<DisputeResolutionProvider framework={frameworkAddress} id={String(query.id)}>
 					<BackLinkButton
@@ -35,7 +35,7 @@ const AgreementPage = () => {
 						label={"Go back to agreements"}
 						onRoute={router.push}
 					/>
-					<Card className="flex flex-col gap-8 w-full text-gray-800">
+					<Card className="flex flex-col gap-8 w-full justify-center text-gray-800">
 						<Agreement />
 					</Card>
 				</DisputeResolutionProvider>

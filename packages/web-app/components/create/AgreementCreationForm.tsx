@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { ArrowLongRightIcon, PlusIcon, MinusIcon } from "@heroicons/react/20/solid";
+import { PlusIcon, MinusIcon } from "@heroicons/react/20/solid";
 import { Button, IconButton, DropInput, InfoAlert } from "@nation3/ui-components";
 import { utils } from "ethers";
 import { useProvider } from "wagmi";
@@ -26,15 +26,18 @@ export const AgreementCreationForm = () => {
 			</div>
 			<div className="flex flex-col gap-4">
 				<div>
-					<h2 className="font-display font-medium text-xl">Agreement Terms</h2>
+					<h2 className="font-display font-medium text-xl">1. Agreement Terms</h2>
 					<p>
 						These are the terms that the parties who enter the agreement will abide by. If one of
 						the parties fails to comply with these terms, their financial stake can be taken away to
 						compensate the other parties. The terms must be written in Markdown.
 					</p>
-					<a className="flex w-fit items-center gap-0.5 font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent">
+					<a
+						className="group flex w-fit items-center gap-0.5 font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent mt-2 cursor-pointer"
+						href="https://docs.nation3.org/agreements/creating-an-agreement"
+					>
 						Learn more
-						<ArrowLongRightIcon className="w-5 h-5 text-greensea" />
+						<span className="group-hover:ml-1 transition-all">→</span>
 					</a>
 				</div>
 				<div className="flex flex-col gap-2">
@@ -50,9 +53,10 @@ export const AgreementCreationForm = () => {
 					/>
 				</div>
 			</div>
+			<hr />
 			<div className="flex flex-col gap-4">
 				<div>
-					<h2 className="font-display font-medium text-xl">Positions and stakes</h2>
+					<h2 className="font-display font-medium text-xl">2. Positions and stakes</h2>
 					<p>
 						These are the participants that can enter the agreement, and how much $NATION they must
 						deposit to enter it.

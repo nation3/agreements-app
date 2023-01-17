@@ -1,8 +1,7 @@
 import { SafeTransaction } from "@safe-global/safe-core-sdk-types";
 import Safe from "@safe-global/safe-core-sdk";
-import SafeServiceClient, {
-	SafeMultisigConfirmationResponse,
-} from "@safe-global/safe-service-client";
+import { SafeMultisigConfirmationResponse } from "@safe-global/safe-core-sdk-types";
+import SafeServiceClient from "@safe-global/safe-service-client";
 import EthersAdapter from "@safe-global/safe-ethers-lib";
 import { arbitratorAddress, cohortAddress, safeTxServiceUrl } from "../lib/constants";
 import { useEffect, useState } from "react";
@@ -33,6 +32,7 @@ const useSafe = ({
 	useEffect(() => {
 		if (signer) {
 			const ethAdapter = new EthersAdapter({
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				ethers,
 				signerOrProvider: signer,
@@ -139,6 +139,7 @@ export const useResolutionProposals = ({ id }: { id: string }) => {
 			.filter((tx) => tx.data?.startsWith("0x02fd597d"))
 			.map(({ safeTxHash, nonce, confirmationsRequired, confirmations, dataDecoded }) => {
 				// dataDecoded has (string | undefined) as typing when in this case should be (object | undefined)
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				const parameters: SafeDecodedParameters = dataDecoded.parameters ?? [];
 				const resolutionParams: { [key: string]: any } = parameters.reduce(

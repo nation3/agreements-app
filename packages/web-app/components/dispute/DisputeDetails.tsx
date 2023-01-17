@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import {
 	Table,
@@ -21,14 +21,27 @@ export const DisputeDetails = () => {
 	const { data: currentBlock } = useBlockNumber();
 	const { dispute, resolution: approvedResolution, proposedResolutions } = useDispute();
 	const { execute } = useResolutionExecute();
+	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
+	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 
 	const copyAgreementId = useCallback(() => {
-		if (dispute.id) navigator.clipboard.writeText(dispute.id);
+		if (dispute.id) {
+			setIsAgreementId(true);
+			navigator.clipboard.writeText(window.location.href);
+			setTimeout(() => setIsAgreementId(false), 1000);
+		}
 	}, [dispute.id]);
 
 	const copyTermsHash = useCallback(() => {
-		if (dispute.termsHash) navigator.clipboard.writeText(String(dispute.termsHash));
+		if (dispute.termsHash) {
+			setIsHashCopied(true);
+			navigator.clipboard.writeText(String(dispute.termsHash));
+			setTimeout(() => setIsHashCopied(false), 1000);
+		}
 	}, [dispute.termsHash]);
+
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	useEffect(() => {}, [isHashCopied, isAgreementId]);
 
 	const canBeEnacted = useMemo(() => {
 		if (!approvedResolution) return false;
@@ -45,11 +58,23 @@ export const DisputeDetails = () => {
 				</div>
 				<div className="flex flex-col md:flex-row gap-1">
 					<ActionBadge
+						tooltip
+						tooltipProps={{
+							style: "light",
+							animation: "duration-150",
+							content: isAgreementId ? "Copied" : "Click to copy",
+						}}
 						label="ID"
 						data={n3utils.shortenHash(dispute.id ?? constants.HashZero)}
 						dataAction={copyAgreementId}
 					/>
 					<ActionBadge
+						tooltip
+						tooltipProps={{
+							style: "light",
+							animation: "duration-150",
+							content: isHashCopied ? "Copied" : "Click to copy",
+						}}
 						label="Terms hash"
 						data={n3utils.shortenHash(dispute.termsHash ?? constants.HashZero)}
 						dataAction={copyTermsHash}
