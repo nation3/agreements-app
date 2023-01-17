@@ -23,7 +23,6 @@ export const ActionBadge = ({
 	bgColor = "gray-100",
 	dataAction,
 	iconAction,
-	className,
 	...props
 }: ActionBadgeProps) => {
 	const body = (
@@ -38,7 +37,7 @@ export const ActionBadge = ({
 
 	return (
 		<span
-			className={`flex w-fit items-center gap-2 px-1.5 py-1 rounded-lg text-${textColor} bg-${bgColor} ${className}`}
+			className={`flex w-fit items-center gap-2 px-1.5 py-1 rounded-lg text-${textColor} bg-${bgColor}`}
 			{...props}
 		>
 			<span className="pl-1">{label}</span>
