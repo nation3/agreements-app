@@ -1,0 +1,1500 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "name": "Unauthorized",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "termsHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "criteria",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "metadataURI",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "AgreementCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "party",
+          "type": "address"
+        }
+      ],
+      "name": "AgreementDisputed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "AgreementFinalized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "party",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        }
+      ],
+      "name": "AgreementJoined",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "party",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum PositionStatus",
+          "name": "status",
+          "type": "uint8"
+        }
+      ],
+      "name": "AgreementPositionUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newArbitrator",
+          "type": "address"
+        }
+      ],
+      "name": "ArbitrationTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "party",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "balance",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct PositionParams",
+          "name": "newPosition",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct ISignatureTransfer.TokenPermissions",
+              "name": "permitted",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct ISignatureTransfer.PermitTransferFrom",
+          "name": "permit",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        }
+      ],
+      "name": "adjustPosition",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "arbitrator",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "disputeAgreement",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "finalizeAgreement",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "balance",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32[]",
+              "name": "proof",
+              "type": "bytes32[]"
+            }
+          ],
+          "internalType": "struct CriteriaResolver",
+          "name": "resolver",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct ISignatureTransfer.TokenPermissions[]",
+              "name": "permitted",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonce",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct ISignatureTransfer.PermitBatchTransferFrom",
+          "name": "permit",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        }
+      ],
+      "name": "joinAgreement",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "party",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "balance",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct PositionParams[]",
+          "name": "settlement",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "settleDispute",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newArbitrator",
+          "type": "address"
+        }
+      ],
+      "name": "transferArbitration",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        }
+      ],
+      "name": "withdrawFromAgreement",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "adjustPosition(bytes32,(address,uint256),((address,uint256),uint256,uint256),bytes)": "5541e684",
+    "arbitrator()": "6cc6cde1",
+    "disputeAgreement(bytes32)": "061ab0bc",
+    "finalizeAgreement(bytes32)": "8135fe23",
+    "joinAgreement(bytes32,(address,uint256,bytes32[]),((address,uint256)[],uint256,uint256),bytes)": "1bd747a2",
+    "owner()": "8da5cb5b",
+    "settleDispute(bytes32,(address,uint256)[])": "3d3e73d7",
+    "transferArbitration(address)": "ab4f5678",
+    "transferOwnership(address)": "f2fde38b",
+    "withdrawFromAgreement(bytes32)": "186799a4"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.17+commit.8df45f5f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"Unauthorized\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"termsHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"criteria\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"metadataURI\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"AgreementCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"party\",\"type\":\"address\"}],\"name\":\"AgreementDisputed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"}],\"name\":\"AgreementFinalized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"party\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"name\":\"AgreementJoined\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"party\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enum PositionStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"name\":\"AgreementPositionUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newArbitrator\",\"type\":\"address\"}],\"name\":\"ArbitrationTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"party\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"internalType\":\"struct PositionParams\",\"name\":\"newPosition\",\"type\":\"tuple\"},{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"struct ISignatureTransfer.TokenPermissions\",\"name\":\"permitted\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"internalType\":\"struct ISignatureTransfer.PermitTransferFrom\",\"name\":\"permit\",\"type\":\"tuple\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"adjustPosition\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"arbitrator\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"}],\"name\":\"disputeAgreement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"}],\"name\":\"finalizeAgreement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"},{\"internalType\":\"bytes32[]\",\"name\":\"proof\",\"type\":\"bytes32[]\"}],\"internalType\":\"struct CriteriaResolver\",\"name\":\"resolver\",\"type\":\"tuple\"},{\"components\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"internalType\":\"struct ISignatureTransfer.TokenPermissions[]\",\"name\":\"permitted\",\"type\":\"tuple[]\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"internalType\":\"struct ISignatureTransfer.PermitBatchTransferFrom\",\"name\":\"permit\",\"type\":\"tuple\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"joinAgreement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"party\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"}],\"internalType\":\"struct PositionParams[]\",\"name\":\"settlement\",\"type\":\"tuple[]\"}],\"name\":\"settleDispute\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newArbitrator\",\"type\":\"address\"}],\"name\":\"transferArbitration\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"}],\"name\":\"withdrawFromAgreement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"events\":{\"ArbitrationTransferred(address)\":{\"params\":{\"newArbitrator\":\"Address of the new arbitrator.\"}}},\"kind\":\"dev\",\"methods\":{\"adjustPosition(bytes32,(address,uint256),((address,uint256),uint256,uint256),bytes)\":{\"params\":{\"id\":\"Id of the agreement to adjust the position from.\",\"newPosition\":\"Position params to adjust.\",\"permit\":\"Permit2 permit to allow the required token transfers.\",\"signature\":\"Signature of the permit.\"}},\"disputeAgreement(bytes32)\":{\"params\":{\"id\":\"Id of the agreement to dispute.\"}},\"finalizeAgreement(bytes32)\":{\"params\":{\"id\":\"Id of the agreement to settle.\"}},\"joinAgreement(bytes32,(address,uint256,bytes32[]),((address,uint256)[],uint256,uint256),bytes)\":{\"params\":{\"id\":\"Id of the agreement to join.\",\"permit\":\"Permit2 batched permit to allow the required token transfers.\",\"resolver\":\"Criteria data to prove sender can join agreement.\",\"signature\":\"Signature of the permit.\"}},\"settleDispute(bytes32,(address,uint256)[])\":{\"params\":{\"id\":\"Id of the dispute to settle.\",\"settlement\":\"Array of PositionParams to set as final positions.\"}},\"transferArbitration(address)\":{\"params\":{\"newArbitrator\":\"Address of the new arbitrator.\"}},\"transferOwnership(address)\":{\"params\":{\"newOwner\":\"Address of the new owner.\"}},\"withdrawFromAgreement(bytes32)\":{\"params\":{\"id\":\"Id of the agreement to withdraw from.\"}}},\"version\":1},\"userdoc\":{\"events\":{\"ArbitrationTransferred(address)\":{\"notice\":\"Raised when the arbitration power is transferred.\"},\"OwnershipTransferred(address,address)\":{\"notice\":\"Raised when the ownership is transferred.\"}},\"kind\":\"user\",\"methods\":{\"adjustPosition(bytes32,(address,uint256),((address,uint256),uint256,uint256),bytes)\":{\"notice\":\"Adjust a position part of an agreement.\"},\"arbitrator()\":{\"notice\":\"Address capable of settling disputes.\"},\"disputeAgreement(bytes32)\":{\"notice\":\"Raise a dispute over an agreement.\"},\"finalizeAgreement(bytes32)\":{\"notice\":\"Signal the will of the caller to finalize an agreement.\"},\"joinAgreement(bytes32,(address,uint256,bytes32[]),((address,uint256)[],uint256,uint256),bytes)\":{\"notice\":\"Join an existing agreement with a signed permit.\"},\"owner()\":{\"notice\":\"Address that owns the contract.\"},\"settleDispute(bytes32,(address,uint256)[])\":{\"notice\":\"Settles the dispute `id` with the provided settlement.\"},\"transferArbitration(address)\":{\"notice\":\"Transfer the arbitration power of the agreement.\"},\"transferOwnership(address)\":{\"notice\":\"Transfer the ownership of the contract.\"},\"withdrawFromAgreement(bytes32)\":{\"notice\":\"Withdraw your position from the agreement.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/frameworks/AgreementFramework.sol\":\"AgreementFramework\"},\"evmVersion\":\"london\",\"libraries\":{\"src/libraries/CriteriaResolution.sol:CriteriaResolution\":\"0x214b6331a42a61070a10918a7b353097d994a3a2\"},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":2000},\"remappings\":[\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-gas-snapshot/=lib/permit2/lib/forge-gas-snapshot/src/\",\":forge-std/=lib/forge-std/src/\",\":murky/=lib/murky/src/\",\":openzeppelin-contracts/=lib/murky/lib/openzeppelin-contracts/\",\":permit2/=lib/permit2/\",\":solmate/=lib/solmate/\"],\"viaIR\":true},\"sources\":{\"lib/permit2/src/interfaces/ISignatureTransfer.sol\":{\"keccak256\":\"0xbab1c35f0a63761be6b50a9a2ce2459b63f09587dd9c6ac46955252a1a04f43c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://225dca1a3d91c0737fe75c72bfecae391fc2e7b2eb2ebe1a154bfb16a7527972\",\"dweb:/ipfs/QmdGQdUCANKZ6S23TyHDtBnGvr6CtyyqNNcziVTjEHJ5rk\"]},\"src/frameworks/AgreementFramework.sol\":{\"keccak256\":\"0xb8a3ee357f60a913638d81d07dacd3e91e9cf024aef0cc66a49fa37c114d00e1\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://d3ab1e72532e9f3aadcaa3baa4f2cf0b807f824f6dbf50a8d2d7250b750b7a4f\",\"dweb:/ipfs/QmNui5CtwZYUCaXVjG3CkZRWQHMLeqdVqsT46zxXRE639B\"]},\"src/interfaces/AgreementTypes.sol\":{\"keccak256\":\"0x5c6df190e79046890852190e9f3eefea41850eb8cc72be4209ab3445d628b860\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://e6f2ae444a24849774a0c2c43f6148c71ec0198568356cd99fabcf9ad2b21160\",\"dweb:/ipfs/QmNVhem2KimbhXs6EWTqZ37jqfcTVUPDhAyojJv2KqnP4e\"]},\"src/interfaces/CriteriaTypes.sol\":{\"keccak256\":\"0x8c8226c5aac09c8dada8f76dcb15bd55cd8bd871b22a4be3bc6b72db655b6306\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://eabc3ee411827a1060d1d16df120df7c8dcccce5d22625a259cb17aaaad9de32\",\"dweb:/ipfs/QmTLYMEJPjqbL5CPqLyM2UWyroVQzgPf2Wq4iPRAL4qu38\"]},\"src/interfaces/IAgreementFramework.sol\":{\"keccak256\":\"0x61901bf2d800e072136a83c7973f6d47f87435ae4609b49dc6cb30bae67c6811\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://0491fcad16ebbe097c4e6c4c12693900b6b202446b32336525668052db79ffc0\",\"dweb:/ipfs/QmQwL335uHGa2iBSoQGxBPqwUWgidx1BY2bvvR6TjSWKRk\"]},\"src/interfaces/IArbitrable.sol\":{\"keccak256\":\"0x02bf91c7917e02827bf05e9aa12e5970a92f31dcfc90fe53e07e9d05ff4f860a\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://ebd2f23aa9982daa9263f5e44f1a0dd8d0ba4a66e8beb424614bc980c4b71ce3\",\"dweb:/ipfs/QmbtG2EhFWgNAdXHZqv6C2VQbLD38Wp8z5A6kxFRNQbTqT\"]},\"src/utils/Owned.sol\":{\"keccak256\":\"0x7734d8c9fefc0abb51af8a97bdd7e8a22418ae5e597a63c3ca7c9b1cbce0a23c\",\"license\":\"GPL-3.0-or-later\",\"urls\":[\"bzz-raw://dcba4eaeadcabc6b2e330c290626c7fe8b93b0476b08114445f6520ff3ced50e\",\"dweb:/ipfs/QmRedpupiw3iQWCDEfG5yhmVytdQH1H59mqiVXcitzJPaF\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.17+commit.8df45f5f"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "Unauthorized"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "bytes32",
+              "name": "termsHash",
+              "type": "bytes32",
+              "indexed": false
+            },
+            {
+              "internalType": "uint256",
+              "name": "criteria",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "string",
+              "name": "metadataURI",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "AgreementCreated",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "party",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "AgreementDisputed",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "AgreementFinalized",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "party",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "balance",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "AgreementJoined",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "party",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "balance",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "enum PositionStatus",
+              "name": "status",
+              "type": "uint8",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "AgreementPositionUpdated",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "newArbitrator",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "ArbitrationTransferred",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "OwnershipTransferred",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "struct PositionParams",
+              "name": "newPosition",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "party",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "balance",
+                  "type": "uint256"
+                }
+              ]
+            },
+            {
+              "internalType": "struct ISignatureTransfer.PermitTransferFrom",
+              "name": "permit",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "struct ISignatureTransfer.TokenPermissions",
+                  "name": "permitted",
+                  "type": "tuple",
+                  "components": [
+                    {
+                      "internalType": "address",
+                      "name": "token",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "amount",
+                      "type": "uint256"
+                    }
+                  ]
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nonce",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "adjustPosition"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "arbitrator",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "disputeAgreement"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "finalizeAgreement"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "struct CriteriaResolver",
+              "name": "resolver",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "balance",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes32[]",
+                  "name": "proof",
+                  "type": "bytes32[]"
+                }
+              ]
+            },
+            {
+              "internalType": "struct ISignatureTransfer.PermitBatchTransferFrom",
+              "name": "permit",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "struct ISignatureTransfer.TokenPermissions[]",
+                  "name": "permitted",
+                  "type": "tuple[]",
+                  "components": [
+                    {
+                      "internalType": "address",
+                      "name": "token",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "amount",
+                      "type": "uint256"
+                    }
+                  ]
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "nonce",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "deadline",
+                  "type": "uint256"
+                }
+              ]
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "joinAgreement"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "owner",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "struct PositionParams[]",
+              "name": "settlement",
+              "type": "tuple[]",
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "party",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "balance",
+                  "type": "uint256"
+                }
+              ]
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "settleDispute"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "newArbitrator",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "transferArbitration"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "transferOwnership"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "withdrawFromAgreement"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "adjustPosition(bytes32,(address,uint256),((address,uint256),uint256,uint256),bytes)": {
+            "params": {
+              "id": "Id of the agreement to adjust the position from.",
+              "newPosition": "Position params to adjust.",
+              "permit": "Permit2 permit to allow the required token transfers.",
+              "signature": "Signature of the permit."
+            }
+          },
+          "disputeAgreement(bytes32)": {
+            "params": {
+              "id": "Id of the agreement to dispute."
+            }
+          },
+          "finalizeAgreement(bytes32)": {
+            "params": {
+              "id": "Id of the agreement to settle."
+            }
+          },
+          "joinAgreement(bytes32,(address,uint256,bytes32[]),((address,uint256)[],uint256,uint256),bytes)": {
+            "params": {
+              "id": "Id of the agreement to join.",
+              "permit": "Permit2 batched permit to allow the required token transfers.",
+              "resolver": "Criteria data to prove sender can join agreement.",
+              "signature": "Signature of the permit."
+            }
+          },
+          "settleDispute(bytes32,(address,uint256)[])": {
+            "params": {
+              "id": "Id of the dispute to settle.",
+              "settlement": "Array of PositionParams to set as final positions."
+            }
+          },
+          "transferArbitration(address)": {
+            "params": {
+              "newArbitrator": "Address of the new arbitrator."
+            }
+          },
+          "transferOwnership(address)": {
+            "params": {
+              "newOwner": "Address of the new owner."
+            }
+          },
+          "withdrawFromAgreement(bytes32)": {
+            "params": {
+              "id": "Id of the agreement to withdraw from."
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "adjustPosition(bytes32,(address,uint256),((address,uint256),uint256,uint256),bytes)": {
+            "notice": "Adjust a position part of an agreement."
+          },
+          "arbitrator()": {
+            "notice": "Address capable of settling disputes."
+          },
+          "disputeAgreement(bytes32)": {
+            "notice": "Raise a dispute over an agreement."
+          },
+          "finalizeAgreement(bytes32)": {
+            "notice": "Signal the will of the caller to finalize an agreement."
+          },
+          "joinAgreement(bytes32,(address,uint256,bytes32[]),((address,uint256)[],uint256,uint256),bytes)": {
+            "notice": "Join an existing agreement with a signed permit."
+          },
+          "owner()": {
+            "notice": "Address that owns the contract."
+          },
+          "settleDispute(bytes32,(address,uint256)[])": {
+            "notice": "Settles the dispute `id` with the provided settlement."
+          },
+          "transferArbitration(address)": {
+            "notice": "Transfer the arbitration power of the agreement."
+          },
+          "transferOwnership(address)": {
+            "notice": "Transfer the ownership of the contract."
+          },
+          "withdrawFromAgreement(bytes32)": {
+            "notice": "Withdraw your position from the agreement."
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":forge-gas-snapshot/=lib/permit2/lib/forge-gas-snapshot/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":murky/=lib/murky/src/",
+        ":openzeppelin-contracts/=lib/murky/lib/openzeppelin-contracts/",
+        ":permit2/=lib/permit2/",
+        ":solmate/=lib/solmate/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 2000
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/frameworks/AgreementFramework.sol": "AgreementFramework"
+      },
+      "libraries": {
+        "src/libraries/CriteriaResolution.sol:CriteriaResolution": "0x214b6331a42a61070a10918a7b353097d994a3a2"
+      },
+      "viaIR": true
+    },
+    "sources": {
+      "lib/permit2/src/interfaces/ISignatureTransfer.sol": {
+        "keccak256": "0xbab1c35f0a63761be6b50a9a2ce2459b63f09587dd9c6ac46955252a1a04f43c",
+        "urls": [
+          "bzz-raw://225dca1a3d91c0737fe75c72bfecae391fc2e7b2eb2ebe1a154bfb16a7527972",
+          "dweb:/ipfs/QmdGQdUCANKZ6S23TyHDtBnGvr6CtyyqNNcziVTjEHJ5rk"
+        ],
+        "license": "MIT"
+      },
+      "src/frameworks/AgreementFramework.sol": {
+        "keccak256": "0xb8a3ee357f60a913638d81d07dacd3e91e9cf024aef0cc66a49fa37c114d00e1",
+        "urls": [
+          "bzz-raw://d3ab1e72532e9f3aadcaa3baa4f2cf0b807f824f6dbf50a8d2d7250b750b7a4f",
+          "dweb:/ipfs/QmNui5CtwZYUCaXVjG3CkZRWQHMLeqdVqsT46zxXRE639B"
+        ],
+        "license": "GPL-3.0-or-later"
+      },
+      "src/interfaces/AgreementTypes.sol": {
+        "keccak256": "0x5c6df190e79046890852190e9f3eefea41850eb8cc72be4209ab3445d628b860",
+        "urls": [
+          "bzz-raw://e6f2ae444a24849774a0c2c43f6148c71ec0198568356cd99fabcf9ad2b21160",
+          "dweb:/ipfs/QmNVhem2KimbhXs6EWTqZ37jqfcTVUPDhAyojJv2KqnP4e"
+        ],
+        "license": "GPL-3.0-or-later"
+      },
+      "src/interfaces/CriteriaTypes.sol": {
+        "keccak256": "0x8c8226c5aac09c8dada8f76dcb15bd55cd8bd871b22a4be3bc6b72db655b6306",
+        "urls": [
+          "bzz-raw://eabc3ee411827a1060d1d16df120df7c8dcccce5d22625a259cb17aaaad9de32",
+          "dweb:/ipfs/QmTLYMEJPjqbL5CPqLyM2UWyroVQzgPf2Wq4iPRAL4qu38"
+        ],
+        "license": "GPL-3.0-or-later"
+      },
+      "src/interfaces/IAgreementFramework.sol": {
+        "keccak256": "0x61901bf2d800e072136a83c7973f6d47f87435ae4609b49dc6cb30bae67c6811",
+        "urls": [
+          "bzz-raw://0491fcad16ebbe097c4e6c4c12693900b6b202446b32336525668052db79ffc0",
+          "dweb:/ipfs/QmQwL335uHGa2iBSoQGxBPqwUWgidx1BY2bvvR6TjSWKRk"
+        ],
+        "license": "GPL-3.0-or-later"
+      },
+      "src/interfaces/IArbitrable.sol": {
+        "keccak256": "0x02bf91c7917e02827bf05e9aa12e5970a92f31dcfc90fe53e07e9d05ff4f860a",
+        "urls": [
+          "bzz-raw://ebd2f23aa9982daa9263f5e44f1a0dd8d0ba4a66e8beb424614bc980c4b71ce3",
+          "dweb:/ipfs/QmbtG2EhFWgNAdXHZqv6C2VQbLD38Wp8z5A6kxFRNQbTqT"
+        ],
+        "license": "GPL-3.0-or-later"
+      },
+      "src/utils/Owned.sol": {
+        "keccak256": "0x7734d8c9fefc0abb51af8a97bdd7e8a22418ae5e597a63c3ca7c9b1cbce0a23c",
+        "urls": [
+          "bzz-raw://dcba4eaeadcabc6b2e330c290626c7fe8b93b0476b08114445f6520ff3ced50e",
+          "dweb:/ipfs/QmRedpupiw3iQWCDEfG5yhmVytdQH1H59mqiVXcitzJPaF"
+        ],
+        "license": "GPL-3.0-or-later"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "src/frameworks/AgreementFramework.sol",
+    "id": 29935,
+    "exportedSymbols": {
+      "AgreementFramework": [
+        29934
+      ],
+      "IAgreementFramework": [
+        31493
+      ],
+      "IArbitrable": [
+        31518
+      ],
+      "Owned": [
+        31836
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "45:836:36",
+    "nodes": [
+      {
+        "id": 29898,
+        "nodeType": "PragmaDirective",
+        "src": "45:24:36",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".17"
+        ]
+      },
+      {
+        "id": 29900,
+        "nodeType": "ImportDirective",
+        "src": "71:59:36",
+        "nodes": [],
+        "absolutePath": "src/interfaces/IArbitrable.sol",
+        "file": "src/interfaces/IArbitrable.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 29935,
+        "sourceUnit": 31519,
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 29899,
+              "name": "IArbitrable",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 31518,
+              "src": "79:11:36",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "id": 29902,
+        "nodeType": "ImportDirective",
+        "src": "131:75:36",
+        "nodes": [],
+        "absolutePath": "src/interfaces/IAgreementFramework.sol",
+        "file": "src/interfaces/IAgreementFramework.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 29935,
+        "sourceUnit": 31494,
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 29901,
+              "name": "IAgreementFramework",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 31493,
+              "src": "139:19:36",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "id": 29904,
+        "nodeType": "ImportDirective",
+        "src": "207:42:36",
+        "nodes": [],
+        "absolutePath": "src/utils/Owned.sol",
+        "file": "src/utils/Owned.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 29935,
+        "sourceUnit": 31837,
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 29903,
+              "name": "Owned",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 31836,
+              "src": "215:5:36",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "id": 29934,
+        "nodeType": "ContractDefinition",
+        "src": "251:629:36",
+        "nodes": [
+          {
+            "id": 29911,
+            "nodeType": "VariableDeclaration",
+            "src": "356:25:36",
+            "nodes": [],
+            "baseFunctions": [
+              31507
+            ],
+            "constant": false,
+            "documentation": {
+              "id": 29909,
+              "nodeType": "StructuredDocumentation",
+              "src": "324:27:36",
+              "text": "@inheritdoc IArbitrable"
+            },
+            "functionSelector": "6cc6cde1",
+            "mutability": "mutable",
+            "name": "arbitrator",
+            "nameLocation": "371:10:36",
+            "scope": 29934,
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 29910,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "356:7:36",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "id": 29916,
+            "nodeType": "EventDefinition",
+            "src": "514:60:36",
+            "nodes": [],
+            "anonymous": false,
+            "documentation": {
+              "id": 29912,
+              "nodeType": "StructuredDocumentation",
+              "src": "388:121:36",
+              "text": "@notice Raised when the arbitration power is transferred.\n @param newArbitrator Address of the new arbitrator."
+            },
+            "eventSelector": "15751365e25548da6591a182cf680d8c896ca976a2fd6e5f845bc86b4a81002f",
+            "name": "ArbitrationTransferred",
+            "nameLocation": "520:22:36",
+            "parameters": {
+              "id": 29915,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 29914,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "newArbitrator",
+                  "nameLocation": "559:13:36",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 29916,
+                  "src": "543:29:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 29913,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "543:7:36",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "542:31:36"
+            }
+          },
+          {
+            "id": 29933,
+            "nodeType": "FunctionDefinition",
+            "src": "705:173:36",
+            "nodes": [],
+            "body": {
+              "id": 29932,
+              "nodeType": "Block",
+              "src": "782:96:36",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "id": 29926,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 29924,
+                      "name": "arbitrator",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 29911,
+                      "src": "792:10:36",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 29925,
+                      "name": "newArbitrator",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 29919,
+                      "src": "805:13:36",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "792:26:36",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 29927,
+                  "nodeType": "ExpressionStatement",
+                  "src": "792:26:36"
+                },
+                {
+                  "eventCall": {
+                    "arguments": [
+                      {
+                        "id": 29929,
+                        "name": "newArbitrator",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 29919,
+                        "src": "857:13:36",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "id": 29928,
+                      "name": "ArbitrationTransferred",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 29916,
+                      "src": "834:22:36",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_address_$returns$__$",
+                        "typeString": "function (address)"
+                      }
+                    },
+                    "id": 29930,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "834:37:36",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 29931,
+                  "nodeType": "EmitStatement",
+                  "src": "829:42:36"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 29917,
+              "nodeType": "StructuredDocumentation",
+              "src": "580:120:36",
+              "text": "@notice Transfer the arbitration power of the agreement.\n @param newArbitrator Address of the new arbitrator."
+            },
+            "functionSelector": "ab4f5678",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 29922,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 29921,
+                  "name": "onlyOwner",
+                  "nameLocations": [
+                    "772:9:36"
+                  ],
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 31800,
+                  "src": "772:9:36"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "772:9:36"
+              }
+            ],
+            "name": "transferArbitration",
+            "nameLocation": "714:19:36",
+            "parameters": {
+              "id": 29920,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 29919,
+                  "mutability": "mutable",
+                  "name": "newArbitrator",
+                  "nameLocation": "742:13:36",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 29933,
+                  "src": "734:21:36",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 29918,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "734:7:36",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "733:23:36"
+            },
+            "returnParameters": {
+              "id": 29923,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "782:0:36"
+            },
+            "scope": 29934,
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          }
+        ],
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 29905,
+              "name": "IAgreementFramework",
+              "nameLocations": [
+                "291:19:36"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 31493,
+              "src": "291:19:36"
+            },
+            "id": 29906,
+            "nodeType": "InheritanceSpecifier",
+            "src": "291:19:36"
+          },
+          {
+            "baseName": {
+              "id": 29907,
+              "name": "Owned",
+              "nameLocations": [
+                "312:5:36"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 31836,
+              "src": "312:5:36"
+            },
+            "id": 29908,
+            "nodeType": "InheritanceSpecifier",
+            "src": "312:5:36"
+          }
+        ],
+        "canonicalName": "AgreementFramework",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          29934,
+          31836,
+          31493,
+          31518
+        ],
+        "name": "AgreementFramework",
+        "nameLocation": "269:18:36",
+        "scope": 29935,
+        "usedErrors": [
+          31785
+        ]
+      }
+    ],
+    "license": "GPL-3.0-or-later"
+  },
+  "id": 36
+}

@@ -1,8 +1,8 @@
 import { BigNumber, utils } from "ethers";
 import { useMemo } from "react";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
-import frameworkInterface from "../abis/IAgreementFramework.json";
 import tokenInterface from "../abis/ERC20.json";
+import frameworkInterface from "../abis/CollateralAgreementFramework.json";
 import { Resolver } from "../utils/criteria";
 import { frameworkAddress } from "../lib/constants";
 
