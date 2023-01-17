@@ -2,13 +2,12 @@
 export { AgreementListProvider } from "./context/AgreementListProvider";
 import Image from "next/image";
 
-import { Table, utils, Badge } from "@nation3/ui-components";
+import { Table, utils, Badge, useScreen, ScreenType } from "@nation3/ui-components";
 import { ethers, BigNumber } from "ethers";
 
 import { useRouter } from "next/router";
 import { useAgreementList } from "./context/AgreementListContext";
 import courtIll from "./../../public/court-ill.png";
-import { useScreen, ScreenType } from "../../hooks/useScreen";
 
 export const AgreementList = () => {
 	const router = useRouter();

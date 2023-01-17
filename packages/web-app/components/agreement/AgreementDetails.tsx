@@ -9,13 +9,14 @@ import {
 	ActionBadge,
 	utils as n3utils,
 	AddressDisplay,
+    useScreen,
+    ScreenType
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
 import { useProvider } from "wagmi";
 import { Tooltip, Badge as FlowBadge, Modal, TooltipProps } from "flowbite-react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { AgreementConstants } from "./AgreementConstants";
-import { useScreen, ScreenType } from "../../hooks/useScreen";
 
 interface AgreementDataDisplayProps {
 	id: string;

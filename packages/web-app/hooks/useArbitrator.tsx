@@ -8,7 +8,7 @@ import { ethers, BigNumber } from "ethers";
 const arbitratorAbi = Arbitrator.abi;
 export const arbitratorInterface = new ethers.utils.Interface(arbitratorAbi);
 
-type ResolutionData = { status: string; mark: string; metadataURI: string; unlockBlock: number };
+type ResolutionData = { status: string; mark: string; metadataURI: string; unlockTime: number };
 
 export type ResolutionInput = {
 	framework: string;
@@ -51,7 +51,7 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 				status: statusMessage(parseInt(rawResolution[0])),
 				mark: String(rawResolution[1]),
 				metadataURI: String(rawResolution[2]),
-				unlockBlock: BigNumber.from(rawResolution[3]).toNumber(),
+				unlockTime: BigNumber.from(rawResolution[3]).toNumber(),
 			};
 		}
 	}, [rawResolution]);
