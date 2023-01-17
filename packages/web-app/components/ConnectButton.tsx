@@ -49,7 +49,7 @@ export const ConnectButton = () => {
 							if (!connected) {
 								return (
 									<ButtonBase
-										className="gap-1 p-2 px-5 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
+										className="gap-1 p-2 md:px-5 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
 										onClick={openConnectModal}
 									>
 										<span className="hidden pl-2 font-regular tracking-wide md:inline md:mr-2">
@@ -63,11 +63,11 @@ export const ConnectButton = () => {
 							if (chain.unsupported) {
 								return (
 									<ButtonBase
-										className="gap-1 p-3 px-6 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
+										className="gap-1 p-2 md:px-5 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
 										onClick={openChainModal}
 									>
 										<ExclamationTriangleIcon className="w-8 h-8" />
-										<span className="hidden md:inline"> ⚠️ Wrong network</span>
+										<span className="hidden md:inline">Wrong network</span>
 									</ButtonBase>
 								);
 							}
