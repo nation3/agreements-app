@@ -9,14 +9,15 @@ import {
 	ActionBadge,
 	utils as n3utils,
 	AddressDisplay,
-    useScreen,
-    ScreenType
+	useScreen,
+	ScreenType,
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
 import { useProvider } from "wagmi";
 import { Tooltip, Badge as FlowBadge, Modal, TooltipProps } from "flowbite-react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { AgreementConstants } from "./AgreementConstants";
+import { useUrl } from "../../hooks";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -65,11 +66,12 @@ const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDis
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
+	const { url } = useUrl();
 
 	const copyAgreementId = useCallback(() => {
 		if (id) {
 			setIsAgreementId(true);
-			navigator.clipboard.writeText(window.location.href);
+			navigator.clipboard.writeText(url);
 			setTimeout(() => setIsAgreementId(false), 1000);
 		}
 	}, [id]);

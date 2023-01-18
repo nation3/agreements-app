@@ -15,6 +15,7 @@ import { useDispute } from "./context/DisputeResolutionContext";
 import { frameworkAddress } from "../../lib/constants";
 import { useResolutionExecute } from "../../hooks/useArbitrator";
 import { useBlockNumber, useProvider } from "wagmi";
+import { useUrl } from "../../hooks";
 
 export const DisputeDetails = () => {
 	const provider = useProvider({ chainId: 1 });
@@ -24,12 +25,14 @@ export const DisputeDetails = () => {
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 
+	const { url } = useUrl();
+
 	const copyAgreementId = useCallback(() => {
 		if (dispute.id) {
 			setIsAgreementId(true);
-			navigator.clipboard.writeText(window.location.href);
-			setTimeout(() => setIsAgreementId(false), 1000);
-		}
+            navigator.clipboard.writeText(url);
+		    setTimeout(() => setIsAgreementId(false), 1000);
+        }
 	}, [dispute.id]);
 
 	const copyTermsHash = useCallback(() => {
