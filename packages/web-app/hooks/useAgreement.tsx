@@ -8,87 +8,98 @@ import { frameworkAddress } from "../lib/constants";
 const frameworkAbi = frameworkInterface.abi;
 
 const agreementStatus = (status: number) => {
-    switch (status) {
-        case 0:
-            return "Created";
-        case 1:
-            return "Ongoing";
-        case 2:
-            return "Finalized";
-        case 3:
-            return "Disputed";
-        default:
-            return "Unknown";
-    }
-}
-
-export const useAgreementData = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
-    const { data: agreementData } = useContractRead({
-        addressOrName: frameworkAddress,
-        contractInterface: frameworkAbi,
-        functionName: "agreementData",
-        args: [id],
-        enabled,
-    });
-
-    const { data: positions } = useContractRead({
-        addressOrName: frameworkAddress,
-        contractInterface: frameworkAbi,
-        functionName: "agreementPositions",
-        args: [id],
-        enabled,
-    });
-
-    const data = useMemo(() => {
-        return {
-            ...agreementData,
-            status: typeof agreementData?.status === "number"? agreementStatus(agreementData.status) : "Unknown"
-        }
-    }, [agreementData]);
-
-    return { data, positions };
+	switch (status) {
+		case 0:
+			return "Created";
+		case 1:
+			return "Ongoing";
+		case 2:
+			return "Finalized";
+		case 3:
+			return "Disputed";
+		default:
+			return "Unknown";
+	}
 };
 
-export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess?: () => void }) => {
-    const { write, data, ...args } = useContractWrite({
-        mode: "recklesslyUnprepared",
-        addressOrName: frameworkAddress,
-        contractInterface: frameworkAbi,
-        functionName: "createAgreement",
-        onSettled(data, error) {
-            if (onSettledSuccess && data) {
-                onSettledSuccess();
-            } else {
-                console.log(error);
-            }
-        },
-    });
+export const useAgreementData = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
+	const { data: agreementData } = useContractRead({
+		addressOrName: frameworkAddress,
+		contractInterface: frameworkAbi,
+		functionName: "agreementData",
+		args: [id],
+		enabled,
+	});
 
-    const {
-        isLoading: isProcessing,
-    } = useWaitForTransaction({
-        hash: data?.hash,
-    });
+	const { data: positions } = useContractRead({
+		addressOrName: frameworkAddress,
+		contractInterface: frameworkAbi,
+		functionName: "agreementPositions",
+		args: [id],
+		enabled,
+	});
 
-    const create = ({
-        termsHash,
-        criteria,
-        metadataURI,
-        token,
-        salt
-    }: {
-        termsHash: string;
-        criteria: string;
-        metadataURI: string;
-        token: string;
-        salt: string;
-    }) => {
-        write?.({
-            recklesslySetUnpreparedArgs: [{ termsHash, criteria, metadataURI, token }, salt],
-        });
-    };
+	const data = useMemo(() => {
+		return {
+			termsHash: agreementData?.termsHash,
+			criteria: agreementData?.criteria,
+			metadataURI: agreementData?.metadataURI,
+			token: agreementData?.token,
+			status:
+				typeof agreementData?.status === "number"
+					? agreementStatus(agreementData.status)
+					: "Unknown",
+		};
+	}, [agreementData]);
 
-    return { create, isProcessing, data, ...args };
+	return { data, positions };
+};
+
+export const useAgreementCreate = ({
+	onSettledSuccess,
+	onSuccess,
+}: {
+	onSettledSuccess?: () => void;
+	onSuccess?: (data?: unknown) => void;
+}) => {
+	const { write, data, ...args } = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: frameworkAddress,
+		contractInterface: frameworkAbi,
+		functionName: "createAgreement",
+		onSettled(data, error) {
+			if (onSettledSuccess && data) {
+				onSettledSuccess();
+			} else {
+				console.log(error);
+			}
+		},
+		onSuccess,
+	});
+
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
+
+	const create = ({
+		termsHash,
+		criteria,
+		metadataURI,
+		token,
+		salt,
+	}: {
+		termsHash: string;
+		criteria: string;
+		metadataURI: string;
+		token: string;
+		salt: string;
+	}) => {
+		write?.({
+			recklesslySetUnpreparedArgs: [{ termsHash, criteria, metadataURI, token }, salt],
+		});
+	};
+
+	return { create, isProcessing, data, ...args };
 };
 
 /*
@@ -126,85 +137,85 @@ export const useAgreementJoin = () => {
 */
 
 export const useAgreementDispute = ({ id }: { id: string }) => {
-    const {
-        write: disputeAgreement,
-        data,
-        ...args
-    } = useContractWrite({
-        mode: "recklesslyUnprepared",
-        addressOrName: frameworkAddress,
-        contractInterface: frameworkAbi,
-        functionName: "disputeAgreement",
-        onError(error) {
-            console.log(error);
-        },
-    });
+	const {
+		write: disputeAgreement,
+		data,
+		...args
+	} = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: frameworkAddress,
+		contractInterface: frameworkAbi,
+		functionName: "disputeAgreement",
+		onError(error) {
+			console.log(error);
+		},
+	});
 
-    const { isLoading: isProcessing } = useWaitForTransaction({
-        hash: data?.hash,
-    });
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
 
-    const dispute = () => {
-        disputeAgreement?.({
-            recklesslySetUnpreparedArgs: [id],
-        });
-    };
+	const dispute = () => {
+		disputeAgreement?.({
+			recklesslySetUnpreparedArgs: [id],
+		});
+	};
 
-    return { dispute, data, isProcessing, ...args };
+	return { dispute, data, isProcessing, ...args };
 };
 
 export const useAgreementFinalize = ({ id }: { id: string }) => {
-    const {
-        write: finalizeAgreement,
-        data,
-        ...args
-    } = useContractWrite({
-        mode: "recklesslyUnprepared",
-        addressOrName: frameworkAddress,
-        contractInterface: frameworkAbi,
-        functionName: "finalizeAgreement",
-        onError(error) {
-            console.log(error);
-        },
-    });
+	const {
+		write: finalizeAgreement,
+		data,
+		...args
+	} = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: frameworkAddress,
+		contractInterface: frameworkAbi,
+		functionName: "finalizeAgreement",
+		onError(error) {
+			console.log(error);
+		},
+	});
 
-    const { isLoading: isProcessing } = useWaitForTransaction({
-        hash: data?.hash,
-    });
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
 
-    const finalize = () => {
-        finalizeAgreement?.({
-            recklesslySetUnpreparedArgs: [id],
-        });
-    };
+	const finalize = () => {
+		finalizeAgreement?.({
+			recklesslySetUnpreparedArgs: [id],
+		});
+	};
 
-    return { finalize, data, isProcessing, ...args };
+	return { finalize, data, isProcessing, ...args };
 };
 
 export const useAgreementWithdraw = ({ id }: { id: string }) => {
-    const {
-        write: withdrawFromAgreement,
-        data,
-        ...args
-    } = useContractWrite({
-        mode: "recklesslyUnprepared",
-        addressOrName: frameworkAddress,
-        contractInterface: frameworkAbi,
-        functionName: "withdrawFromAgreement",
-        onError(error) {
-            console.log(error);
-        },
-    });
+	const {
+		write: withdrawFromAgreement,
+		data,
+		...args
+	} = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: frameworkAddress,
+		contractInterface: frameworkAbi,
+		functionName: "withdrawFromAgreement",
+		onError(error) {
+			console.log(error);
+		},
+	});
 
-    const { isLoading: isProcessing } = useWaitForTransaction({
-        hash: data?.hash,
-    });
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
 
-    const withdraw = () => {
-        withdrawFromAgreement?.({
-            recklesslySetUnpreparedArgs: [id],
-        });
-    };
+	const withdraw = () => {
+		withdrawFromAgreement?.({
+			recklesslySetUnpreparedArgs: [id],
+		});
+	};
 
-    return { withdraw, data, isProcessing, ...args };
+	return { withdraw, data, isProcessing, ...args };
 };

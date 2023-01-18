@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "yarn workpace @nation3/ui-components start & next dev",
+    "dev": "yarn workspace @nation3/ui-components start & next dev",
     "build": "yarn build:dependencies && yarn build:app",
     "build:app": "next build",
     "build:dependencies": "yarn workspace @nation3/ui-components build",

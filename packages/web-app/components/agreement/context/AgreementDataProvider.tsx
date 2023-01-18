@@ -2,37 +2,40 @@ import { ReactNode, useState, useEffect } from "react";
 
 import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataContext";
 import { ResolverMap, PositionMap } from "./types";
-import { useAgreementRead } from "../../../hooks/useAgreement";
+import { useAgreementData } from "../../../hooks/useAgreement";
 import { fetchAgreementMetadata } from "../../../utils/metadata";
 
 export const AgreementDataProvider = ({ id, children }: { id: string; children: ReactNode }) => {
 	const [title, setTitle] = useState("Agreement");
+	const [status, setStatus] = useState<string>();
 	const [termsHash, setTermsHash] = useState<string>();
 	const [metadataURI, setMetadataURI] = useState<string>();
 	const [resolvers, setResolvers] = useState<ResolverMap>();
 	const [positions, setPositions] = useState<PositionMap>();
 
-	const {
-		params: agreementParams,
-		positions: agreementPositions,
-		status,
-	} = useAgreementRead({ id: id, enabled: id != "undefined" });
+	const { data: agreementData, positions: agreementPositions } = useAgreementData({
+		id: id,
+		enabled: id != "undefined",
+	});
 
 	/* Update state when fetched agreement params */
 	useEffect(() => {
-		if (agreementParams?.termsHash && agreementParams.termsHash != termsHash) {
-			setTermsHash(agreementParams.termsHash);
+		if (agreementData?.termsHash && agreementData.termsHash != termsHash) {
+			setTermsHash(agreementData.termsHash);
 		}
-		if (agreementParams?.metadataURI && agreementParams.metadataURI != metadataURI) {
-			setMetadataURI(agreementParams.metadataURI);
-			fetchAgreementMetadata(agreementParams.metadataURI).then((metadata) => {
+		if (agreementData?.metadataURI && agreementData.metadataURI != metadataURI) {
+			setMetadataURI(agreementData.metadataURI);
+			fetchAgreementMetadata(agreementData.metadataURI).then((metadata) => {
 				if (metadata.title && metadata.title != title) setTitle(metadata.title);
 				if (metadata.resolvers)
 					setResolvers((prevResolvers) => ({ ...prevResolvers, ...metadata.resolvers }));
 			});
 		}
+		if (agreementData?.status && agreementData.status != status) {
+			setStatus(agreementData.status);
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [agreementParams]);
+	}, [agreementData]);
 
 	/* Update positions when fetched agreement positions or new resolvers */
 	useEffect(() => {
@@ -69,9 +72,9 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 
 	const provider: AgreementDataContextType = {
 		id,
-		status,
 		title,
 		termsHash,
+		status,
 		resolvers,
 		positions,
 	};

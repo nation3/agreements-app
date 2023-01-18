@@ -12,3 +12,8 @@ export const hashEncoding = (encoding: string) => {
 export const abiEncodingPacked = (types: string[], values: any[]) => {
 	return utils.solidityPack(types, values);
 };
+
+export const abiEncoding = (types: string[], values: any[]) => {
+	const encoder = new utils.AbiCoder();
+	return encoder.encode(types, values);
+};

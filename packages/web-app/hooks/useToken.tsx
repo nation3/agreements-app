@@ -7,12 +7,12 @@ const tokenAbi = tokenInterface.abi;
 export const useToken = ({
 	address,
 	account,
-    spender,
+	spender,
 	enabled = true,
 }: {
 	address: string;
 	account: string;
-    spender: string;
+	spender: string;
 	enabled: boolean;
 }) => {
 	const { data: balance } = useContractRead({
@@ -60,5 +60,3 @@ export const useToken = ({
 
 	return { balance, allowance, approve, approvalLoading, approvalProcessing };
 };
-
-

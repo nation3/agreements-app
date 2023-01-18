@@ -14,7 +14,7 @@ import {
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
 import { useProvider } from "wagmi";
-import { Tooltip, Badge as FlowBadge, Modal, TooltipProps } from "flowbite-react";
+import { Tooltip, Modal } from "flowbite-react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { AgreementConstants } from "./AgreementConstants";
 import { useUrl } from "../../hooks";
@@ -62,7 +62,12 @@ const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) =
 	);
 };
 
-const AgreementDataDisplay = ({ id, title, status, termsHash }: AgreementDataDisplayProps) => {
+export const AgreementDataDisplay = ({
+	id,
+	title,
+	status,
+	termsHash,
+}: AgreementDataDisplayProps) => {
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);

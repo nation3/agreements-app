@@ -20,6 +20,8 @@ import { useUrl } from "../../hooks";
 export const DisputeDetails = () => {
 	const provider = useProvider({ chainId: 1 });
 	const { data: currentBlock } = useBlockNumber();
+	const currentTime = Math.floor(Date.now() / 1000);
+
 	const { dispute, resolution: approvedResolution, proposedResolutions } = useDispute();
 	const { execute } = useResolutionExecute();
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
@@ -49,7 +51,7 @@ export const DisputeDetails = () => {
 	const canBeEnacted = useMemo(() => {
 		if (!approvedResolution) return false;
 		if (approvedResolution.status == "Appealed") return false;
-		return currentBlock ? approvedResolution.unlockBlock < currentBlock : false;
+		return currentBlock ? approvedResolution.unlockTime < currentTime : false;
 	}, [currentBlock, approvedResolution]);
 
 	return (

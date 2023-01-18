@@ -4,8 +4,9 @@ import { BigNumber, constants } from "ethers";
 import { Button } from "@nation3/ui-components/";
 import { Modal } from "flowbite-react";
 import { NotEnoughBalanceAlert } from "../../alerts";
-import { useToken, useAgreementJoin } from "../../../hooks/useAgreement";
-import { NATION } from "../../../lib/constants";
+import { useToken } from "../../../hooks/useToken";
+// import { useAgreementJoin } from "../../../hooks/useAgreement";
+import { NATION, frameworkAddress } from "../../../lib/constants";
 import { UserPosition } from "../context/types";
 import { AgreementConstants } from "../AgreementConstants";
 
@@ -23,16 +24,18 @@ export const JoinableAgreementActions = ({
 
 	const {
 		balance: accountTokenBalance,
-		allowance: accountTokenAllowance,
-		approve,
-		approvalLoading,
-		approvalProcessing,
+		// allowance: accountTokenAllowance,
+		// approve,
+		// approvalLoading,
+		// approvalProcessing,
 	} = useToken({
 		address: NATION,
 		account: address || constants.AddressZero,
+		spender: frameworkAddress,
 		enabled: typeof address !== "undefined",
 	});
 
+	/*
 	const userResolver = useMemo(
 		() => ({
 			account: address || constants.AddressZero,
@@ -41,8 +44,11 @@ export const JoinableAgreementActions = ({
 		}),
 		[address, userPosition],
 	);
+    */
 
+	/*
 	const { join, isLoading: joinLoading, isProcessing: joinProcessing } = useAgreementJoin();
+    */
 
 	const requiredBalance = useMemo((): BigNumber => {
 		return BigNumber.from(userPosition.resolver?.balance || 0);
@@ -56,6 +62,7 @@ export const JoinableAgreementActions = ({
 		}
 	}, [accountTokenBalance, requiredBalance]);
 
+	/*
 	const enoughAllowance = useMemo(() => {
 		if (accountTokenAllowance) {
 			return requiredBalance.lte(BigNumber.from(accountTokenAllowance));
@@ -63,6 +70,7 @@ export const JoinableAgreementActions = ({
 			return true;
 		}
 	}, [accountTokenAllowance, requiredBalance]);
+    */
 
 	// const steps = [{}];
 
@@ -94,7 +102,7 @@ export const JoinableAgreementActions = ({
 				</Modal.Footer>
 			</Modal>
 			<div className="flex flex-col gap-1">
-				{!enoughAllowance ? (
+				{/*!enoughAllowance ? (
 					<Button
 						label="Approve"
 						disabled={approvalLoading || approvalProcessing}
@@ -116,7 +124,7 @@ export const JoinableAgreementActions = ({
 							onClick={() => join({ id, resolver: userResolver })}
 						/>
 					</div>
-				)}
+				)*/}
 				{/* 
 TODO: 
 {

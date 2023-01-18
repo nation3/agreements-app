@@ -15,7 +15,7 @@ export type Resolution = {
 	id: string;
 	status: string;
 	mark: string;
-	unlockBlock: number;
+	unlockTime: number;
 	settlement: Position[] | undefined;
 };
 
