@@ -25,6 +25,7 @@
     "@safe-global/safe-core-sdk": "^3.2.1",
     "@safe-global/safe-ethers-lib": "^1.7.0",
     "@safe-global/safe-service-client": "^1.5.0",
+    "@uniswap/permit2-sdk": "^1.2.0",
     "eslint": "^8.26.0",
     "ethers": "^5.7.1",
     "graphql": "^16.6.0",

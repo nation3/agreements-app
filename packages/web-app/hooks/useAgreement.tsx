@@ -1,8 +1,9 @@
 // import { BigNumber, utils } from "ethers";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import frameworkInterface from "../abis/CollateralAgreementFramework.json";
-// import { Resolver } from "../utils/criteria";
+import { Resolver } from "../utils/criteria";
 import { frameworkAddress } from "../lib/constants";
 
 const frameworkAbi = frameworkInterface.abi;
@@ -102,39 +103,47 @@ export const useAgreementCreate = ({
 	return { create, isProcessing, data, ...args };
 };
 
-/*
 export const useAgreementJoin = () => {
-    const {
-        write: joinAgreement,
-        data,
-        ...args
-    } = useContractWrite({
-        mode: "recklesslyUnprepared",
-        addressOrName: frameworkAddress,
-        contractInterface: frameworkAbi,
-        functionName: "joinAgreement",
-        onError(error) {
-            console.log(error);
-        },
-    });
+	const {
+		write: joinAgreement,
+		data,
+		...args
+	} = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: frameworkAddress,
+		contractInterface: frameworkAbi,
+		functionName: "joinAgreement",
+		onError(error) {
+			console.log(error);
+		},
+	});
 
-    const { isLoading: isProcessing } = useWaitForTransaction({
-        hash: data?.hash,
-    });
+	const { isLoading: isProcessing } = useWaitForTransaction({
+		hash: data?.hash,
+	});
 
-    const join = async ({ id, resolver }: { id: string; resolver: Resolver }) => {
-        if (!resolver.proof) {
-            return;
-        } else {
-            return joinAgreement?.({
-                recklesslySetUnpreparedArgs: [id, resolver],
-            });
-        }
-    };
+	const join = async ({
+		id,
+		resolver,
+		permit,
+		signature,
+	}: {
+		id: string;
+		resolver: Resolver;
+		permit: PermitBatchTransferFrom;
+		signature: string | undefined;
+	}) => {
+		if (!resolver.proof || !signature) {
+			return;
+		} else {
+			return joinAgreement?.({
+				recklesslySetUnpreparedArgs: [id, resolver, permit, signature],
+			});
+		}
+	};
 
-    return { join, data, isProcessing, ...args };
+	return { join, data, isProcessing, ...args };
 };
-*/
 
 export const useAgreementDispute = ({ id }: { id: string }) => {
 	const {
