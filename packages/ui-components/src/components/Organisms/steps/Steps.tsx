@@ -3,7 +3,7 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import cx from "classnames";
 import Spinner from "../../Atoms/Spinner";
 import Image from "next/image";
-import { Button } from "@nation3/ui-components";
+// import { Button } from "../../Molecules/buttons/Button";
 
 export interface IStep {
 	action: () => void | null;
