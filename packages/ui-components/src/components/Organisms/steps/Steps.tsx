@@ -2,16 +2,18 @@ import React, { ReactElement } from "react";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import cx from "classnames";
 import Spinner from "../../Atoms/Spinner";
+import Image from "next/image";
+import { Button } from "@nation3/ui-components";
 
-interface IStep {
+export interface IStep {
 	action: () => void | null;
 	title: string;
-	description: ReactElement;
+	description: ReactElement | string;
 	image: string;
 	stepCTA?: string;
 }
 
-type IStepsProps = {
+export type IStepsProps = {
 	steps: IStep[];
 	icon: string | null;
 	title: string;
@@ -108,16 +110,17 @@ const Steps: React.FC<IStepsProps> = (props) => {
 
 	return (
 		<section className="max-w-3xl w-full bg-white rounded-lg relative shadow-xl">
-			<div className="flex justify-between items-center w-full md:p-8 p-4 pl-6 md:pl-10">
+			<div className="flex justify-between items-center w-full p-8">
 				<h3 className="text-slate-600 md:text-3xl text-xl font-semibold">{title}</h3>
 				{icon && (
-					<div className="rounded-full overflow-hidden flex items-center justify-center h-1/2">
-						<img className="h-full" src={icon} />
+					<div className="overflow-hidden flex items-center justify-center h-1/2">
+						<Image className="h-full" width={50} height={50} src={icon} alt={"Join Agreemtent"} />
 					</div>
 				)}
 			</div>
+
 			{areStepsFinished ? (
-				<div className="border-t-2 border-bluesky-200 md:p-8 p-4 pl-6 md:pl-10 flex flex-col">
+				<div className="border-t-2 border-bluesky-200 p-8 flex flex-col">
 					<div className="mt-2 md:mt-0">{finishMessage}</div>
 					<div className="pt-5 pb-28">
 						<div className="w-full rounded-lg overflow-hidden">
@@ -126,7 +129,7 @@ const Steps: React.FC<IStepsProps> = (props) => {
 					</div>
 				</div>
 			) : (
-				<div className="border-t-2 border-bluesky-200 p-8 pb-16 flex justify-between">
+				<div className="border-t-2 border-bluesky-200 p-8 pb-24 flex justify-between">
 					<div className="w-2/3 pr-5">
 						{steps?.map((step, index) => (
 							<Step
@@ -139,7 +142,7 @@ const Steps: React.FC<IStepsProps> = (props) => {
 							/>
 						))}
 					</div>
-					<div className="w-1/4">
+					<div className="hidden md:block md:w-1/4">
 						<div className="w-full h-auto rounded-full overflow-hidden opacity-50">
 							{steps && <img className="" src={steps[stepIndex].image} />}
 						</div>
@@ -147,12 +150,35 @@ const Steps: React.FC<IStepsProps> = (props) => {
 				</div>
 			)}
 			<div
-				onClick={!areStepsFinished ? steps && steps[stepIndex].action : finishAction}
-				className="py-3 group hover:bg-bluesky hover:text-white cursor-pointer transition-all px-5 m-5 border-bluesky border-2 rounded-lg absolute bottom-3 right-3 flex justify-start min-w-[200px] items-center text-bluesky gap-2"
+				onClick={
+					loadingIndex === null && !areStepsFinished
+						? steps && steps[stepIndex].action
+						: finishAction
+				}
+				className={cx(
+					"py-3 group transition-all px-5 m-5 border-bluesky border-2 rounded-lg absolute bottom-3 right-3 flex justify-start min-w-[200px] items-center text-bluesky gap-2",
+					loadingIndex !== null
+						? "opacity-30"
+						: "cursor-pointer  hover:bg-bluesky hover:text-white",
+				)}
 			>
 				<p className="">{!areStepsFinished ? steps && steps[stepIndex].stepCTA : "Finish"}</p>
-				<ArrowRightIcon className="group-hover:ml-1 group-hover:mr-0 mr-1 h-5 transition-all" />
+				<ArrowRightIcon
+					className={cx(
+						loadingIndex === null && "group-hover:ml-1 group-hover:mr-0 transition-all",
+						"mr-1 h-5",
+					)}
+				/>
 			</div>
+			{/* TODO Use Button */}
+			{/* 			<Button
+				iconRight={
+					<ArrowRightIcon className="group-hover:ml-1 group-hover:mr-0 mr-1 h-5 transition-all" />
+				}
+				className="py-3 group hover:bg-bluesky hover:text-white cursor-pointer transition-all px-5 m-5 border-bluesky border-2 rounded-lg absolute bottom-3 right-3 flex justify-start min-w-[200px] items-center text-bluesky gap-2"
+				onClick={() => (!areStepsFinished ? steps && steps[stepIndex].action : finishAction)}
+				label={!areStepsFinished ? steps && steps[stepIndex].stepCTA : "Finish"}
+			/> */}
 		</section>
 	);
 };

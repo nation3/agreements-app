@@ -2,7 +2,6 @@ import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { CreateView } from "./context/types";
 import { AgreementCreationForm } from "./AgreementCreationForm";
 import { AgreementCreationPreview } from "./AgreementCreationPreview";
-export { AgreementCreationProvider } from "./context/AgreementCreationProvider";
 
 export const AgreementCreation = () => {
 	const { view } = useAgreementCreation();

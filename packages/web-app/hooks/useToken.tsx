@@ -4,17 +4,29 @@ import tokenInterface from "../abis/ERC20.json";
 
 const tokenAbi = tokenInterface.abi;
 
+export interface IUseTokenReturn {
+	balance: any;
+	allowance: any;
+	approve: any;
+	approvalLoading: boolean;
+	approvalProcessing: boolean;
+	approvalSuccess: boolean;
+	approvalError: boolean;
+}
+
+export interface IUseToken {
+	address: string;
+	account: string;
+	spender: string;
+	enabled: boolean;
+}
+
 export const useToken = ({
 	address,
 	account,
 	spender,
 	enabled = true,
-}: {
-	address: string;
-	account: string;
-	spender: string;
-	enabled: boolean;
-}) => {
+}: IUseToken): IUseTokenReturn => {
 	const { data: balance } = useContractRead({
 		addressOrName: address,
 		contractInterface: tokenAbi,
@@ -50,7 +62,11 @@ export const useToken = ({
 		},
 	});
 
-	const { isLoading: approvalProcessing } = useWaitForTransaction({
+	const {
+		isLoading: approvalProcessing,
+		isSuccess: approvalSuccess,
+		isError: approvalError,
+	} = useWaitForTransaction({
 		hash: approvalTx?.hash,
 	});
 
@@ -58,5 +74,13 @@ export const useToken = ({
 		approveToken?.({ recklesslySetUnpreparedArgs: [spender, amount] });
 	};
 
-	return { balance, allowance, approve, approvalLoading, approvalProcessing };
+	return {
+		balance,
+		allowance,
+		approve,
+		approvalLoading,
+		approvalProcessing,
+		approvalSuccess,
+		approvalError,
+	};
 };

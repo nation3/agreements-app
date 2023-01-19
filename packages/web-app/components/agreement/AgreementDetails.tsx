@@ -17,7 +17,7 @@ import { useProvider } from "wagmi";
 import { Tooltip, Modal } from "flowbite-react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { AgreementConstants } from "./AgreementConstants";
-import { useUrl } from "../../hooks";
+import { useBuildUrl, useUrl } from "../../hooks";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -71,12 +71,12 @@ export const AgreementDataDisplay = ({
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
-	const { url } = useUrl();
+	const agreementUrl = useBuildUrl("/agreements/" + id ?? constants.HashZero);
 
 	const copyAgreementId = useCallback(() => {
 		if (id) {
 			setIsAgreementId(true);
-			navigator.clipboard.writeText(url);
+			navigator.clipboard.writeText(agreementUrl);
 			setTimeout(() => setIsAgreementId(false), 1000);
 		}
 	}, [id]);

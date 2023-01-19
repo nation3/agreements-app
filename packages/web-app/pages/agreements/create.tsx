@@ -1,7 +1,8 @@
 import React from "react";
 import { Card, BackLinkButton } from "@nation3/ui-components";
-import { AgreementCreation, AgreementCreationProvider } from "../../components/create";
+import { AgreementCreation } from "../../components/create";
 import { useRouter } from "next/router";
+import { AgreementCreationProvider } from "../../components/create/context/AgreementCreationProvider";
 
 const AgreementCreationPage = () => {
 	const router = useRouter();

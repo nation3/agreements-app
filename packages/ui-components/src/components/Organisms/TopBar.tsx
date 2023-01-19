@@ -1,6 +1,7 @@
 import React from "react";
 import { ReactNode } from "react";
 import AppHeader from "../Molecules/AppHeader";
+import Link from "next/link";
 
 export interface ITopBarProps {
 	title: string;
@@ -16,9 +17,9 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 	return (
 		<React.Fragment>
 			<section className="absolute top-0 left-0 flex h-24 w-full items-center justify-between ">
-				<div className="">
+				<Link href="/" className="cursor-pointer">
 					<AppHeader title={title} appName={appName} />
-				</div>
+				</Link>
 				{/* Account */}
 				<div className="p-4">{connectionButton}</div>
 			</section>
