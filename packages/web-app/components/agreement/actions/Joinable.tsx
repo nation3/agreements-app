@@ -7,10 +7,10 @@ import { useAgreementJoin } from "../../../hooks/useAgreement";
 import { frameworkAddress, NATION, permit2Address } from "../../../lib/constants";
 import { UserPosition } from "../context/types";
 import { AgreementConstants } from "../AgreementConstants";
-
+import Image from "next/image";
 import { SignatureTransfer, PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
-import { Button, Steps } from "@nation3/ui-components";
-import { Modal } from "flowbite-react";
+import { Button, Steps, Modal } from "@nation3/ui-components";
+import { Modal as FlowModal } from "flowbite-react";
 import courtIcon from "../../../assets/svgs/court.svg";
 import { IStep } from "@nation3/ui-components/dist/components/Organisms/steps/Steps";
 import { useAgreementData } from "../context/AgreementDataContext";
@@ -221,12 +221,12 @@ export const JoinableAgreementActions = ({
 			description: (
 				<div>
 					<p className="text-md mb-1 text-gray-400">Your funds will be transferred.</p>
-					<p className="text-md text-gray-500">
-						$NATION and the collateral will be transfered into the agreement. And you will be bound
-						by its terms.
-					</p>
-					<p className="text-xl text-bluesky-200">
-						{positions && address && utils.formatUnits(positions[address].balance)} $NATION
+					<p className="md:text-md text-xs text-gray-500">
+						<span className="md:text-md font-semibold text-xs mt-1 text-bluesky-500">
+							{positions && address && utils.formatUnits(positions[address].balance)} $NATION
+						</span>{" "}
+						and the collateral will be transfered into the agreement. And you will be bound by its
+						terms.
 					</p>
 				</div>
 			),
@@ -248,43 +248,43 @@ export const JoinableAgreementActions = ({
 			//TODO: Build Global UI Context for generic modals and UI Warns
 				TERMS HASH MODAL
 			*/}
-			<Modal show={isTermsModalUp} onClose={() => setIsTermsModalUp(false)}>
-				<Modal.Header>{AgreementConstants.termsHash}</Modal.Header>
-				<Modal.Body>
+			<FlowModal show={isTermsModalUp} onClose={() => setIsTermsModalUp(false)}>
+				<FlowModal.Header>{AgreementConstants.termsHash}</FlowModal.Header>
+				<FlowModal.Body>
 					<div className="space-y-6">
 						<p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
 							{AgreementConstants.termsDescription}
 						</p>
 					</div>
-				</Modal.Body>
-				<Modal.Footer>
+				</FlowModal.Body>
+				<FlowModal.Footer>
 					<Button label="Close" onClick={() => setIsTermsModalUp(false)}></Button>
-				</Modal.Footer>
-			</Modal>
+				</FlowModal.Footer>
+			</FlowModal>
 
 			{/* 
 			//TODO: Build Global UI Context for generic modals and UI Warns
 				TX ERROR MODAL
 			*/}
-			<Modal
+			<FlowModal
 				show={stepsError.isError}
 				onClose={() => setStepsError({ ...stepsError, isError: false })}
 			>
-				<Modal.Header>{stepsError.header}</Modal.Header>
-				<Modal.Body>
+				<FlowModal.Header>{stepsError.header}</FlowModal.Header>
+				<FlowModal.Body>
 					<div className="space-y-6">
 						<p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
 							{stepsError.description}
 						</p>
 					</div>
-				</Modal.Body>
-				<Modal.Footer>
+				</FlowModal.Body>
+				<FlowModal.Footer>
 					<Button
 						label="Close"
 						onClick={() => setStepsError({ ...stepsError, isError: false })}
 					></Button>
-				</Modal.Footer>
-			</Modal>
+				</FlowModal.Footer>
+			</FlowModal>
 
 			<div className="flex flex-col gap-1">
 				<Button
@@ -292,10 +292,28 @@ export const JoinableAgreementActions = ({
 					onClick={() => setIsJoinAgreementStarted(!isJoinAgreementStarted)}
 				/>
 
-				<Modal
+				<FlowModal
 					show={isJoinAgreementStarted}
 					onClose={() => setIsJoinAgreementStarted(!isJoinAgreementStarted)}
 				>
+					<FlowModal.Header>
+						<div className="flex items-center w-full pl-3">
+							{courtIcon && (
+								<div className="overflow-hidden flex items-center justify-center h-1/2 mr-6">
+									<Image
+										className="h-full"
+										width={40}
+										height={40}
+										src={courtIcon}
+										alt={"Join Agreemtent"}
+									/>
+								</div>
+							)}
+							<h3 className="text-slate-600 md:text-xl text-xl font-semibold">
+								{"Join Agreement"}
+							</h3>
+						</div>
+					</FlowModal.Header>
 					<Steps
 						steps={steps}
 						icon={courtIcon}
@@ -315,7 +333,7 @@ export const JoinableAgreementActions = ({
 							</div>
 						}
 					/>
-				</Modal>
+				</FlowModal>
 
 				{!enoughBalance && <NotEnoughBalanceAlert />}
 			</div>
