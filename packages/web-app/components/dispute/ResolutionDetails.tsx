@@ -33,14 +33,14 @@ const ResolutionDataDisplay = ({
 	mark,
 	status,
 	settlement,
-	unlockBlock,
+	unlockTime,
 }: {
 	mark?: string;
 	status: string;
 	settlement: Position[];
-	unlockBlock?: number;
+	unlockTime?: number;
 }) => {
-	const { time: timeLeft } = useTimeToBlock(unlockBlock ?? 0);
+	const { time: timeLeft } = useTimeToBlock(unlockTime ?? 0);
 
 	return (
 		<div className="flex flex-col gap-5">
@@ -51,7 +51,7 @@ const ResolutionDataDisplay = ({
 				</div>
 				<div className="flex flex-col md:flex-row gap-1">
 					{mark && <ActionBadge label="Fingerprint" data={n3utils.shortenHash(mark)} />}
-					{unlockBlock && (
+					{unlockTime && (
 						<ActionBadge
 							label="Appeal time left"
 							data={<CountDown seconds={timeLeft} />}
@@ -74,7 +74,7 @@ export const ResolutionDetails = () => {
 				mark={resolution.id}
 				status={resolution.status}
 				settlement={resolution.settlement ?? []}
-				unlockBlock={resolution.unlockBlock}
+				unlockTime={resolution.unlockTime}
 			/>
 		);
 	} else {
