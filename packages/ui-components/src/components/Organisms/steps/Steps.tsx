@@ -2,8 +2,8 @@ import React, { ReactElement } from "react";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import cx from "classnames";
 import Spinner from "../../Atoms/Spinner";
-import Image from "next/image";
-import { Button } from "../../Molecules/buttons/Button";
+// import Image from "next/image";
+// import { Button } from "../../Molecules/buttons/Button";
 import { motion } from "framer-motion";
 import { ScreenType, useScreen } from "../../../hooks/useScreen";
 
@@ -124,8 +124,8 @@ const Step = (props: IStepInfo) => {
 export const Steps: React.FC<IStepsProps> = (props) => {
 	const {
 		steps,
-		icon,
-		title,
+		// icon,
+		// title,
 		stepIndex,
 		loadingIndex,
 		areStepsFinished,

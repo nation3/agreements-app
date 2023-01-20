@@ -1,19 +1,17 @@
-import { useMemo, useState, useCallback, useEffect } from "react";
-import { useAccount, useSignTypedData } from "wagmi";
+import { useMemo, useState, useEffect } from "react";
+import { useAccount } from "wagmi";
 import { BigNumber, constants, utils } from "ethers";
-import { NotEnoughBalanceAlert } from "../../alerts";
-import { useToken } from "../../../hooks/useToken";
+// import { useTokenBalance } from "../../../hooks/useToken";
 import { useAgreementJoin } from "../../../hooks/useAgreement";
-import { frameworkAddress, NATION, permit2Address } from "../../../lib/constants";
+import { frameworkAddress, NATION } from "../../../lib/constants";
 import { UserPosition } from "../context/types";
 import { AgreementConstants } from "../AgreementConstants";
 import Image from "next/image";
-import { SignatureTransfer, PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
-import { Button, Steps, Modal } from "@nation3/ui-components";
+import { Button, Steps } from "@nation3/ui-components";
 import { Modal as FlowModal } from "flowbite-react";
 import courtIcon from "../../../assets/svgs/court.svg";
 import { IStep } from "@nation3/ui-components/dist/components/Organisms/steps/Steps";
-import { useAgreementData } from "../context/AgreementDataContext";
+import { usePermit2Allowance, usePermit2TransferSignature } from "../../../hooks/usePermit2";
 
 export const JoinableAgreementActions = ({
 	id,
@@ -22,14 +20,11 @@ export const JoinableAgreementActions = ({
 	id: string;
 	userPosition: UserPosition;
 }) => {
-	// const [isJoinAgreementStarted, setisJoinAgreementStarted] = useState<boolean>(false);
-	const [isAgreementIdCopied, setIsAgreementIdCopied] = useState<boolean>(false);
 	const { address } = useAccount();
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
 	const [isJoinAgreementStarted, setIsJoinAgreementStarted] = useState<boolean>(false);
 	const [stepsIndex, setStepsIndex] = useState<number>(0);
 	const [stepsLoadingIndex, setStepsLoadingIndex] = useState<number | null>(null);
-	const [stepsFinished, setStepsFinished] = useState<boolean>(false);
 	const [stepsError, setStepsError] = useState<{
 		header: string;
 		description: string;
@@ -39,49 +34,9 @@ export const JoinableAgreementActions = ({
 		description: "",
 		isError: false,
 	});
-	const { positions, resolvers } = useAgreementData();
 	const [isJoinAgreementFinished, setIsJoinAgreementFinished] = useState<boolean>(false);
 
-	/* 
-	STEPS 1 - JOIN AGREEMENT
-	PERMIT 2 $TOKEN ALLOWANCE
-	 */
-
-	const {
-		balance: accountTokenBalance,
-		// allowance: accountTokenAllowance,
-		approve,
-		approvalLoading,
-		approvalProcessing,
-		approvalSuccess,
-		approvalError,
-	} = useToken({
-		address: NATION,
-		account: address || constants.AddressZero,
-		spender: permit2Address,
-		enabled: typeof address !== "undefined",
-	});
-
-	/* LISTENER APPROVAL EVENT */
-	useEffect(() => {
-		if (approvalSuccess) {
-			setStepsIndex(stepsIndex + 1);
-			setStepsLoadingIndex(null);
-		} else if (approvalError) {
-			setStepsLoadingIndex(null);
-			setStepsError({
-				header: "Approval failed ⚠️",
-				description:
-					"The process for the initial approval of the $NATION required failed. Please review it and confirm the signing acordingly",
-				isError: true,
-			});
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [approvalSuccess, approvalError]);
-
-	/* 
-	STEPS 2 - SIGN 
-	 */
+	/* JOIN PRE-REQUIREMENTS */
 
 	const userResolver = useMemo(
 		() => ({
@@ -92,82 +47,99 @@ export const JoinableAgreementActions = ({
 		[address, userPosition],
 	);
 
-	const requiredBalance = useMemo((): BigNumber => {
+	const requiredCollateral = useMemo((): BigNumber => {
 		return BigNumber.from(userPosition.resolver?.balance || 0);
 	}, [userPosition]);
 
-	const enoughBalance = useMemo((): boolean => {
-		if (accountTokenBalance) {
-			return requiredBalance.lte(BigNumber.from(accountTokenBalance));
-		} else {
-			return true;
-		}
-	}, [accountTokenBalance, requiredBalance]);
-
-	const permit: PermitBatchTransferFrom = useMemo(
-		() => ({
-			permitted: [
-				{ token: NATION, amount: 0 },
-				{ token: NATION, amount: requiredBalance },
-			],
-			spender: frameworkAddress,
-			nonce: 0,
-			deadline: constants.MaxInt256,
-		}),
-		[requiredBalance],
-	);
-
-	const signTypedDataConfig = useMemo(() => {
-		const { types, values } = SignatureTransfer.getPermitData(permit, permit2Address, 5);
-		const config = {
-			domain: { name: "Permit2", chainId: 5, verifyingContract: permit2Address },
-			types,
-			value: values,
-		};
-		// console.log(config.values);
-		return config;
-	}, [permit]);
-
 	const {
-		data: signature,
-		error: signTypeDataError,
-		isError: isSignTypeDataError,
-		isSuccess: isSignTypeDataSuccess,
-		signTypedData,
-	} = useSignTypedData(signTypedDataConfig);
+		isEnough: depositTokenApproved,
+		approve: approveDepositToken,
+		approvalSuccess,
+		approvalError,
+	} = usePermit2Allowance({
+		token: NATION,
+		account: address || constants.AddressZero,
+	});
 
-	/* 
-	LISTENER APPROVAL EVENT
-	STEP 2 - JOIN AGREEMENT
-	 */
+	// FIXME: Combine approval for collateral token when != deposit token
+	/*
+    const {
+        isEnough: collateralTokenApproved,
+        approve: approveCollateralToken
+    } = usePermit2Allowance({
+        token: NATION,
+        account: address || constants.AddressZero,
+    });
+    */
+
+	// FIXME: Check also required deposit & add pre-step to acquire those tokens
+	/*
+    const { balance: depositTokenBalance } = useTokenBalance({
+        address: NATION,
+        account: address || constants.AddressZero
+    });
+
+    const { balance: collateralTokenBalance } = useTokenBalance({
+        address: NATION,
+        account: address || constants.AddressZero
+    });
+
+    const enoughBalance = useMemo((): boolean => {
+        if (depositTokenBalance && collateralTokenBalance) {
+            return requiredCollateral.lte(BigNumber.from(collateralTokenBalance));
+        } else {
+            return false;
+        }
+    }, [depositTokenBalance, collateralTokenBalance, requiredCollateral]);
+    */
+
 	useEffect(() => {
-		if (isSignTypeDataSuccess) {
-			setStepsIndex(stepsIndex + 1);
-			setStepsLoadingIndex(null);
-		} else if (isSignTypeDataError) {
-			setStepsLoadingIndex(null);
-			setStepsError({
-				header: "Signer failed",
-				description:
-					"The process signing failed. Please review it and confirm the signing acordingly",
-				isError: true,
-			});
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isSignTypeDataSuccess, isSignTypeDataError]);
+		if (approvalSuccess || approvalError) setStepsLoadingIndex(null);
+	}, [approvalSuccess, approvalError]);
+
+	/* PERMIT SIGNATURE */
+
+	const { permit, signature, signPermit, signSuccess, signError } = usePermit2TransferSignature({
+		tokenTransfers: [
+			{ token: NATION, amount: 0 },
+			{ token: NATION, amount: requiredCollateral },
+		],
+		spender: frameworkAddress,
+	});
+
+	useEffect(() => {
+		if (signSuccess || signError) setStepsLoadingIndex(null);
+	}, [signSuccess, signError]);
+
+	/* LISTENER APPROVAL EVENT */
+	/*
+    useEffect(() => {
+        if (approvalSuccess) {
+            setStepsIndex(stepsIndex + 1);
+            setStepsLoadingIndex(null);
+        } else if (approvalError) {
+            setStepsLoadingIndex(null);
+            setStepsError({
+                header: "Approval failed ⚠️",
+                description:
+                    "The process for the initial approval of the $NATION required failed. Please review it and confirm the signing acordingly",
+                isError: true,
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [approvalSuccess, approvalError]);
+    */
+
+	/* STEPS 2 - SIGN */
 
 	const {
 		join,
-		isLoading: isJoinLoading,
+		// isLoading: isJoinLoading,
 		isSuccess: isJoinSuccess,
 		isError: isJoinError,
-		isProcessing: isJoinProcessing,
+		// isProcessing: isJoinProcessing,
 	} = useAgreementJoin();
 
-	/* 
-	LISTENER JOIN EVENT
-	STEP 3 - JOIN AGREEMENT
-	 */
 	useEffect(() => {
 		if (isJoinSuccess) {
 			setIsJoinAgreementFinished(true);
@@ -180,53 +152,67 @@ export const JoinableAgreementActions = ({
 				isError: true,
 			});
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isJoinSuccess, isJoinError]);
+
+	// FIXME: Better step index selector
+	useEffect(() => {
+		const index = depositTokenApproved ? (signature ? 2 : 1) : 0;
+		setStepsIndex(index);
+	}, [depositTokenApproved, signature]);
 
 	const steps: IStep[] = [
 		{
-			title: "Approve NATION",
+			title: "Setup Permit2",
 			description: (
 				<div>
-					<p className="text-xs mb-1 text-gray-400">Non funds will be used yet.</p>
 					<p className="text-md text-gray-500">
-						<b>$NATION</b> to be used in case of a dispute.
+						Approve Permit2 to manage token transfers (extend & link to docs).
 					</p>
 				</div>
 			),
 			image: "https://picsum.photos/200",
-			stepCTA: "Start approval",
+			stepCTA: "Setup Permit2",
 			action: () => {
 				setStepsLoadingIndex(0);
-				approve({ amount: constants.MaxInt256 });
+				approveDepositToken();
 			},
 		},
 		{
-			title: "Sign Approval",
+			title: "Approve tokens",
 			description: (
 				<div>
-					<p className="text-xs mb-1 text-gray-400">Non funds will be used yet.</p>
-					<p className="text-md text-gray-500">Collateral acquired to join into the agreement.</p>
+					<p className="text-md text-gray-500">
+						Sign a permit to transfer the required tokens to join the agreement (extend & link to
+						docs).
+					</p>
 				</div>
 			),
 			image: "https://picsum.photos/200",
 			stepCTA: "Sign",
 			action: () => {
 				setStepsLoadingIndex(1);
-				signTypedData();
+				signPermit();
 			},
 		},
 		{
 			title: "Join Agreement",
 			description: (
 				<div>
-					<p className="text-md mb-1 text-gray-400">Your funds will be transferred.</p>
-					<p className="md:text-md text-xs text-gray-500">
-						<span className="md:text-md font-semibold text-xs mt-1 text-bluesky-500">
-							{positions && address && utils.formatUnits(positions[address].balance)} $NATION
-						</span>{" "}
-						and the collateral will be transfered into the agreement. And you will be bound by its
+					<p className="text-md mb-1 text-gray-400">Tokens will be transferred.</p>
+					<p className="text-md text-gray-500">
+						The required tokens will be deposited into the agreement and you will be bound by its
 						terms.
+					</p>
+					<p>
+						<div>
+							Dispute deposit: <span className="text-lg text-bluesky-200">{0} $NATION</span>
+						</div>
+						<div>
+							Collateral:{" "}
+							<span className="text-lg text-bluesky-200">
+								{utils.formatUnits(requiredCollateral)} $NATION
+							</span>
+						</div>
 					</p>
 				</div>
 			),
@@ -238,9 +224,6 @@ export const JoinableAgreementActions = ({
 			},
 		},
 	];
-
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	useEffect(() => {}, [isAgreementIdCopied]);
 
 	return (
 		<>
@@ -334,8 +317,6 @@ export const JoinableAgreementActions = ({
 						}
 					/>
 				</FlowModal>
-
-				{!enoughBalance && <NotEnoughBalanceAlert />}
 			</div>
 		</>
 	);

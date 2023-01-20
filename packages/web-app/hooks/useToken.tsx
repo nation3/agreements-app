@@ -7,11 +7,11 @@ const tokenAbi = tokenInterface.abi;
 export interface IUseTokenReturn {
 	balance: any;
 	allowance: any;
-	approve: any;
-	approvalLoading: boolean;
-	approvalProcessing: boolean;
-	approvalSuccess: boolean;
-	approvalError: boolean;
+	// approve: any;
+	// approvalLoading: boolean;
+	// approvalProcessing: boolean;
+	// approvalSuccess: boolean;
+	// approvalError: boolean;
 }
 
 export interface IUseToken {
@@ -21,30 +21,37 @@ export interface IUseToken {
 	enabled: boolean;
 }
 
-export const useToken = ({
+export const useTokenAllowance = ({
 	address,
-	account,
+	owner,
 	spender,
 	enabled = true,
-}: IUseToken): IUseTokenReturn => {
-	const { data: balance } = useContractRead({
-		addressOrName: address,
-		contractInterface: tokenAbi,
-		functionName: "balanceOf",
-		args: [account],
-		enabled: enabled,
-		watch: true,
-	});
-
+}: {
+	address: string;
+	owner: string;
+	spender: string;
+	enabled: boolean;
+}) => {
 	const { data: allowance } = useContractRead({
 		addressOrName: address,
 		contractInterface: tokenAbi,
 		functionName: "allowance",
-		args: [account, spender],
+		args: [owner, spender],
 		enabled: enabled,
 		watch: true,
 	});
 
+	return { allowance };
+};
+
+export const useTokenApprovals = ({
+	address,
+	spender,
+}: {
+	address: string;
+	owner: string;
+	spender: string;
+}) => {
 	const {
 		write: approveToken,
 		isLoading: approvalLoading,
@@ -75,12 +82,59 @@ export const useToken = ({
 	};
 
 	return {
-		balance,
-		allowance,
 		approve,
 		approvalLoading,
 		approvalProcessing,
 		approvalSuccess,
 		approvalError,
+	};
+};
+
+export const useTokenBalance = ({
+	address,
+	account,
+	enabled = true,
+}: {
+	address: string;
+	account: string;
+	enabled?: boolean;
+}) => {
+	const { data: balance } = useContractRead({
+		addressOrName: address,
+		contractInterface: tokenAbi,
+		functionName: "balanceOf",
+		args: [account],
+		enabled: enabled,
+		watch: true,
+	});
+
+	return { balance };
+};
+
+export const useToken = ({
+	address,
+	account,
+	spender,
+	enabled = true,
+}: IUseToken): IUseTokenReturn => {
+	const { data: balance } = useContractRead({
+		addressOrName: address,
+		contractInterface: tokenAbi,
+		functionName: "balanceOf",
+		args: [account],
+		enabled: enabled,
+		watch: true,
+	});
+
+	const { allowance } = useTokenAllowance({
+		address,
+		owner: account,
+		spender,
+		enabled,
+	});
+
+	return {
+		balance,
+		allowance,
 	};
 };

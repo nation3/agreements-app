@@ -1,5 +1,5 @@
 // import { BigNumber, utils } from "ethers";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import frameworkInterface from "../abis/CollateralAgreementFramework.json";
@@ -133,6 +133,10 @@ export const useAgreementJoin = () => {
 		permit: PermitBatchTransferFrom;
 		signature: string | undefined;
 	}) => {
+		console.log(id);
+		console.log(resolver);
+		console.log(permit);
+		console.log(signature);
 		if (!resolver.proof || !signature) {
 			return;
 		} else {

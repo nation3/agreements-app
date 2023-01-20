@@ -32,9 +32,9 @@ export const DisputeDetails = () => {
 	const copyAgreementId = useCallback(() => {
 		if (dispute.id) {
 			setIsAgreementId(true);
-            navigator.clipboard.writeText(url);
-		    setTimeout(() => setIsAgreementId(false), 1000);
-        }
+			navigator.clipboard.writeText(url);
+			setTimeout(() => setIsAgreementId(false), 1000);
+		}
 	}, [dispute.id]);
 
 	const copyTermsHash = useCallback(() => {
