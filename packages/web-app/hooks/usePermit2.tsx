@@ -54,7 +54,11 @@ export const usePermit2TransferSignature = ({
 	spender,
 }: Permit2TransferSignatureConfig) => {
 	const { chain } = useNetwork();
-	const nonce = BigNumber.from(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+
+	const nonce = useMemo(
+		() => BigNumber.from(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)),
+		[],
+	);
 
 	const permit: PermitBatchTransferFrom = useMemo(
 		() => ({
