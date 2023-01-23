@@ -2,10 +2,10 @@ import React, { ReactElement } from "react";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import cx from "classnames";
 import Spinner from "../../Atoms/Spinner";
-// import Image from "next/image";
-// import { Button } from "../../Molecules/buttons/Button";
+import { Button } from "../../Molecules/buttons/Button";
 import { motion } from "framer-motion";
 import { ScreenType, useScreen } from "../../../hooks/useScreen";
+import Image from "next/image";
 
 export interface IStep {
 	action: () => void | null;
@@ -146,17 +146,16 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 			</div> */}
 
 			{areStepsFinished ? (
-				<div className="border-t-2 border-bluesky-200 p-8 flex flex-col">
-					<div className="mt-2 md:mt-0">{finishMessage}</div>
-					<div className="pt-5 pb-28">
-						<div className="w-full rounded-lg overflow-hidden">
-							{finishImage && <img className="" src={finishImage} />}
-						</div>
+				<div className="border-t-2 border-bluesky-200 p-8 flex flex-col items-center">
+					<div className="mb-8">
+						<div className="w-32">{finishImage && <img className="" src={finishImage} />}</div>
 					</div>
+					<div className="mb-6 text-center">{finishMessage}</div>
+					<Button className="px-6 w-32" label="Finish" onClick={finishAction} />
 				</div>
 			) : (
 				<div className="border-t-2 border-bluesky-200 pb-24 pt-8 px-8 flex justify-between">
-					<div className="w-full md:w-2/3 pr-5">
+					<div className="w-full pr-16 relative">
 						{steps?.map((step, index) => (
 							<Step
 								key={step.title}
@@ -168,34 +167,32 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 							/>
 						))}
 					</div>
-					<div className="hidden md:block md:w-1/4">
-						<div className="w-full h-auto rounded-full overflow-hidden opacity-50">
-							{steps && <img className="" src={steps[stepIndex].image} />}
+					<div className="hidden md:block md:w-2/5 relative">
+						<div className="w-full relative">
+							{steps && <Image width={170} height={170} alt={""} src={steps[stepIndex].image} />}
 						</div>
 					</div>
 				</div>
 			)}
-			<div
-				onClick={
-					loadingIndex === null && !areStepsFinished
-						? steps && steps[stepIndex].action
-						: finishAction
-				}
-				className={cx(
-					"py-3 group transition-all px-5 m-5 border-bluesky border-2 rounded-lg absolute bottom-3 right-3 flex justify-start min-w-[200px] items-center text-bluesky gap-2",
-					loadingIndex !== null
-						? "opacity-30"
-						: "cursor-pointer  hover:bg-bluesky hover:text-white",
-				)}
-			>
-				<p className="">{!areStepsFinished ? steps && steps[stepIndex].stepCTA : "Finish"}</p>
-				<ArrowRightIcon
+			{!areStepsFinished && (
+				<div
+					onClick={steps[stepIndex].action}
 					className={cx(
-						loadingIndex === null && "group-hover:ml-1 group-hover:mr-0 transition-all",
-						"mr-1 h-5",
+						"py-3 group transition-all px-5 m-5 border-bluesky border-2 rounded-lg absolute bottom-3 right-3 flex justify-start min-w-[200px] items-center text-bluesky gap-2",
+						loadingIndex !== null
+							? "opacity-30"
+							: "cursor-pointer  hover:bg-bluesky hover:text-white",
 					)}
-				/>
-			</div>
+				>
+					<p className="">{!areStepsFinished ? steps && steps[stepIndex].stepCTA : "Finish"}</p>
+					<ArrowRightIcon
+						className={cx(
+							loadingIndex === null && "group-hover:ml-1 group-hover:mr-0 transition-all",
+							"mr-1 h-5",
+						)}
+					/>
+				</div>
+			)}
 			{/* TODO: Use Nation3 Button */}
 			{/* 			<Button
 				iconRight={

@@ -10,6 +10,9 @@ import Image from "next/image";
 import { Button, Steps } from "@nation3/ui-components";
 import { Modal as FlowModal } from "flowbite-react";
 import courtIcon from "../../../assets/svgs/court.svg";
+import nationCoinIcon from "../../../assets/svgs/nation_coin.svg";
+import joinedIcon from "../../../assets/svgs/joined.svg";
+import joinedSuccessIcon from "../../../assets/svgs/joined_success.svg";
 import { IStep } from "@nation3/ui-components/dist/components/Organisms/steps/Steps";
 import { usePermit2Allowance, usePermit2TransferSignature } from "../../../hooks/usePermit2";
 
@@ -35,6 +38,7 @@ export const JoinableAgreementActions = ({
 		isError: false,
 	});
 	const [isJoinAgreementFinished, setIsJoinAgreementFinished] = useState<boolean>(false);
+	const [steps, setSteps] = useState<IStep[]>([]);
 
 	/* JOIN PRE-REQUIREMENTS */
 
@@ -94,7 +98,10 @@ export const JoinableAgreementActions = ({
     */
 
 	useEffect(() => {
-		if (approvalSuccess || approvalError) setStepsLoadingIndex(null);
+		if (approvalSuccess || approvalError) {
+			setStepsLoadingIndex(null);
+			setStepsIndex(2);
+		}
 	}, [approvalSuccess, approvalError]);
 
 	/* PERMIT SIGNATURE */
@@ -108,7 +115,11 @@ export const JoinableAgreementActions = ({
 	});
 
 	useEffect(() => {
-		if (signSuccess || signError) setStepsLoadingIndex(null);
+		// TODO: Built in this logic into the Steps component
+		if (signSuccess) {
+			setStepsLoadingIndex(null);
+			setStepsIndex(1);
+		}
 	}, [signSuccess, signError]);
 
 	/* LISTENER APPROVAL EVENT */
@@ -132,13 +143,7 @@ export const JoinableAgreementActions = ({
 
 	/* STEPS 2 - SIGN */
 
-	const {
-		join,
-		// isLoading: isJoinLoading,
-		isSuccess: isJoinSuccess,
-		isError: isJoinError,
-		// isProcessing: isJoinProcessing,
-	} = useAgreementJoin();
+	const { join, isSuccess: isJoinSuccess, isError: isJoinError } = useAgreementJoin();
 
 	useEffect(() => {
 		if (isJoinSuccess) {
@@ -158,14 +163,20 @@ export const JoinableAgreementActions = ({
 	useEffect(() => {
 		const index = depositTokenApproved ? (signature ? 2 : 1) : 0;
 		setStepsIndex(index);
-	}, [depositTokenApproved, signature]);
+		// TODO: Rethink this, array mode steps are definetly not the best.
+		/* 		const manageSteps = [...stepsBase];
+		Array.from(Array(index).keys()).forEach(() => {
+			manageSteps.shift();
+		}); */
+		setSteps(stepsBase);
+	}, []);
 
-	const steps: IStep[] = [
+	const stepsBase: IStep[] = [
 		{
 			title: "Setup Permit2",
 			description: (
 				<div>
-					<p className="text-md text-gray-500">
+					<p className="text-xs text-gray-400">
 						Approve Permit2 to manage token transfers (extend & link to docs).
 					</p>
 				</div>
@@ -174,49 +185,47 @@ export const JoinableAgreementActions = ({
 			stepCTA: "Setup Permit2",
 			action: () => {
 				setStepsLoadingIndex(0);
-				approveDepositToken();
+				signPermit();
 			},
 		},
 		{
 			title: "Approve tokens",
 			description: (
 				<div>
-					<p className="text-md text-gray-500">
+					<p className="text-xs text-gray-400">
 						Sign a permit to transfer the required tokens to join the agreement (extend & link to
 						docs).
 					</p>
 				</div>
 			),
-			image: "https://picsum.photos/200",
+			image: nationCoinIcon,
 			stepCTA: "Sign",
 			action: () => {
 				setStepsLoadingIndex(1);
-				signPermit();
+				approveDepositToken();
 			},
 		},
 		{
 			title: "Join Agreement",
 			description: (
 				<div>
-					<p className="text-md mb-1 text-gray-400">Tokens will be transferred.</p>
-					<p className="text-md text-gray-500">
+					<p className="text-xs mb-1 text-gray-500">
 						The required tokens will be deposited into the agreement and you will be bound by its
 						terms.
 					</p>
-					<p>
-						<div>
-							Dispute deposit: <span className="text-lg text-bluesky-200">{0} $NATION</span>
-						</div>
-						<div>
-							Collateral:{" "}
-							<span className="text-lg text-bluesky-200">
-								{utils.formatUnits(requiredCollateral)} $NATION
-							</span>
-						</div>
+					<p className="text-xs mb-1 text-gray-500">
+						<span className="font-semibold text-bluesky-500">{0} $NATION:</span>
+						<span className="text-gray-400"> Dispute deposit</span>
+					</p>
+					<p className="text-xs mb-1 text-gray-500">
+						<span className="font-semibold text-bluesky-500">
+							{utils.formatUnits(requiredCollateral)} $NATION:
+						</span>
+						<span className="text-gray-400"> Collateral</span>
 					</p>
 				</div>
 			),
-			image: "https://picsum.photos/200",
+			image: joinedIcon,
 			stepCTA: "Join agreement",
 			action: () => {
 				setStepsLoadingIndex(2);
@@ -304,7 +313,8 @@ export const JoinableAgreementActions = ({
 						stepIndex={stepsIndex}
 						loadingIndex={stepsLoadingIndex}
 						areStepsFinished={isJoinAgreementFinished}
-						finishImage="https://picsum.photos/200"
+						finishAction={() => window.location.reload()}
+						finishImage={joinedSuccessIcon}
 						finishMessage={
 							<div className="">
 								<p className="font-semibold text-2xl leading-relaxed text-gray-500 dark:text-gray-400">

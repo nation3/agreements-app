@@ -16,11 +16,11 @@ import { useProvider } from "wagmi";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { CreateView } from "./context/types";
-// import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useMemo } from "react";
 
 export const AgreementCreationPreview = () => {
-	// const router = useRouter();
+	const router = useRouter();
 	const provider = useProvider({ chainId: 1 });
 	const { terms, salt, positions, changeView } = useAgreementCreation();
 	const termsHash = hexHash(terms);
@@ -43,11 +43,21 @@ export const AgreementCreationPreview = () => {
 	const {
 		create,
 		isLoading: createLoading,
+		isTxSuccess: createSuccess,
+		isError: createError,
 		isProcessing: createProcessing,
 	} = useAgreementCreate({
-		onSettledSuccess: uploadMetadataToIPFS,
-		// onSuccess: () => router.push(`/agreements/${protoId}`)
+		// onSettledSuccess: uploadMetadataToIPFS,
+		// onSuccess: () => router.push(`/agreements/${protoId}`),
 	});
+
+	// TODO: Move it into a proper wrapper/callback instead of a listener
+	useEffect(() => {
+		if (createSuccess) {
+			router.push(`/agreements/${protoId}`);
+			uploadMetadataToIPFS;
+		}
+	}, [createSuccess]);
 
 	const submit = async () => {
 		const metadata = generateAgreementMetadata(terms, positions);

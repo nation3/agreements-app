@@ -1,5 +1,5 @@
 // import { BigNumber, utils } from "ethers";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import frameworkInterface from "../abis/CollateralAgreementFramework.json";
@@ -62,6 +62,7 @@ export const useAgreementCreate = ({
 }: {
 	onSettledSuccess?: () => void;
 	onSuccess?: (data?: unknown) => void;
+	onTxSuccess?: (data?: unknown) => void;
 }) => {
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
@@ -78,7 +79,7 @@ export const useAgreementCreate = ({
 		onSuccess,
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
@@ -100,7 +101,7 @@ export const useAgreementCreate = ({
 		});
 	};
 
-	return { create, isProcessing, data, ...args };
+	return { create, isProcessing, data, isTxSuccess, ...args };
 };
 
 export const useAgreementJoin = () => {
@@ -133,10 +134,6 @@ export const useAgreementJoin = () => {
 		permit: PermitBatchTransferFrom;
 		signature: string | undefined;
 	}) => {
-		console.log(id);
-		console.log(resolver);
-		console.log(permit);
-		console.log(signature);
 		if (!resolver.proof || !signature) {
 			return;
 		} else {

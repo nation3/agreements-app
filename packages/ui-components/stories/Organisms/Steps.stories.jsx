@@ -1,11 +1,14 @@
 import React from 'react';
 
 import Steps from '../../src/components/Organisms/steps/Steps';
+import courtIcon from "../../../web-app/assets/svgs/court.svg";
+import nationCoinIcon from "../../../web-app/assets/svgs/nation_coin.svg";
 
 export default {
 	component: Steps,
     title: 'Organisms/Steps',
 }
+
 
 const Template = (args) => <Steps {...args}/>;
 
@@ -17,7 +20,7 @@ Default.args = {
 			title: "Approve stake",
 			description:
 				"Lorem ipsum dolor sit amet consectetur. Aliquam rutrum est metus dolor nam eu sed ultricies.",
-			image: "https://picsum.photos/200",
+			image: nationCoinIcon,
             stepCTA: "Start Join"
 		},
 		{
@@ -27,7 +30,7 @@ Default.args = {
                 <p className='text-xs mb-1 font-light'>Lorem ipsum dolor sit amet consectetur.</p>
                 <p>0.02 $NATION Involved</p>
             </div>,
-			image: "https://picsum.photos/200",
+			image: courtIcon,
             stepCTA: "Approve stake 2"
 		},
 		{
@@ -35,7 +38,7 @@ Default.args = {
 			title: "Join Agreement",
 			description:
 				"Lorem ipsum dolor sit amet consectetur. Aliquam rutrum est metus dolor nam eu sed ultricies. ",
-			image: "https://picsum.photos/200",
+			image: nationCoinIcon,
             stepCTA: "Join Agreement"
 		},
 	],
