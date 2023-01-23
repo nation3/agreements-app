@@ -52,7 +52,7 @@
     "@types/react-blockies": "^1.4.1",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.42.1",
-    "babel-loader": "^8.2.5",
+    "babel-loader": "^9.1.2",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.2",
