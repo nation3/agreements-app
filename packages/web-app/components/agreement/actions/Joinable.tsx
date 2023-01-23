@@ -318,7 +318,7 @@ export const JoinableAgreementActions = ({
 						finishMessage={
 							<div className="">
 								<p className="font-semibold text-2xl leading-relaxed text-gray-500 dark:text-gray-400">
-									Congrats! 💙
+									All good!
 								</p>
 								<p className="text-base leading-relaxed text-gray-600 dark:text-gray-400">
 									{"You've succesfully joined to the agreement"}
