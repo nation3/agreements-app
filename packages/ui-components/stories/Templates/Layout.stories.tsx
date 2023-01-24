@@ -13,7 +13,7 @@ const Template = (args) => <DefaultLayout {...args} />;
 export const Default = Template.bind({});
 
 Default.args = {
-	title: "Nation 3",
+	title: "Nation3",
 	appName: "Court",
 	onRoute: null,
 	isActiveRoute: null,

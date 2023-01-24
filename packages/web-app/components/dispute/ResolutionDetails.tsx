@@ -3,17 +3,16 @@ import { Position, useDispute } from "./context/DisputeResolutionContext";
 import { useProvider } from "wagmi";
 import { Accordion } from "flowbite-react";
 import { useCohort } from "../../hooks/useCohort";
-import { useTimeToBlock } from "../../hooks/useTime";
 import { CountDown } from "../../components/CountDown";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import {
 	ActionBadge,
 	AddressDisplay,
-	Badge,
 	Button,
 	Table,
 	utils as n3utils,
 } from "@nation3/ui-components";
+import { useMemo } from "react";
+import { CardHeader } from "../CardHeader";
 
 const SettlementTable = ({ positions }: { positions: Position[] }) => {
 	const provider = useProvider({ chainId: 1 });
@@ -40,23 +39,24 @@ const ResolutionDataDisplay = ({
 	settlement: Position[];
 	unlockTime?: number;
 }) => {
-	const { time: timeLeft } = useTimeToBlock(unlockTime ?? 0);
+	const timeLeft = useMemo(() => {
+		const now = Math.floor(Date.now() / 1000);
+
+		if (unlockTime && unlockTime > now) {
+			return unlockTime - now;
+		} else {
+			return 0;
+		}
+	}, [unlockTime]);
 
 	return (
 		<div className="flex flex-col gap-5">
-			<div className="flex flex-col gap-1">
-				<div className="flex flex-row items-center justify-between">
-					<h1 className="font-display font-medium text-lg truncate">Resolution</h1>
-					<Badge textColor="gray-800" bgColor="gray-100" className="font-semibold" label={status} />
-				</div>
+			<div className="flex flex-col gap-3">
+				<CardHeader title={"Resolution"} status={status} size={"xl"} />
 				<div className="flex flex-col md:flex-row gap-1">
 					{mark && <ActionBadge label="Fingerprint" data={n3utils.shortenHash(mark)} />}
 					{unlockTime && (
-						<ActionBadge
-							label="Appeal time left"
-							data={<CountDown seconds={timeLeft} />}
-							icon={<InformationCircleIcon width={16} />}
-						/>
+						<ActionBadge label="Appeal time left" data={<CountDown seconds={timeLeft} />} />
 					)}
 				</div>
 			</div>

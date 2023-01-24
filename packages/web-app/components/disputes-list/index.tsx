@@ -3,7 +3,6 @@ export { DisputeListProvider } from "./context/DisputeListProvider";
 
 import { Table, utils, Badge } from "@nation3/ui-components";
 
-import { ScaleIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 import { useDisputeList } from "./context/DisputeListContext";
 import Image from "next/image";

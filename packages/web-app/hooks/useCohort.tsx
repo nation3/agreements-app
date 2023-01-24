@@ -148,7 +148,6 @@ export const useResolutionProposals = ({ id }: { id: string }) => {
 					},
 					{},
 				);
-
 				return {
 					txHash: safeTxHash,
 					txNonce: nonce,
@@ -156,14 +155,14 @@ export const useResolutionProposals = ({ id }: { id: string }) => {
 					confirmations: confirmations ?? [],
 					resolution: {
 						framework: resolutionParams.framework ?? constants.AddressZero,
-						id: resolutionParams.id ?? constants.AddressZero,
+						dispute: resolutionParams.dispute ?? constants.AddressZero,
 						settlement: (resolutionParams.settlement as [string, string][]).map(
 							([party, balance]) => ({ party, balance: BigNumber.from(balance) }),
 						),
 					},
 				};
 			})
-			.filter(({ resolution }) => resolution.id === id);
+			.filter(({ resolution }) => resolution.dispute === id);
 		setProposals(proposals);
 	};
 

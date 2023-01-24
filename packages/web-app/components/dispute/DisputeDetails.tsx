@@ -3,7 +3,6 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import {
 	Table,
 	Alert,
-	Badge,
 	ActionBadge,
 	Button,
 	AddressDisplay,
@@ -14,12 +13,11 @@ import { ResolutionDetails, ProposedResolutionDetails } from "./ResolutionDetail
 import { useDispute } from "./context/DisputeResolutionContext";
 import { frameworkAddress } from "../../lib/constants";
 import { useResolutionExecute } from "../../hooks/useArbitrator";
-import { useBlockNumber, useProvider } from "wagmi";
-import { useUrl } from "../../hooks";
+import { useProvider } from "wagmi";
+import { CardHeader } from "../CardHeader";
 
 export const DisputeDetails = () => {
 	const provider = useProvider({ chainId: 1 });
-	const { data: currentBlock } = useBlockNumber();
 	const currentTime = Math.floor(Date.now() / 1000);
 
 	const { dispute, resolution: approvedResolution, proposedResolutions } = useDispute();
@@ -27,12 +25,10 @@ export const DisputeDetails = () => {
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 
-	const { url } = useUrl();
-
 	const copyAgreementId = useCallback(() => {
 		if (dispute.id) {
 			setIsAgreementId(true);
-			navigator.clipboard.writeText(url);
+			navigator.clipboard.writeText(dispute.id);
 			setTimeout(() => setIsAgreementId(false), 1000);
 		}
 	}, [dispute.id]);
@@ -51,16 +47,18 @@ export const DisputeDetails = () => {
 	const canBeEnacted = useMemo(() => {
 		if (!approvedResolution) return false;
 		if (approvedResolution.status == "Appealed") return false;
-		return currentBlock ? approvedResolution.unlockTime < currentTime : false;
-	}, [currentBlock, approvedResolution]);
+		return currentTime ? approvedResolution.unlockTime < currentTime : false;
+	}, [currentTime, approvedResolution]);
+
+	const disputeStatus = useMemo(() => {
+		if (approvedResolution?.status == "Enacted") return "Resolved";
+		return "Open";
+	}, [approvedResolution]);
 
 	return (
 		<>
-			<div className="flex flex-col gap-2 text-gray-700">
-				<div className="flex flex-row items-center justify-between">
-					<h1 className="font-display font-medium text-2xl truncate">Dispute</h1>
-					<Badge textColor="gray-800" bgColor="gray-100" className="font-semibold" label="Open" />
-				</div>
+			<div className="flex flex-col gap-3 text-gray-700">
+				<CardHeader title={"Dispute"} id={dispute.id} status={disputeStatus} />
 				<div className="flex flex-col md:flex-row gap-1">
 					<ActionBadge
 						tooltip
@@ -109,7 +107,7 @@ export const DisputeDetails = () => {
 							onClick={() =>
 								execute({
 									framework: frameworkAddress,
-									id: dispute.id,
+									dispute: dispute.id,
 									settlement: approvedResolution.settlement || [],
 								})
 							}

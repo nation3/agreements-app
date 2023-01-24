@@ -78,7 +78,7 @@ export const DisputeResolutionProvider = ({
 			return {
 				id: resolutionId,
 				status: resolutionData?.status,
-				mark: resolutionData?.mark,
+				mark: resolutionData?.settlement,
 				unlockTime: resolutionData?.unlockTime,
 				settlement: settlement,
 			};

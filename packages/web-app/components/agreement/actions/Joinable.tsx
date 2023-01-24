@@ -7,14 +7,13 @@ import { frameworkAddress, NATION } from "../../../lib/constants";
 import { UserPosition } from "../context/types";
 import { AgreementConstants } from "../AgreementConstants";
 import Image from "next/image";
-import { Button, Steps } from "@nation3/ui-components";
+import { Button, Steps, IStep } from "@nation3/ui-components";
 import { Modal as FlowModal } from "flowbite-react";
 import courtIcon from "../../../assets/svgs/court.svg";
 import nationCoinIcon from "../../../assets/svgs/nation_coin.svg";
 import joinedIcon from "../../../assets/svgs/joined.svg";
-import joinedSuccessIcon from "../../../assets/svgs/joined_success.svg";
-import { IStep } from "@nation3/ui-components/dist/components/Organisms/steps/Steps";
-import { usePermit2Allowance, usePermit2TransferSignature } from "../../../hooks/usePermit2";
+// import joinedSuccessIcon from "../../../assets/svgs/joined_success.svg";
+import { usePermit2Allowance, usePermit2BatchTransferSignature } from "../../../hooks/usePermit2";
 
 export const JoinableAgreementActions = ({
 	id,
@@ -25,7 +24,7 @@ export const JoinableAgreementActions = ({
 }) => {
 	const { address } = useAccount();
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
-	const [isJoinAgreementStarted, setIsJoinAgreementStarted] = useState<boolean>(false);
+	const [isJoinAgreementModalOpen, setIsJoinAgreementModalOpen] = useState<boolean>(false);
 	const [stepsIndex, setStepsIndex] = useState<number>(0);
 	const [stepsLoadingIndex, setStepsLoadingIndex] = useState<number | null>(null);
 	const [stepsError, setStepsError] = useState<{
@@ -37,8 +36,6 @@ export const JoinableAgreementActions = ({
 		description: "",
 		isError: false,
 	});
-	const [isJoinAgreementFinished, setIsJoinAgreementFinished] = useState<boolean>(false);
-	const [steps, setSteps] = useState<IStep[]>([]);
 
 	/* JOIN PRE-REQUIREMENTS */
 
@@ -100,25 +97,24 @@ export const JoinableAgreementActions = ({
 	useEffect(() => {
 		if (approvalSuccess || approvalError) {
 			setStepsLoadingIndex(null);
-			setStepsIndex(2);
 		}
 	}, [approvalSuccess, approvalError]);
 
 	/* PERMIT SIGNATURE */
 
-	const { permit, signature, signPermit, signSuccess, signError } = usePermit2TransferSignature({
-		tokenTransfers: [
-			{ token: NATION, amount: 0 },
-			{ token: NATION, amount: requiredCollateral },
-		],
-		spender: frameworkAddress,
-	});
+	const { permit, signature, signPermit, signSuccess, signError } =
+		usePermit2BatchTransferSignature({
+			tokenTransfers: [
+				{ token: NATION, amount: 0 },
+				{ token: NATION, amount: requiredCollateral },
+			],
+			spender: frameworkAddress,
+		});
 
 	useEffect(() => {
 		// TODO: Built in this logic into the Steps component
 		if (signSuccess) {
 			setStepsLoadingIndex(null);
-			setStepsIndex(1);
 		}
 	}, [signSuccess, signError]);
 
@@ -143,12 +139,12 @@ export const JoinableAgreementActions = ({
 
 	/* STEPS 2 - SIGN */
 
-	const { join, isSuccess: isJoinSuccess, isError: isJoinError } = useAgreementJoin();
+	const { join, isTxSuccess: isJoinSuccess, isError: isJoinError } = useAgreementJoin();
 
 	useEffect(() => {
 		if (isJoinSuccess) {
-			setIsJoinAgreementFinished(true);
 			setStepsLoadingIndex(null);
+			window.location.reload();
 		} else if (isJoinError) {
 			setStepsLoadingIndex(null);
 			setStepsError({
@@ -168,10 +164,9 @@ export const JoinableAgreementActions = ({
 		Array.from(Array(index).keys()).forEach(() => {
 			manageSteps.shift();
 		}); */
-		setSteps(stepsBase);
-	}, []);
+	}, [depositTokenApproved, signature]);
 
-	const stepsBase: IStep[] = [
+	const steps: IStep[] = [
 		{
 			title: "Setup Permit2",
 			description: (
@@ -181,15 +176,15 @@ export const JoinableAgreementActions = ({
 					</p>
 				</div>
 			),
-			image: "https://picsum.photos/200",
+			image: nationCoinIcon,
 			stepCTA: "Setup Permit2",
 			action: () => {
 				setStepsLoadingIndex(0);
-				signPermit();
+				approveDepositToken();
 			},
 		},
 		{
-			title: "Approve tokens",
+			title: "Approve Tokens",
 			description: (
 				<div>
 					<p className="text-xs text-gray-400">
@@ -202,7 +197,7 @@ export const JoinableAgreementActions = ({
 			stepCTA: "Sign",
 			action: () => {
 				setStepsLoadingIndex(1);
-				approveDepositToken();
+				signPermit();
 			},
 		},
 		{
@@ -279,14 +274,11 @@ export const JoinableAgreementActions = ({
 			</FlowModal>
 
 			<div className="flex flex-col gap-1">
-				<Button
-					label="Start Join"
-					onClick={() => setIsJoinAgreementStarted(!isJoinAgreementStarted)}
-				/>
+				<Button label="Join Agreement" onClick={() => setIsJoinAgreementModalOpen(true)} />
 
 				<FlowModal
-					show={isJoinAgreementStarted}
-					onClose={() => setIsJoinAgreementStarted(!isJoinAgreementStarted)}
+					show={isJoinAgreementModalOpen}
+					onClose={() => setIsJoinAgreementModalOpen(false)}
 				>
 					<FlowModal.Header>
 						<div className="flex items-center w-full pl-3">
@@ -312,19 +304,6 @@ export const JoinableAgreementActions = ({
 						title={"Join Agreement"}
 						stepIndex={stepsIndex}
 						loadingIndex={stepsLoadingIndex}
-						areStepsFinished={isJoinAgreementFinished}
-						finishAction={() => window.location.reload()}
-						finishImage={joinedSuccessIcon}
-						finishMessage={
-							<div className="">
-								<p className="font-semibold text-2xl leading-relaxed text-gray-500 dark:text-gray-400">
-									All good!
-								</p>
-								<p className="text-base leading-relaxed text-gray-600 dark:text-gray-400">
-									{"You've succesfully joined to the agreement"}
-								</p>
-							</div>
-						}
 					/>
 				</FlowModal>
 			</div>

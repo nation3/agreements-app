@@ -25,7 +25,7 @@ export interface DisputesData {
 	disputes: {
 		id: string;
 		createdAt: string;
-		resolution: {
+		settlement: {
 			status: string;
 		} | null;
 	}[];
@@ -50,7 +50,7 @@ export const disputesQuery = gql`
 		disputes {
 			id
 			createdAt
-			resolution {
+			settlement {
 				status
 			}
 		}
