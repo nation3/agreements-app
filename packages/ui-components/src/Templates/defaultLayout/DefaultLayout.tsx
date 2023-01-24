@@ -9,23 +9,29 @@ export interface DefaultLayoutProps extends Omit<NavBarProps, "navItems"> {
 	children: ReactNode;
 }
 
-export type NavItem = Pick<NavButtonProps, "route" | "icon" | "label">;
-
 export interface NavBarProps extends Pick<NavButtonProps, "onRoute"> {
 	title: string;
 	appName: string;
-	navItems: NavItem[];
 	isActiveRoute: (route: string) => boolean;
+	navItems?: ReactNode;
+	headerNavItems?: ReactNode;
 	connectionButton?: ReactNode;
 }
 
 export const DefaultLayout = ({ children, ...props }: DefaultLayoutProps) => {
-	const { title, appName, connectionButton } = props;
+	const { title, appName, headerNavItems, connectionButton } = props;
 	const { screen } = useScreen();
 
 	const NavBar = () => {
 		if (screen === ScreenType.Desktop) {
-			return <TopBar title={title} appName={appName} connectionButton={connectionButton} />;
+			return (
+				<TopBar
+					title={title}
+					appName={appName}
+					navItems={headerNavItems}
+					connectionButton={connectionButton}
+				/>
+			);
 			// return <SideNav {...props} />;
 		}
 		return <BottonNav connectionButton={connectionButton} />;

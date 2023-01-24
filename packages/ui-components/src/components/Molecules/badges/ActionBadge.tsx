@@ -6,7 +6,7 @@ export interface ActionBadgeProps {
 	data?: ReactNode;
 	icon?: ReactNode;
 	tooltip?: boolean;
-	tooltipProps?: any;
+	tooltipContent?: string;
 	textColor?: string;
 	bgColor?: string;
 	dataAction?: () => void;
@@ -17,7 +17,7 @@ export const ActionBadge = ({
 	label,
 	data,
 	tooltip,
-	tooltipProps,
+	tooltipContent,
 	icon,
 	textColor = "gray-700",
 	bgColor = "gray-100",
@@ -41,7 +41,13 @@ export const ActionBadge = ({
 			{...props}
 		>
 			<span className="pl-1">{label}</span>
-			{tooltip ? <Tooltip {...tooltipProps}>{body}</Tooltip> : body}
+			{tooltip ? (
+				<Tooltip style="light" animation="duration-150" content={tooltipContent}>
+					{body}
+				</Tooltip>
+			) : (
+				body
+			)}
 			{icon && <button onClick={() => iconAction?.()}>{icon}</button>}
 		</span>
 	);

@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { ReactNode, useMemo, useState, useEffect } from "react";
-import { useAgreementRead } from "../../../hooks/useAgreement";
+import { useAgreementData } from "../../../hooks/useAgreement";
 import { useResolution } from "../../../hooks/useArbitrator";
 import { useResolutionProposals } from "../../../hooks/useCohort";
 import { abiEncodingPacked, hashEncoding } from "../../../utils/hash";
@@ -21,11 +21,10 @@ export const DisputeResolutionProvider = ({
 	id: string;
 	children: ReactNode;
 }) => {
-	const {
-		params,
-		status: agreementStatus,
-		positions: agreementPositions,
-	} = useAgreementRead({ id, enabled: id != "undefined" });
+	const { data, positions: agreementPositions } = useAgreementData({
+		id,
+		enabled: id != "undefined",
+	});
 
 	const positions = useMemo(() => {
 		return agreementPositions?.map(([party, balance]) => ({ party, balance }));
@@ -39,12 +38,12 @@ export const DisputeResolutionProvider = ({
 	}, [agreementPositions]);
 
 	const resolutionId = useMemo(() => {
-		if (id != "undefined" && agreementStatus == "Disputed") {
+		if (id != "undefined" && data.status == "Disputed") {
 			return hashEncoding(abiEncodingPacked(["address", "bytes32"], [framework, id]));
 		} else {
 			return "undefined";
 		}
-	}, [agreementStatus, framework, id]);
+	}, [data, framework, id]);
 
 	const { resolution: resolutionData } = useResolution({
 		id: resolutionId,
@@ -69,7 +68,8 @@ export const DisputeResolutionProvider = ({
 
 	const dispute = {
 		id,
-		termsHash: params?.termsHash,
+		status: data?.status == "Disputed" ? "Open" : "Closed",
+		termsHash: data?.termsHash,
 		balance,
 		positions,
 	};
@@ -79,8 +79,8 @@ export const DisputeResolutionProvider = ({
 			return {
 				id: resolutionId,
 				status: resolutionData?.status,
-				mark: resolutionData?.mark,
-				unlockBlock: resolutionData?.unlockBlock,
+				mark: resolutionData?.settlement,
+				unlockTime: resolutionData?.unlockTime,
 				settlement: settlement,
 			};
 		}

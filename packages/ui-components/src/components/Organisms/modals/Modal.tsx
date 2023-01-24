@@ -4,11 +4,13 @@ import { AnimatePresence, motion } from "framer-motion";
 
 export interface ModalProps {
 	children: ReactChild;
+	show?: boolean;
 	onClose?: MouseEventHandler<HTMLElement>;
 }
 
-export const Modal = ({ children, onClose }: ModalProps) => {
-	return (
+export const Modal = (props: ModalProps) => {
+	const { children, onClose, show } = props;
+	return show ? (
 		<AnimatePresence>
 			<div
 				className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-screen h-screen p-8 overflow-x-hidden overflow-y-auto bg-gray-700 cursor-pointer bg-opacity-40"
@@ -33,5 +35,7 @@ export const Modal = ({ children, onClose }: ModalProps) => {
 				</motion.div>
 			</div>
 		</AnimatePresence>
+	) : (
+		<></>
 	);
 };

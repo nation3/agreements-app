@@ -36,10 +36,6 @@ export const WithTooltip = Template.bind({});
 WithTooltip.args = {
 	label: "Hash",
 	data: "0x000...000",
-	tooltipProps: {
-		style: "light",
-		animation: "duration-150",
-		content: "Test tooltip",
-	},
+	tooltipContent: "Test tooltip",
 	tooltip: true,
 };

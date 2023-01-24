@@ -1,49 +1,58 @@
 import { PencilSquareIcon } from "@heroicons/react/20/solid";
 import { CheckBadgeIcon } from "@heroicons/react/24/outline";
-import { constants, utils, BigNumber } from "ethers";
+import { utils, BigNumber } from "ethers";
 
 import { useAgreementCreate } from "../../hooks/useAgreement";
 
+import { NATION, frameworkAddress } from "../../lib/constants";
+import { AgreementDataDisplay } from "../agreement/AgreementDetails";
 import { hexHash, generateAgreementMetadata } from "../../utils";
+import { abiEncoding, hashEncoding } from "../../utils/hash";
 import { preparePutToIPFS } from "../../lib/ipfs";
 
-import {
-	Button,
-	InfoAlert,
-	Table,
-	ActionBadge,
-	AddressDisplay,
-	utils as n3utils,
-} from "@nation3/ui-components";
-import { PositionStatusBadge } from "../PositionStatusBadge";
+import { Button, InfoAlert, Table, AddressDisplay } from "@nation3/ui-components";
 import { useProvider } from "wagmi";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { CreateView } from "./context/types";
 import { useRouter } from "next/router";
-import { useEffect, useCallback } from "react";
+import { useEffect, useMemo } from "react";
 
 export const AgreementCreationPreview = () => {
 	const router = useRouter();
 	const provider = useProvider({ chainId: 1 });
-	const { terms, positions, changeView } = useAgreementCreation();
+	const { terms, salt, positions, changeView } = useAgreementCreation();
 	const termsHash = hexHash(terms);
 
-	const uploadMetadataToIPFS = async () => {
-		const metadata = generateAgreementMetadata(terms, positions);
-
-		const { put } = await preparePutToIPFS(metadata);
-
-		const cid = await put();
-		console.log(`metadata uploaded to ${cid}`);
-	};
+	const protoId = useMemo(() => {
+		return hashEncoding(
+			abiEncoding(["address", "bytes32", "bytes32"], [frameworkAddress, termsHash, salt]),
+		);
+	}, [termsHash, salt]);
 
 	const {
 		create,
-		created,
 		isLoading: createLoading,
+		isTxSuccess: createSuccess,
+		// isError: createError,
 		isProcessing: createProcessing,
-	} = useAgreementCreate({ onSettledSuccess: uploadMetadataToIPFS });
+	} = useAgreementCreate({});
+
+	// TODO: Move it into a proper wrapper/callback instead of a listener
+	useEffect(() => {
+		const uploadMetadataToIPFS = async () => {
+			const metadata = generateAgreementMetadata(terms, positions);
+			const { put } = await preparePutToIPFS(metadata);
+			const cid = await put();
+			console.log(`metadata uploaded to ${cid}`);
+		};
+
+		if (createSuccess) {
+			uploadMetadataToIPFS()
+				.then(() => router.push(`/agreement/${protoId}`))
+				.catch();
+		}
+	}, [router, terms, positions, createSuccess, protoId]);
 
 	const submit = async () => {
 		const metadata = generateAgreementMetadata(terms, positions);
@@ -51,39 +60,29 @@ export const AgreementCreationPreview = () => {
 		const { cid } = await preparePutToIPFS(metadata);
 		const metadataURI = `ipfs://${cid}`;
 
-		create({ termsHash: metadata.termsHash, criteria: metadata.criteria, metadataURI });
+		create({
+			termsHash: metadata.termsHash,
+			criteria: metadata.criteria,
+			metadataURI,
+			token: NATION,
+			salt,
+		});
 	};
-
-	const copyTermsHash = useCallback(() => {
-		if (termsHash) navigator.clipboard.writeText(String(termsHash));
-	}, [termsHash]);
-
-	/* Redirect to the agreement page on creation event */
-	useEffect(() => {
-		if (created?.id) router.push(`/agreements/${created.id}`);
-	}, [created, router]);
 
 	return (
 		<>
-			<div className="flex flex-col gap-2 text-gray-700">
-				<div className="flex flex-row items-center justify-between">
-					<h1 className="font-display font-medium text-2xl truncate">Agreement</h1>
-				</div>
-				<div className="flex items-center gap-1">
-					<ActionBadge
-						label="Terms hash"
-						data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
-						dataAction={copyTermsHash}
-					/>
-				</div>
-			</div>
+			<AgreementDataDisplay
+				id={protoId}
+				title={"Agreement"}
+				status={"Preview"}
+				termsHash={termsHash}
+			/>
 			{/* Participant table */}
 			<Table
-				columns={["participant", "stake", "status"]}
+				columns={["participant", "stake"]}
 				data={positions.map(({ account, balance }, index) => [
 					<AddressDisplay key={index} ensProvider={provider} address={account} />,
 					<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
-					<PositionStatusBadge key={index} status={0} />,
 				])}
 			/>
 			{/* Info */}

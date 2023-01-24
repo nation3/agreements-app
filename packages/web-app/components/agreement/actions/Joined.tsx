@@ -1,4 +1,5 @@
 import { Button } from "@nation3/ui-components";
+import { useEffect } from "react";
 import { useAgreementDispute, useAgreementFinalize } from "../../../hooks";
 
 export const JoinedAgreementActions = ({ id }: { id: string }) => {
@@ -6,12 +7,20 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 		dispute,
 		isLoading: disputeLoading,
 		isProcessing: disputeProcessing,
+		isTxSuccess: disputeSuccess,
 	} = useAgreementDispute({ id });
 	const {
 		finalize,
 		isLoading: finalizationLoading,
 		isProcessing: finalizationProcessing,
+		isTxSuccess: finalizeSuccess,
 	} = useAgreementFinalize({ id });
+
+	useEffect(() => {
+		if (disputeSuccess || finalizeSuccess) {
+			window.location.reload();
+		}
+	}, [disputeSuccess, finalizeSuccess]);
 
 	return (
 		<div className="flex gap-2 items-center justify-between">

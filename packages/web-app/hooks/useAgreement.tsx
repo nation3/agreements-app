@@ -1,74 +1,33 @@
-import { BigNumber, utils } from "ethers";
-import { useMemo } from "react";
+// import { BigNumber, utils } from "ethers";
+import { useEffect, useMemo } from "react";
+import { PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
-import frameworkInterface from "../abis/IAgreementFramework.json";
-import tokenInterface from "../abis/ERC20.json";
+import frameworkInterface from "../abis/CollateralAgreementFramework.json";
 import { Resolver } from "../utils/criteria";
 import { frameworkAddress } from "../lib/constants";
 
 const frameworkAbi = frameworkInterface.abi;
-const tokenAbi = tokenInterface.abi;
 
-export const useToken = ({
-	address,
-	account,
-	enabled = true,
-}: {
-	address: string;
-	account: string;
-	enabled: boolean;
-}) => {
-	const { data: balance } = useContractRead({
-		addressOrName: address,
-		contractInterface: tokenAbi,
-		functionName: "balanceOf",
-		args: [account],
-		enabled: enabled,
-		watch: true,
-	});
-
-	const { data: allowance } = useContractRead({
-		addressOrName: address,
-		contractInterface: tokenAbi,
-		functionName: "allowance",
-		args: [account, frameworkAddress],
-		enabled: enabled,
-		watch: true,
-	});
-
-	const {
-		write: approveToken,
-		isLoading: approvalLoading,
-		data: approvalTx,
-	} = useContractWrite({
-		mode: "recklesslyUnprepared",
-		addressOrName: address,
-		contractInterface: tokenAbi,
-		functionName: "approve",
-		overrides: {
-			gasLimit: 52000,
-		},
-		onError(error) {
-			console.log(error);
-		},
-	});
-
-	const { isLoading: approvalProcessing } = useWaitForTransaction({
-		hash: approvalTx?.hash,
-	});
-
-	const approve = ({ amount }: { amount: BigNumber }) => {
-		approveToken?.({ recklesslySetUnpreparedArgs: [frameworkAddress, amount] });
-	};
-
-	return { balance, allowance, approve, approvalLoading, approvalProcessing };
+const agreementStatus = (status: number) => {
+	switch (status) {
+		case 0:
+			return "Created";
+		case 1:
+			return "Ongoing";
+		case 2:
+			return "Finalized";
+		case 3:
+			return "Disputed";
+		default:
+			return "Unknown";
+	}
 };
 
-export const useAgreementRead = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
-	const { data: params } = useContractRead({
+export const useAgreementData = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
+	const { data: agreementData } = useContractRead({
 		addressOrName: frameworkAddress,
 		contractInterface: frameworkAbi,
-		functionName: "agreementParams",
+		functionName: "agreementData",
 		args: [id],
 		enabled,
 	});
@@ -81,48 +40,30 @@ export const useAgreementRead = ({ id, enabled = true }: { id: string; enabled?:
 		enabled,
 	});
 
-	const { data: agreementStatus } = useContractRead({
-		addressOrName: frameworkAddress,
-		contractInterface: frameworkAbi,
-		functionName: "agreementStatus",
-		args: [id],
-		enabled,
-	});
+	const data = useMemo(() => {
+		return {
+			termsHash: agreementData?.termsHash,
+			criteria: agreementData?.criteria,
+			metadataURI: agreementData?.metadataURI,
+			token: agreementData?.token,
+			status:
+				typeof agreementData?.status === "number"
+					? agreementStatus(agreementData.status)
+					: "Unknown",
+		};
+	}, [agreementData]);
 
-	const status: string = useMemo(() => {
-		if (typeof agreementStatus === "number") {
-			switch (agreementStatus) {
-				case 0:
-					return "Created";
-				case 1:
-					return "Ongoing";
-				case 2:
-					return "Finalized";
-				case 3:
-					return "Disputed";
-				default:
-					return "Unknown";
-			}
-		}
-		return "Unknown";
-	}, [agreementStatus]);
-
-	return { params, positions, status: status };
+	return { data, positions };
 };
 
-/* Temporal workarround to process agreement creation event */
-const eventAbi = [
-	"event AgreementCreated(bytes32 id, bytes32 termsHash, uint256 criteria, string metadataURI)",
-];
-interface CreatedEventArgs {
-	id: string;
-	termsHash: string;
-	criteria: BigNumber;
-	metadataURI: string;
-}
-const iface = new utils.Interface(eventAbi);
-
-export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess?: () => void }) => {
+export const useAgreementCreate = ({
+	onSettledSuccess,
+	onSuccess,
+}: {
+	onSettledSuccess?: () => void;
+	onSuccess?: (data?: unknown) => void;
+	onTxSuccess?: (data?: unknown) => void;
+}) => {
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: frameworkAddress,
@@ -135,42 +76,32 @@ export const useAgreementCreate = ({ onSettledSuccess }: { onSettledSuccess?: ()
 				console.log(error);
 			}
 		},
+		onSuccess,
 	});
 
-	const {
-		data: receipt,
-		isLoading: isProcessing,
-		isSuccess: txSuccess,
-	} = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
-
-	/* Temporal patch to fetch the creation event */
-	const created = useMemo((): CreatedEventArgs | undefined => {
-		if (txSuccess && receipt) {
-			const args = iface.parseLog(receipt.logs[0]).args;
-			if (args.length == 4) {
-				return { id: args[0], termsHash: args[1], criteria: args[2], metadataURI: args[3] };
-			}
-		}
-		return undefined;
-	}, [txSuccess, receipt]);
 
 	const create = ({
 		termsHash,
 		criteria,
 		metadataURI,
+		token,
+		salt,
 	}: {
 		termsHash: string;
 		criteria: string;
 		metadataURI: string;
+		token: string;
+		salt: string;
 	}) => {
 		write?.({
-			recklesslySetUnpreparedArgs: [{ termsHash, criteria, metadataURI }],
+			recklesslySetUnpreparedArgs: [{ termsHash, criteria, metadataURI, token }, salt],
 		});
 	};
 
-	return { create, created, isProcessing, data, ...args };
+	return { create, isProcessing, data, isTxSuccess, ...args };
 };
 
 export const useAgreementJoin = () => {
@@ -188,21 +119,31 @@ export const useAgreementJoin = () => {
 		},
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
-	const join = async ({ id, resolver }: { id: string; resolver: Resolver }) => {
-		if (!resolver.proof) {
+	const join = async ({
+		id,
+		resolver,
+		permit,
+		signature,
+	}: {
+		id: string;
+		resolver: Resolver;
+		permit: PermitBatchTransferFrom;
+		signature: string | undefined;
+	}) => {
+		if (!resolver.proof || !signature) {
 			return;
 		} else {
 			return joinAgreement?.({
-				recklesslySetUnpreparedArgs: [id, resolver],
+				recklesslySetUnpreparedArgs: [id, resolver, permit, signature],
 			});
 		}
 	};
 
-	return { join, data, isProcessing, ...args };
+	return { join, data, isProcessing, isTxSuccess, ...args };
 };
 
 export const useAgreementDispute = ({ id }: { id: string }) => {
@@ -220,7 +161,7 @@ export const useAgreementDispute = ({ id }: { id: string }) => {
 		},
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
@@ -230,7 +171,7 @@ export const useAgreementDispute = ({ id }: { id: string }) => {
 		});
 	};
 
-	return { dispute, data, isProcessing, ...args };
+	return { dispute, data, isProcessing, isTxSuccess, ...args };
 };
 
 export const useAgreementFinalize = ({ id }: { id: string }) => {
@@ -248,7 +189,7 @@ export const useAgreementFinalize = ({ id }: { id: string }) => {
 		},
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
@@ -258,7 +199,7 @@ export const useAgreementFinalize = ({ id }: { id: string }) => {
 		});
 	};
 
-	return { finalize, data, isProcessing, ...args };
+	return { finalize, data, isProcessing, isTxSuccess, ...args };
 };
 
 export const useAgreementWithdraw = ({ id }: { id: string }) => {
@@ -276,7 +217,7 @@ export const useAgreementWithdraw = ({ id }: { id: string }) => {
 		},
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
@@ -286,5 +227,5 @@ export const useAgreementWithdraw = ({ id }: { id: string }) => {
 		});
 	};
 
-	return { withdraw, data, isProcessing, ...args };
+	return { withdraw, data, isProcessing, isTxSuccess, ...args };
 };

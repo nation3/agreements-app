@@ -3,6 +3,7 @@ import { CreateView, InputPositionList } from "./types";
 
 export type AgreementCreationContextType = {
 	view: CreateView;
+	salt: string;
 	terms: string;
 	positions: InputPositionList;
 	changeView: (view: CreateView) => void;
