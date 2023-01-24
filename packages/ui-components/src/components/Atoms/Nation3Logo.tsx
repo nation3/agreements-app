@@ -1,6 +1,6 @@
-import React, { HTMLAttributes, ReactSVGElement } from "react";
+import React from "react";
 
-const Nation3Logo = ({ className }: HTMLAttributes<ReactSVGElement>) => {
+const Nation3Logo = () => {
 	return (
 		<svg viewBox="0 0 208 208" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<circle cx="104" cy="104" r="90" fill="#FFF" fillOpacity="0.9" />

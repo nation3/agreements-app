@@ -65,22 +65,14 @@ export const DisputeDetails = () => {
 				<div className="flex flex-col md:flex-row gap-1">
 					<ActionBadge
 						tooltip
-						tooltipProps={{
-							style: "light",
-							animation: "duration-150",
-							content: isAgreementId ? "Copied" : "Click to copy",
-						}}
+						tooltipContent={isAgreementId ? "Copied" : "Click to copy"}
 						label="ID"
 						data={n3utils.shortenHash(dispute.id ?? constants.HashZero)}
 						dataAction={copyAgreementId}
 					/>
 					<ActionBadge
 						tooltip
-						tooltipProps={{
-							style: "light",
-							animation: "duration-150",
-							content: isHashCopied ? "Copied" : "Click to copy",
-						}}
+						tooltipContent={isHashCopied ? "Copied" : "Click to copy"}
 						label="Terms hash"
 						data={n3utils.shortenHash(dispute.termsHash ?? constants.HashZero)}
 						dataAction={copyTermsHash}

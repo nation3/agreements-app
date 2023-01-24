@@ -89,22 +89,14 @@ export const AgreementDataDisplay = ({
 					<ActionBadge
 						label="ID"
 						tooltip
-						tooltipProps={{
-							style: "light",
-							animation: "duration-150",
-							content: isAgreementId ? "Copied" : "Click to copy",
-						}}
+						tooltipContent={isAgreementId ? "Copied" : "Click to copy"}
 						data={n3utils.shortenHash(id ?? constants.HashZero)}
 						dataAction={copyAgreementId}
 					/>
 					<div className="flex items-center">
 						<ActionBadge
 							tooltip
-							tooltipProps={{
-								style: "light",
-								animation: "duration-150",
-								content: isHashCopied ? "Copied" : "Click to copy",
-							}}
+							tooltipContent={isHashCopied ? "Copied" : "Click to copy"}
 							label="Terms hash"
 							data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
 							icon={<InformationCircleIcon className="w-4 h-4" />}

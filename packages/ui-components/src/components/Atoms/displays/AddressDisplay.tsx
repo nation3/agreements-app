@@ -19,6 +19,7 @@ export const AddressDisplay = ({
 			} else {
 				setValue(shortAddress);
 			}
+			return shortAddress;
 		});
 	}, [address, shortAddress, ensProvider]);
 
