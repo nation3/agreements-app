@@ -55,14 +55,21 @@ const useSafe = ({
 };
 
 export const useCohort = () => {
+	const safeAddress = cohortAddress;
+	const [judges, setJudges] = useState<string[]>();
 	const { data: signer } = useSigner();
 	const { address: senderAddress } = useAccount();
 	const { safeSDK, safeServiceClient } = useSafe({
-		safeAddress: cohortAddress,
+		safeAddress,
 		signer: signer as Signer,
 		txServiceUrl: safeTxServiceUrl,
 	});
-	const safeAddress = cohortAddress;
+
+	useEffect(() => {
+		safeSDK?.getOwners().then((owners) => {
+			if (owners != judges) setJudges(owners);
+		});
+	}, [safeSDK]);
 
 	const proposeTransaction = async (safeTransaction: SafeTransaction) => {
 		if (!senderAddress || !safeSDK || !safeServiceClient) return;
@@ -116,7 +123,7 @@ export const useCohort = () => {
 		await safeSDK.executeTransaction(safeTransaction);
 	};
 
-	return { propose, approve, reject, execute };
+	return { judges, propose, approve, reject, execute };
 };
 
 type SafeDecodedParameters = { name: string; type: string; value: any }[];

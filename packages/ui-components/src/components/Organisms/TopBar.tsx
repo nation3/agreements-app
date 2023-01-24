@@ -6,13 +6,14 @@ import Link from "next/link";
 export interface ITopBarProps {
 	title: string;
 	appName: string;
+	navItems?: ReactNode;
 	connectionButton?: ReactNode;
 }
 
 const ITopBarDefaultProps = {};
 
 const TopBar: React.FC<ITopBarProps> = (props) => {
-	const { title, appName, connectionButton } = props;
+	const { title, appName, navItems, connectionButton } = props;
 
 	return (
 		<React.Fragment>
@@ -20,8 +21,11 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 				<Link href="/" className="cursor-pointer">
 					<AppHeader title={title} appName={appName} />
 				</Link>
-				{/* Account */}
-				<div className="p-4">{connectionButton}</div>
+				<div className="flex items-center justify-between">
+					<div>{navItems}</div>
+					{/* Account */}
+					<div className="p-4">{connectionButton}</div>
+				</div>
 			</section>
 		</React.Fragment>
 	);
