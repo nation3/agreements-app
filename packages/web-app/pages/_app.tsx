@@ -34,14 +34,14 @@ const HeaderNavigation = () => {
 	const isActiveRoute = (route: string) => router.pathname.startsWith(route);
 
 	return (
-		<div className="flex items-center gap-2 font-medium text-slate-500">
+		<div className="flex items-center gap-2 font-medium text-lg text-slate-500">
 			{isDisputesVisible && (
-				<Link href="/disputes" className={`${isActiveRoute("/disputes") && "text-slate-600"}`}>
-					Disputes
+				<Link href="/disputes" className={`${isActiveRoute("/dispute") && "text-slate-700"}`}>
+					<div className="hover:bg-gray-100 p-2 px-4 rounded-xl">Disputes</div>
 				</Link>
 			)}
-			<Link href="/agreements" className={`${isActiveRoute("/agreements") && "text-slate-600"}`}>
-				Agreements
+			<Link href="/agreements" className={`${isActiveRoute("/agreement") && "text-slate-700"}`}>
+				<div className="hover:bg-gray-100 p-2 px-4 rounded-xl">Agreements</div>
 			</Link>
 		</div>
 	);
