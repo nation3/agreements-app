@@ -13,8 +13,9 @@ import { ResolutionDetails, ProposedResolutionDetails } from "./ResolutionDetail
 import { useDispute } from "./context/DisputeResolutionContext";
 import { frameworkAddress } from "../../lib/constants";
 import { useResolutionExecute } from "../../hooks/useArbitrator";
-import { useProvider } from "wagmi";
+import { useProvider, useAccount } from "wagmi";
 import { CardHeader } from "../CardHeader";
+import { useCohort } from "../../hooks/useCohort";
 
 export const DisputeDetails = () => {
 	const provider = useProvider({ chainId: 1 });
@@ -22,8 +23,15 @@ export const DisputeDetails = () => {
 
 	const { dispute, resolution: approvedResolution, proposedResolutions } = useDispute();
 	const { execute } = useResolutionExecute();
+	const { judges } = useCohort();
+	const { address } = useAccount();
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
+
+	const isArbitrator = useMemo(() => {
+		if (!judges || !address) return false;
+		return judges.includes(address);
+	}, [judges, address]);
 
 	const copyAgreementId = useCallback(() => {
 		if (dispute.id) {
@@ -115,7 +123,7 @@ export const DisputeDetails = () => {
 					</div>
 				</div>
 			)}
-			{proposedResolutions.length > 0 && <ProposedResolutionDetails />}
+			{isArbitrator && proposedResolutions.length > 0 && <ProposedResolutionDetails />}
 			{!approvedResolution && !proposedResolutions && (
 				<Alert
 					icon={<ExclamationTriangleIcon className="w-5 h-5" />}
