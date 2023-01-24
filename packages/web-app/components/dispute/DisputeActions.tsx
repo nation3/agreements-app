@@ -18,8 +18,9 @@ import { arbitratorAddress, NATION } from "../../lib/constants";
 
 export const DisputeArbitrationActions = () => {
 	const [mode, setMode] = useState("view");
-	const { resolution } = useDispute();
+	const { dispute, resolution } = useDispute();
 
+	if (dispute.status == "Closed") return <></>;
 	if (mode == "edit") {
 		return <ResolutionForm />;
 	} else if (resolution == undefined) {

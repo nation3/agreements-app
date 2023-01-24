@@ -58,15 +58,10 @@ export const DisputeDetails = () => {
 		return currentTime ? approvedResolution.unlockTime < currentTime : false;
 	}, [currentTime, approvedResolution]);
 
-	const disputeStatus = useMemo(() => {
-		if (approvedResolution?.status == "Enacted") return "Resolved";
-		return "Open";
-	}, [approvedResolution]);
-
 	return (
 		<>
 			<div className="flex flex-col gap-3 text-gray-700">
-				<CardHeader title={"Dispute"} id={dispute.id} status={disputeStatus} />
+				<CardHeader title={"Dispute"} id={dispute.id} status={dispute.status} />
 				<div className="flex flex-col md:flex-row gap-1">
 					<ActionBadge
 						tooltip
