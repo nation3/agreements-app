@@ -49,7 +49,7 @@ export const AgreementCreationPreview = () => {
 
 		if (createSuccess) {
 			uploadMetadataToIPFS()
-				.then(() => router.push(`/agreements/${protoId}`))
+				.then(() => router.push(`/agreement/${protoId}`))
 				.catch();
 		}
 	}, [router, terms, positions, createSuccess, protoId]);
