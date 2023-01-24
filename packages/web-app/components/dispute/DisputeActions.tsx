@@ -7,14 +7,14 @@ import Image from "next/image";
 import { useDispute } from "./context/DisputeResolutionContext";
 import { ResolutionDetails } from "./ResolutionDetails";
 import { ResolutionForm } from "./ResolutionForm";
-import { useResolutionAppeal } from "../../hooks/useArbitrator";
+import { useResolutionAppeal, useResolutionExecute } from "../../hooks/useArbitrator";
 import { AgreementDisputedAlert } from "../alerts";
 import courtIcon from "../../assets/svgs/court.svg";
 import nationCoinIcon from "../../assets/svgs/nation_coin.svg";
 import joinedIcon from "../../assets/svgs/joined.svg";
 import { usePermit2Allowance, usePermit2TransferSignature } from "../../hooks/usePermit2";
 import { useAccount } from "wagmi";
-import { arbitratorAddress, NATION } from "../../lib/constants";
+import { arbitratorAddress, frameworkAddress, NATION } from "../../lib/constants";
 
 export const DisputeArbitrationActions = () => {
 	const [mode, setMode] = useState("view");
@@ -35,7 +35,8 @@ export const DisputeActions = () => {
 	const [isAppealModalOpen, setIsAppealModalOpen] = useState(false);
 	const [stepsIndex, setStepsIndex] = useState(0);
 	const [stepsLoadingIndex, setStepsLoadingIndex] = useState<number | null>(null);
-	const { resolution } = useDispute();
+	const { dispute, resolution } = useDispute();
+	const { execute } = useResolutionExecute();
 	const { appeal, isTxSuccess: isAppealSuccess, isError: isAppealError } = useResolutionAppeal();
 
 	const {
@@ -140,11 +141,19 @@ export const DisputeActions = () => {
 		},
 	];
 
+	const currentTime = Math.floor(Date.now() / 1000);
+
 	// FIXME: Better step index selector
 	useEffect(() => {
 		const index = appealTokenApproved ? (signature ? 2 : 1) : 0;
 		setStepsIndex(index);
 	}, [appealTokenApproved, signature]);
+
+	const canBeEnacted = useMemo(() => {
+		if (!resolution) return false;
+		if (resolution.status == "Appealed") return false;
+		return currentTime ? resolution.unlockTime < currentTime : false;
+	}, [currentTime, resolution]);
 
 	if (resolution) {
 		return (
@@ -156,7 +165,19 @@ export const DisputeActions = () => {
 						</div>
 						<div className="flex flex-col gap-2 p-4 pb-2 border-4 border-gray-100 rounded-xl bg-white">
 							<ResolutionDetails />
-
+							{canBeEnacted && (
+								<Button
+									label="Enact"
+									disabled={!canBeEnacted}
+									onClick={() =>
+										execute({
+											framework: frameworkAddress,
+											dispute: dispute.id,
+											settlement: resolution.settlement || [],
+										})
+									}
+								/>
+							)}
 							{resolution.status == "Approved" && (
 								<Button
 									label="Appeal"
