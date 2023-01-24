@@ -36,7 +36,7 @@ export const DisputeActions = () => {
 	const [stepsIndex, setStepsIndex] = useState(0);
 	const [stepsLoadingIndex, setStepsLoadingIndex] = useState<number | null>(null);
 	const { dispute, resolution } = useDispute();
-	const { execute } = useResolutionExecute();
+	const { execute, isTxSuccess: isExecuteSuccess } = useResolutionExecute();
 	const { appeal, isTxSuccess: isAppealSuccess, isError: isAppealError } = useResolutionAppeal();
 
 	const {
@@ -57,9 +57,12 @@ export const DisputeActions = () => {
 	useEffect(() => {
 		if (isAppealSuccess || isAppealError) {
 			setStepsLoadingIndex(null);
-			window.location.reload();
 		}
 	}, [isAppealSuccess, isAppealError]);
+
+	useEffect(() => {
+		if (isAppealSuccess || isExecuteSuccess) window.location.reload();
+	}, [isAppealSuccess, isExecuteSuccess]);
 
 	useEffect(() => {
 		if (approvalSuccess || approvalError) {

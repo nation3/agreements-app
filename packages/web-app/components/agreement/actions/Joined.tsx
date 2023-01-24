@@ -7,20 +7,20 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 		dispute,
 		isLoading: disputeLoading,
 		isProcessing: disputeProcessing,
-		isTxSuccess: disputeSuccess,
+		isTxSuccess: isDisputeSuccess,
 	} = useAgreementDispute({ id });
 	const {
 		finalize,
 		isLoading: finalizationLoading,
 		isProcessing: finalizationProcessing,
-		isTxSuccess: finalizeSuccess,
+		isTxSuccess: isFinalizeSuccess,
 	} = useAgreementFinalize({ id });
 
 	useEffect(() => {
-		if (disputeSuccess || finalizeSuccess) {
+		if (isDisputeSuccess || isFinalizeSuccess) {
 			window.location.reload();
 		}
-	}, [disputeSuccess, finalizeSuccess]);
+	}, [isDisputeSuccess, isFinalizeSuccess]);
 
 	return (
 		<div className="flex gap-2 items-center justify-between">
