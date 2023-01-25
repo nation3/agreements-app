@@ -1,4 +1,5 @@
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
+import { PermitTransferFrom } from "@uniswap/permit2-sdk";
 
 import Arbitrator from "../abis/Arbitrator.json";
 import { arbitratorAddress } from "../lib/constants";
@@ -8,11 +9,16 @@ import { ethers, BigNumber } from "ethers";
 const arbitratorAbi = Arbitrator.abi;
 export const arbitratorInterface = new ethers.utils.Interface(arbitratorAbi);
 
-type ResolutionData = { status: string; mark: string; metadataURI: string; unlockTime: number };
+type ResolutionData = {
+	status: string;
+	settlement: string;
+	metadataURI: string;
+	unlockTime: number;
+};
 
 export type ResolutionInput = {
 	framework: string;
-	id: string;
+	dispute: string;
 	settlement: { party: string; balance: BigNumber }[];
 };
 
@@ -20,7 +26,7 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 	const { data: rawResolution, ...args } = useContractRead({
 		addressOrName: arbitratorAddress,
 		contractInterface: arbitratorAbi,
-		functionName: "resolution",
+		functionName: "resolutionDetails",
 		args: [id],
 		enabled,
 		onError(error) {
@@ -35,9 +41,9 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 			case 1:
 				return "Approved";
 			case 2:
-				return "Endorsed";
-			case 3:
 				return "Appealed";
+			case 3:
+				return "Endorsed";
 			case 4:
 				return "Enacted";
 			default:
@@ -49,7 +55,7 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 		if (rawResolution) {
 			return {
 				status: statusMessage(parseInt(rawResolution[0])),
-				mark: String(rawResolution[1]),
+				settlement: String(rawResolution[1]),
 				metadataURI: String(rawResolution[2]),
 				unlockTime: BigNumber.from(rawResolution[3]).toNumber(),
 			};
@@ -70,17 +76,17 @@ export const useResolutionExecute = () => {
 		},
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
-	const execute = ({ framework, id, settlement }: ResolutionInput) => {
+	const execute = ({ framework, dispute, settlement }: ResolutionInput) => {
 		write?.({
-			recklesslySetUnpreparedArgs: [framework, id, settlement],
+			recklesslySetUnpreparedArgs: [framework, dispute, settlement],
 		});
 	};
 
-	return { execute, data, isProcessing, ...args };
+	return { execute, data, isProcessing, isTxSuccess, ...args };
 };
 
 export const useResolutionAppeal = () => {
@@ -94,15 +100,28 @@ export const useResolutionAppeal = () => {
 		},
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
-	const appeal = ({ id, settlement }: Pick<ResolutionInput, "id" | "settlement">) => {
-		write?.({
-			recklesslySetUnpreparedArgs: [id, settlement],
-		});
+	const appeal = ({
+		id,
+		settlement,
+		permit,
+		signature,
+	}: Pick<ResolutionInput, "settlement"> & {
+		id: string;
+		permit: PermitTransferFrom;
+		signature: string | undefined;
+	}) => {
+		if (!signature) {
+			return;
+		} else {
+			return write?.({
+				recklesslySetUnpreparedArgs: [id, settlement, permit, signature],
+			});
+		}
 	};
 
-	return { appeal, data, isProcessing, ...args };
+	return { appeal, data, isProcessing, isTxSuccess, ...args };
 };

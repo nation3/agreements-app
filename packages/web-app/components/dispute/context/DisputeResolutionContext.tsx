@@ -6,6 +6,7 @@ export type Position = { party: string; balance: BigNumber };
 
 export type Dispute = {
 	id: string;
+	status: string;
 	termsHash: string | undefined;
 	balance: BigNumber | undefined;
 	positions: Position[] | undefined;

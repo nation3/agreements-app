@@ -29,10 +29,10 @@ export const DisputeListProvider = ({ children }: { children: ReactNode }) => {
 
 	const parsed =
 		disputes
-			?.map(({ id, createdAt, resolution }) => ({
+			?.map(({ id, createdAt, settlement }) => ({
 				id,
 				createdAt,
-				status: resolution?.status ?? "Pending",
+				status: settlement?.status ?? "Pending",
 			}))
 			.filter(({ status }) => status != "Executed") || [];
 	parsed.sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1));

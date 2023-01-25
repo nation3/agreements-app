@@ -3,11 +3,16 @@ import { AccountButton, ButtonBase } from "@nation3/ui-components";
 import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow-me/rainbowkit";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 	return ensImage ? (
-		<Image src={ensImage} width={30} height={30} alt="ENS Avatar" className={`rounded-full`} />
+		<img
+			src={ensImage}
+			width={size * 4}
+			height={size * 4}
+			alt="ENS Avatar"
+			className={`rounded-full`}
+		/>
 	) : (
 		<Blockies seed={address} size={size} className="overflow-hidden rounded-full" />
 	);
@@ -49,13 +54,13 @@ export const ConnectButton = () => {
 							if (!connected) {
 								return (
 									<ButtonBase
-										className="gap-1 p-2 md:px-5 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
+										className="gap-1 p-1 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
 										onClick={openConnectModal}
 									>
-										<span className="hidden pl-2 font-regular tracking-wide md:inline md:mr-2">
+										<span className="hidden font-regular tracking-wide md:inline md:w-32">
 											Connect
 										</span>
-										<UserCircleIcon className="w-8 h-8" />
+										<UserCircleIcon className="w-12 h-12 -m-1" />
 									</ButtonBase>
 								);
 							}
@@ -63,11 +68,13 @@ export const ConnectButton = () => {
 							if (chain.unsupported) {
 								return (
 									<ButtonBase
-										className="gap-1 p-2 md:px-5 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
+										className="gap-1 p-1 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
 										onClick={openChainModal}
 									>
-										<ExclamationTriangleIcon className="w-8 h-8" />
-										<span className="hidden md:inline">Wrong network</span>
+										<span className="hidden font-regular tracking-wide md:inline md:w-32">
+											Wrong network
+										</span>
+										<ExclamationTriangleIcon className="w-10 h-10" />
 									</ButtonBase>
 								);
 							}

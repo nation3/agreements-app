@@ -68,6 +68,7 @@ export const DisputeResolutionProvider = ({
 
 	const dispute = {
 		id,
+		status: data?.status == "Disputed" ? "Open" : "Closed",
 		termsHash: data?.termsHash,
 		balance,
 		positions,
@@ -78,7 +79,7 @@ export const DisputeResolutionProvider = ({
 			return {
 				id: resolutionId,
 				status: resolutionData?.status,
-				mark: resolutionData?.mark,
+				mark: resolutionData?.settlement,
 				unlockTime: resolutionData?.unlockTime,
 				settlement: settlement,
 			};

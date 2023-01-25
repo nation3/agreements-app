@@ -2,8 +2,10 @@ import React, { ReactElement } from "react";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import cx from "classnames";
 import Spinner from "../../Atoms/Spinner";
+import { Button } from "../../Molecules/buttons/Button";
+import { motion } from "framer-motion";
+import { ScreenType, useScreen } from "../../../hooks/useScreen";
 import Image from "next/image";
-// import { Button } from "../../Molecules/buttons/Button";
 
 export interface IStep {
 	action: () => void | null;
@@ -58,11 +60,16 @@ type IStepInfo = {
 };
 
 const Step = (props: IStepInfo) => {
+	const { screen } = useScreen();
 	const { stepInfo, index, stepIndex, listLenght, loadingIndex } = props;
 
 	return (
 		<div
-			className={cx("flex mb-1 min-h-[120px] transition-all", index < stepIndex && "opacity-50")}
+			className={cx(
+				"flex mb-1 transition-all",
+				screen === ScreenType.Desktop && "min-h-[120px]",
+				index < stepIndex && "opacity-50",
+			)}
 		>
 			<div className="flex flex-col items-center w-10 mr-5">
 				{/* STEP NUMBER BUBBLE */}
@@ -87,19 +94,38 @@ const Step = (props: IStepInfo) => {
 			{/* STEP TITLE & DESCRIPTION */}
 			<div>
 				<div className="flex items-center">
-					<p className="text-slate-600 text-lg font-semibold mb-2 pt-1 mr-3">{stepInfo.title}</p>
+					<p
+						className={cx(
+							"text-slate-600 text-lg font-semibold mb-2 md:pt-1 pt-4 mr-3",
+							index !== stepIndex && "opacity-50",
+						)}
+					>
+						{stepInfo.title}
+					</p>
 				</div>
-				<div className={"text-slate-400 text-sm"}>{stepInfo.description}</div>
+				{screen === ScreenType.Mobile && index === stepIndex ? (
+					<motion.div
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						className={cx("text-slate-400 text-sm")}
+					>
+						{stepInfo.description}
+					</motion.div>
+				) : screen === ScreenType.Desktop ? (
+					<div className={"text-slate-400 text-sm"}>{stepInfo.description}</div>
+				) : (
+					<></>
+				)}
 			</div>
 		</div>
 	);
 };
 
-const Steps: React.FC<IStepsProps> = (props) => {
+export const Steps: React.FC<IStepsProps> = (props) => {
 	const {
 		steps,
-		icon,
-		title,
+		// icon,
+		// title,
 		stepIndex,
 		loadingIndex,
 		areStepsFinished,
@@ -110,27 +136,26 @@ const Steps: React.FC<IStepsProps> = (props) => {
 
 	return (
 		<section className="max-w-3xl w-full bg-white rounded-lg relative shadow-xl">
-			<div className="flex justify-between items-center w-full p-8">
+			{/* <div className="flex justify-between items-center w-full p-8">
 				<h3 className="text-slate-600 md:text-3xl text-xl font-semibold">{title}</h3>
 				{icon && (
 					<div className="overflow-hidden flex items-center justify-center h-1/2">
 						<Image className="h-full" width={50} height={50} src={icon} alt={"Join Agreemtent"} />
 					</div>
 				)}
-			</div>
+			</div> */}
 
 			{areStepsFinished ? (
-				<div className="border-t-2 border-bluesky-200 p-8 flex flex-col">
-					<div className="mt-2 md:mt-0">{finishMessage}</div>
-					<div className="pt-5 pb-28">
-						<div className="w-full rounded-lg overflow-hidden">
-							{finishImage && <img className="" src={finishImage} />}
-						</div>
+				<div className="border-t-2 border-bluesky-200 p-8 flex flex-col items-center">
+					<div className="mb-8">
+						<div className="w-32">{finishImage && <img className="" src={finishImage} />}</div>
 					</div>
+					<div className="mb-6 text-center">{finishMessage}</div>
+					<Button className="px-6 w-32" label="Finish" onClick={finishAction} />
 				</div>
 			) : (
-				<div className="border-t-2 border-bluesky-200 p-8 pb-24 flex justify-between">
-					<div className="w-2/3 pr-5">
+				<div className="border-t-2 border-bluesky-200 pb-24 pt-8 px-8 flex justify-between">
+					<div className="w-full pr-16 relative">
 						{steps?.map((step, index) => (
 							<Step
 								key={step.title}
@@ -142,35 +167,33 @@ const Steps: React.FC<IStepsProps> = (props) => {
 							/>
 						))}
 					</div>
-					<div className="hidden md:block md:w-1/4">
-						<div className="w-full h-auto rounded-full overflow-hidden opacity-50">
-							{steps && <img className="" src={steps[stepIndex].image} />}
+					<div className="hidden md:block md:w-2/5 relative">
+						<div className="w-full relative">
+							{steps && <Image width={170} height={170} alt={""} src={steps[stepIndex].image} />}
 						</div>
 					</div>
 				</div>
 			)}
-			<div
-				onClick={
-					loadingIndex === null && !areStepsFinished
-						? steps && steps[stepIndex].action
-						: finishAction
-				}
-				className={cx(
-					"py-3 group transition-all px-5 m-5 border-bluesky border-2 rounded-lg absolute bottom-3 right-3 flex justify-start min-w-[200px] items-center text-bluesky gap-2",
-					loadingIndex !== null
-						? "opacity-30"
-						: "cursor-pointer  hover:bg-bluesky hover:text-white",
-				)}
-			>
-				<p className="">{!areStepsFinished ? steps && steps[stepIndex].stepCTA : "Finish"}</p>
-				<ArrowRightIcon
+			{!areStepsFinished && (
+				<div
+					onClick={steps[stepIndex].action}
 					className={cx(
-						loadingIndex === null && "group-hover:ml-1 group-hover:mr-0 transition-all",
-						"mr-1 h-5",
+						"py-3 group transition-all px-5 m-5 border-bluesky border-2 rounded-lg absolute bottom-3 right-3 flex justify-start min-w-[200px] items-center text-bluesky gap-2",
+						loadingIndex !== null
+							? "opacity-30"
+							: "cursor-pointer  hover:bg-bluesky hover:text-white",
 					)}
-				/>
-			</div>
-			{/* TODO Use Button */}
+				>
+					<p className="">{!areStepsFinished ? steps && steps[stepIndex].stepCTA : "Finish"}</p>
+					<ArrowRightIcon
+						className={cx(
+							loadingIndex === null && "group-hover:ml-1 group-hover:mr-0 transition-all",
+							"mr-1 h-5",
+						)}
+					/>
+				</div>
+			)}
+			{/* TODO: Use Nation3 Button */}
 			{/* 			<Button
 				iconRight={
 					<ArrowRightIcon className="group-hover:ml-1 group-hover:mr-0 mr-1 h-5 transition-all" />

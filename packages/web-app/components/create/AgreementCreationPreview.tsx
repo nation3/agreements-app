@@ -11,28 +11,18 @@ import { abiEncoding, hashEncoding } from "../../utils/hash";
 import { preparePutToIPFS } from "../../lib/ipfs";
 
 import { Button, InfoAlert, Table, AddressDisplay } from "@nation3/ui-components";
-import { PositionStatusBadge } from "../PositionStatusBadge";
 import { useProvider } from "wagmi";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { CreateView } from "./context/types";
-// import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useMemo } from "react";
 
 export const AgreementCreationPreview = () => {
-	// const router = useRouter();
+	const router = useRouter();
 	const provider = useProvider({ chainId: 1 });
 	const { terms, salt, positions, changeView } = useAgreementCreation();
 	const termsHash = hexHash(terms);
-
-	const uploadMetadataToIPFS = async () => {
-		const metadata = generateAgreementMetadata(terms, positions);
-
-		const { put } = await preparePutToIPFS(metadata);
-
-		const cid = await put();
-		console.log(`metadata uploaded to ${cid}`);
-	};
 
 	const protoId = useMemo(() => {
 		return hashEncoding(
@@ -43,11 +33,26 @@ export const AgreementCreationPreview = () => {
 	const {
 		create,
 		isLoading: createLoading,
+		isTxSuccess: createSuccess,
+		// isError: createError,
 		isProcessing: createProcessing,
-	} = useAgreementCreate({
-		onSettledSuccess: uploadMetadataToIPFS,
-		// onSuccess: () => router.push(`/agreements/${protoId}`)
-	});
+	} = useAgreementCreate({});
+
+	// TODO: Move it into a proper wrapper/callback instead of a listener
+	useEffect(() => {
+		const uploadMetadataToIPFS = async () => {
+			const metadata = generateAgreementMetadata(terms, positions);
+			const { put } = await preparePutToIPFS(metadata);
+			const cid = await put();
+			console.log(`metadata uploaded to ${cid}`);
+		};
+
+		if (createSuccess) {
+			uploadMetadataToIPFS()
+				.then(() => router.push(`/agreement/${protoId}`))
+				.catch();
+		}
+	}, [router, terms, positions, createSuccess, protoId]);
 
 	const submit = async () => {
 		const metadata = generateAgreementMetadata(terms, positions);
@@ -74,11 +79,10 @@ export const AgreementCreationPreview = () => {
 			/>
 			{/* Participant table */}
 			<Table
-				columns={["participant", "stake", "status"]}
+				columns={["participant", "stake"]}
 				data={positions.map(({ account, balance }, index) => [
 					<AddressDisplay key={index} ensProvider={provider} address={account} />,
 					<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
-					<PositionStatusBadge key={index} status={0} />,
 				])}
 			/>
 			{/* Info */}

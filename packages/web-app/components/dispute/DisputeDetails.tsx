@@ -3,7 +3,6 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 import {
 	Table,
 	Alert,
-	Badge,
 	ActionBadge,
 	Button,
 	AddressDisplay,
@@ -14,27 +13,32 @@ import { ResolutionDetails, ProposedResolutionDetails } from "./ResolutionDetail
 import { useDispute } from "./context/DisputeResolutionContext";
 import { frameworkAddress } from "../../lib/constants";
 import { useResolutionExecute } from "../../hooks/useArbitrator";
-import { useBlockNumber, useProvider } from "wagmi";
-import { useUrl } from "../../hooks";
+import { useProvider, useAccount } from "wagmi";
+import { CardHeader } from "../CardHeader";
+import { useCohort } from "../../hooks/useCohort";
 
 export const DisputeDetails = () => {
 	const provider = useProvider({ chainId: 1 });
-	const { data: currentBlock } = useBlockNumber();
 	const currentTime = Math.floor(Date.now() / 1000);
 
 	const { dispute, resolution: approvedResolution, proposedResolutions } = useDispute();
 	const { execute } = useResolutionExecute();
+	const { judges } = useCohort();
+	const { address } = useAccount();
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 
-	const { url } = useUrl();
+	const isArbitrator = useMemo(() => {
+		if (!judges || !address) return false;
+		return judges.includes(address);
+	}, [judges, address]);
 
 	const copyAgreementId = useCallback(() => {
 		if (dispute.id) {
 			setIsAgreementId(true);
-            navigator.clipboard.writeText(url);
-		    setTimeout(() => setIsAgreementId(false), 1000);
-        }
+			navigator.clipboard.writeText(dispute.id);
+			setTimeout(() => setIsAgreementId(false), 1000);
+		}
 	}, [dispute.id]);
 
 	const copyTermsHash = useCallback(() => {
@@ -51,35 +55,24 @@ export const DisputeDetails = () => {
 	const canBeEnacted = useMemo(() => {
 		if (!approvedResolution) return false;
 		if (approvedResolution.status == "Appealed") return false;
-		return currentBlock ? approvedResolution.unlockTime < currentTime : false;
-	}, [currentBlock, approvedResolution]);
+		return currentTime ? approvedResolution.unlockTime < currentTime : false;
+	}, [currentTime, approvedResolution]);
 
 	return (
 		<>
-			<div className="flex flex-col gap-2 text-gray-700">
-				<div className="flex flex-row items-center justify-between">
-					<h1 className="font-display font-medium text-2xl truncate">Dispute</h1>
-					<Badge textColor="gray-800" bgColor="gray-100" className="font-semibold" label="Open" />
-				</div>
+			<div className="flex flex-col gap-3 text-gray-700">
+				<CardHeader title={"Dispute"} id={dispute.id} status={dispute.status} />
 				<div className="flex flex-col md:flex-row gap-1">
 					<ActionBadge
 						tooltip
-						tooltipProps={{
-							style: "light",
-							animation: "duration-150",
-							content: isAgreementId ? "Copied" : "Click to copy",
-						}}
+						tooltipContent={isAgreementId ? "Copied" : "Click to copy"}
 						label="ID"
 						data={n3utils.shortenHash(dispute.id ?? constants.HashZero)}
 						dataAction={copyAgreementId}
 					/>
 					<ActionBadge
 						tooltip
-						tooltipProps={{
-							style: "light",
-							animation: "duration-150",
-							content: isHashCopied ? "Copied" : "Click to copy",
-						}}
+						tooltipContent={isHashCopied ? "Copied" : "Click to copy"}
 						label="Terms hash"
 						data={n3utils.shortenHash(dispute.termsHash ?? constants.HashZero)}
 						dataAction={copyTermsHash}
@@ -109,7 +102,7 @@ export const DisputeDetails = () => {
 							onClick={() =>
 								execute({
 									framework: frameworkAddress,
-									id: dispute.id,
+									dispute: dispute.id,
 									settlement: approvedResolution.settlement || [],
 								})
 							}
@@ -117,7 +110,7 @@ export const DisputeDetails = () => {
 					</div>
 				</div>
 			)}
-			{proposedResolutions.length > 0 && <ProposedResolutionDetails />}
+			{isArbitrator && proposedResolutions.length > 0 && <ProposedResolutionDetails />}
 			{!approvedResolution && !proposedResolutions && (
 				<Alert
 					icon={<ExclamationTriangleIcon className="w-5 h-5" />}

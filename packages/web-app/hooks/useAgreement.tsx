@@ -62,6 +62,7 @@ export const useAgreementCreate = ({
 }: {
 	onSettledSuccess?: () => void;
 	onSuccess?: (data?: unknown) => void;
+	onTxSuccess?: (data?: unknown) => void;
 }) => {
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
@@ -78,7 +79,7 @@ export const useAgreementCreate = ({
 		onSuccess,
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
@@ -100,7 +101,7 @@ export const useAgreementCreate = ({
 		});
 	};
 
-	return { create, isProcessing, data, ...args };
+	return { create, isProcessing, data, isTxSuccess, ...args };
 };
 
 export const useAgreementJoin = () => {
@@ -118,7 +119,7 @@ export const useAgreementJoin = () => {
 		},
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
@@ -142,7 +143,7 @@ export const useAgreementJoin = () => {
 		}
 	};
 
-	return { join, data, isProcessing, ...args };
+	return { join, data, isProcessing, isTxSuccess, ...args };
 };
 
 export const useAgreementDispute = ({ id }: { id: string }) => {
@@ -160,7 +161,7 @@ export const useAgreementDispute = ({ id }: { id: string }) => {
 		},
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
@@ -170,7 +171,7 @@ export const useAgreementDispute = ({ id }: { id: string }) => {
 		});
 	};
 
-	return { dispute, data, isProcessing, ...args };
+	return { dispute, data, isProcessing, isTxSuccess, ...args };
 };
 
 export const useAgreementFinalize = ({ id }: { id: string }) => {
@@ -188,7 +189,7 @@ export const useAgreementFinalize = ({ id }: { id: string }) => {
 		},
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
@@ -198,7 +199,7 @@ export const useAgreementFinalize = ({ id }: { id: string }) => {
 		});
 	};
 
-	return { finalize, data, isProcessing, ...args };
+	return { finalize, data, isProcessing, isTxSuccess, ...args };
 };
 
 export const useAgreementWithdraw = ({ id }: { id: string }) => {
@@ -216,7 +217,7 @@ export const useAgreementWithdraw = ({ id }: { id: string }) => {
 		},
 	});
 
-	const { isLoading: isProcessing } = useWaitForTransaction({
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
 		hash: data?.hash,
 	});
 
@@ -226,5 +227,5 @@ export const useAgreementWithdraw = ({ id }: { id: string }) => {
 		});
 	};
 
-	return { withdraw, data, isProcessing, ...args };
+	return { withdraw, data, isProcessing, isTxSuccess, ...args };
 };

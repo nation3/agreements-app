@@ -4,7 +4,6 @@ import { PositionMap } from "./context/types";
 import { PositionStatusBadge } from "../../components";
 import {
 	Table,
-	Badge,
 	Button,
 	ActionBadge,
 	utils as n3utils,
@@ -14,10 +13,10 @@ import {
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
 import { useProvider } from "wagmi";
-import { Tooltip, Modal } from "flowbite-react";
+import { Modal } from "flowbite-react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { AgreementConstants } from "./AgreementConstants";
-import { useBuildUrl, useUrl } from "../../hooks";
+import { CardHeader } from "../CardHeader";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -25,15 +24,6 @@ interface AgreementDataDisplayProps {
 	status: string;
 	termsHash: string;
 }
-
-const AgreementHeader = ({ title, status }: { title: string; status: string }) => {
-	return (
-		<div className="flex flex-row items-center justify-between">
-			<h1 className="font-display font-medium text-2xl truncate">{title}</h1>
-			<Badge textColor="gray-800" bgColor="gray-100" className="font-semibold" label={status} />
-		</div>
-	);
-};
 
 const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) => {
 	const provider = useProvider({ chainId: 1 });
@@ -71,12 +61,11 @@ export const AgreementDataDisplay = ({
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
-	const agreementUrl = useBuildUrl("/agreements/" + id ?? constants.HashZero);
 
 	const copyAgreementId = useCallback(() => {
 		if (id) {
 			setIsAgreementId(true);
-			navigator.clipboard.writeText(agreementUrl);
+			navigator.clipboard.writeText(String(id));
 			setTimeout(() => setIsAgreementId(false), 1000);
 		}
 	}, [id]);
@@ -94,28 +83,20 @@ export const AgreementDataDisplay = ({
 
 	return (
 		<>
-			<div className="flex flex-col gap-2 text-gray-700">
-				<AgreementHeader title={title} status={status} />
+			<div className="flex flex-col gap-3 text-gray-700">
+				<CardHeader title={title} id={id} status={status} />
 				<div className="flex flex-col md:flex-row gap-1 justify-start md:items-center">
 					<ActionBadge
 						label="ID"
 						tooltip
-						tooltipProps={{
-							style: "light",
-							animation: "duration-150",
-							content: isAgreementId ? "Copied" : "Click to copy",
-						}}
+						tooltipContent={isAgreementId ? "Copied" : "Click to copy"}
 						data={n3utils.shortenHash(id ?? constants.HashZero)}
 						dataAction={copyAgreementId}
 					/>
 					<div className="flex items-center">
 						<ActionBadge
 							tooltip
-							tooltipProps={{
-								style: "light",
-								animation: "duration-150",
-								content: isHashCopied ? "Copied" : "Click to copy",
-							}}
+							tooltipContent={isHashCopied ? "Copied" : "Click to copy"}
 							label="Terms hash"
 							data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
 							icon={<InformationCircleIcon className="w-4 h-4" />}

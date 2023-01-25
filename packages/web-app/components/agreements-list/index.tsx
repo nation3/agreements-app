@@ -48,7 +48,7 @@ export const AgreementList = () => {
 					clickHandlers={agreements.map(
 						({ id }) =>
 							() =>
-								router.push(`/agreements/${id}`),
+								router.push(`/agreement/${id}`),
 					)}
 				/>
 			) : (
