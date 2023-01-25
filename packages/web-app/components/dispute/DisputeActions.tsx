@@ -78,6 +78,8 @@ export const DisputeActions = () => {
 	}, [signSuccess, signError]);
 
 	const canAppeal = useMemo(() => {
+		const currentTime = Math.floor(Date.now() / 1000);
+		if (resolution && currentTime && resolution.unlockTime < currentTime) return false;
 		const partOfSettlement = resolution?.settlement?.find(({ party }) => party == address);
 		return partOfSettlement ? true : false;
 	}, [address, resolution]);
@@ -144,8 +146,6 @@ export const DisputeActions = () => {
 		},
 	];
 
-	const currentTime = Math.floor(Date.now() / 1000);
-
 	// FIXME: Better step index selector
 	useEffect(() => {
 		const index = appealTokenApproved ? (signature ? 2 : 1) : 0;
@@ -153,10 +153,11 @@ export const DisputeActions = () => {
 	}, [appealTokenApproved, signature]);
 
 	const canBeEnacted = useMemo(() => {
+		const currentTime = Math.floor(Date.now() / 1000);
 		if (!resolution) return false;
 		if (resolution.status == "Appealed") return false;
 		return currentTime ? resolution.unlockTime < currentTime : false;
-	}, [currentTime, resolution]);
+	}, [resolution]);
 
 	if (resolution) {
 		return (
@@ -181,7 +182,7 @@ export const DisputeActions = () => {
 									}
 								/>
 							)}
-							{resolution.status == "Approved" && (
+							{canAppeal && (
 								<Button
 									label="Appeal"
 									disabled={!canAppeal}
