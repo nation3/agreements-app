@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useAgreementData } from "./context/AgreementDataContext";
 import { PositionMap } from "./context/types";
 import { PositionStatusBadge } from "../../components";
 import {
 	Table,
+	ButtonBase,
 	Button,
 	ActionBadge,
 	utils as n3utils,
@@ -15,8 +16,10 @@ import { utils, BigNumber, constants } from "ethers";
 import { useProvider } from "wagmi";
 import { Modal } from "flowbite-react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { ShareIcon, CheckIcon } from "@heroicons/react/20/solid";
 import { AgreementConstants } from "./AgreementConstants";
 import { CardHeader } from "../CardHeader";
+import { useUrl } from "../../hooks";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -24,6 +27,41 @@ interface AgreementDataDisplayProps {
 	status: string;
 	termsHash: string;
 }
+
+const ShareButton = ({ url }: { url: string }) => {
+	const [isShared, setIsShared] = useState<boolean>(false);
+	const icon = useMemo(
+		() =>
+			isShared ? (
+				<span className="p-2 hover:bg-bluesky-600/10 rounded-lg">
+					<CheckIcon className="w-6 h-6 text-bluesky-600" />
+				</span>
+			) : (
+				<span className="p-2">
+					<ShareIcon className="w-6 h-6" />
+				</span>
+			),
+		[isShared],
+	);
+
+	const copy = useCallback(async () => {
+		try {
+			await navigator.share({ url });
+		} catch {
+			navigator.clipboard.writeText(String(url));
+		}
+		setIsShared(true);
+		setTimeout(() => setIsShared(false), 1000);
+	}, [url]);
+
+	return (
+		<div>
+			<ButtonBase className="bg-transparent hover:bg-gray-50 text-gray-500" onClick={() => copy()}>
+				{icon}
+			</ButtonBase>
+		</div>
+	);
+};
 
 const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) => {
 	const provider = useProvider({ chainId: 1 });
@@ -61,6 +99,7 @@ export const AgreementDataDisplay = ({
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
+	const { url: shareUrl } = useUrl();
 
 	const copyAgreementId = useCallback(() => {
 		if (id) {
@@ -78,13 +117,15 @@ export const AgreementDataDisplay = ({
 		}
 	}, [termsHash]);
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	useEffect(() => {}, [isHashCopied, isAgreementId]);
-
 	return (
 		<>
 			<div className="flex flex-col gap-3 text-gray-700">
-				<CardHeader title={title} id={id} status={status} />
+				<CardHeader
+					title={title}
+					id={id}
+					status={status}
+					actions={<ShareButton url={shareUrl} />}
+				/>
 				<div className="flex flex-col md:flex-row gap-1 justify-start md:items-center">
 					<ActionBadge
 						label="ID"
