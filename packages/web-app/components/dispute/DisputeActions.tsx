@@ -19,9 +19,9 @@ import { FancyLink } from "../FancyLink";
 
 export const DisputeArbitrationActions = () => {
 	const [mode, setMode] = useState("view");
-	const { dispute, resolution } = useDispute();
+	const { dispute, resolution, proposedResolutions } = useDispute();
 
-	if (dispute.status == "Closed") return <></>;
+	if (dispute.status == "Closed" || proposedResolutions.length > 0) return <></>;
 	if (mode == "edit") {
 		return <ResolutionForm />;
 	} else if (resolution == undefined) {
@@ -33,6 +33,8 @@ export const DisputeArbitrationActions = () => {
 
 export const DisputeActions = () => {
 	const { address } = useAccount();
+	// FIXME: Fetch from arbitrator
+	const [appealCost] = useState(0);
 	const [isAppealModalOpen, setIsAppealModalOpen] = useState(false);
 	const [stepsIndex, setStepsIndex] = useState(0);
 	const [stepsLoadingIndex, setStepsLoadingIndex] = useState<number | null>(null);
@@ -51,7 +53,7 @@ export const DisputeActions = () => {
 	});
 
 	const { permit, signature, signPermit, signSuccess, signError } = usePermit2TransferSignature({
-		tokenTransfer: { token: NATION, amount: 0 },
+		tokenTransfer: { token: NATION, amount: appealCost },
 		spender: arbitratorAddress,
 	});
 
@@ -132,7 +134,7 @@ export const DisputeActions = () => {
 						appealed.
 					</p>
 					<p className="text-xs mb-1 text-gray-500">
-						<span className="font-semibold text-bluesky-500">{0} $NATION:</span>
+						<span className="font-semibold text-bluesky-500">{appealCost} $NATION:</span>
 						<span className="text-gray-400"> Appeal cost</span>
 					</p>
 				</div>

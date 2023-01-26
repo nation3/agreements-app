@@ -24,6 +24,8 @@ export const JoinableAgreementActions = ({
 	userPosition: UserPosition;
 }) => {
 	const { address } = useAccount();
+	// FIXME: Fetch from agreement framework
+	const [requiredDeposit] = useState(0);
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
 	const [isJoinAgreementModalOpen, setIsJoinAgreementModalOpen] = useState<boolean>(false);
 	const [stepsIndex, setStepsIndex] = useState<number>(0);
@@ -106,7 +108,7 @@ export const JoinableAgreementActions = ({
 	const { permit, signature, signPermit, signSuccess, signError } =
 		usePermit2BatchTransferSignature({
 			tokenTransfers: [
-				{ token: NATION, amount: 0 },
+				{ token: NATION, amount: requiredDeposit },
 				{ token: NATION, amount: requiredCollateral },
 			],
 			spender: frameworkAddress,
@@ -162,9 +164,9 @@ export const JoinableAgreementActions = ({
 		setStepsIndex(index);
 		// TODO: Rethink this, array mode steps are definetly not the best.
 		/* 		const manageSteps = [...stepsBase];
-		Array.from(Array(index).keys()).forEach(() => {
-			manageSteps.shift();
-		}); */
+        Array.from(Array(index).keys()).forEach(() => {
+            manageSteps.shift();
+        }); */
 	}, [depositTokenApproved, signature]);
 
 	const steps: IStep[] = [
@@ -217,7 +219,7 @@ export const JoinableAgreementActions = ({
 						terms.
 					</p>
 					<p className="text-xs mb-1 text-gray-500">
-						<span className="font-semibold text-bluesky-500">{0} $NATION:</span>
+						<span className="font-semibold text-bluesky-500">{requiredDeposit} $NATION:</span>
 						<span className="text-gray-400"> Dispute deposit</span>
 					</p>
 					<p className="text-xs mb-1 text-gray-500">
