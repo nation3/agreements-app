@@ -15,6 +15,7 @@ import joinedIcon from "../../assets/svgs/joined.svg";
 import { usePermit2Allowance, usePermit2TransferSignature } from "../../hooks/usePermit2";
 import { useAccount } from "wagmi";
 import { arbitratorAddress, frameworkAddress, NATION } from "../../lib/constants";
+import { FancyLink } from "../FancyLink";
 
 export const DisputeArbitrationActions = () => {
 	const [mode, setMode] = useState("view");
@@ -90,8 +91,12 @@ export const DisputeActions = () => {
 			description: (
 				<div>
 					<p className="text-xs text-gray-400">
-						Approve Permit2 to manage token transfers (extend & link to docs).
+						One-time approval to use Permti2 as the transfer manager for the service token.
 					</p>
+					<FancyLink
+						href="https://uniswap.org/blog/permit2-and-universal-router"
+						caption="Learn more"
+					/>
 				</div>
 			),
 			image: nationCoinIcon,
@@ -106,9 +111,9 @@ export const DisputeActions = () => {
 			description: (
 				<div>
 					<p className="text-xs text-gray-400">
-						Sign a permit to transfer the required tokens to appeal the resolution (extend & link to
-						docs).
+						Sign a permit to transfer the required tokens to appeal the resolution.
 					</p>
+					<FancyLink href="https://docs.nation3.org/agreements/appealing" caption="Learn more" />
 				</div>
 			),
 			image: nationCoinIcon,

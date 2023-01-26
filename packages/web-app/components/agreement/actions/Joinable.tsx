@@ -6,6 +6,7 @@ import { useAgreementJoin } from "../../../hooks/useAgreement";
 import { frameworkAddress, NATION } from "../../../lib/constants";
 import { UserPosition } from "../context/types";
 import { AgreementConstants } from "../AgreementConstants";
+import { FancyLink } from "../../FancyLink";
 import Image from "next/image";
 import { Button, Steps, IStep } from "@nation3/ui-components";
 import { Modal as FlowModal } from "flowbite-react";
@@ -172,8 +173,12 @@ export const JoinableAgreementActions = ({
 			description: (
 				<div>
 					<p className="text-xs text-gray-400">
-						Approve Permit2 to manage token transfers (extend & link to docs).
+						One-time approval to use Permti2 as the transfer manager for the agreement tokens.
 					</p>
+					<FancyLink
+						href="https://uniswap.org/blog/permit2-and-universal-router"
+						caption="Learn more"
+					/>
 				</div>
 			),
 			image: nationCoinIcon,
@@ -188,9 +193,12 @@ export const JoinableAgreementActions = ({
 			description: (
 				<div>
 					<p className="text-xs text-gray-400">
-						Sign a permit to transfer the required tokens to join the agreement (extend & link to
-						docs).
+						Sign a permit to transfer the required tokens to join the agreement.
 					</p>
+					<FancyLink
+						href="https://docs.nation3.org/agreements/joining-an-agreement"
+						caption="Learn more"
+					/>
 				</div>
 			),
 			image: nationCoinIcon,
