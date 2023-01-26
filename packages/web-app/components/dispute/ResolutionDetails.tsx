@@ -112,11 +112,21 @@ export const ProposedResolutionDetails = () => {
 											/>
 											{confirmationsRequired > confirmations.length && (
 												<div className="flex flex-col md:flex-row gap-2">
-													<Button label="Reject" bgColor="red" onClick={() => reject(txNonce)} />
+													<Button
+														label="Reject"
+														bgColor="red"
+														onClick={async () => {
+															await reject(txNonce);
+															window.location.reload();
+														}}
+													/>
 													<Button
 														label="Approve"
 														bgColor="greensea"
-														onClick={() => approve(txHash)}
+														onClick={async () => {
+															await approve(txHash);
+															window.location.reload();
+														}}
 													/>
 												</div>
 											)}

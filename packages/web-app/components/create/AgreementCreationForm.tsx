@@ -6,6 +6,7 @@ import { useProvider } from "wagmi";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { ParticipantRow } from "../ParticipantRow";
+import { FancyLink } from "../FancyLink";
 import { CreateView } from "./context/types";
 
 import { validateCriteria } from "../../utils/criteria";
@@ -14,10 +15,12 @@ export const AgreementCreationForm = () => {
 	const provider = useProvider({ chainId: 1 });
 	const { terms, positions, changeView, setTerms, setPositions } = useAgreementCreation();
 
+	const isValidCriteria = useMemo(() => validateCriteria(positions), [positions]);
+
 	const isValidAgreement = useMemo(() => {
 		if (!terms) return false;
-		return validateCriteria(positions);
-	}, [terms, positions]);
+		return isValidCriteria;
+	}, [terms, isValidCriteria]);
 
 	return (
 		<>
@@ -26,19 +29,16 @@ export const AgreementCreationForm = () => {
 			</div>
 			<div className="flex flex-col gap-4">
 				<div>
-					<h2 className="font-display font-medium text-xl">1. Agreement Terms</h2>
+					<h2 className="font-display font-medium text-xl">1. Agreement terms</h2>
 					<p>
 						These are the terms that the parties who enter the agreement will abide by. If one of
 						the parties fails to comply with these terms, their financial stake can be taken away to
-						compensate the other parties. The terms must be written in Markdown.
+						compensate the other parties. The terms must be written in Linked Markdown.
 					</p>
-					<a
-						className="group flex w-fit items-center gap-0.5 font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent mt-2 cursor-pointer"
+					<FancyLink
 						href="https://docs.nation3.org/agreements/creating-an-agreement"
-					>
-						Learn more
-						<span className="group-hover:ml-1 transition-all">→</span>
-					</a>
+						caption="Learn more"
+					/>
 				</div>
 				<div className="flex flex-col gap-2">
 					<DropInput
@@ -52,11 +52,12 @@ export const AgreementCreationForm = () => {
 						showFiles={true}
 					/>
 				</div>
+				{!terms && <InfoAlert message="You need to provide a valid terms file to continue." />}
 			</div>
 			<hr />
 			<div className="flex flex-col gap-4">
 				<div>
-					<h2 className="font-display font-medium text-xl">2. Positions and stakes</h2>
+					<h2 className="font-display font-medium text-xl">2. Parties and stakes</h2>
 					<p>
 						These are the participants that can enter the agreement, and how much $NATION they must
 						deposit to enter it.
@@ -92,11 +93,11 @@ export const AgreementCreationForm = () => {
 						/>
 					</div>
 				</div>
+				{!isValidCriteria && (
+					<InfoAlert message="You need to provide at least two valid participants to continue." />
+				)}
 			</div>
 			<div className="flex flex-col gap-2">
-				{!isValidAgreement && (
-					<InfoAlert message="You need to provide the terms file and at least two unique valid addresses to create an agreement." />
-				)}
 				<Button
 					label="Create Agreement"
 					disabled={!isValidAgreement}

@@ -15,12 +15,13 @@ import joinedIcon from "../../assets/svgs/joined.svg";
 import { usePermit2Allowance, usePermit2TransferSignature } from "../../hooks/usePermit2";
 import { useAccount } from "wagmi";
 import { arbitratorAddress, frameworkAddress, NATION } from "../../lib/constants";
+import { FancyLink } from "../FancyLink";
 
 export const DisputeArbitrationActions = () => {
 	const [mode, setMode] = useState("view");
-	const { dispute, resolution } = useDispute();
+	const { dispute, resolution, proposedResolutions } = useDispute();
 
-	if (dispute.status == "Closed") return <></>;
+	if (dispute.status == "Closed" || proposedResolutions.length > 0) return <></>;
 	if (mode == "edit") {
 		return <ResolutionForm />;
 	} else if (resolution == undefined) {
@@ -32,11 +33,13 @@ export const DisputeArbitrationActions = () => {
 
 export const DisputeActions = () => {
 	const { address } = useAccount();
+	// FIXME: Fetch from arbitrator
+	const [appealCost] = useState(0);
 	const [isAppealModalOpen, setIsAppealModalOpen] = useState(false);
 	const [stepsIndex, setStepsIndex] = useState(0);
 	const [stepsLoadingIndex, setStepsLoadingIndex] = useState<number | null>(null);
 	const { dispute, resolution } = useDispute();
-	const { execute } = useResolutionExecute();
+	const { execute, isTxSuccess: isExecuteSuccess } = useResolutionExecute();
 	const { appeal, isTxSuccess: isAppealSuccess, isError: isAppealError } = useResolutionAppeal();
 
 	const {
@@ -50,16 +53,19 @@ export const DisputeActions = () => {
 	});
 
 	const { permit, signature, signPermit, signSuccess, signError } = usePermit2TransferSignature({
-		tokenTransfer: { token: NATION, amount: 0 },
+		tokenTransfer: { token: NATION, amount: appealCost },
 		spender: arbitratorAddress,
 	});
 
 	useEffect(() => {
 		if (isAppealSuccess || isAppealError) {
 			setStepsLoadingIndex(null);
-			window.location.reload();
 		}
 	}, [isAppealSuccess, isAppealError]);
+
+	useEffect(() => {
+		if (isAppealSuccess || isExecuteSuccess) window.location.reload();
+	}, [isAppealSuccess, isExecuteSuccess]);
 
 	useEffect(() => {
 		if (approvalSuccess || approvalError) {
@@ -75,6 +81,8 @@ export const DisputeActions = () => {
 	}, [signSuccess, signError]);
 
 	const canAppeal = useMemo(() => {
+		const currentTime = Math.floor(Date.now() / 1000);
+		if (resolution && currentTime && resolution.unlockTime < currentTime) return false;
 		const partOfSettlement = resolution?.settlement?.find(({ party }) => party == address);
 		return partOfSettlement ? true : false;
 	}, [address, resolution]);
@@ -85,8 +93,12 @@ export const DisputeActions = () => {
 			description: (
 				<div>
 					<p className="text-xs text-gray-400">
-						Approve Permit2 to manage token transfers (extend & link to docs).
+						One-time approval to use Permti2 as the transfer manager for the service token.
 					</p>
+					<FancyLink
+						href="https://uniswap.org/blog/permit2-and-universal-router"
+						caption="Learn more"
+					/>
 				</div>
 			),
 			image: nationCoinIcon,
@@ -101,9 +113,9 @@ export const DisputeActions = () => {
 			description: (
 				<div>
 					<p className="text-xs text-gray-400">
-						Sign a permit to transfer the required tokens to appeal the resolution (extend & link to
-						docs).
+						Sign a permit to transfer the required tokens to appeal the resolution.
 					</p>
+					<FancyLink href="https://docs.nation3.org/agreements/appealing" caption="Learn more" />
 				</div>
 			),
 			image: nationCoinIcon,
@@ -122,7 +134,7 @@ export const DisputeActions = () => {
 						appealed.
 					</p>
 					<p className="text-xs mb-1 text-gray-500">
-						<span className="font-semibold text-bluesky-500">{0} $NATION:</span>
+						<span className="font-semibold text-bluesky-500">{appealCost} $NATION:</span>
 						<span className="text-gray-400"> Appeal cost</span>
 					</p>
 				</div>
@@ -141,8 +153,6 @@ export const DisputeActions = () => {
 		},
 	];
 
-	const currentTime = Math.floor(Date.now() / 1000);
-
 	// FIXME: Better step index selector
 	useEffect(() => {
 		const index = appealTokenApproved ? (signature ? 2 : 1) : 0;
@@ -150,10 +160,11 @@ export const DisputeActions = () => {
 	}, [appealTokenApproved, signature]);
 
 	const canBeEnacted = useMemo(() => {
+		const currentTime = Math.floor(Date.now() / 1000);
 		if (!resolution) return false;
 		if (resolution.status == "Appealed") return false;
 		return currentTime ? resolution.unlockTime < currentTime : false;
-	}, [currentTime, resolution]);
+	}, [resolution]);
 
 	if (resolution) {
 		return (
@@ -178,7 +189,7 @@ export const DisputeActions = () => {
 									}
 								/>
 							)}
-							{resolution.status == "Approved" && (
+							{canAppeal && (
 								<Button
 									label="Appeal"
 									disabled={!canAppeal}

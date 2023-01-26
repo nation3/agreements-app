@@ -3,6 +3,7 @@ import { Button } from "@nation3/ui-components";
 
 import { useAgreementWithdraw } from "../../../hooks";
 import { UserPosition } from "../context/types";
+import { useEffect } from "react";
 
 export const FinalizedAgreementActions = ({
 	id,
@@ -15,7 +16,12 @@ export const FinalizedAgreementActions = ({
 		withdraw,
 		isLoading: withdrawLoading,
 		isProcessing: withdrawProcessing,
+		isTxSuccess: isWithdrawSuccess,
 	} = useAgreementWithdraw({ id });
+
+	useEffect(() => {
+		if (isWithdrawSuccess) window.location.reload();
+	}, [isWithdrawSuccess]);
 
 	if (BigNumber.from(userPosition.balance).gt(0))
 		return (

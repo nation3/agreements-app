@@ -21,7 +21,7 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 				<Link href="/" className="cursor-pointer">
 					<AppHeader title={title} appName={appName} />
 				</Link>
-				<div className="flex items-center justify-between">
+				<div className="flex items-center justify-between gap-5">
 					<div>{navItems}</div>
 					{/* Account */}
 					<div className="p-4">{connectionButton}</div>
