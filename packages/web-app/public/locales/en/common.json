@@ -6,6 +6,14 @@
         "collateralInfo": "This tokens will be deposited into the agreement as collateral. In the case of a dispute the court can award this tokens to any of the other parties as part of the settlement of the same.",
         "depositInfo": "This tokens will be deposited into the agreement to cover the costs of arbitration in the case of a dispute. If you don't raise a dispute, this tokens will be recovered when withdrawing from the agreement."
     },
+    "permit2": {
+        "title": "Approve tokens",
+        "description": {
+            "p1": "Permit2 is a new industry standard to share and manage token approvals across different smart contracts.",
+            "p2": "We use Permit2 to allow you to approve token transfers per agreement more safely & efficiently.",
+            "p3": "You will only need to approve Permit2 for each token once."
+        }
+    },
     "create": {
         "header": "New Agreement",
         "agreementTerms": {
@@ -17,6 +25,31 @@
             "title": "2. Parties and stakes",
             "description": "These are the participants that can enter the agreement, and how much collateral they must deposit to enter it.",
             "warning": "You need to provide at least two valid participants to continue."
+        }
+    },
+    "join": {
+        "permitSignature": {
+            "title": "Approve tokens transfer",
+            "description": "Approve the transfer of collateral and dispute tokens to the agrement through signature.",
+            "action": "Approve"
+        },
+        "joinAgreement": {
+            "title": "Join Agreement",
+            "description": "Transfer the collateral and dispute tokens to the agreement. You will be binded by the terms of the agreement from this moment on.",
+            "action": "Join",
+            "error": "The transaction to join the agreement was not successful. Try again or copy the error and ask for help."
+        }
+    },
+    "appeal": {
+        "permitSignature": {
+            "title": "Approve tokens transfer",
+            "description": "Approve the transfer of the appeal tokens by the arbitrator.",
+            "action": "Approve"
+        },
+        "appealResolution": {
+            "title": "Appeal Resolution",
+            "description": "Pay the appeal cost to block the enactment of the resolution and request its review.",
+            "action": "Appeal"
         }
     }
 }
