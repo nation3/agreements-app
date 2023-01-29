@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { useAgreementList } from "./context/AgreementListContext";
 import { useTranslation } from "next-i18next";
 import courtIll from "./../../public/court-ill.png";
+import { GradientLink } from "../GradientLink";
 
 export const AgreementList = () => {
 	const { t } = useTranslation("common");
@@ -68,12 +69,10 @@ export const AgreementList = () => {
 								{t("jurisdictionInfo")}
 							</p>
 							<div className="mt-3">
-								<a
-									className="group font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent cursor-pointer"
+								<GradientLink
 									href="https://docs.nation3.org/jurisdiction/supreme-court"
-								>
-									Learn more <span className="group-hover:ml-1 transition-all">→</span>
-								</a>
+									caption="Learn more"
+								/>
 							</div>
 						</div>
 					</div>

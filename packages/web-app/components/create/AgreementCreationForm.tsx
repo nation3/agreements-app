@@ -6,7 +6,7 @@ import { useProvider } from "wagmi";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { ParticipantRow } from "../ParticipantRow";
-import { FancyLink } from "../FancyLink";
+import { GradientLink } from "../GradientLink";
 import { CreateView } from "./context/types";
 
 import { validateCriteria } from "../../utils/criteria";
@@ -33,7 +33,7 @@ export const AgreementCreationForm = () => {
 				<div>
 					<h2 className="font-display font-medium text-xl">{t("create.agreementTerms.title")}</h2>
 					<p>{t("create.agreementTerms.description")}</p>
-					<FancyLink
+					<GradientLink
 						href="https://docs.nation3.org/agreements/creating-an-agreement"
 						caption="Learn more"
 					/>

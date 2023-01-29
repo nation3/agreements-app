@@ -2,7 +2,7 @@ import cx from "classnames";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { ButtonBase } from "@nation3/ui-components";
 import { useTranslation } from "next-i18next";
-import { FancyLink } from "./FancyLink";
+import { GradientLink } from "./GradientLink";
 
 interface TokenApproval {
 	address: string;
@@ -20,7 +20,7 @@ export const Permit2Setup = ({ tokens }: { tokens: TokenApproval[] }) => {
 				<div className="text-slate-600 text-lg font-semibold mb-2">{t("permit2.title")}</div>
 				<div>{t("permit2.description.p2")}</div>
 				<div>{t("permit2.description.p3")}</div>
-				<FancyLink
+				<GradientLink
 					href="https://uniswap.org/blog/permit2-and-universal-router"
 					caption="Learn more"
 				/>
