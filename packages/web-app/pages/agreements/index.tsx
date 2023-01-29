@@ -3,6 +3,18 @@ import { useRouter } from "next/router";
 import { AgreementList, AgreementListProvider } from "../../components/agreements-list";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../../lib/subgraph";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+
+import { GetStaticProps } from "next";
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale as string, ["common"])),
+			// Will be passed to the page component as props
+		},
+	};
+};
 
 const Agreements = () => {
 	const router = useRouter();

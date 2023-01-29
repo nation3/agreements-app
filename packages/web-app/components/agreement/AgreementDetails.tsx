@@ -5,7 +5,6 @@ import { PositionStatusBadge } from "../../components";
 import {
 	Table,
 	ButtonBase,
-	Button,
 	ActionBadge,
 	utils as n3utils,
 	AddressDisplay,
@@ -17,9 +16,9 @@ import { useProvider } from "wagmi";
 import { Modal } from "flowbite-react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { ShareIcon, CheckIcon } from "@heroicons/react/20/solid";
-import { AgreementConstants } from "./AgreementConstants";
 import { CardHeader } from "../CardHeader";
 import { useUrl } from "../../hooks";
+import { useTranslation } from "next-i18next";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -96,6 +95,7 @@ export const AgreementDataDisplay = ({
 	status,
 	termsHash,
 }: AgreementDataDisplayProps) => {
+	const { t } = useTranslation("common");
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
@@ -150,17 +150,14 @@ export const AgreementDataDisplay = ({
 
 			{/* TERMS HASH INFO MOCAL */}
 			<Modal show={isTermsModalUp} onClose={() => setIsTermsModalUp(false)}>
-				<Modal.Header>{AgreementConstants.termsHash}</Modal.Header>
+				<Modal.Header>{t("agreement.termsHash")}</Modal.Header>
 				<Modal.Body>
 					<div className="space-y-6">
 						<p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-							{AgreementConstants.termsDescription}
+							{t("agreement.termsHashDescription")}
 						</p>
 					</div>
 				</Modal.Body>
-				<Modal.Footer>
-					<Button label="Close" onClick={() => setIsTermsModalUp(false)}></Button>
-				</Modal.Footer>
 			</Modal>
 		</>
 	);

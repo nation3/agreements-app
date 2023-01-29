@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
+import { appWithTranslation } from "next-i18next";
 
 import { useEffect, useMemo } from "react";
 
@@ -85,4 +86,4 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 	);
 };
 
-export default MyApp;
+export default appWithTranslation(MyApp);

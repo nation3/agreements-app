@@ -7,9 +7,11 @@ import { ethers, BigNumber } from "ethers";
 
 import { useRouter } from "next/router";
 import { useAgreementList } from "./context/AgreementListContext";
+import { useTranslation } from "next-i18next";
 import courtIll from "./../../public/court-ill.png";
 
 export const AgreementList = () => {
+	const { t } = useTranslation("common");
 	const router = useRouter();
 	const { screen } = useScreen();
 	const { agreements } = useAgreementList();
@@ -63,8 +65,7 @@ export const AgreementList = () => {
 						</div>
 						<div className="w-full flex justify-center flex-col items-center p-2">
 							<p className="text-slate-400 font-medium text-xl md:w-1/2 tracking-wide text-center">
-								Nation3 has its own system of law, enforced by its own court and secured by economic
-								incentives.
+								{t("jurisdictionInfo")}
 							</p>
 							<div className="mt-3">
 								<a
