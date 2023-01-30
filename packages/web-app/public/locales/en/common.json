@@ -40,6 +40,18 @@
             "error": "The transaction to join the agreement was not successful. Try again or copy the error and ask for help."
         }
     },
+    "dispute": {
+        "title": "Dispute Agreement",
+        "description": "By raising a dispute you will burn your dispute deposit to put the agreement on hold until the dispute is settled. Once an agreement is disputed it can only be settled by the court. You will have 5 days to present claims & evidence to support the dispute in court before the dispute is dismissed."
+    },
+    "finalize": {
+        "title": "Finalize Agreement",
+        "description": "By finalizing the agreement you will signal that you are prepared to put an end to the agreement without disputes. Once all the parties have finalized you will be able to withdraw your collateral from the agreement."
+    },
+    "withdraw": {
+        "title": "Withdraw from Agreement",
+        "description": "By withdrawing from the agreement you will recover your deposited tokens and you will not be binded by its terms anynmore."
+    },
     "appeal": {
         "permitSignature": {
             "title": "Approve tokens transfer",
