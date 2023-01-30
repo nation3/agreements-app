@@ -47,11 +47,27 @@
     },
     "dispute": {
         "title": "Dispute Agreement",
-        "description": "By raising a dispute you will burn your dispute deposit to put the agreement on hold until the dispute is settled. Once an agreement is disputed it can only be settled by the court. You will have 5 days to present claims & evidence to support the dispute in court before the dispute is dismissed."
+        "description": "Raising a dispute will put the agreement on hold until the dispute is settled by the court.",
+        "disputeCost": {
+            "title": "Dispute cost",
+            "description": "Will be consumed from your dispute deposit."
+        },
+        "evidenceSubmission": {
+            "title": "Submit claims & evidence",
+            "description": "To share your evidence with the Court before the dispute is dismissed."
+        },
+        "disputeResolution": {
+            "title": "Resolved by Nation3 Court",
+            "description": "Nation3 Court will resolve the dispute taking into account the evidence presented by all parties."
+        }
     },
     "finalize": {
         "title": "Finalize Agreement",
-        "description": "By finalizing the agreement you will signal that you are prepared to put an end to the agreement without disputes. Once all the parties have finalized you will be able to withdraw your collateral from the agreement."
+        "description": "Finalizing the agreement will signal that you are prepared to conclude the agreement without dispute.",
+        "tokenWithdrawal": {
+            "title": "Tokens to withdraw",
+            "description": "You will be able to withdraw when all parties have finalized."
+        }
     },
     "withdraw": {
         "title": "Withdraw from Agreement",

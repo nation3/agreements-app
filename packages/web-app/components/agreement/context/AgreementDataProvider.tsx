@@ -1,18 +1,21 @@
 import { ReactNode, useState, useEffect } from "react";
 
 import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataContext";
-import { ResolverMap, PositionMap } from "./types";
+import { ResolverMap, PositionMap, UserPosition } from "./types";
 import { useAgreementData } from "../../../hooks/useAgreement";
 import { fetchAgreementMetadata } from "../../../utils/metadata";
 import { trimHash } from "../../../utils/hash";
+import { useAccount } from "wagmi";
 
 export const AgreementDataProvider = ({ id, children }: { id: string; children: ReactNode }) => {
+	const { address: userAddress } = useAccount();
 	const [title, setTitle] = useState<string>();
 	const [status, setStatus] = useState<string>();
 	const [termsHash, setTermsHash] = useState<string>();
 	const [metadataURI, setMetadataURI] = useState<string>();
 	const [resolvers, setResolvers] = useState<ResolverMap>();
 	const [positions, setPositions] = useState<PositionMap>();
+	const [userPosition, setUserPosition] = useState<UserPosition>();
 
 	const { data: agreementData, positions: agreementPositions } = useAgreementData({
 		id: id,
@@ -75,6 +78,28 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [agreementPositions, resolvers]);
 
+	/* Update user position with agreement positions data */
+	useEffect(() => {
+		if (userAddress) {
+			if (positions && positions[userAddress]) {
+				setUserPosition((prevPosition) => ({ ...prevPosition, ...positions[userAddress] }));
+			}
+		} else {
+			setUserPosition(undefined);
+		}
+	}, [userAddress, positions]);
+
+	/* Update user position with agreement resolvers data */
+	useEffect(() => {
+		if (userAddress && resolvers && resolvers[userAddress]) {
+			setUserPosition((prevPosition) => ({
+				status: prevPosition?.status || 0,
+				balance: prevPosition?.balance || resolvers[userAddress].balance,
+				resolver: resolvers[userAddress],
+			}));
+		}
+	}, [userAddress, resolvers]);
+
 	const provider: AgreementDataContextType = {
 		id,
 		title,
@@ -82,6 +107,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		status,
 		resolvers,
 		positions,
+		userPosition,
 	};
 
 	return <AgreementDataContext.Provider value={provider}>{children}</AgreementDataContext.Provider>;

@@ -274,7 +274,7 @@ export const JoinableAgreementActions = ({
 										width={40}
 										height={40}
 										src={courtIcon}
-										alt={"Join Agreemtent"}
+										alt={"Join Agreement"}
 									/>
 								</div>
 							)}
