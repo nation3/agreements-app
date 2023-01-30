@@ -12,21 +12,14 @@ import { frameworkAddress } from "../../lib/constants";
 import { useAgreementData } from "../../components/agreement/context/AgreementDataContext";
 
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetServerSideProps } from "next";
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
 	return {
 		props: {
 			...(await serverSideTranslations(locale as string, ["common"])),
 			// Will be passed to the page component as props
 		},
-	};
-};
-
-export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
-	return {
-		paths: [], //indicates that no page needs be created at build time
-		fallback: "blocking", //indicates the type of fallback
 	};
 };
 
