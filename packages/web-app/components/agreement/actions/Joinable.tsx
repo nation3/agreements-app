@@ -26,7 +26,7 @@ const InfoTooltip = ({ info, className }: { info: string; className?: string }) 
 	);
 };
 
-const SummaryBox = ({
+const TokenSummary = ({
 	deposit,
 	collateral,
 }: {
@@ -36,18 +36,19 @@ const SummaryBox = ({
 	const { t } = useTranslation("common");
 
 	return (
-		<div className="flex flex-col py-1">
-			<p className="flex justify-between gap-5 md:gap-10 px-2 py-1 text-gray-500">
-				<span className="text-gray-400">Dispute deposit</span>
+		<div className="flex flex-col w-full items-start px-20 py-7 gap-1">
+			<h3 className="font-semibold text-slate-600 px-2">{t("join.TokenSummary")}</h3>
+			<p className="flex justify-between gap-5 px-2 text-gray-500">
+				<span className="font-semibold text-bluesky">{utils.formatUnits(deposit)} $NATION</span>
 				<span className="flex items-center gap-1">
-					<span className="font-semibold">{utils.formatUnits(deposit)} $NATION</span>
+					<span className="text-gray-400">Dispute deposit</span>
 					<InfoTooltip info={t("agreement.depositInfo")} className="w-4 h-4" />
 				</span>
 			</p>
-			<p className="flex justify-between gap-5 md:gap-10 px-2 py-1 text-gray-500">
-				<span className="text-gray-400">Collateral</span>
+			<p className="flex justify-between gap-5 px-2 text-gray-500">
+				<span className="font-semibold text-bluesky">{utils.formatUnits(collateral)} $NATION</span>
 				<span className="flex items-center gap-1">
-					<span className="font-semibold">{utils.formatUnits(collateral)} $NATION</span>
+					<span className="text-gray-400">Collateral</span>
 					<InfoTooltip info={t("agreement.collateralInfo")} className="w-4 h-4" />
 				</span>
 			</p>
@@ -283,11 +284,12 @@ export const JoinableAgreementActions = ({
 							</h3>
 						</div>
 					</FlowModal.Header>
-					<div className="flex flex-col items-center justify-center pt-8 border-t-2 border-bluesky-200">
+					<div className="flex flex-col items-center justify-center pt-4 border-t-2 border-bluesky-200">
 						{depositTokenApproved ? (
 							<>
-								<div>
-									<SummaryBox deposit={requiredDeposit} collateral={requiredCollateral} />
+								<TokenSummary deposit={requiredDeposit} collateral={requiredCollateral} />
+								<div className="flex w-full px-8 my-5">
+									<hr className="w-full" />
 								</div>
 								<Steps
 									steps={steps}
