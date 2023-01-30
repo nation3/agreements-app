@@ -12,6 +12,7 @@ import { BigNumber, utils, constants } from "ethers";
 import { ResolutionDetails, ProposedResolutionDetails } from "./ResolutionDetails";
 import { useDispute } from "./context/DisputeResolutionContext";
 import { frameworkAddress } from "../../lib/constants";
+import { trimHash } from "../../utils/hash";
 import { useResolutionExecute } from "../../hooks/useArbitrator";
 import { useProvider, useAccount } from "wagmi";
 import { CardHeader } from "../CardHeader";
@@ -61,7 +62,11 @@ export const DisputeDetails = () => {
 	return (
 		<>
 			<div className="flex flex-col gap-3 text-gray-700">
-				<CardHeader title={"Dispute"} id={dispute.id} status={dispute.status} />
+				<CardHeader
+					title={`Dispute #${trimHash(dispute.id.toUpperCase())}`}
+					id={dispute.id}
+					status={dispute.status}
+				/>
 				<div className="flex flex-col md:flex-row gap-1">
 					<ActionBadge
 						tooltip

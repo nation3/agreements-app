@@ -1,24 +1,39 @@
 import { BigNumber } from "ethers";
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useMemo } from "react";
 import { AgreementCreationContext, AgreementCreationContextType } from "./AgreementCreationContext";
+
+import { frameworkAddress } from "../../../lib/constants";
+import { hexHash, abiEncoding, hashEncoding } from "../../../utils";
 import { CreateView } from "./types";
-import { hashEncoding } from "../../../utils/hash";
 
 export const AgreementCreationProvider = ({ children }: { children: ReactNode }) => {
 	const [view, changeView] = useState(CreateView.Form);
-	const [terms, setTerms] = useState("");
 	const [salt] = useState(hashEncoding(Date.now().toString()));
+	const [title, setTitle] = useState("");
+	const [terms, setTerms] = useState("");
 	const [positions, setPositions] = useState([
 		{ account: "", balance: BigNumber.from(0) },
 		{ account: "", balance: BigNumber.from(0) },
 	]);
 
+	const termsHash = useMemo(() => hexHash(terms), [terms]);
+
+	const id = useMemo(() => {
+		return hashEncoding(
+			abiEncoding(["address", "bytes32", "bytes32"], [frameworkAddress, termsHash, salt]),
+		);
+	}, [termsHash, salt]);
+
 	const provider: AgreementCreationContextType = {
 		view,
 		salt,
+		title,
 		terms,
+		termsHash,
 		positions,
+		id,
 		changeView,
+		setTitle,
 		setTerms,
 		setPositions,
 	};

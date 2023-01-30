@@ -4,9 +4,13 @@ import { CreateView, InputPositionList } from "./types";
 export type AgreementCreationContextType = {
 	view: CreateView;
 	salt: string;
+	title: string;
 	terms: string;
+	termsHash: string;
+	id: string;
 	positions: InputPositionList;
 	changeView: (view: CreateView) => void;
+	setTitle: (text: string) => void;
 	setTerms: (text: string) => void;
 	setPositions: (positions: InputPositionList) => void;
 };

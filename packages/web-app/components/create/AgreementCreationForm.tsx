@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { ChangeEvent, useMemo } from "react";
 import { PlusIcon, MinusIcon } from "@heroicons/react/20/solid";
-import { Button, IconButton, DropInput, InfoAlert } from "@nation3/ui-components";
+import { Button, IconButton, DropInput, InfoAlert, TextInput } from "@nation3/ui-components";
 import { utils } from "ethers";
 import { useProvider } from "wagmi";
 
@@ -9,13 +9,16 @@ import { ParticipantRow } from "../ParticipantRow";
 import { GradientLink } from "../GradientLink";
 import { CreateView } from "./context/types";
 
-import { validateCriteria } from "../../utils/criteria";
+import { validateCriteria, trimHash } from "../../utils";
 import { useTranslation } from "next-i18next";
 
 export const AgreementCreationForm = () => {
 	const { t } = useTranslation("common");
 	const provider = useProvider({ chainId: 1 });
-	const { terms, positions, changeView, setTerms, setPositions } = useAgreementCreation();
+	const { title, terms, positions, id, changeView, setTitle, setTerms, setPositions } =
+		useAgreementCreation();
+
+	const defaultTitle = useMemo(() => `Agreement #${trimHash(id.toUpperCase())}`, [id]);
 
 	const isValidCriteria = useMemo(() => validateCriteria(positions), [positions]);
 
@@ -50,7 +53,26 @@ export const AgreementCreationForm = () => {
 						showFiles={true}
 					/>
 				</div>
-				{!terms && <InfoAlert message={t("create.agreementTerms.warning")} />}
+				{!terms ? (
+					<InfoAlert message={t("create.agreementTerms.warning")} />
+				) : (
+					<div className="flex flex-col gap-4">
+						<div>
+							<h3 className="flex gap-1 font-display">
+								<span className="text-lg font-medium">{t("create.agreementTitle.title")}</span>
+								<span className="text-md text-slate-600">(Optional)</span>
+							</h3>
+							<p>{t("create.agreementTitle.description")}</p>
+						</div>
+						<TextInput
+							value={title}
+							placeholder={defaultTitle}
+							onChange={(e: ChangeEvent<HTMLInputElement>) => {
+								setTitle(e.target.value);
+							}}
+						/>
+					</div>
+				)}
 			</div>
 			<hr />
 			<div className="flex flex-col gap-4">
@@ -96,7 +118,10 @@ export const AgreementCreationForm = () => {
 				<Button
 					label="Create Agreement"
 					disabled={!isValidAgreement}
-					onClick={() => changeView(CreateView.Preview)}
+					onClick={() => {
+						setTitle(title || defaultTitle);
+						changeView(CreateView.Preview);
+					}}
 				/>
 			</div>
 		</>

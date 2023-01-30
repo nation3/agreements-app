@@ -4,9 +4,10 @@ import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataC
 import { ResolverMap, PositionMap } from "./types";
 import { useAgreementData } from "../../../hooks/useAgreement";
 import { fetchAgreementMetadata } from "../../../utils/metadata";
+import { trimHash } from "../../../utils/hash";
 
 export const AgreementDataProvider = ({ id, children }: { id: string; children: ReactNode }) => {
-	const [title, setTitle] = useState("Agreement");
+	const [title, setTitle] = useState<string>();
 	const [status, setStatus] = useState<string>();
 	const [termsHash, setTermsHash] = useState<string>();
 	const [metadataURI, setMetadataURI] = useState<string>();
@@ -26,7 +27,11 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		if (agreementData?.metadataURI && agreementData.metadataURI != metadataURI) {
 			setMetadataURI(agreementData.metadataURI);
 			fetchAgreementMetadata(agreementData.metadataURI).then((metadata) => {
-				if (metadata.title && metadata.title != title) setTitle(metadata.title);
+				if (metadata.title && metadata.title != "Agreement") {
+					if (metadata.title != title) setTitle(metadata.title);
+				} else {
+					setTitle(`Agreement #${trimHash(id.toUpperCase())}`);
+				}
 				if (metadata.resolvers)
 					setResolvers((prevResolvers) => ({ ...prevResolvers, ...metadata.resolvers }));
 			});
