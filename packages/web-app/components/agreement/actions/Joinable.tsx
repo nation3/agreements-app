@@ -37,7 +37,7 @@ const TokenSummary = ({
 
 	return (
 		<div className="flex flex-col w-full items-start px-20 py-7 gap-1">
-			<h3 className="font-semibold text-slate-600 px-2">{t("join.TokenSummary")}</h3>
+			<h3 className="font-semibold text-slate-600 px-2">{t("join.tokenSummary")}</h3>
 			<p className="flex justify-between gap-5 px-2 text-gray-500">
 				<span className="font-semibold text-bluesky">{utils.formatUnits(deposit)} $NATION</span>
 				<span className="flex items-center gap-1">
