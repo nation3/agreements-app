@@ -11,6 +11,10 @@ import { frameworkAddress } from "../../lib/constants";
 
 import { useAgreementData } from "../../components/agreement/context/AgreementDataContext";
 
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { GetServerSideProps } from "next";
+import i18n from "./../../next-i18next.config";
+
 const Agreement = () => {
 	const { status } = useAgreementData();
 
@@ -42,6 +46,15 @@ const AgreementPage = () => {
 			</AgreementDataProvider>
 		</div>
 	);
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale as string, ["common"])),
+			// Will be passed to the page component as props
+		},
+	};
 };
 
 export default AgreementPage;

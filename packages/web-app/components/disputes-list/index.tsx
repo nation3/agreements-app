@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useDisputeList } from "./context/DisputeListContext";
 import Image from "next/image";
 import courtIll from "../../public/court-ill.png";
+import { GradientLink } from "../GradientLink";
 
 export const DisputeList = () => {
 	const router = useRouter();
@@ -47,12 +48,10 @@ export const DisputeList = () => {
 								incentives.
 							</p>
 							<div className="mt-3">
-								<a
-									className="group font-semibold bg-gradient-to-r from-bluesky to-greensea bg-clip-text text-transparent cursor-pointer"
+								<GradientLink
 									href="https://docs.nation3.org/jurisdiction/supreme-court"
-								>
-									Learn more <span className="group-hover:ml-1 transition-all">→</span>
-								</a>
+									caption="Learn more"
+								/>
 							</div>
 						</div>
 					</div>

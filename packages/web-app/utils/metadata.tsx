@@ -62,11 +62,15 @@ export const fetchResolutionMetadata = async (fileURI: string): Promise<Resoluti
 	return fetchMetadata<ResolutionMetadata>(fileURI, parseResolutionMetadata);
 };
 
-export const generateAgreementMetadata = (
-	terms: string,
-	positions: { account: string; balance: BigNumber }[],
-	title?: string,
-): AgreementMetadata => {
+export const generateAgreementMetadata = ({
+	title,
+	terms,
+	positions,
+}: {
+	terms: string;
+	positions: { account: string; balance: BigNumber }[];
+	title?: string;
+}): AgreementMetadata => {
 	const termsHash = hexHash(terms);
 	const { criteria, resolvers } = generateCriteria(positions);
 

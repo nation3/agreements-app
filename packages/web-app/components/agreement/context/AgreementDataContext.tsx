@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { PositionMap, ResolverMap } from "./types";
+import { PositionMap, ResolverMap, UserPosition } from "./types";
 
 export type AgreementDataContextType = {
 	id: string;
@@ -8,6 +8,7 @@ export type AgreementDataContextType = {
 	termsHash: string | undefined;
 	positions: PositionMap | undefined;
 	resolvers: ResolverMap | undefined;
+	userPosition: UserPosition | undefined;
 };
 
 export const AgreementDataContext = createContext<AgreementDataContextType | null>(null);

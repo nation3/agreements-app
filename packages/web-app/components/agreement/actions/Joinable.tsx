@@ -1,12 +1,11 @@
+import { Tooltip } from "flowbite-react";
 import { useMemo, useState, useEffect } from "react";
 import { useAccount } from "wagmi";
-import { BigNumber, constants, utils } from "ethers";
+import { BigNumber, BigNumberish, constants, utils } from "ethers";
 // import { useTokenBalance } from "../../../hooks/useToken";
 import { useAgreementJoin } from "../../../hooks/useAgreement";
 import { frameworkAddress, NATION } from "../../../lib/constants";
 import { UserPosition } from "../context/types";
-import { AgreementConstants } from "../AgreementConstants";
-import { FancyLink } from "../../FancyLink";
 import Image from "next/image";
 import { Button, Steps, IStep } from "@nation3/ui-components";
 import { Modal as FlowModal } from "flowbite-react";
@@ -15,6 +14,47 @@ import nationCoinIcon from "../../../assets/svgs/nation_coin.svg";
 import joinedIcon from "../../../assets/svgs/joined.svg";
 // import joinedSuccessIcon from "../../../assets/svgs/joined_success.svg";
 import { usePermit2Allowance, usePermit2BatchTransferSignature } from "../../../hooks/usePermit2";
+import { useTranslation } from "next-i18next";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { Permit2Setup } from "../../Permit2Setup";
+
+const InfoTooltip = ({ info, className }: { info: string; className?: string }) => {
+	return (
+		<Tooltip style="light" animation="duration-150" content={info}>
+			<InformationCircleIcon className={className} />
+		</Tooltip>
+	);
+};
+
+const TokenSummary = ({
+	deposit,
+	collateral,
+}: {
+	deposit: BigNumberish;
+	collateral: BigNumberish;
+}) => {
+	const { t } = useTranslation("common");
+
+	return (
+		<div className="flex flex-col w-full items-start px-20 py-7 gap-1">
+			<h3 className="font-semibold text-slate-600 px-2">{t("join.tokenSummary")}</h3>
+			<p className="flex justify-between gap-5 px-2 text-gray-500">
+				<span className="font-semibold text-bluesky">{utils.formatUnits(deposit)} $NATION</span>
+				<span className="flex items-center gap-1">
+					<span className="text-gray-400">Dispute deposit</span>
+					<InfoTooltip info={t("agreement.depositInfo")} className="w-4 h-4" />
+				</span>
+			</p>
+			<p className="flex justify-between gap-5 px-2 text-gray-500">
+				<span className="font-semibold text-bluesky">{utils.formatUnits(collateral)} $NATION</span>
+				<span className="flex items-center gap-1">
+					<span className="text-gray-400">Collateral</span>
+					<InfoTooltip info={t("agreement.collateralInfo")} className="w-4 h-4" />
+				</span>
+			</p>
+		</div>
+	);
+};
 
 export const JoinableAgreementActions = ({
 	id,
@@ -23,13 +63,13 @@ export const JoinableAgreementActions = ({
 	id: string;
 	userPosition: UserPosition;
 }) => {
+	const { t } = useTranslation("common");
 	const { address } = useAccount();
 	// FIXME: Fetch from agreement framework
 	const [requiredDeposit] = useState(0);
-	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
 	const [isJoinAgreementModalOpen, setIsJoinAgreementModalOpen] = useState<boolean>(false);
 	const [stepsIndex, setStepsIndex] = useState<number>(0);
-	const [stepsLoadingIndex, setStepsLoadingIndex] = useState<number | null>(null);
+	const [isStepLoading, setStepLoading] = useState<boolean>(false);
 	const [stepsError, setStepsError] = useState<{
 		header: string;
 		description: string;
@@ -68,24 +108,24 @@ export const JoinableAgreementActions = ({
 	// FIXME: Combine approval for collateral token when != deposit token
 	/*
     const {
-        isEnough: collateralTokenApproved,
-        approve: approveCollateralToken
+                        isEnough: collateralTokenApproved,
+                    approve: approveCollateralToken
     } = usePermit2Allowance({
-        token: NATION,
-        account: address || constants.AddressZero,
+                        token: NATION,
+                    account: address || constants.AddressZero,
     });
-    */
+                    */
 
 	// FIXME: Check also required deposit & add pre-step to acquire those tokens
 	/*
-    const { balance: depositTokenBalance } = useTokenBalance({
-        address: NATION,
-        account: address || constants.AddressZero
+    const {balance: depositTokenBalance } = useTokenBalance({
+                        address: NATION,
+                    account: address || constants.AddressZero
     });
 
-    const { balance: collateralTokenBalance } = useTokenBalance({
-        address: NATION,
-        account: address || constants.AddressZero
+                    const {balance: collateralTokenBalance } = useTokenBalance({
+                        address: NATION,
+                    account: address || constants.AddressZero
     });
 
     const enoughBalance = useMemo((): boolean => {
@@ -95,11 +135,11 @@ export const JoinableAgreementActions = ({
             return false;
         }
     }, [depositTokenBalance, collateralTokenBalance, requiredCollateral]);
-    */
+                    */
 
 	useEffect(() => {
 		if (approvalSuccess || approvalError) {
-			setStepsLoadingIndex(null);
+			setStepLoading(false);
 		}
 	}, [approvalSuccess, approvalError]);
 
@@ -116,8 +156,8 @@ export const JoinableAgreementActions = ({
 
 	useEffect(() => {
 		// TODO: Built in this logic into the Steps component
-		if (signSuccess) {
-			setStepsLoadingIndex(null);
+		if (signSuccess || signError) {
+			setStepLoading(false);
 		}
 	}, [signSuccess, signError]);
 
@@ -125,20 +165,20 @@ export const JoinableAgreementActions = ({
 	/*
     useEffect(() => {
         if (approvalSuccess) {
-            setStepsIndex(stepsIndex + 1);
-            setStepsLoadingIndex(null);
+                        setStepsIndex(stepsIndex + 1);
+                    setStepsLoadingIndex(null);
         } else if (approvalError) {
-            setStepsLoadingIndex(null);
-            setStepsError({
-                header: "Approval failed ⚠️",
-                description:
+                        setStepsLoadingIndex(null);
+                    setStepsError({
+                        header: "Approval failed ⚠️",
+                    description:
                     "The process for the initial approval of the $NATION required failed. Please review it and confirm the signing acordingly",
-                isError: true,
+                    isError: true,
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [approvalSuccess, approvalError]);
-    */
+                    */
 
 	/* STEPS 2 - SIGN */
 
@@ -146,94 +186,54 @@ export const JoinableAgreementActions = ({
 
 	useEffect(() => {
 		if (isJoinSuccess) {
-			setStepsLoadingIndex(null);
+			setStepLoading(false);
 			window.location.reload();
 		} else if (isJoinError) {
-			setStepsLoadingIndex(null);
+			setStepLoading(false);
 			setStepsError({
 				header: "Join Agreement failed",
-				description: "Join agreement transaction was not successful. Review and start the process.",
+				description: t("join.joinAgreement.error"),
 				isError: true,
 			});
 		}
-	}, [isJoinSuccess, isJoinError]);
+	}, [isJoinSuccess, isJoinError, t]);
 
 	// FIXME: Better step index selector
 	useEffect(() => {
-		const index = depositTokenApproved ? (signature ? 2 : 1) : 0;
-		setStepsIndex(index);
+		setStepsIndex(signature ? 1 : 0);
 		// TODO: Rethink this, array mode steps are definetly not the best.
 		/* 		const manageSteps = [...stepsBase];
         Array.from(Array(index).keys()).forEach(() => {
-            manageSteps.shift();
+                        manageSteps.shift();
         }); */
-	}, [depositTokenApproved, signature]);
+	}, [signature]);
 
 	const steps: IStep[] = [
 		{
-			title: "Setup Permit2",
+			title: t("join.permitSignature.title"),
 			description: (
 				<div>
-					<p className="text-xs text-gray-400">
-						One-time approval to use Permti2 as the transfer manager for the agreement tokens.
-					</p>
-					<FancyLink
-						href="https://uniswap.org/blog/permit2-and-universal-router"
-						caption="Learn more"
-					/>
+					<p className="text-xs text-gray-400">{t("join.permitSignature.description")}</p>
 				</div>
 			),
 			image: nationCoinIcon,
-			stepCTA: "Setup Permit2",
+			stepCTA: t("join.permitSignature.action") as string,
 			action: () => {
-				setStepsLoadingIndex(0);
-				approveDepositToken();
-			},
-		},
-		{
-			title: "Approve Tokens",
-			description: (
-				<div>
-					<p className="text-xs text-gray-400">
-						Sign a permit to transfer the required tokens to join the agreement.
-					</p>
-					<FancyLink
-						href="https://docs.nation3.org/agreements/joining-an-agreement"
-						caption="Learn more"
-					/>
-				</div>
-			),
-			image: nationCoinIcon,
-			stepCTA: "Sign",
-			action: () => {
-				setStepsLoadingIndex(1);
+				setStepLoading(true);
 				signPermit();
 			},
 		},
 		{
-			title: "Join Agreement",
+			title: t("join.joinAgreement.title"),
 			description: (
 				<div>
-					<p className="text-xs mb-1 text-gray-500">
-						The required tokens will be deposited into the agreement and you will be bound by its
-						terms.
-					</p>
-					<p className="text-xs mb-1 text-gray-500">
-						<span className="font-semibold text-bluesky-500">{requiredDeposit} $NATION:</span>
-						<span className="text-gray-400"> Dispute deposit</span>
-					</p>
-					<p className="text-xs mb-1 text-gray-500">
-						<span className="font-semibold text-bluesky-500">
-							{utils.formatUnits(requiredCollateral)} $NATION:
-						</span>
-						<span className="text-gray-400"> Collateral</span>
-					</p>
+					<p className="text-xs mb-1 text-gray-500">{t("join.joinAgreement.description")}</p>
 				</div>
 			),
 			image: joinedIcon,
-			stepCTA: "Join agreement",
+			stepCTA: t("join.joinAgreement.action") as string,
 			action: () => {
-				setStepsLoadingIndex(2);
+				setStepLoading(true);
 				join({ id, resolver: userResolver, permit, signature });
 			},
 		},
@@ -241,24 +241,6 @@ export const JoinableAgreementActions = ({
 
 	return (
 		<>
-			{/* 
-			//TODO: Build Global UI Context for generic modals and UI Warns
-				TERMS HASH MODAL
-			*/}
-			<FlowModal show={isTermsModalUp} onClose={() => setIsTermsModalUp(false)}>
-				<FlowModal.Header>{AgreementConstants.termsHash}</FlowModal.Header>
-				<FlowModal.Body>
-					<div className="space-y-6">
-						<p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-							{AgreementConstants.termsDescription}
-						</p>
-					</div>
-				</FlowModal.Body>
-				<FlowModal.Footer>
-					<Button label="Close" onClick={() => setIsTermsModalUp(false)}></Button>
-				</FlowModal.Footer>
-			</FlowModal>
-
 			{/* 
 			//TODO: Build Global UI Context for generic modals and UI Warns
 				TX ERROR MODAL
@@ -275,12 +257,6 @@ export const JoinableAgreementActions = ({
 						</p>
 					</div>
 				</FlowModal.Body>
-				<FlowModal.Footer>
-					<Button
-						label="Close"
-						onClick={() => setStepsError({ ...stepsError, isError: false })}
-					></Button>
-				</FlowModal.Footer>
 			</FlowModal>
 
 			<div className="flex flex-col gap-1">
@@ -299,7 +275,7 @@ export const JoinableAgreementActions = ({
 										width={40}
 										height={40}
 										src={courtIcon}
-										alt={"Join Agreemtent"}
+										alt={"Join Agreement"}
 									/>
 								</div>
 							)}
@@ -308,13 +284,34 @@ export const JoinableAgreementActions = ({
 							</h3>
 						</div>
 					</FlowModal.Header>
-					<Steps
-						steps={steps}
-						icon={courtIcon}
-						title={"Join Agreement"}
-						stepIndex={stepsIndex}
-						loadingIndex={stepsLoadingIndex}
-					/>
+					<div className="flex flex-col items-center justify-center pt-4 border-t-2 border-bluesky-200">
+						{depositTokenApproved ? (
+							<>
+								<TokenSummary deposit={requiredDeposit} collateral={requiredCollateral} />
+								<div className="flex w-full px-8 my-5">
+									<hr className="w-full" />
+								</div>
+								<Steps
+									steps={steps}
+									icon={courtIcon}
+									title={"Join Agreement"}
+									stepIndex={stepsIndex}
+									isStepLoading={isStepLoading}
+								/>
+							</>
+						) : (
+							<Permit2Setup
+								tokens={[
+									{
+										address: NATION,
+										name: "NATION",
+										isApproved: depositTokenApproved,
+										approve: approveDepositToken,
+									},
+								]}
+							/>
+						)}
+					</div>
 				</FlowModal>
 			</div>
 		</>

@@ -1,5 +1,5 @@
 // import { BigNumber, utils } from "ethers";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import frameworkInterface from "../abis/CollateralAgreementFramework.json";

@@ -1,19 +1,24 @@
-import { useMemo } from "react";
+import { ChangeEvent, useMemo } from "react";
 import { PlusIcon, MinusIcon } from "@heroicons/react/20/solid";
-import { Button, IconButton, DropInput, InfoAlert } from "@nation3/ui-components";
+import { Button, IconButton, DropInput, InfoAlert, TextInput } from "@nation3/ui-components";
 import { utils } from "ethers";
 import { useProvider } from "wagmi";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { ParticipantRow } from "../ParticipantRow";
-import { FancyLink } from "../FancyLink";
+import { GradientLink } from "../GradientLink";
 import { CreateView } from "./context/types";
 
-import { validateCriteria } from "../../utils/criteria";
+import { validateCriteria, trimHash } from "../../utils";
+import { useTranslation } from "next-i18next";
 
 export const AgreementCreationForm = () => {
+	const { t } = useTranslation("common");
 	const provider = useProvider({ chainId: 1 });
-	const { terms, positions, changeView, setTerms, setPositions } = useAgreementCreation();
+	const { title, terms, positions, id, changeView, setTitle, setTerms, setPositions } =
+		useAgreementCreation();
+
+	const defaultTitle = useMemo(() => `Agreement #${trimHash(id.toUpperCase())}`, [id]);
 
 	const isValidCriteria = useMemo(() => validateCriteria(positions), [positions]);
 
@@ -25,17 +30,13 @@ export const AgreementCreationForm = () => {
 	return (
 		<>
 			<div className="text-gray-800">
-				<h1 className="font-display font-medium text-2xl">New Agreement</h1>
+				<h1 className="font-display font-medium text-2xl">{t("create.header")}</h1>
 			</div>
 			<div className="flex flex-col gap-4">
 				<div>
-					<h2 className="font-display font-medium text-xl">1. Agreement terms</h2>
-					<p>
-						These are the terms that the parties who enter the agreement will abide by. If one of
-						the parties fails to comply with these terms, their financial stake can be taken away to
-						compensate the other parties. The terms must be written in Linked Markdown.
-					</p>
-					<FancyLink
+					<h2 className="font-display font-medium text-xl">{t("create.agreementTerms.title")}</h2>
+					<p>{t("create.agreementTerms.description")}</p>
+					<GradientLink
 						href="https://docs.nation3.org/agreements/creating-an-agreement"
 						caption="Learn more"
 					/>
@@ -52,16 +53,34 @@ export const AgreementCreationForm = () => {
 						showFiles={true}
 					/>
 				</div>
-				{!terms && <InfoAlert message="You need to provide a valid terms file to continue." />}
+				{!terms ? (
+					<InfoAlert message={t("create.agreementTerms.warning")} />
+				) : (
+					<div className="flex flex-col gap-4">
+						<div>
+							<h3 className="flex gap-1 font-display">
+								<span className="text-lg font-medium">{t("create.agreementTitle.title")}</span>
+								<span className="text-md text-slate-600">(Optional)</span>
+							</h3>
+							<p>{t("create.agreementTitle.description")}</p>
+						</div>
+						<TextInput
+							value={title}
+							placeholder={defaultTitle}
+							onChange={(e: ChangeEvent<HTMLInputElement>) => {
+								setTitle(e.target.value);
+							}}
+						/>
+					</div>
+				)}
 			</div>
 			<hr />
 			<div className="flex flex-col gap-4">
 				<div>
-					<h2 className="font-display font-medium text-xl">2. Parties and stakes</h2>
-					<p>
-						These are the participants that can enter the agreement, and how much $NATION they must
-						deposit to enter it.
-					</p>
+					<h2 className="font-display font-medium text-xl">
+						{t("create.agreementPositions.title")}
+					</h2>
+					<p>{t("create.agreementPositions.description")}</p>
 				</div>
 				<div className="flex flex-col gap-2">
 					{positions.map((_, index) => (
@@ -93,15 +112,16 @@ export const AgreementCreationForm = () => {
 						/>
 					</div>
 				</div>
-				{!isValidCriteria && (
-					<InfoAlert message="You need to provide at least two valid participants to continue." />
-				)}
+				{!isValidCriteria && <InfoAlert message={t("create.agreementPositions.warning")} />}
 			</div>
 			<div className="flex flex-col gap-2">
 				<Button
 					label="Create Agreement"
 					disabled={!isValidAgreement}
-					onClick={() => changeView(CreateView.Preview)}
+					onClick={() => {
+						setTitle(title || defaultTitle);
+						changeView(CreateView.Preview);
+					}}
 				/>
 			</div>
 		</>

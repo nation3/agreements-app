@@ -3,6 +3,7 @@ import { Button, IStep, Steps } from "@nation3/ui-components";
 import { constants } from "ethers";
 import { Modal as FlowModal } from "flowbite-react";
 import Image from "next/image";
+import { utils } from "ethers";
 
 import { useDispute } from "./context/DisputeResolutionContext";
 import { ResolutionDetails } from "./ResolutionDetails";
@@ -15,7 +16,8 @@ import joinedIcon from "../../assets/svgs/joined.svg";
 import { usePermit2Allowance, usePermit2TransferSignature } from "../../hooks/usePermit2";
 import { useAccount } from "wagmi";
 import { arbitratorAddress, frameworkAddress, NATION } from "../../lib/constants";
-import { FancyLink } from "../FancyLink";
+import { Permit2Setup } from "../Permit2Setup";
+import { useTranslation } from "next-i18next";
 
 export const DisputeArbitrationActions = () => {
 	const [mode, setMode] = useState("view");
@@ -32,12 +34,13 @@ export const DisputeArbitrationActions = () => {
 };
 
 export const DisputeActions = () => {
+	const { t } = useTranslation("common");
 	const { address } = useAccount();
 	// FIXME: Fetch from arbitrator
 	const [appealCost] = useState(0);
 	const [isAppealModalOpen, setIsAppealModalOpen] = useState(false);
 	const [stepsIndex, setStepsIndex] = useState(0);
-	const [stepsLoadingIndex, setStepsLoadingIndex] = useState<number | null>(null);
+	const [isStepLoading, setStepLoading] = useState<boolean>(false);
 	const { dispute, resolution } = useDispute();
 	const { execute, isTxSuccess: isExecuteSuccess } = useResolutionExecute();
 	const { appeal, isTxSuccess: isAppealSuccess, isError: isAppealError } = useResolutionAppeal();
@@ -59,7 +62,7 @@ export const DisputeActions = () => {
 
 	useEffect(() => {
 		if (isAppealSuccess || isAppealError) {
-			setStepsLoadingIndex(null);
+			setStepLoading(false);
 		}
 	}, [isAppealSuccess, isAppealError]);
 
@@ -69,14 +72,14 @@ export const DisputeActions = () => {
 
 	useEffect(() => {
 		if (approvalSuccess || approvalError) {
-			setStepsLoadingIndex(null);
+			setStepLoading(false);
 		}
 	}, [approvalSuccess, approvalError]);
 
 	useEffect(() => {
 		// TODO: Built in this logic into the Steps component
-		if (signSuccess) {
-			setStepsLoadingIndex(null);
+		if (signSuccess || signError) {
+			setStepLoading(false);
 		}
 	}, [signSuccess, signError]);
 
@@ -89,60 +92,30 @@ export const DisputeActions = () => {
 
 	const steps: IStep[] = [
 		{
-			title: "Setup Permit2",
+			title: t("appeal.permitSignature.title"),
 			description: (
 				<div>
-					<p className="text-xs text-gray-400">
-						One-time approval to use Permti2 as the transfer manager for the service token.
-					</p>
-					<FancyLink
-						href="https://uniswap.org/blog/permit2-and-universal-router"
-						caption="Learn more"
-					/>
+					<p className="text-xs text-gray-400">{t("appeal.permitSignature.description")}</p>
 				</div>
 			),
 			image: nationCoinIcon,
-			stepCTA: "Setup Permit2",
+			stepCTA: t("appeal.permitSignature.action") as string,
 			action: () => {
-				setStepsLoadingIndex(0);
-				approveAppealToken();
-			},
-		},
-		{
-			title: "Approve Tokens",
-			description: (
-				<div>
-					<p className="text-xs text-gray-400">
-						Sign a permit to transfer the required tokens to appeal the resolution.
-					</p>
-					<FancyLink href="https://docs.nation3.org/agreements/appealing" caption="Learn more" />
-				</div>
-			),
-			image: nationCoinIcon,
-			stepCTA: "Sign",
-			action: () => {
-				setStepsLoadingIndex(1);
+				setStepLoading(true);
 				signPermit();
 			},
 		},
 		{
-			title: "Appeal Resolution",
+			title: t("appeal.appealResolution.title"),
 			description: (
 				<div>
-					<p className="text-xs mb-1 text-gray-500">
-						The required tokens will be transfered from your account and the resolution will be
-						appealed.
-					</p>
-					<p className="text-xs mb-1 text-gray-500">
-						<span className="font-semibold text-bluesky-500">{appealCost} $NATION:</span>
-						<span className="text-gray-400"> Appeal cost</span>
-					</p>
+					<p className="text-xs mb-1 text-gray-500">{t("appeal.appealResolution.description")}</p>
 				</div>
 			),
 			image: joinedIcon,
-			stepCTA: "Appeal resolution",
+			stepCTA: t("appeal.appealResolution.action") as string,
 			action: () => {
-				setStepsLoadingIndex(2);
+				setStepLoading(true);
 				appeal({
 					id: resolution?.id || constants.HashZero,
 					settlement: resolution?.settlement || [],
@@ -155,9 +128,8 @@ export const DisputeActions = () => {
 
 	// FIXME: Better step index selector
 	useEffect(() => {
-		const index = appealTokenApproved ? (signature ? 2 : 1) : 0;
-		setStepsIndex(index);
-	}, [appealTokenApproved, signature]);
+		setStepsIndex(signature ? 1 : 0);
+	}, [signature]);
 
 	const canBeEnacted = useMemo(() => {
 		const currentTime = Math.floor(Date.now() / 1000);
@@ -215,13 +187,40 @@ export const DisputeActions = () => {
 										</h3>
 									</div>
 								</FlowModal.Header>
-								<Steps
-									steps={steps}
-									icon={courtIcon}
-									title={"Appeal Resolution"}
-									stepIndex={stepsIndex}
-									loadingIndex={stepsLoadingIndex}
-								/>
+								<div className="flex flex-col items-center justify-center pt-8 border-t-2 border-bluesky-200">
+									{appealTokenApproved ? (
+										<>
+											<div>
+												<div className="flex flex-col py-1">
+													<p className="flex justify-between gap-5 md:gap-10 px-2 py-1 text-gray-500">
+														<span className="text-gray-400">Appeal cost</span>
+														<span className="font-semibold">
+															{utils.formatUnits(appealCost)} $NATION
+														</span>
+													</p>
+												</div>
+											</div>
+											<Steps
+												steps={steps}
+												icon={courtIcon}
+												title={"Appeal Resolution"}
+												stepIndex={stepsIndex}
+												isStepLoading={isStepLoading}
+											/>
+										</>
+									) : (
+										<Permit2Setup
+											tokens={[
+												{
+													address: NATION,
+													name: "NATION",
+													isApproved: appealTokenApproved,
+													approve: approveAppealToken,
+												},
+											]}
+										/>
+									)}
+								</div>
 							</FlowModal>
 						</div>
 					</div>

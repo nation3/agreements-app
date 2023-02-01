@@ -5,6 +5,10 @@ export const hexHash = (text: string) => {
 	return `0x${keccak256(text).toString("hex")}`;
 };
 
+export const trimHash = (hash: string): string => {
+	return `${hash.substring(2, 6)}${hash.substring(hash.length - 4)}`;
+};
+
 export const hashEncoding = (encoding: string) => {
 	return utils.hexlify(Buffer.from(keccak256(encoding).toString("hex"), "hex"));
 };
