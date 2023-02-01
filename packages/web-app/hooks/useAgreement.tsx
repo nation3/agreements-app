@@ -117,6 +117,9 @@ export const useAgreementJoin = () => {
 		onError(error) {
 			console.log(error);
 		},
+		overrides: {
+			gasLimit: 260000,
+		},
 	});
 
 	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
