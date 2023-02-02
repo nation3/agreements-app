@@ -33,7 +33,8 @@
         }
     },
     "join": {
-        "tokenSummary": "Token summary",
+        "yourBalance": "Wallet balance",
+        "tokenSummary": "Token Requirements for entering the Agreement",
         "permitSignature": {
             "title": "Approve tokens transfer",
             "description": "Approve the transfer of collateral and dispute tokens to the agrement through signature.",

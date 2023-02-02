@@ -233,12 +233,25 @@ export const DisputeActions = () => {
 		return (
 			<>
 				<AgreementDisputedAlert />
-				<Button
+				{/* <Button
 					label="Submit evidence"
 					onClick={() =>
 						window.open("https://docs.nation3.org/agreements/submitting-evidence", "_blank")
 					}
-				/>
+				/> */}
+				<div>
+					<p className="text-slate-500 text-md p-4">
+						Submit your evidence to support your dispute.{" "}
+						<a
+							className="underline"
+							href="https://docs.nation3.org/agreements/submitting-evidence"
+							target="_blank"
+							rel="noreferrer"
+						>
+							Submit process
+						</a>
+					</p>
+				</div>
 			</>
 		);
 	}

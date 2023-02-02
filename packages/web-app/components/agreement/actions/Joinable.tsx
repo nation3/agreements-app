@@ -2,7 +2,7 @@ import { Tooltip } from "flowbite-react";
 import { useMemo, useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { BigNumber, BigNumberish, constants, utils } from "ethers";
-// import { useTokenBalance } from "../../../hooks/useToken";
+// import { useTokenBalance } from '../../../hooks/useToken';
 import { useAgreementJoin } from "../../../hooks/useAgreement";
 import { frameworkAddress, NATION } from "../../../lib/constants";
 import { UserPosition } from "../context/types";
@@ -17,6 +17,8 @@ import { usePermit2Allowance, usePermit2BatchTransferSignature } from "../../../
 import { useTranslation } from "next-i18next";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { Permit2Setup } from "../../Permit2Setup";
+import { useTokenBalance } from "../../../hooks/useToken";
+import { GradientLink } from "../../GradientLink";
 
 const InfoTooltip = ({ info, className }: { info: string; className?: string }) => {
 	return (
@@ -27,26 +29,49 @@ const InfoTooltip = ({ info, className }: { info: string; className?: string }) 
 };
 
 const TokenSummary = ({
+	balance,
 	deposit,
 	collateral,
 }: {
+	balance: BigNumberish;
 	deposit: BigNumberish;
 	collateral: BigNumberish;
 }) => {
 	const { t } = useTranslation("common");
 
+	const formattedBalance = balance ? utils.formatUnits(balance) : "";
+
 	return (
-		<div className="flex flex-col w-full items-start px-20 py-7 gap-1">
-			<h3 className="font-semibold text-slate-600 px-2">{t("join.tokenSummary")}</h3>
-			<p className="flex justify-between gap-5 px-2 text-gray-500">
-				<span className="font-semibold text-bluesky">{utils.formatUnits(deposit)} $NATION</span>
+		<div className="flex flex-col w-full items-start px-8 md:px-20 py-7 gap-1">
+			<h3 className="text-sm text-slate-400 px-2 mb-1">{t("join.yourBalance")}</h3>
+			<p className="text-sm flex justify-between items-center gap-5 px-2 text-gray-500">
+				<span className="font-semibold text-bluesky-500">{formattedBalance} $NATION</span>
+				{parseInt(formattedBalance) === 0 && (
+					<span className="flex items-center gap-1">
+						⚠️ Get some
+						<a href="https://app.balancer.fi/#/ethereum/trade/ether/0x333A4823466879eeF910A04D473505da62142069">
+							<GradientLink
+								href="https://docs.nation3.org/agreements/creating-an-agreement"
+								caption="$NATION"
+							/>
+						</a>
+					</span>
+				)}
+			</p>
+			<hr className="border-b mb-2"></hr>
+
+			<h3 className="text-sm text-slate-400 px-2 mb-1">{t("join.tokenSummary")}</h3>
+			<p className="flex text-sm justify-between items-center gap-5 px-2 text-gray-500">
+				<span className="font-semibold text-bluesky-500">{utils.formatUnits(deposit)} $NATION</span>
 				<span className="flex items-center gap-1">
 					<span className="text-gray-400">Dispute deposit</span>
 					<InfoTooltip info={t("agreement.depositInfo")} className="w-4 h-4" />
 				</span>
 			</p>
-			<p className="flex justify-between gap-5 px-2 text-gray-500">
-				<span className="font-semibold text-bluesky">{utils.formatUnits(collateral)} $NATION</span>
+			<p className="text-sm flex justify-between items-center gap-5 px-2 text-gray-500">
+				<span className="font-semibold text-bluesky-500">
+					{utils.formatUnits(collateral)} $NATION
+				</span>
 				<span className="flex items-center gap-1">
 					<span className="text-gray-400">Collateral</span>
 					<InfoTooltip info={t("agreement.collateralInfo")} className="w-4 h-4" />
@@ -106,37 +131,25 @@ export const JoinableAgreementActions = ({
 	});
 
 	// FIXME: Combine approval for collateral token when != deposit token
-	/*
-    const {
-                        isEnough: collateralTokenApproved,
-                    approve: approveCollateralToken
-    } = usePermit2Allowance({
-                        token: NATION,
-                    account: address || constants.AddressZero,
-    });
-                    */
+	/* 	const { isEnough: collateralTokenApproved, approve: approveCollateralToken } =
+		usePermit2Allowance({
+			token: NATION,
+			account: address || constants.AddressZero,
+		}); */
 
-	// FIXME: Check also required deposit & add pre-step to acquire those tokens
-	/*
-    const {balance: depositTokenBalance } = useTokenBalance({
-                        address: NATION,
-                    account: address || constants.AddressZero
-    });
-
-                    const {balance: collateralTokenBalance } = useTokenBalance({
-                        address: NATION,
-                    account: address || constants.AddressZero
-    });
-
-    const enoughBalance = useMemo((): boolean => {
-        if (depositTokenBalance && collateralTokenBalance) {
-            return requiredCollateral.lte(BigNumber.from(collateralTokenBalance));
-        } else {
-            return false;
-        }
-    }, [depositTokenBalance, collateralTokenBalance, requiredCollateral]);
-                    */
-
+	const { balance: nationBalance } = useTokenBalance({
+		address: NATION,
+		account: address || constants.AddressZero,
+	});
+	/* 
+	const enoughBalance = useMemo((): boolean => {
+		if (depositTokenBalance && collateralTokenBalance) {
+			return requiredCollateral.lte(BigNumber.from(collateralTokenBalance));
+		} else {
+			return false;
+		}
+	}, [depositTokenBalance, collateralTokenBalance, requiredCollateral]);
+ */
 	useEffect(() => {
 		if (approvalSuccess || approvalError) {
 			setStepLoading(false);
@@ -287,11 +300,16 @@ export const JoinableAgreementActions = ({
 					<div className="flex flex-col items-center justify-center pt-4 border-t-2 border-bluesky-200">
 						{depositTokenApproved ? (
 							<>
-								<TokenSummary deposit={requiredDeposit} collateral={requiredCollateral} />
+								<TokenSummary
+									balance={nationBalance ? nationBalance : ""}
+									deposit={requiredDeposit}
+									collateral={requiredCollateral}
+								/>
 								<div className="flex w-full px-8 my-5">
 									<hr className="w-full" />
 								</div>
 								<Steps
+									isCTAdisabled={nationBalance && parseInt(utils.formatUnits(nationBalance)) === 0}
 									steps={steps}
 									icon={courtIcon}
 									title={"Join Agreement"}
