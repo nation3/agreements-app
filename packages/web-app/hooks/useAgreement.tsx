@@ -77,6 +77,11 @@ export const useAgreementCreate = ({
 			}
 		},
 		onSuccess,
+		overrides: {
+			gasLimit: 260000,
+			maxFeePerGas: 250000000000,
+			maxPriorityFeePerGas: 250000000000,
+		},
 	});
 
 	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
@@ -119,6 +124,8 @@ export const useAgreementJoin = () => {
 		},
 		overrides: {
 			gasLimit: 260000,
+			maxFeePerGas: 250000000000,
+			maxPriorityFeePerGas: 250000000000,
 		},
 	});
 
@@ -162,6 +169,11 @@ export const useAgreementDispute = ({ id }: { id: string }) => {
 		onError(error) {
 			console.log(error);
 		},
+		overrides: {
+			gasLimit: 260000,
+			maxFeePerGas: 250000000000,
+			maxPriorityFeePerGas: 250000000000,
+		},
 	});
 
 	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
@@ -190,6 +202,11 @@ export const useAgreementFinalize = ({ id }: { id: string }) => {
 		onError(error) {
 			console.log(error);
 		},
+		overrides: {
+			gasLimit: 260000,
+			maxFeePerGas: 250000000000,
+			maxPriorityFeePerGas: 250000000000,
+		},
 	});
 
 	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
@@ -217,6 +234,11 @@ export const useAgreementWithdraw = ({ id }: { id: string }) => {
 		functionName: "withdrawFromAgreement",
 		onError(error) {
 			console.log(error);
+		},
+		overrides: {
+			gasLimit: 260000,
+			maxFeePerGas: 250000000000,
+			maxPriorityFeePerGas: 250000000000,
 		},
 	});
 

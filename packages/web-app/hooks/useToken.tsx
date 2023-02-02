@@ -62,7 +62,9 @@ export const useTokenApprovals = ({
 		contractInterface: tokenAbi,
 		functionName: "approve",
 		overrides: {
-			gasLimit: 52000,
+			gasLimit: 260000,
+			maxFeePerGas: 250000000000,
+			maxPriorityFeePerGas: 250000000000,
 		},
 		onError(error) {
 			console.log(error);

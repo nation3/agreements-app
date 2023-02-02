@@ -74,6 +74,11 @@ export const useResolutionExecute = () => {
 		onError(error) {
 			console.log(error);
 		},
+		overrides: {
+			gasLimit: 260000,
+			maxFeePerGas: 250000000000,
+			maxPriorityFeePerGas: 250000000000,
+		},
 	});
 
 	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
@@ -97,6 +102,11 @@ export const useResolutionAppeal = () => {
 		functionName: "appealResolution",
 		onError(error) {
 			console.log(error);
+		},
+		overrides: {
+			gasLimit: 260000,
+			maxFeePerGas: 250000000000,
+			maxPriorityFeePerGas: 250000000000,
 		},
 	});
 
