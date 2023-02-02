@@ -19,7 +19,7 @@ export type IStepsProps = {
 	steps: IStep[];
 	icon: string | null;
 	title: string;
-	isCTAdisabled: boolean;
+	isCTAdisabled?: boolean;
 	stepIndex: number;
 	// Set up as loading if the step in progress. Back to null to stop loading animation.
 	isStepLoading?: boolean | undefined;
