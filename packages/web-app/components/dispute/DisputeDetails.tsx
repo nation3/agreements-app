@@ -34,13 +34,19 @@ export const DisputeDetails = () => {
 		return judges.includes(address);
 	}, [judges, address]);
 
+	useEffect(() => {
+		console.log("Log Dispute =>", dispute);
+		console.log("Log approved Resolution =>", approvedResolution);
+		console.log("Log Proposed Resolution =>", proposedResolutions);
+	}, []);
+
 	const copyAgreementId = useCallback(() => {
 		if (dispute.id) {
 			setIsAgreementId(true);
 			navigator.clipboard.writeText(dispute.id);
 			setTimeout(() => setIsAgreementId(false), 1000);
 		}
-	}, [dispute.id]);
+	}, [dispute, dispute.id]);
 
 	const copyTermsHash = useCallback(() => {
 		if (dispute.termsHash) {
@@ -48,7 +54,7 @@ export const DisputeDetails = () => {
 			navigator.clipboard.writeText(String(dispute.termsHash));
 			setTimeout(() => setIsHashCopied(false), 1000);
 		}
-	}, [dispute.termsHash]);
+	}, [dispute, dispute.termsHash]);
 
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	useEffect(() => {}, [isHashCopied, isAgreementId]);
@@ -97,7 +103,6 @@ export const DisputeDetails = () => {
 				<div className="flex flex-col gap-2">
 					<div>
 						<div className="text-md font-display">Approved resolution</div>
-						<div className="border-2 rounded-xl"></div>
 					</div>
 					<div className="flex flex-col gap-2 p-4 pb-2 border-4 border-gray-100 rounded-xl bg-white">
 						<ResolutionDetails />

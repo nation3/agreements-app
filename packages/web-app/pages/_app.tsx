@@ -2,7 +2,7 @@ import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { appWithTranslation } from "next-i18next";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Head from "next/head";
 import type { AppProps } from "next/app";
@@ -27,9 +27,16 @@ const HeaderNavigation = () => {
 	const { address } = useAccount();
 	const { judges } = useCohort();
 
-	const isDisputesVisible = useMemo(() => {
+	const [isDisputesVisible, setIsDisputesVisible] = useState<boolean>(false);
+
+	/* 	const isDisputesVisible = useMemo(() => {
 		if (!judges || !address) return false;
 		return judges.includes(address);
+	}, [address, judges]); */
+
+	useEffect(() => {
+		if (!judges || !address) return setIsDisputesVisible(false);
+		setIsDisputesVisible(judges.includes(address));
 	}, [address, judges]);
 
 	const isActiveRoute = (route: string) => router.pathname.startsWith(route);
