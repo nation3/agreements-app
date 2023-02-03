@@ -29,11 +29,14 @@ const HeaderNavigation = () => {
 
 	const [isDisputesVisible, setIsDisputesVisible] = useState<boolean>(false);
 
-	/* 	const isDisputesVisible = useMemo(() => {
+	/* 	
+	const isDisputesVisible = useMemo(() => {
 		if (!judges || !address) return false;
 		return judges.includes(address);
-	}, [address, judges]); */
+	}, [address, judges]); 
+	*/
 
+	// FIXME: Catched input was not updating correctly on Rainbow, recheck on each view instead of a whole re-rendering process.
 	useEffect(() => {
 		if (!judges || !address) return setIsDisputesVisible(false);
 		setIsDisputesVisible(judges.includes(address));

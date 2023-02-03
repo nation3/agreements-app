@@ -34,12 +34,6 @@ export const DisputeDetails = () => {
 		return judges.includes(address);
 	}, [judges, address]);
 
-	useEffect(() => {
-		console.log("Log Dispute =>", dispute);
-		console.log("Log approved Resolution =>", approvedResolution);
-		console.log("Log Proposed Resolution =>", proposedResolutions);
-	}, []);
-
 	const copyAgreementId = useCallback(() => {
 		if (dispute.id) {
 			setIsAgreementId(true);
