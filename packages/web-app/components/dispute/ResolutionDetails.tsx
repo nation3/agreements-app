@@ -55,7 +55,7 @@ const ResolutionDataDisplay = ({
 				<CardHeader title={"Resolution"} status={status} size={"xl"} />
 				<div className="flex flex-col md:flex-row gap-1">
 					{mark && <ActionBadge label="Fingerprint" data={n3utils.shortenHash(mark)} />}
-					{unlockTime && (
+					{status == "Approved" && unlockTime && (
 						<ActionBadge label="Appeal time left" data={<CountDown seconds={timeLeft} />} />
 					)}
 				</div>

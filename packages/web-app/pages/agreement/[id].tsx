@@ -13,7 +13,6 @@ import { useAgreementData } from "../../components/agreement/context/AgreementDa
 
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps } from "next";
-import i18n from "./../../next-i18next.config";
 
 const Agreement = () => {
 	const { status } = useAgreementData();

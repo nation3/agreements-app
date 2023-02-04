@@ -84,8 +84,9 @@ export const DisputeActions = () => {
 	}, [signSuccess, signError]);
 
 	const canAppeal = useMemo(() => {
+		if (!resolution) return false;
 		const currentTime = Math.floor(Date.now() / 1000);
-		if (resolution && currentTime && resolution.unlockTime < currentTime) return false;
+		if (currentTime && resolution.unlockTime < currentTime) return false;
 		const partOfSettlement = resolution?.settlement?.find(({ party }) => party == address);
 		return partOfSettlement ? true : false;
 	}, [address, resolution]);
@@ -190,15 +191,16 @@ export const DisputeActions = () => {
 								<div className="flex flex-col items-center justify-center pt-8 border-t-2 border-bluesky-200">
 									{appealTokenApproved ? (
 										<>
-											<div>
-												<div className="flex flex-col py-1">
-													<p className="flex justify-between gap-5 md:gap-10 px-2 py-1 text-gray-500">
-														<span className="text-gray-400">Appeal cost</span>
-														<span className="font-semibold">
-															{utils.formatUnits(appealCost)} $NATION
-														</span>
-													</p>
-												</div>
+											<div className="flex flex-col w-full items-start px-20 py-7 gap-1">
+												<p className="flex justify-between gap-5 px-2 py-1 text-gray-500">
+													<span className="font-semibold text-bluesky">
+														{utils.formatUnits(appealCost)} $NATION
+													</span>
+													<span className="text-gray-400">Appeal cost</span>
+												</p>
+											</div>
+											<div className="flex w-full px-8 my-5">
+												<hr className="w-full" />
 											</div>
 											<Steps
 												steps={steps}
