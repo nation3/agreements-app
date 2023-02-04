@@ -75,9 +75,9 @@ export const useResolutionExecute = () => {
 			console.log(error);
 		},
 		overrides: {
-			gasLimit: 260000,
-			maxFeePerGas: 250000000,
-			maxPriorityFeePerGas: 250000000,
+			gasLimit: 250000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
@@ -104,9 +104,9 @@ export const useResolutionAppeal = () => {
 			console.log(error);
 		},
 		overrides: {
-			gasLimit: 260000,
-			maxFeePerGas: 250000000,
-			maxPriorityFeePerGas: 250000000,
+			gasLimit: 90000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 

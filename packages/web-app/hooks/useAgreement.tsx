@@ -78,9 +78,9 @@ export const useAgreementCreate = ({
 		},
 		onSuccess,
 		overrides: {
-			gasLimit: 260000,
-			maxFeePerGas: 250000000,
-			maxPriorityFeePerGas: 250000000,
+			gasLimit: 190000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
@@ -124,8 +124,8 @@ export const useAgreementJoin = () => {
 		},
 		overrides: {
 			gasLimit: 260000,
-			maxFeePerGas: 250000000,
-			maxPriorityFeePerGas: 250000000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
@@ -170,9 +170,9 @@ export const useAgreementDispute = ({ id }: { id: string }) => {
 			console.log(error);
 		},
 		overrides: {
-			gasLimit: 260000,
-			maxFeePerGas: 250000000,
-			maxPriorityFeePerGas: 250000000,
+			gasLimit: 90000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
@@ -203,9 +203,9 @@ export const useAgreementFinalize = ({ id }: { id: string }) => {
 			console.log(error);
 		},
 		overrides: {
-			gasLimit: 260000,
-			maxFeePerGas: 250000000,
-			maxPriorityFeePerGas: 250000000,
+			gasLimit: 70000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
@@ -236,9 +236,9 @@ export const useAgreementWithdraw = ({ id }: { id: string }) => {
 			console.log(error);
 		},
 		overrides: {
-			gasLimit: 260000,
-			maxFeePerGas: 250000000,
-			maxPriorityFeePerGas: 250000000,
+			gasLimit: 80000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
