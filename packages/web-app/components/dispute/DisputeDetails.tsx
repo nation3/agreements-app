@@ -11,16 +11,17 @@ import {
 import { BigNumber, utils, constants } from "ethers";
 import { ResolutionDetails, ProposedResolutionDetails } from "./ResolutionDetails";
 import { useDispute } from "./context/DisputeResolutionContext";
-import { frameworkAddress } from "../../lib/constants";
 import { trimHash } from "../../utils/hash";
 import { useResolutionExecute } from "../../hooks/useArbitrator";
 import { useProvider, useAccount } from "wagmi";
 import { CardHeader } from "../CardHeader";
 import { useCohort } from "../../hooks/useCohort";
+import { useConstants } from "../../hooks/useContants";
 
 export const DisputeDetails = () => {
 	const provider = useProvider({ chainId: 1 });
 	const currentTime = Math.floor(Date.now() / 1000);
+	const { frameworkAddress } = useConstants();
 
 	const { dispute, resolution: approvedResolution, proposedResolutions } = useDispute();
 	const { execute } = useResolutionExecute();

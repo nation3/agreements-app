@@ -8,14 +8,15 @@ import { useCohort } from "../../hooks/useCohort";
 import { purgeFloat, generateResolutionMetadata } from "../../utils";
 import { preparePutToIPFS } from "../../lib/ipfs";
 
-import { frameworkAddress } from "../../lib/constants";
 import { useProvider } from "wagmi";
+import { useConstants } from "../../hooks/useContants";
 
 export const ResolutionForm = () => {
 	const provider = useProvider({ chainId: 1 });
 	const { dispute } = useDispute();
 	const { propose } = useCohort();
 	const [settlement, setSettlement] = useState<Position[]>(dispute.positions ?? []);
+	const { frameworkAddress } = useConstants();
 
 	const settlementBalance = useMemo(() => {
 		return settlement?.reduce((result, { balance }) => result.add(balance), BigNumber.from(0));

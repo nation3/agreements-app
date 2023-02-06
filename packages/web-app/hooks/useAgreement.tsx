@@ -4,7 +4,7 @@ import { PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import frameworkInterface from "../abis/CollateralAgreementFramework.json";
 import { Resolver } from "../utils/criteria";
-import { frameworkAddress } from "../lib/constants";
+import { useConstants } from "./useContants";
 
 const frameworkAbi = frameworkInterface.abi;
 
@@ -24,6 +24,7 @@ const agreementStatus = (status: number) => {
 };
 
 export const useAgreementData = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
+	const { frameworkAddress } = useConstants();
 	const { data: agreementData } = useContractRead({
 		addressOrName: frameworkAddress,
 		contractInterface: frameworkAbi,
@@ -64,6 +65,7 @@ export const useAgreementCreate = ({
 	onSuccess?: (data?: unknown) => void;
 	onTxSuccess?: (data?: unknown) => void;
 }) => {
+	const { frameworkAddress } = useConstants();
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: frameworkAddress,
@@ -110,6 +112,7 @@ export const useAgreementCreate = ({
 };
 
 export const useAgreementJoin = () => {
+	const { frameworkAddress } = useConstants();
 	const {
 		write: joinAgreement,
 		data,
@@ -157,6 +160,7 @@ export const useAgreementJoin = () => {
 };
 
 export const useAgreementDispute = ({ id }: { id: string }) => {
+	const { frameworkAddress } = useConstants();
 	const {
 		write: disputeAgreement,
 		data,
@@ -190,6 +194,7 @@ export const useAgreementDispute = ({ id }: { id: string }) => {
 };
 
 export const useAgreementFinalize = ({ id }: { id: string }) => {
+	const { frameworkAddress } = useConstants();
 	const {
 		write: finalizeAgreement,
 		data,
@@ -223,6 +228,7 @@ export const useAgreementFinalize = ({ id }: { id: string }) => {
 };
 
 export const useAgreementWithdraw = ({ id }: { id: string }) => {
+	const { frameworkAddress } = useConstants();
 	const {
 		write: withdrawFromAgreement,
 		data,

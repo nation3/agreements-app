@@ -15,9 +15,9 @@ import nationCoinIcon from "../../assets/svgs/nation_coin.svg";
 import joinedIcon from "../../assets/svgs/joined.svg";
 import { usePermit2Allowance, usePermit2TransferSignature } from "../../hooks/usePermit2";
 import { useAccount } from "wagmi";
-import { arbitratorAddress, frameworkAddress, NATION } from "../../lib/constants";
 import { Permit2Setup } from "../Permit2Setup";
 import { useTranslation } from "next-i18next";
+import { useConstants } from "../../hooks/useContants";
 
 export const DisputeArbitrationActions = () => {
 	const [mode, setMode] = useState("view");
@@ -44,6 +44,7 @@ export const DisputeActions = () => {
 	const { dispute, resolution } = useDispute();
 	const { execute, isTxSuccess: isExecuteSuccess } = useResolutionExecute();
 	const { appeal, isTxSuccess: isAppealSuccess, isError: isAppealError } = useResolutionAppeal();
+	const { frameworkAddress, NATION, arbitratorAddress } = useConstants();
 
 	const {
 		isEnough: appealTokenApproved,

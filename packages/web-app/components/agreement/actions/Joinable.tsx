@@ -4,7 +4,6 @@ import { useAccount } from "wagmi";
 import { BigNumber, BigNumberish, constants, utils } from "ethers";
 // import { useTokenBalance } from '../../../hooks/useToken';
 import { useAgreementJoin } from "../../../hooks/useAgreement";
-import { frameworkAddress, NATION } from "../../../lib/constants";
 import { UserPosition } from "../context/types";
 import Image from "next/image";
 import { Button, Steps, IStep } from "@nation3/ui-components";
@@ -19,6 +18,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { Permit2Setup } from "../../Permit2Setup";
 import { useTokenBalance } from "../../../hooks/useToken";
 import { GradientLink } from "../../GradientLink";
+import { useConstants } from "../../../hooks/useContants";
 
 const InfoTooltip = ({ info, className }: { info: string; className?: string }) => {
 	return (
@@ -91,6 +91,7 @@ export const JoinableAgreementActions = ({
 	id: string;
 	userPosition: UserPosition;
 }) => {
+	const { frameworkAddress, NATION } = useConstants();
 	const { t } = useTranslation("common");
 	const { address } = useAccount();
 	// FIXME: Fetch from agreement framework

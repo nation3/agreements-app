@@ -2,9 +2,9 @@ import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi"
 import { PermitTransferFrom } from "@uniswap/permit2-sdk";
 
 import Arbitrator from "../abis/Arbitrator.json";
-import { arbitratorAddress } from "../lib/constants";
 import { useMemo } from "react";
 import { ethers, BigNumber } from "ethers";
+import { useConstants } from "./useContants";
 
 const arbitratorAbi = Arbitrator.abi;
 export const arbitratorInterface = new ethers.utils.Interface(arbitratorAbi);
@@ -23,6 +23,7 @@ export type ResolutionInput = {
 };
 
 export const useResolution = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
+	const { arbitratorAddress, frameworkAddress } = useConstants();
 	const { data: rawResolution, ...args } = useContractRead({
 		addressOrName: arbitratorAddress,
 		contractInterface: arbitratorAbi,
@@ -66,6 +67,7 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 };
 
 export const useResolutionExecute = () => {
+	const { arbitratorAddress } = useConstants();
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: arbitratorAddress,
@@ -95,6 +97,7 @@ export const useResolutionExecute = () => {
 };
 
 export const useResolutionAppeal = () => {
+	const { arbitratorAddress } = useConstants();
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: arbitratorAddress,
