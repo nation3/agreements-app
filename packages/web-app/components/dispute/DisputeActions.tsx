@@ -17,7 +17,7 @@ import { usePermit2Allowance, usePermit2TransferSignature } from "../../hooks/us
 import { useAccount } from "wagmi";
 import { Permit2Setup } from "../Permit2Setup";
 import { useTranslation } from "next-i18next";
-import { useConstants } from "../../hooks/useContants";
+import { useConstants } from "../../hooks/useConstants";
 
 export const DisputeArbitrationActions = () => {
 	const [mode, setMode] = useState("view");

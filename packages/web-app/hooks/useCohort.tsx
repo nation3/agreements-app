@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { ethers, Signer, BigNumber, constants } from "ethers";
 import { useAccount, useSigner } from "wagmi";
 import { ResolutionInput } from "./useArbitrator";
-import { useConstants } from "./useContants";
+import { useConstants } from "./useConstants";
 
 export type ResolutionProposal = {
 	txHash: string;

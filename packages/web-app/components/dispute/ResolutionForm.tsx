@@ -9,7 +9,7 @@ import { purgeFloat, generateResolutionMetadata } from "../../utils";
 import { preparePutToIPFS } from "../../lib/ipfs";
 
 import { useProvider } from "wagmi";
-import { useConstants } from "../../hooks/useContants";
+import { useConstants } from "../../hooks/useConstants";
 
 export const ResolutionForm = () => {
 	const provider = useProvider({ chainId: 1 });

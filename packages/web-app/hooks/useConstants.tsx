@@ -17,7 +17,6 @@ export const useConstants = (): constants => {
 	const { chain } = useNetwork();
 
 	const constants = useMemo(() => {
-		console.log("CONSTANTS => ", chain?.name);
 		switch (chain?.id) {
 			case 1:
 				return { ...mainnet };
@@ -27,7 +26,6 @@ export const useConstants = (): constants => {
 				return { ...mainnet };
 		}
 	}, [chain]);
-	console.log("CONSTANTS => ", constants);
 
 	return constants;
 };

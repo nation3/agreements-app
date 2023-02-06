@@ -15,7 +15,7 @@ import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { CreateView } from "./context/types";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useConstants } from "../../hooks/useContants";
+import { useConstants } from "../../hooks/useConstants";
 
 export const AgreementCreationPreview = () => {
 	const router = useRouter();

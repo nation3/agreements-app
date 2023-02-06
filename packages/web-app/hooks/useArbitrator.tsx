@@ -4,7 +4,7 @@ import { PermitTransferFrom } from "@uniswap/permit2-sdk";
 import Arbitrator from "../abis/Arbitrator.json";
 import { useMemo } from "react";
 import { ethers, BigNumber } from "ethers";
-import { useConstants } from "./useContants";
+import { useConstants } from "./useConstants";
 
 const arbitratorAbi = Arbitrator.abi;
 export const arbitratorInterface = new ethers.utils.Interface(arbitratorAbi);

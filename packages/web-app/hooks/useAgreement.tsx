@@ -4,7 +4,7 @@ import { PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import frameworkInterface from "../abis/CollateralAgreementFramework.json";
 import { Resolver } from "../utils/criteria";
-import { useConstants } from "./useContants";
+import { useConstants } from "./useConstants";
 
 const frameworkAbi = frameworkInterface.abi;
 

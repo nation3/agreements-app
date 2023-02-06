@@ -7,7 +7,7 @@ import {
 import { useTokenAllowance, useTokenApprovals } from "./useToken";
 import { BigNumber, BigNumberish, constants } from "ethers";
 import { useMemo } from "react";
-import { useConstants } from "./useContants";
+import { useConstants } from "./useConstants";
 
 interface Permit2AllowanceConfig {
 	account: string;

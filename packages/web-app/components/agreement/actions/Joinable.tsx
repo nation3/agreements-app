@@ -18,7 +18,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { Permit2Setup } from "../../Permit2Setup";
 import { useTokenBalance } from "../../../hooks/useToken";
 import { GradientLink } from "../../GradientLink";
-import { useConstants } from "../../../hooks/useContants";
+import { useConstants } from "../../../hooks/useConstants";
 
 const InfoTooltip = ({ info, className }: { info: string; className?: string }) => {
 	return (

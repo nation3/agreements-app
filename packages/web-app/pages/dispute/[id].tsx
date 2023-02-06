@@ -6,12 +6,14 @@ import { DisputeDetails, DisputeArbitrationActions } from "../../components/disp
 import { useCohort } from "../../hooks/useCohort";
 import { useAccount } from "wagmi";
 import { useMemo } from "react";
+import { useConstants } from "../../hooks/useConstants";
 
 const DisputePage = () => {
 	const router = useRouter();
 	const { query } = router;
 	const { judges } = useCohort();
 	const { address } = useAccount();
+	const { frameworkAddress } = useConstants();
 
 	const isArbitrator = useMemo(() => {
 		if (!judges || !address) return false;

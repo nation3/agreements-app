@@ -16,7 +16,7 @@ import { useResolutionExecute } from "../../hooks/useArbitrator";
 import { useProvider, useAccount } from "wagmi";
 import { CardHeader } from "../CardHeader";
 import { useCohort } from "../../hooks/useCohort";
-import { useConstants } from "../../hooks/useContants";
+import { useConstants } from "../../hooks/useConstants";
 
 export const DisputeDetails = () => {
 	const provider = useProvider({ chainId: 1 });

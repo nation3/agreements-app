@@ -4,7 +4,7 @@ import { AgreementCreationContext, AgreementCreationContextType } from "./Agreem
 
 import { hexHash, abiEncoding, hashEncoding } from "../../../utils";
 import { CreateView } from "./types";
-import { useConstants } from "../../../hooks/useContants";
+import { useConstants } from "../../../hooks/useConstants";
 
 export const AgreementCreationProvider = ({ children }: { children: ReactNode }) => {
 	const [view, changeView] = useState(CreateView.Form);
