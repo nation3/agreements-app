@@ -22,7 +22,7 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 					<AppHeader title={title} appName={appName} />
 				</Link>
 				<div className="basis-1/2 flex items-center justify-center">{navItems}</div>
-				<div className="flex items-center justify-between gap-5 basis-1/4">
+				<div className="flex items-center justify-end gap-5 basis-1/4">
 					<div className="p-4">{connectionButton}</div>
 				</div>
 			</section>

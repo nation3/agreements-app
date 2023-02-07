@@ -61,24 +61,10 @@ const HeaderNavigation = () => {
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const router = useRouter();
-	const { chain } = useNetwork();
 
 	useEffect(() => {
 		import("flowbite-react");
 	}, []);
-
-	const account = (
-		<div className="flex items-center justify-between">
-			<div className="hidden md:flex gap-2 font-medium items-center text-slate-300 mr-5">
-				<span>{chain && chain.name} </span>
-				{/* // TODO: Change network behavior */}
-				{/* 				<span className="w-4 ml-2">
-					<ChevronDownIcon />
-				</span> */}
-			</div>
-			<ConnectButton />
-		</div>
-	);
 
 	return (
 		<WagmiConfig client={client}>
@@ -102,7 +88,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 					}}
 					isActiveRoute={(route: string) => router.pathname.startsWith(route)}
 					headerNavItems={<HeaderNavigation />}
-					connectionButton={account}
+					connectionButton={<ConnectButton />}
 				>
 					<Component {...pageProps} />
 				</DefaultLayout>
