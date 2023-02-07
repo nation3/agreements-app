@@ -7,13 +7,14 @@ import { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import type { AppProps } from "next/app";
 import { RainbowKitProvider, lightTheme } from "@rainbow-me/rainbowkit";
-import { createClient, useAccount, WagmiConfig } from "wagmi";
+import { createClient, useAccount, WagmiConfig, useNetwork } from "wagmi";
 import { DefaultLayout } from "@nation3/ui-components";
 import { ConnectButton } from "../components/ConnectButton";
 import { useRouter } from "next/router";
 import { chains, provider, webSocketProvider, connectors } from "../lib/connectors";
 import Link from "next/link";
 import { useCohort } from "../hooks/useCohort";
+import { ChevronDownIcon } from "@heroicons/react/24/solid";
 
 const client = createClient({
 	autoConnect: true,
@@ -60,10 +61,24 @@ const HeaderNavigation = () => {
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const router = useRouter();
+	const { chain } = useNetwork();
 
 	useEffect(() => {
 		import("flowbite-react");
 	}, []);
+
+	const account = (
+		<div className="flex items-center justify-between">
+			<div className="hidden md:flex gap-2 font-medium items-center text-slate-300 mr-5">
+				<span>{chain && chain.name} </span>
+				{/* // TODO: Change network behavior */}
+				{/* 				<span className="w-4 ml-2">
+					<ChevronDownIcon />
+				</span> */}
+			</div>
+			<ConnectButton />
+		</div>
+	);
 
 	return (
 		<WagmiConfig client={client}>
@@ -87,7 +102,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 					}}
 					isActiveRoute={(route: string) => router.pathname.startsWith(route)}
 					headerNavItems={<HeaderNavigation />}
-					connectionButton={<ConnectButton />}
+					connectionButton={account}
 				>
 					<Component {...pageProps} />
 				</DefaultLayout>
