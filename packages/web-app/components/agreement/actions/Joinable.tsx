@@ -139,10 +139,14 @@ export const JoinableAgreementActions = ({
 			account: address || constants.AddressZero,
 		}); */
 
-	const { balance: nationBalance } = useTokenBalance({
+	const { balance: nationBalanceData } = useTokenBalance({
 		address: NATION,
 		account: address || constants.AddressZero,
 	});
+
+	const nationBalance = useMemo(() => {
+		return BigNumber.isBigNumber(nationBalanceData) ? nationBalanceData : BigNumber.from(0);
+	}, [nationBalanceData]);
 	/* 
 	const enoughBalance = useMemo((): boolean => {
 		if (depositTokenBalance && collateralTokenBalance) {
@@ -303,7 +307,7 @@ export const JoinableAgreementActions = ({
 						{depositTokenApproved ? (
 							<>
 								<TokenSummary
-									balance={nationBalance ? nationBalance : ""}
+									balance={nationBalance}
 									deposit={requiredDeposit}
 									collateral={requiredCollateral}
 								/>
