@@ -128,7 +128,7 @@ export const useAgreementJoin = () => {
 			console.log(error);
 		},
 		overrides: {
-			gasLimit: 260000,
+			gasLimit: 320000,
 			// maxFeePerGas: 250000000,
 			// maxPriorityFeePerGas: 250000000,
 		},
