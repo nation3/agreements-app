@@ -22,6 +22,7 @@ export type Resolution = {
 
 export type DisputeResolutionContextType = {
 	dispute: Dispute;
+	appealCost: BigNumber | undefined;
 	resolution: Resolution | undefined;
 	proposedResolutions: ResolutionProposal[];
 };

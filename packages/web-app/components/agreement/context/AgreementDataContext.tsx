@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import { PositionMap, ResolverMap, UserPosition } from "./types";
+import { BigNumber } from "ethers";
 
 export type AgreementDataContextType = {
 	id: string;
@@ -8,6 +9,7 @@ export type AgreementDataContextType = {
 	termsHash: string | undefined;
 	positions: PositionMap | undefined;
 	resolvers: ResolverMap | undefined;
+	disputeCost: BigNumber;
 	userPosition: UserPosition | undefined;
 };
 

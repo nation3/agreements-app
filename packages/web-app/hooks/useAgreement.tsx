@@ -5,6 +5,8 @@ import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi"
 import frameworkInterface from "../abis/CollateralAgreementFramework.json";
 import { Resolver } from "../utils/criteria";
 import { useConstants } from "./useConstants";
+import { BigNumber } from "ethers";
+import { frameworkAddress } from "../lib/constants-goerli";
 
 const frameworkAbi = frameworkInterface.abi;
 
@@ -259,4 +261,25 @@ export const useAgreementWithdraw = ({ id }: { id: string }) => {
 	};
 
 	return { withdraw, data, isProcessing, isTxSuccess, ...args };
+};
+
+export const useDisputeConfig = (): {
+	token: string | undefined;
+	amount: BigNumber | undefined;
+	recipient: string | undefined;
+} => {
+	const { frameworkAddress } = useConstants();
+	const { data: appealConfig } = useContractRead({
+		addressOrName: frameworkAddress,
+		contractInterface: frameworkAbi,
+		functionName: "deposits",
+		onError(error) {
+			console.log(error);
+		},
+	});
+	return {
+		token: appealConfig?.token,
+		amount: appealConfig?.amount,
+		recipient: appealConfig?.recipient,
+	};
 };

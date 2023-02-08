@@ -1,11 +1,12 @@
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode, useState, useEffect, useMemo } from "react";
 
 import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataContext";
 import { ResolverMap, PositionMap, UserPosition } from "./types";
-import { useAgreementData } from "../../../hooks/useAgreement";
+import { useAgreementData, useDisputeConfig } from "../../../hooks/useAgreement";
 import { fetchAgreementMetadata } from "../../../utils/metadata";
 import { trimHash } from "../../../utils/hash";
 import { useAccount } from "wagmi";
+import { BigNumber } from "ethers";
 
 export const AgreementDataProvider = ({ id, children }: { id: string; children: ReactNode }) => {
 	const { address: userAddress } = useAccount();
@@ -21,6 +22,12 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		id: id,
 		enabled: id != "undefined",
 	});
+
+	const { amount: disputeAmount } = useDisputeConfig();
+
+	const disputeCost = useMemo(() => {
+		return disputeAmount ?? BigNumber.from(0);
+	}, [disputeAmount]);
 
 	/* Update state when fetched agreement params */
 	useEffect(() => {
@@ -105,6 +112,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		title,
 		termsHash,
 		status,
+		disputeCost,
 		resolvers,
 		positions,
 		userPosition,

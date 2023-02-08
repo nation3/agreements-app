@@ -19,6 +19,7 @@ import { Permit2Setup } from "../../Permit2Setup";
 import { useTokenBalance } from "../../../hooks/useToken";
 import { GradientLink } from "../../GradientLink";
 import { useConstants } from "../../../hooks/useConstants";
+import { useAgreementData } from "../context/AgreementDataContext";
 
 const InfoTooltip = ({ info, className }: { info: string; className?: string }) => {
 	return (
@@ -94,8 +95,7 @@ export const JoinableAgreementActions = ({
 	const { frameworkAddress, NATION } = useConstants();
 	const { t } = useTranslation("common");
 	const { address } = useAccount();
-	// FIXME: Fetch from agreement framework
-	const [requiredDeposit] = useState(0);
+	const { disputeCost: requiredDeposit } = useAgreementData();
 	const [isJoinAgreementModalOpen, setIsJoinAgreementModalOpen] = useState<boolean>(false);
 	const [stepsIndex, setStepsIndex] = useState<number>(0);
 	const [isStepLoading, setStepLoading] = useState<boolean>(false);
@@ -165,7 +165,7 @@ export const JoinableAgreementActions = ({
 	const { permit, signature, signPermit, signSuccess, signError } =
 		usePermit2BatchTransferSignature({
 			tokenTransfers: [
-				{ token: NATION, amount: requiredDeposit },
+				{ token: NATION, amount: requiredDeposit ? requiredDeposit : 0 },
 				{ token: NATION, amount: requiredCollateral },
 			],
 			spender: frameworkAddress,

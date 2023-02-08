@@ -66,6 +66,27 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 	return { resolution, ...args };
 };
 
+export const useAppealConfig = (): {
+	token: string | undefined;
+	amount: BigNumber | undefined;
+	recipient: string | undefined;
+} => {
+	const { arbitratorAddress } = useConstants();
+	const { data: appealConfig } = useContractRead({
+		addressOrName: arbitratorAddress,
+		contractInterface: arbitratorAbi,
+		functionName: "deposits",
+		onError(error) {
+			console.log(error);
+		},
+	});
+	return {
+		token: appealConfig?.token,
+		amount: appealConfig?.amount,
+		recipient: appealConfig?.recipient,
+	};
+};
+
 export const useResolutionExecute = () => {
 	const { arbitratorAddress } = useConstants();
 	const { write, data, ...args } = useContractWrite({

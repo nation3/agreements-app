@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import * as goerli from "../lib/constants-goerli";
 import * as mainnet from "../lib/constants";
 import { useNetwork } from "wagmi";
+import { BigNumber } from "ethers";
 
 export interface constants {
 	permit2Address: `0x${string}`;
@@ -11,6 +12,7 @@ export interface constants {
 	cohortAddress: `0x${string}`;
 	safeTxServiceUrl: string;
 	subGraphUrl: string | undefined;
+	appealCost: BigNumber | undefined;
 }
 
 export const useConstants = (): constants => {
