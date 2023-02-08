@@ -98,7 +98,7 @@ export const useResolutionExecute = () => {
 			console.log(error);
 		},
 		overrides: {
-			gasLimit: 250000,
+			gasLimit: 320000,
 			// maxFeePerGas: 250000000,
 			// maxPriorityFeePerGas: 250000000,
 		},

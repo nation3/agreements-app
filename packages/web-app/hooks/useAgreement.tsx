@@ -176,7 +176,7 @@ export const useAgreementDispute = ({ id }: { id: string }) => {
 			console.log(error);
 		},
 		overrides: {
-			gasLimit: 90000,
+			gasLimit: 120000,
 			// maxFeePerGas: 250000000,
 			// maxPriorityFeePerGas: 250000000,
 		},
@@ -210,7 +210,7 @@ export const useAgreementFinalize = ({ id }: { id: string }) => {
 			console.log(error);
 		},
 		overrides: {
-			gasLimit: 70000,
+			gasLimit: 120000,
 			// maxFeePerGas: 250000000,
 			// maxPriorityFeePerGas: 250000000,
 		},
@@ -244,7 +244,7 @@ export const useAgreementWithdraw = ({ id }: { id: string }) => {
 			console.log(error);
 		},
 		overrides: {
-			gasLimit: 80000,
+			gasLimit: 120000,
 			// maxFeePerGas: 250000000,
 			// maxPriorityFeePerGas: 250000000,
 		},
