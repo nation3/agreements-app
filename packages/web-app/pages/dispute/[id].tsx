@@ -2,17 +2,18 @@ import { useRouter } from "next/router";
 import { Card, BackLinkButton } from "@nation3/ui-components";
 
 import { DisputeResolutionProvider } from "../../components/dispute/context/DisputeResolutionProvider";
-import { frameworkAddress } from "../../lib/constants";
 import { DisputeDetails, DisputeArbitrationActions } from "../../components/dispute";
 import { useCohort } from "../../hooks/useCohort";
 import { useAccount } from "wagmi";
 import { useMemo } from "react";
+import { useConstants } from "../../hooks/useConstants";
 
 const DisputePage = () => {
 	const router = useRouter();
 	const { query } = router;
 	const { judges } = useCohort();
 	const { address } = useAccount();
+	const { frameworkAddress } = useConstants();
 
 	const isArbitrator = useMemo(() => {
 		if (!judges || !address) return false;

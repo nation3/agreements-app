@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Button, IStep, Steps } from "@nation3/ui-components";
-import { constants } from "ethers";
+import { BigNumber, constants } from "ethers";
 import { Modal as FlowModal } from "flowbite-react";
 import Image from "next/image";
 import { utils } from "ethers";
@@ -15,9 +15,11 @@ import nationCoinIcon from "../../assets/svgs/nation_coin.svg";
 import joinedIcon from "../../assets/svgs/joined.svg";
 import { usePermit2Allowance, usePermit2TransferSignature } from "../../hooks/usePermit2";
 import { useAccount } from "wagmi";
-import { arbitratorAddress, frameworkAddress, NATION } from "../../lib/constants";
 import { Permit2Setup } from "../Permit2Setup";
 import { useTranslation } from "next-i18next";
+import { useConstants } from "../../hooks/useConstants";
+import { GradientLink } from "../GradientLink";
+import { useTokenBalance } from "../../hooks/useToken";
 
 export const DisputeArbitrationActions = () => {
 	const [mode, setMode] = useState("view");
@@ -36,14 +38,14 @@ export const DisputeArbitrationActions = () => {
 export const DisputeActions = () => {
 	const { t } = useTranslation("common");
 	const { address } = useAccount();
-	// FIXME: Fetch from arbitrator
-	const [appealCost] = useState(0);
+	const { appealCost } = useDispute();
 	const [isAppealModalOpen, setIsAppealModalOpen] = useState(false);
 	const [stepsIndex, setStepsIndex] = useState(0);
 	const [isStepLoading, setStepLoading] = useState<boolean>(false);
 	const { dispute, resolution } = useDispute();
 	const { execute, isTxSuccess: isExecuteSuccess } = useResolutionExecute();
 	const { appeal, isTxSuccess: isAppealSuccess, isError: isAppealError } = useResolutionAppeal();
+	const { frameworkAddress, NATION, arbitratorAddress } = useConstants();
 
 	const {
 		isEnough: appealTokenApproved,
@@ -56,7 +58,7 @@ export const DisputeActions = () => {
 	});
 
 	const { permit, signature, signPermit, signSuccess, signError } = usePermit2TransferSignature({
-		tokenTransfer: { token: NATION, amount: appealCost },
+		tokenTransfer: { token: NATION, amount: appealCost ?? BigNumber.from(0) },
 		spender: arbitratorAddress,
 	});
 
@@ -139,6 +141,13 @@ export const DisputeActions = () => {
 		return currentTime ? resolution.unlockTime < currentTime : false;
 	}, [resolution]);
 
+	const { balance: nationBalance } = useTokenBalance({
+		address: NATION,
+		account: address || constants.AddressZero,
+	});
+
+	const formattedBalance = nationBalance ? utils.formatUnits(nationBalance) : "";
+
 	if (resolution) {
 		return (
 			<div className="flex flex-col gap-2">
@@ -188,16 +197,39 @@ export const DisputeActions = () => {
 										</h3>
 									</div>
 								</FlowModal.Header>
-								<div className="flex flex-col items-center justify-center pt-8 border-t-2 border-bluesky-200">
+								<div className="flex flex-col justify-center border-bluesky-200">
 									{appealTokenApproved ? (
 										<>
-											<div className="flex flex-col w-full items-start px-20 py-7 gap-1">
-												<p className="flex justify-between gap-5 px-2 py-1 text-gray-500">
-													<span className="font-semibold text-bluesky">
-														{utils.formatUnits(appealCost)} $NATION
-													</span>
-													<span className="text-gray-400">Appeal cost</span>
+											<div className="flex flex-col w-full mt-8 items-start px-8 md:px-20 py-3 gap-1">
+												<h3 className="text-sm text-slate-400 px-2 mb-1">
+													{t("join.yourBalance")}
+												</h3>
+												<p className="flex justify-between items-center gap-5 px-2 text-bluesky-500">
+													<span className="font-semibold ">{formattedBalance} $NATION</span>
+													{/* TODO: Refactor eval */}
+													{(parseInt(formattedBalance) === 0 ||
+														parseInt(utils.formatUnits(appealCost ?? BigNumber.from(0))) >
+															parseInt(formattedBalance)) && (
+														<span className="flex items-center gap-1">
+															⚠️ Get some
+															<a href="https://app.balancer.fi/#/ethereum/trade/ether/0x333A4823466879eeF910A04D473505da62142069">
+																<GradientLink
+																	href="https://docs.nation3.org/agreements/creating-an-agreement"
+																	caption="$NATION"
+																/>
+															</a>
+														</span>
+													)}
 												</p>
+												<hr className="border-b"></hr>
+												<div className="flex flex-col w-full items-start gap-1 mb-1">
+													<h3 className="text-sm text-slate-400 px-2">Appeal cost</h3>
+													<p className="flex justify-between gap-5 px-2 font-semibold text-bluesky-500">
+														<span>
+															{utils.formatUnits(appealCost ?? BigNumber.from(0))} $NATION
+														</span>
+													</p>
+												</div>
 											</div>
 											<div className="flex w-full px-8 my-5">
 												<hr className="w-full" />
@@ -205,6 +237,11 @@ export const DisputeActions = () => {
 											<Steps
 												steps={steps}
 												icon={courtIcon}
+												isCTAdisabled={
+													parseInt(formattedBalance) === 0 ||
+													parseInt(utils.formatUnits(appealCost ?? BigNumber.from(0))) >
+														parseInt(formattedBalance)
+												}
 												title={"Appeal Resolution"}
 												stepIndex={stepsIndex}
 												isStepLoading={isStepLoading}
@@ -233,12 +270,25 @@ export const DisputeActions = () => {
 		return (
 			<>
 				<AgreementDisputedAlert />
-				<Button
+				{/* <Button
 					label="Submit evidence"
 					onClick={() =>
 						window.open("https://docs.nation3.org/agreements/submitting-evidence", "_blank")
 					}
-				/>
+				/> */}
+				<div>
+					<p className="text-slate-500 text-md p-4">
+						Submit your evidence to support your dispute.{" "}
+						<a
+							className="underline"
+							href="https://docs.nation3.org/agreements/submitting-evidence"
+							target="_blank"
+							rel="noreferrer"
+						>
+							Submit process
+						</a>
+					</p>
+				</div>
 			</>
 		);
 	}

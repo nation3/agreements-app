@@ -1,11 +1,12 @@
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode, useState, useEffect, useMemo } from "react";
 
 import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataContext";
 import { ResolverMap, PositionMap, UserPosition } from "./types";
-import { useAgreementData } from "../../../hooks/useAgreement";
+import { useAgreementData, useDisputeConfig } from "../../../hooks/useAgreement";
 import { fetchAgreementMetadata } from "../../../utils/metadata";
 import { trimHash } from "../../../utils/hash";
 import { useAccount } from "wagmi";
+import { BigNumber } from "ethers";
 
 export const AgreementDataProvider = ({ id, children }: { id: string; children: ReactNode }) => {
 	const { address: userAddress } = useAccount();
@@ -21,6 +22,12 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		id: id,
 		enabled: id != "undefined",
 	});
+
+	const { amount: disputeAmount } = useDisputeConfig();
+
+	const disputeCost = useMemo(() => {
+		return disputeAmount ?? BigNumber.from(0);
+	}, [disputeAmount]);
 
 	/* Update state when fetched agreement params */
 	useEffect(() => {
@@ -47,7 +54,10 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 
 	/* Update positions when fetched agreement positions or new resolvers */
 	useEffect(() => {
-		let knownPositions: { [key: string]: { balance: string; status: number } } = {};
+		let knownPositions: {
+			[key: string]: { party?: string; balance: string; status: number; deposit?: number };
+		} = {};
+
 		if (resolvers) {
 			knownPositions = Object.entries(resolvers).reduce(
 				(result, [account, { balance }]) => ({
@@ -55,23 +65,27 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 					[account.toString()]: {
 						balance: balance,
 						status: 0,
+						deposit: 0,
 					},
 				}),
 				knownPositions,
 			);
 		}
+
 		if (agreementPositions) {
 			knownPositions = agreementPositions.reduce(
-				(result, [party, balance, status]) => ({
+				(result, [party, balance, deposit, status]) => ({
 					...result,
 					[party.toString()]: {
 						balance: balance.toString(),
 						status: status,
+						deposit: deposit,
 					},
 				}),
 				knownPositions,
 			);
 		}
+
 		if (knownPositions != positions) {
 			setPositions(knownPositions);
 		}
@@ -95,6 +109,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 			setUserPosition((prevPosition) => ({
 				status: prevPosition?.status || 0,
 				balance: prevPosition?.balance || resolvers[userAddress].balance,
+				deposit: prevPosition?.deposit || 0,
 				resolver: resolvers[userAddress],
 			}));
 		}
@@ -105,6 +120,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		title,
 		termsHash,
 		status,
+		disputeCost,
 		resolvers,
 		positions,
 		userPosition,

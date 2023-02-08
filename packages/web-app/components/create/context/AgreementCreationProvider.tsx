@@ -2,9 +2,9 @@ import { BigNumber } from "ethers";
 import { ReactNode, useState, useMemo } from "react";
 import { AgreementCreationContext, AgreementCreationContextType } from "./AgreementCreationContext";
 
-import { frameworkAddress } from "../../../lib/constants";
 import { hexHash, abiEncoding, hashEncoding } from "../../../utils";
 import { CreateView } from "./types";
+import { useConstants } from "../../../hooks/useConstants";
 
 export const AgreementCreationProvider = ({ children }: { children: ReactNode }) => {
 	const [view, changeView] = useState(CreateView.Form);
@@ -15,6 +15,7 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 		{ account: "", balance: BigNumber.from(0) },
 		{ account: "", balance: BigNumber.from(0) },
 	]);
+	const { frameworkAddress } = useConstants();
 
 	const termsHash = useMemo(() => hexHash(terms), [terms]);
 

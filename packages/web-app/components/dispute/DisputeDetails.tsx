@@ -11,16 +11,17 @@ import {
 import { BigNumber, utils, constants } from "ethers";
 import { ResolutionDetails, ProposedResolutionDetails } from "./ResolutionDetails";
 import { useDispute } from "./context/DisputeResolutionContext";
-import { frameworkAddress } from "../../lib/constants";
 import { trimHash } from "../../utils/hash";
 import { useResolutionExecute } from "../../hooks/useArbitrator";
 import { useProvider, useAccount } from "wagmi";
 import { CardHeader } from "../CardHeader";
 import { useCohort } from "../../hooks/useCohort";
+import { useConstants } from "../../hooks/useConstants";
 
 export const DisputeDetails = () => {
 	const provider = useProvider({ chainId: 1 });
 	const currentTime = Math.floor(Date.now() / 1000);
+	const { frameworkAddress } = useConstants();
 
 	const { dispute, resolution: approvedResolution, proposedResolutions } = useDispute();
 	const { execute } = useResolutionExecute();
@@ -40,7 +41,7 @@ export const DisputeDetails = () => {
 			navigator.clipboard.writeText(dispute.id);
 			setTimeout(() => setIsAgreementId(false), 1000);
 		}
-	}, [dispute.id]);
+	}, [dispute, dispute.id]);
 
 	const copyTermsHash = useCallback(() => {
 		if (dispute.termsHash) {
@@ -48,7 +49,7 @@ export const DisputeDetails = () => {
 			navigator.clipboard.writeText(String(dispute.termsHash));
 			setTimeout(() => setIsHashCopied(false), 1000);
 		}
-	}, [dispute.termsHash]);
+	}, [dispute, dispute.termsHash]);
 
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	useEffect(() => {}, [isHashCopied, isAgreementId]);
@@ -97,7 +98,6 @@ export const DisputeDetails = () => {
 				<div className="flex flex-col gap-2">
 					<div>
 						<div className="text-md font-display">Approved resolution</div>
-						<div className="border-2 rounded-xl"></div>
 					</div>
 					<div className="flex flex-col gap-2 p-4 pb-2 border-4 border-gray-100 rounded-xl bg-white">
 						<ResolutionDetails />

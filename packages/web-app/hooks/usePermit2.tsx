@@ -5,9 +5,9 @@ import {
 	PermitBatchTransferFrom,
 } from "@uniswap/permit2-sdk";
 import { useTokenAllowance, useTokenApprovals } from "./useToken";
-import { permit2Address } from "../lib/constants";
 import { BigNumber, BigNumberish, constants } from "ethers";
 import { useMemo } from "react";
+import { useConstants } from "./useConstants";
 
 interface Permit2AllowanceConfig {
 	account: string;
@@ -37,6 +37,7 @@ export const usePermit2Allowance = ({
 	required,
 	enabled = true,
 }: Permit2AllowanceConfig) => {
+	const { permit2Address } = useConstants();
 	const tokenAllowanceConfig = {
 		address: token,
 		owner: account,
@@ -66,6 +67,7 @@ export const usePermit2TransferSignature = ({
 	tokenTransfer,
 	spender,
 }: Permit2TransferSignatureConfig) => {
+	const { permit2Address } = useConstants();
 	const { chain } = useNetwork();
 
 	const nonce = useMemo(
@@ -117,6 +119,7 @@ export const usePermit2BatchTransferSignature = ({
 	tokenTransfers,
 	spender,
 }: Permit2BatchTransferSignatureConfig) => {
+	const { permit2Address } = useConstants();
 	const { chain } = useNetwork();
 
 	const nonce = useMemo(

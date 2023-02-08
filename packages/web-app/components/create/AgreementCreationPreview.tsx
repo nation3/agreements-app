@@ -4,7 +4,6 @@ import { utils, BigNumber, constants } from "ethers";
 
 import { useAgreementCreate } from "../../hooks/useAgreement";
 
-import { NATION } from "../../lib/constants";
 import { AgreementDataDisplay } from "../agreement/AgreementDetails";
 import { generateAgreementMetadata } from "../../utils";
 import { preparePutToIPFS } from "../../lib/ipfs";
@@ -16,11 +15,13 @@ import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { CreateView } from "./context/types";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useConstants } from "../../hooks/useConstants";
 
 export const AgreementCreationPreview = () => {
 	const router = useRouter();
 	const provider = useProvider({ chainId: 1 });
 	const { title, terms, termsHash, id, salt, positions, changeView } = useAgreementCreation();
+	const { NATION } = useConstants();
 
 	const {
 		create,

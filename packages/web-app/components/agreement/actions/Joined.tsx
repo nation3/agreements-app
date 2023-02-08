@@ -21,7 +21,7 @@ const ContextModal = ({ icon, title, content, show, button, onClose }: ContextMo
 		<Modal show={show} onClose={onClose}>
 			<Modal.Header>
 				<div className="flex items-center w-full">
-					<div className="overflow-hidden w-12 p-2 mr-3">{icon && icon}</div>
+					<div className="overflow-hidden w-10 p-2 mr-2">{icon && icon}</div>
 					<h3 className="text-slate-600 text-xl md:text-xl font-semibold">{title}</h3>
 				</div>
 			</Modal.Header>
@@ -44,7 +44,7 @@ const ContextSection = ({
 }) => {
 	return (
 		<div>
-			<h3 className="text-lg font-medium text-slate-600">{title}</h3>
+			<h3 className="text-lg font-medium text-slate-600 mb-2">{title}</h3>
 			{highlight && <div className="font-medium text-md text-bluesky">{highlight}</div>}
 			{content && <div>{content}</div>}
 		</div>
@@ -54,7 +54,6 @@ const ContextSection = ({
 export const JoinedAgreementActions = ({ id }: { id: string }) => {
 	const { userPosition } = useAgreementData();
 	const { t } = useTranslation("common");
-	const [disputeCost] = useState(0);
 	const [showDisputeModal, setDisputeModalVisibility] = useState(false);
 	const [showFinalizeModal, setFinalizeModalVisibility] = useState(false);
 
@@ -91,7 +90,11 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 		<>
 			<div className="flex gap-2 items-center justify-between">
 				<Button label="Dispute" onClick={() => setDisputeModalVisibility(true)} />
-				<Button label="Finalize" onClick={() => setFinalizeModalVisibility(true)} />
+				<Button
+					disabled={userPosition?.status === 2}
+					label="Finalize"
+					onClick={() => setFinalizeModalVisibility(true)}
+				/>
 			</div>
 			<ContextModal
 				icon={
@@ -111,7 +114,7 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 						<div className="flex flex-col gap-4">
 							<ContextSection
 								title={t("dispute.disputeCost.title")}
-								highlight={`${utils.formatUnits(disputeCost)} $NATION`}
+								highlight={`${utils.formatUnits(userPosition?.deposit ?? 0)} $NATION`}
 								content={t("dispute.disputeCost.description")}
 							/>
 							<ContextSection
@@ -157,7 +160,7 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 								highlight={
 									<>
 										<div className="flex gap-2">
-											<span>{utils.formatUnits(disputeCost)} $NATION</span>
+											<span>{utils.formatUnits(userPosition?.deposit ?? 0)} $NATION</span>
 											<span className="text-gray-400 font-medium">Dispute deposit</span>
 										</div>
 										<div className="flex gap-2">

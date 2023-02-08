@@ -19,6 +19,7 @@ export type IStepsProps = {
 	steps: IStep[];
 	icon: string | null;
 	title: string;
+	isCTAdisabled?: boolean;
 	stepIndex: number;
 	// Set up as loading if the step in progress. Back to null to stop loading animation.
 	isStepLoading?: boolean | undefined;
@@ -55,7 +56,7 @@ type IStepInfo = {
 	stepInfo: IStep;
 	index: number;
 	stepIndex: number;
-    isLoading: boolean;
+	isLoading: boolean;
 	listLenght: number;
 };
 
@@ -128,11 +129,16 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 		// title,
 		stepIndex,
 		isStepLoading,
+		isCTAdisabled = false,
 		areStepsFinished,
 		finishImage,
 		finishMessage,
 		finishAction,
 	} = props;
+
+	const stepAction = () => {
+		!isCTAdisabled && steps[stepIndex].action();
+	};
 
 	return (
 		<section className="max-w-3xl w-full bg-white rounded-lg relative shadow-xl">
@@ -176,11 +182,11 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 			)}
 			{!areStepsFinished && (
 				<div
-					onClick={steps[stepIndex].action}
+					onClick={stepAction}
 					className={cx(
 						"py-3 group transition-all px-5 m-5 border-bluesky border-2 rounded-lg absolute bottom-3 right-3 flex justify-start min-w-[200px] items-center text-bluesky gap-2",
-						isStepLoading
-							? "opacity-30"
+						isStepLoading || isCTAdisabled
+							? "opacity-50"
 							: "cursor-pointer  hover:bg-bluesky hover:text-white",
 					)}
 				>

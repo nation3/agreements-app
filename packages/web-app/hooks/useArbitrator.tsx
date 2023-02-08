@@ -2,9 +2,9 @@ import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi"
 import { PermitTransferFrom } from "@uniswap/permit2-sdk";
 
 import Arbitrator from "../abis/Arbitrator.json";
-import { arbitratorAddress } from "../lib/constants";
 import { useMemo } from "react";
 import { ethers, BigNumber } from "ethers";
+import { useConstants } from "./useConstants";
 
 const arbitratorAbi = Arbitrator.abi;
 export const arbitratorInterface = new ethers.utils.Interface(arbitratorAbi);
@@ -23,6 +23,7 @@ export type ResolutionInput = {
 };
 
 export const useResolution = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
+	const { arbitratorAddress, frameworkAddress } = useConstants();
 	const { data: rawResolution, ...args } = useContractRead({
 		addressOrName: arbitratorAddress,
 		contractInterface: arbitratorAbi,
@@ -65,7 +66,29 @@ export const useResolution = ({ id, enabled = true }: { id: string; enabled?: bo
 	return { resolution, ...args };
 };
 
+export const useAppealConfig = (): {
+	token: string | undefined;
+	amount: BigNumber | undefined;
+	recipient: string | undefined;
+} => {
+	const { arbitratorAddress } = useConstants();
+	const { data: appealConfig } = useContractRead({
+		addressOrName: arbitratorAddress,
+		contractInterface: arbitratorAbi,
+		functionName: "deposits",
+		onError(error) {
+			console.log(error);
+		},
+	});
+	return {
+		token: appealConfig?.token,
+		amount: appealConfig?.amount,
+		recipient: appealConfig?.recipient,
+	};
+};
+
 export const useResolutionExecute = () => {
+	const { arbitratorAddress } = useConstants();
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: arbitratorAddress,
@@ -73,6 +96,11 @@ export const useResolutionExecute = () => {
 		functionName: "executeResolution",
 		onError(error) {
 			console.log(error);
+		},
+		overrides: {
+			gasLimit: 320000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
@@ -90,6 +118,7 @@ export const useResolutionExecute = () => {
 };
 
 export const useResolutionAppeal = () => {
+	const { arbitratorAddress } = useConstants();
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: arbitratorAddress,
@@ -97,6 +126,11 @@ export const useResolutionAppeal = () => {
 		functionName: "appealResolution",
 		onError(error) {
 			console.log(error);
+		},
+		overrides: {
+			gasLimit: 120000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
