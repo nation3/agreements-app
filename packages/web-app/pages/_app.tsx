@@ -48,19 +48,22 @@ const HeaderNavigation = () => {
 	return (
 		<div className="flex items-center gap-2 font-medium text-lg text-slate-500">
 			{isDisputesVisible && (
-				<Link href="/disputes" className={`${isActiveRoute("/dispute") && "text-slate-700"}`}>
-					<div className="hover:bg-gray-100 p-2 px-4 rounded-xl">Disputes</div>
-				</Link>
+				<>
+					<Link href="/disputes" className={`${isActiveRoute("/dispute") && "text-slate-700"}`}>
+						<div className="hover:bg-gray-100 p-2 px-4 rounded-xl">Disputes</div>
+					</Link>
+					<Link href="/agreements" className={`${isActiveRoute("/agreement") && "text-slate-700"}`}>
+						<div className="hover:bg-gray-100 p-2 px-4 rounded-xl">Agreements</div>
+					</Link>
+				</>
 			)}
-			<Link href="/agreements" className={`${isActiveRoute("/agreement") && "text-slate-700"}`}>
-				<div className="hover:bg-gray-100 p-2 px-4 rounded-xl">Agreements</div>
-			</Link>
 		</div>
 	);
 };
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const router = useRouter();
+	const { chain } = useNetwork();
 
 	useEffect(() => {
 		import("flowbite-react");
