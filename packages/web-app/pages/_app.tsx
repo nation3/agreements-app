@@ -80,12 +80,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 				})}
 			>
 				<Head>
-					<title>Nation3 Court</title>
+					<title>Nation3 Agreements</title>
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<DefaultLayout
 					title="Nation3"
-					appName="Court"
+					appName="Agreements"
 					onRoute={(route: string) => {
 						router.push(route);
 					}}
