@@ -34,9 +34,9 @@ const TokenSummary = ({
 	deposit,
 	collateral,
 }: {
-	balance: BigNumberish;
-	deposit: BigNumberish;
-	collateral: BigNumberish;
+	balance: BigNumber;
+	deposit: BigNumber;
+	collateral: BigNumber;
 }) => {
 	const { t } = useTranslation("common");
 
@@ -48,9 +48,7 @@ const TokenSummary = ({
 			<p className="text-sm flex justify-between items-center gap-5 px-2 text-gray-500">
 				<span className="font-semibold text-bluesky-500">{formattedBalance} $NATION</span>
 				{/* TODO: Refactor eval */}
-				{(parseInt(formattedBalance) === 0 ||
-					parseInt(utils.formatUnits(deposit)) + parseInt(utils.formatUnits(collateral)) >
-						parseInt(formattedBalance)) && (
+				{!balance.gte(deposit.add(collateral)) && (
 					<span className="flex items-center gap-1">
 						⚠️ Get some
 						<a href="https://app.balancer.fi/#/ethereum/trade/ether/0x333A4823466879eeF910A04D473505da62142069">
@@ -314,12 +312,7 @@ export const JoinableAgreementActions = ({
 								</div>
 								<Steps
 									isCTAdisabled={
-										nationBalance
-											? parseInt(utils.formatUnits(nationBalance)) === 0 ||
-											  parseInt(utils.formatUnits(requiredDeposit)) +
-													parseInt(utils.formatUnits(requiredCollateral)) >
-													parseInt(utils.formatUnits(nationBalance))
-											: false
+										nationBalance && !nationBalance.gte(requiredCollateral.add(requiredDeposit))
 									}
 									steps={steps}
 									icon={courtIcon}
