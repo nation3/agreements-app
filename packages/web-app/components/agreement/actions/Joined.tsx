@@ -44,7 +44,7 @@ const ContextSection = ({
 }) => {
 	return (
 		<div>
-			<h3 className="text-lg font-medium text-slate-600">{title}</h3>
+			<h3 className="text-lg font-medium text-slate-600 mb-2">{title}</h3>
 			{highlight && <div className="font-medium text-md text-bluesky">{highlight}</div>}
 			{content && <div>{content}</div>}
 		</div>
@@ -52,7 +52,7 @@ const ContextSection = ({
 };
 
 export const JoinedAgreementActions = ({ id }: { id: string }) => {
-	const { userPosition, disputeCost } = useAgreementData();
+	const { userPosition } = useAgreementData();
 	const { t } = useTranslation("common");
 	const [showDisputeModal, setDisputeModalVisibility] = useState(false);
 	const [showFinalizeModal, setFinalizeModalVisibility] = useState(false);
@@ -114,7 +114,7 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 						<div className="flex flex-col gap-4">
 							<ContextSection
 								title={t("dispute.disputeCost.title")}
-								highlight={`${utils.formatUnits(disputeCost)} $NATION`}
+								highlight={`${utils.formatUnits(userPosition?.deposit ?? 0)} $NATION`}
 								content={t("dispute.disputeCost.description")}
 							/>
 							<ContextSection
@@ -160,7 +160,7 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 								highlight={
 									<>
 										<div className="flex gap-2">
-											<span>{utils.formatUnits(disputeCost)} $NATION</span>
+											<span>{utils.formatUnits(userPosition?.deposit ?? 0)} $NATION</span>
 											<span className="text-gray-400 font-medium">Dispute deposit</span>
 										</div>
 										<div className="flex gap-2">

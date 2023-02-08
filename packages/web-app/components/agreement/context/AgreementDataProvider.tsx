@@ -54,7 +54,10 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 
 	/* Update positions when fetched agreement positions or new resolvers */
 	useEffect(() => {
-		let knownPositions: { [key: string]: { balance: string; status: number } } = {};
+		let knownPositions: {
+			[key: string]: { party?: string; balance: string; status: number; deposit?: number };
+		} = {};
+
 		if (resolvers) {
 			knownPositions = Object.entries(resolvers).reduce(
 				(result, [account, { balance }]) => ({
@@ -62,23 +65,27 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 					[account.toString()]: {
 						balance: balance,
 						status: 0,
+						deposit: 0,
 					},
 				}),
 				knownPositions,
 			);
 		}
+
 		if (agreementPositions) {
 			knownPositions = agreementPositions.reduce(
-				(result, [party, balance, status]) => ({
+				(result, [party, balance, deposit, status]) => ({
 					...result,
 					[party.toString()]: {
 						balance: balance.toString(),
 						status: status,
+						deposit: deposit,
 					},
 				}),
 				knownPositions,
 			);
 		}
+
 		if (knownPositions != positions) {
 			setPositions(knownPositions);
 		}
@@ -102,6 +109,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 			setUserPosition((prevPosition) => ({
 				status: prevPosition?.status || 0,
 				balance: prevPosition?.balance || resolvers[userAddress].balance,
+				deposit: prevPosition?.deposit || 0,
 				resolver: resolvers[userAddress],
 			}));
 		}
