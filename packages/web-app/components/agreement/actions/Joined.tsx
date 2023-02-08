@@ -21,7 +21,7 @@ const ContextModal = ({ icon, title, content, show, button, onClose }: ContextMo
 		<Modal show={show} onClose={onClose}>
 			<Modal.Header>
 				<div className="flex items-center w-full">
-					<div className="overflow-hidden w-12 p-2 mr-3">{icon && icon}</div>
+					<div className="overflow-hidden w-10 p-2 mr-2">{icon && icon}</div>
 					<h3 className="text-slate-600 text-xl md:text-xl font-semibold">{title}</h3>
 				</div>
 			</Modal.Header>
@@ -52,9 +52,8 @@ const ContextSection = ({
 };
 
 export const JoinedAgreementActions = ({ id }: { id: string }) => {
-	const { userPosition } = useAgreementData();
+	const { userPosition, disputeCost } = useAgreementData();
 	const { t } = useTranslation("common");
-	const [disputeCost] = useState(0);
 	const [showDisputeModal, setDisputeModalVisibility] = useState(false);
 	const [showFinalizeModal, setFinalizeModalVisibility] = useState(false);
 
@@ -91,7 +90,11 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 		<>
 			<div className="flex gap-2 items-center justify-between">
 				<Button label="Dispute" onClick={() => setDisputeModalVisibility(true)} />
-				<Button label="Finalize" onClick={() => setFinalizeModalVisibility(true)} />
+				<Button
+					disabled={userPosition?.status === 2}
+					label="Finalize"
+					onClick={() => setFinalizeModalVisibility(true)}
+				/>
 			</div>
 			<ContextModal
 				icon={

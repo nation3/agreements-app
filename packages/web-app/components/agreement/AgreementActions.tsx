@@ -16,7 +16,8 @@ export const AgreementActions = (): ReactElement => {
 					<JoinableAgreementActions id={id} userPosition={userPosition} />
 				</>
 			);
-		if (userPosition && userPosition.status == 1) return <JoinedAgreementActions id={id} />;
+		if (userPosition && (userPosition.status == 1 || userPosition.status == 2))
+			return <JoinedAgreementActions id={id} />;
 	} else if (String(agreementStatus) == "Finalized") {
 		return (
 			<>

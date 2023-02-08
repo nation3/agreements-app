@@ -200,7 +200,7 @@ export const DisputeActions = () => {
 								<div className="flex flex-col justify-center border-bluesky-200">
 									{appealTokenApproved ? (
 										<>
-											<div className="flex flex-col w-full mt-8 items-start px-8 md:px-20 py-7 gap-1">
+											<div className="flex flex-col w-full mt-8 items-start px-8 md:px-20 py-3 gap-1">
 												<h3 className="text-sm text-slate-400 px-2 mb-1">
 													{t("join.yourBalance")}
 												</h3>
@@ -222,8 +222,8 @@ export const DisputeActions = () => {
 													)}
 												</p>
 												<hr className="border-b"></hr>
-												<div className="flex flex-col w-full items-start gap-1">
-													<h3 className="text-sm text-slate-400 px-2 mb-1">Appeal cost</h3>
+												<div className="flex flex-col w-full items-start gap-1 mb-1">
+													<h3 className="text-sm text-slate-400 px-2">Appeal cost</h3>
 													<p className="flex justify-between gap-5 px-2 font-semibold text-bluesky-500">
 														<span>
 															{utils.formatUnits(appealCost ?? BigNumber.from(0))} $NATION
