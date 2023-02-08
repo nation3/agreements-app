@@ -11,7 +11,7 @@ export interface ResolverParams {
 export interface UserPosition {
 	status: number;
 	balance: string;
-	deposit: number;
+	deposit?: number | undefined;
 	resolver?: ResolverParams;
 }
 
