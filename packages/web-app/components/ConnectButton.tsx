@@ -83,7 +83,7 @@ export const ConnectButton = () => {
 								<>
 									<div className="flex items-center justify-end">
 										<div className="hidden md:flex gap-2 font-medium cursor-default items-center text-slate-300 mr-5">
-											<span>{chain && chain.name} </span>
+											{chain && chain.id === 5 && <span>{chain.name} </span>}
 											{/* // TODO: Change network action */}
 											{/* 				<span className="w-4 ml-2">
 												<ChevronDownIcon />
