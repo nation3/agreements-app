@@ -115,6 +115,7 @@ export const useAgreementCreate = ({
 
 export const useAgreementJoin = () => {
 	const { frameworkAddress } = useConstants();
+
 	const {
 		write: joinAgreement,
 		data,

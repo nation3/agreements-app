@@ -10,12 +10,17 @@ export const providers = () => {
 			alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY, priority: 0 }),
 		);
 	}
+	if (process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_GOERLI) {
+		providers.push(
+			alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_GOERLI, priority: 0 }),
+		);
+	}
 	providers.push(publicProvider({ priority: 1 }));
 	return providers;
 };
 
 export const chainsToUse = () => {
-	return [chain.goerli, chain.mainnet];
+	return [chain.mainnet, chain.goerli];
 };
 
 export const { chains, provider, webSocketProvider } = configureChains(chainsToUse(), providers());
