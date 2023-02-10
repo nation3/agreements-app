@@ -4,24 +4,12 @@ import { shortenHash } from "../../../utils";
 
 export const AddressDisplay = ({
 	address,
-	ensProvider,
+	ensName,
 }: {
 	address: string;
-	ensProvider?: providers.BaseProvider;
+	ensName?: string;
 }) => {
-	const shortAddress = useMemo(() => shortenHash(utils.getAddress(address)), [address]);
-	const [value, setValue] = useState(shortAddress);
+	const displayAddress = useMemo(() => ensName ?? shortenHash(utils.getAddress(address)), [address, ensName]);
 
-	useEffect(() => {
-		ensProvider?.lookupAddress(utils.getAddress(address)).then((name) => {
-			if (name) {
-				setValue((prevName) => (name != prevName ? name : prevName));
-			} else {
-				setValue(shortAddress);
-			}
-			return shortAddress;
-		});
-	}, [address, shortAddress, ensProvider]);
-
-	return <span>{value}</span>;
+	return <span>{displayAddress}</span>;
 };

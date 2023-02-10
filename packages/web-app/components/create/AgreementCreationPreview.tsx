@@ -7,9 +7,9 @@ import { useAgreementCreate } from "../../hooks/useAgreement";
 import { AgreementDataDisplay } from "../agreement/AgreementDetails";
 import { generateAgreementMetadata } from "../../utils";
 import { preparePutToIPFS } from "../../lib/ipfs";
+import { AccountDisplay } from "../AccountDisplay";
 
-import { Button, InfoAlert, Table, AddressDisplay } from "@nation3/ui-components";
-import { useProvider } from "wagmi";
+import { Button, InfoAlert, Table } from "@nation3/ui-components";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { CreateView } from "./context/types";
@@ -19,7 +19,6 @@ import { useConstants } from "../../hooks/useConstants";
 
 export const AgreementCreationPreview = () => {
 	const router = useRouter();
-	const provider = useProvider({ chainId: 1 });
 	const { title, terms, termsHash, id, salt, positions, changeView } = useAgreementCreation();
 	const { NATION } = useConstants();
 
@@ -74,7 +73,7 @@ export const AgreementCreationPreview = () => {
 			<Table
 				columns={["participant", "stake"]}
 				data={positions.map(({ account, balance }, index) => [
-					<AddressDisplay key={index} ensProvider={provider} address={account} />,
+					<AccountDisplay key={index} address={account} />,
 					<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
 				])}
 			/>

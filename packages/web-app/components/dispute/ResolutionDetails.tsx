@@ -1,27 +1,24 @@
 import { utils } from "ethers";
 import { Position, useDispute } from "./context/DisputeResolutionContext";
-import { useProvider } from "wagmi";
 import { Accordion } from "flowbite-react";
 import { useCohort } from "../../hooks/useCohort";
 import { CountDown } from "../../components/CountDown";
 import {
 	ActionBadge,
-	AddressDisplay,
 	Button,
 	Table,
 	utils as n3utils,
 } from "@nation3/ui-components";
 import { useMemo } from "react";
+import { AccountDisplay } from "../AccountDisplay";
 import { CardHeader } from "../CardHeader";
 
 const SettlementTable = ({ positions }: { positions: Position[] }) => {
-	const provider = useProvider({ chainId: 1 });
-
 	return (
 		<Table
 			columns={["participant", "stake"]}
 			data={positions.map(({ party, balance }, index) => [
-				<AddressDisplay key={index} ensProvider={provider} address={party} />,
+				<AccountDisplay key={index} address={party} />,
 				<b key={index}> {utils.formatUnits(balance)} $NATION</b>,
 			])}
 		/>
@@ -83,7 +80,6 @@ export const ResolutionDetails = () => {
 };
 
 export const ProposedResolutionDetails = () => {
-	const provider = useProvider({ chainId: 1 });
 	const { proposedResolutions } = useDispute();
 	const { approve, reject } = useCohort();
 
@@ -101,7 +97,7 @@ export const ProposedResolutionDetails = () => {
 								<Accordion.Panel key={i}>
 									<Accordion.Title>
 										#{txNonce} Settlement proposed by{" "}
-										<AddressDisplay ensProvider={provider} address={confirmations[0].owner} /> |{" "}
+										<AccountDisplay address={confirmations[0].owner} /> |{" "}
 										{confirmations.length}/{confirmationsRequired} approvals
 									</Accordion.Title>
 									<Accordion.Content>

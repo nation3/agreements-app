@@ -5,7 +5,6 @@ import {
 	Alert,
 	ActionBadge,
 	Button,
-	AddressDisplay,
 	utils as n3utils,
 } from "@nation3/ui-components";
 import { BigNumber, utils, constants } from "ethers";
@@ -13,13 +12,13 @@ import { ResolutionDetails, ProposedResolutionDetails } from "./ResolutionDetail
 import { useDispute } from "./context/DisputeResolutionContext";
 import { trimHash } from "../../utils/hash";
 import { useResolutionExecute } from "../../hooks/useArbitrator";
-import { useProvider, useAccount } from "wagmi";
+import { useAccount } from "wagmi";
 import { CardHeader } from "../CardHeader";
 import { useCohort } from "../../hooks/useCohort";
+import { AccountDisplay } from "../AccountDisplay";
 import { useConstants } from "../../hooks/useConstants";
 
 export const DisputeDetails = () => {
-	const provider = useProvider({ chainId: 1 });
 	const currentTime = Math.floor(Date.now() / 1000);
 	const { frameworkAddress } = useConstants();
 
@@ -89,7 +88,7 @@ export const DisputeDetails = () => {
 				columns={["participant", "stake"]}
 				data={
 					dispute.positions?.map(({ party, balance }, index) => [
-						<AddressDisplay key={index} ensProvider={provider} address={party} />,
+						<AccountDisplay key={index} address={party} />,
 						<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
 					]) || []
 				}

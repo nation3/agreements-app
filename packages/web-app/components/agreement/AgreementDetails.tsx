@@ -7,16 +7,15 @@ import {
 	ButtonBase,
 	ActionBadge,
 	utils as n3utils,
-	AddressDisplay,
 	useScreen,
 	ScreenType,
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
-import { useProvider } from "wagmi";
 import { Modal } from "flowbite-react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { ShareIcon, CheckIcon } from "@heroicons/react/20/solid";
 import { CardHeader } from "../CardHeader";
+import { AccountDisplay } from "../AccountDisplay";
 import { useUrl } from "../../hooks";
 import { useTranslation } from "next-i18next";
 
@@ -63,7 +62,6 @@ const ShareButton = ({ url }: { url: string }) => {
 };
 
 const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) => {
-	const provider = useProvider({ chainId: 1 });
 	const { screen } = useScreen();
 
 	return (
@@ -76,12 +74,12 @@ const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) =
 			data={Object.entries(positions ?? {}).map(([account, { balance, status }], index) =>
 				screen === ScreenType.Desktop
 					? [
-							<AddressDisplay key={index} ensProvider={provider} address={account} />,
+							<AccountDisplay key={index} address={account} />,
 							<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
 							<PositionStatusBadge key={index} status={status} />,
 					  ]
 					: [
-							<AddressDisplay key={index} ensProvider={provider} address={account} />,
+							<AccountDisplay key={index} address={account} />,
 							<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
 					  ],
 			)}

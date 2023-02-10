@@ -1,4 +1,4 @@
-import { Button, Table, TokenBalanceInput, AddressDisplay } from "@nation3/ui-components";
+import { Button, Table, TokenBalanceInput } from "@nation3/ui-components";
 import { useState, useMemo, ChangeEvent, FocusEvent } from "react";
 import { utils, BigNumber } from "ethers";
 
@@ -8,11 +8,10 @@ import { useCohort } from "../../hooks/useCohort";
 import { purgeFloat, generateResolutionMetadata } from "../../utils";
 import { preparePutToIPFS } from "../../lib/ipfs";
 
-import { useProvider } from "wagmi";
+import { AccountDisplay } from "../AccountDisplay";
 import { useConstants } from "../../hooks/useConstants";
 
 export const ResolutionForm = () => {
-	const provider = useProvider({ chainId: 1 });
 	const { dispute } = useDispute();
 	const { propose } = useCohort();
 	const [settlement, setSettlement] = useState<Position[]>(dispute.positions ?? []);
@@ -69,7 +68,7 @@ export const ResolutionForm = () => {
 				columns={["participant", "stake"]}
 				data={
 					settlement?.map(({ party, balance }, index) => [
-						<AddressDisplay key={index} ensProvider={provider} address={party} />,
+						<AccountDisplay key={index} address={party} />,
 						<TokenBalanceInput
 							key={index}
 							defaultValue={utils.formatUnits(balance)}
