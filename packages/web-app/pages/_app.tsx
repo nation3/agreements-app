@@ -15,6 +15,7 @@ import { chains, provider, webSocketProvider, connectors } from "../lib/connecto
 import Link from "next/link";
 import { useCohort } from "../hooks/useCohort";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
+import UiGlobals from "../components/uiGlobals/uiGlobals";
 
 const client = createClient({
 	autoConnect: true,
@@ -63,7 +64,6 @@ const HeaderNavigation = () => {
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const router = useRouter();
-	const { chain } = useNetwork();
 
 	useEffect(() => {
 		import("flowbite-react");
@@ -73,6 +73,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 		<WagmiConfig client={client}>
 			<RainbowKitProvider
 				chains={chains}
+				initialChain={1}
 				modalSize="compact"
 				theme={lightTheme({
 					accentColor: "#44b7f9",
@@ -83,18 +84,21 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 					<title>Nation3 Agreements</title>
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
-				<DefaultLayout
-					title="Nation3"
-					appName="Agreements"
-					onRoute={(route: string) => {
-						router.push(route);
-					}}
-					isActiveRoute={(route: string) => router.pathname.startsWith(route)}
-					headerNavItems={<HeaderNavigation />}
-					connectionButton={<ConnectButton />}
-				>
-					<Component {...pageProps} />
-				</DefaultLayout>
+
+				<UiGlobals>
+					<DefaultLayout
+						title="Nation3"
+						appName="Agreements"
+						onRoute={(route: string) => {
+							router.push(route);
+						}}
+						isActiveRoute={(route: string) => router.pathname.startsWith(route)}
+						headerNavItems={<HeaderNavigation />}
+						connectionButton={<ConnectButton />}
+					>
+						<Component {...pageProps} />
+					</DefaultLayout>
+				</UiGlobals>
 			</RainbowKitProvider>
 		</WagmiConfig>
 	);

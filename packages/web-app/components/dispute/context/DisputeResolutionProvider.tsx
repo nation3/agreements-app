@@ -27,7 +27,7 @@ export const DisputeResolutionProvider = ({
 		enabled: id != "undefined",
 	});
 
-	const { amount } = useAppealConfig();
+	// const { amount } = useAppealConfig();
 
 	const positions = useMemo(() => {
 		return agreementPositions?.map(([party, balance]) => ({ party, balance }));
