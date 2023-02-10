@@ -23,7 +23,7 @@ export const FinalizedAgreementActions = ({
 		if (isWithdrawSuccess) window.location.reload();
 	}, [isWithdrawSuccess]);
 
-	if (BigNumber.from(userPosition.balance).gt(0))
+	if (userPosition.status == 2)
 		return (
 			<Button
 				label="Withdraw"
