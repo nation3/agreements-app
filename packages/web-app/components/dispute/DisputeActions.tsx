@@ -87,6 +87,7 @@ export const DisputeActions = () => {
 
 	const canAppeal = useMemo(() => {
 		if (!resolution) return false;
+		if (resolution.status != "Approved") return false;
 		const currentTime = Math.floor(Date.now() / 1000);
 		if (currentTime && resolution.unlockTime < currentTime) return false;
 		const partOfSettlement = resolution?.settlement?.find(({ party }) => party == address);
@@ -138,6 +139,7 @@ export const DisputeActions = () => {
 		const currentTime = Math.floor(Date.now() / 1000);
 		if (!resolution) return false;
 		if (resolution.status == "Appealed") return false;
+		if (resolution.status == "Endorsed") return true;
 		return currentTime ? resolution.unlockTime < currentTime : false;
 	}, [resolution]);
 
