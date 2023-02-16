@@ -156,6 +156,7 @@ export const AgreementCreationForm = () => {
 						{tokens.map((token) => {
 							return (
 								<ButtonBase
+									key={token.address}
 									className={"p-2 gap-1 border-2 font-semibold"}
 									onClick={() => {
 										setToken(token);

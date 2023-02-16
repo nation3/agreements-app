@@ -24,28 +24,21 @@ export const AgreementList = () => {
 					className={"max-h-full"}
 					columns={
 						screen === ScreenType.Desktop
-							? ["Id", "Created on", "Your stake", "Status"]
-							: ["Id", "Stake"]
+							? ["Id", "Created on", "Status"]
+							: ["Id", "Status"]
 					}
-					data={agreements.map(({ id, createdAt, userBalance, status }) =>
+					data={agreements.map(({ id, createdAt, status }) =>
 						screen === ScreenType.Desktop
 							? [
 									<span key={id}>{utils.shortenHash(id)}</span>,
 									<span key={`${id}-date`}>
 										{new Date(Number(createdAt) * 1000).toLocaleDateString()}
 									</span>,
-									<b key={`${id}-position`}>
-										{" "}
-										{ethers.utils.formatUnits(BigNumber.from(userBalance))} $NATION{" "}
-									</b>,
 									<Badge key={`${id}-status`} label={status} bgColor="slate-300" />,
 							  ]
 							: [
 									<span key={id}>{utils.shortenHash(id)}</span>,
-									<b key={`${id}-position`}>
-										{" "}
-										{ethers.utils.formatUnits(BigNumber.from(userBalance))} $NATION{" "}
-									</b>,
+									<Badge key={`${id}-status`} label={status} bgColor="slate-300" />,
 							  ],
 					)}
 					clickHandlers={agreements.map(
