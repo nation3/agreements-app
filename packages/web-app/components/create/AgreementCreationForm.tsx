@@ -1,6 +1,6 @@
-import { ChangeEvent, useMemo } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import { PlusIcon, MinusIcon } from "@heroicons/react/20/solid";
-import { Button, IconButton, DropInput, InfoAlert, TextInput } from "@nation3/ui-components";
+import { Button, ButtonBase, IconButton, DropInput, InfoAlert, TextInput } from "@nation3/ui-components";
 import { utils } from "ethers";
 import { useProvider } from "wagmi";
 
@@ -11,11 +11,15 @@ import { CreateView } from "./context/types";
 
 import { validateCriteria, trimHash } from "../../utils";
 import { useTranslation } from "next-i18next";
+import { Modal } from "flowbite-react";
+import { useTokenList } from "../../hooks/useTokenList";
 
 export const AgreementCreationForm = () => {
 	const { t } = useTranslation("common");
 	const provider = useProvider({ chainId: 1 });
-	const { title, terms, positions, id, changeView, setTitle, setTerms, setPositions } =
+	const tokens = useTokenList();
+	const [isTokenModalOpen, setIsTokenModalOpen] = useState<boolean>(false);
+	const { title, terms, positions, id, token, changeView, setTitle, setTerms, setToken, setPositions } =
 		useAgreementCreation();
 
 	const defaultTitle = useMemo(() => `Agreement #${trimHash(id.toUpperCase())}`, [id]);
@@ -23,9 +27,9 @@ export const AgreementCreationForm = () => {
 	const isValidCriteria = useMemo(() => validateCriteria(positions), [positions]);
 
 	const isValidAgreement = useMemo(() => {
-		if (!terms) return false;
+		if (!terms || !token) return false;
 		return isValidCriteria;
-	}, [terms, isValidCriteria]);
+	}, [terms, token, isValidCriteria]);
 
 	return (
 		<>
@@ -78,6 +82,19 @@ export const AgreementCreationForm = () => {
 			<div className="flex flex-col gap-4">
 				<div>
 					<h2 className="font-display font-medium text-xl">
+						Token
+					</h2>
+				</div>
+				<div>
+					<button
+						className="bg-gray-50 text-gray-800 text-sm rounded-lg block w-full p-2.5 border border-gray-200"
+						onClick={() => setIsTokenModalOpen(true)}
+					>
+						{ token ? token.symbol : "Select token" }
+					</button>
+				</div>
+				<div>
+					<h2 className="font-display font-medium text-xl">
 						{t("create.agreementPositions.title")}
 					</h2>
 					<p>{t("create.agreementPositions.description")}</p>
@@ -88,6 +105,7 @@ export const AgreementCreationForm = () => {
 							<ParticipantRow
 								ensProvider={provider}
 								positions={positions}
+								token={token?.symbol ?? "$"}
 								index={index}
 								onChange={setPositions}
 							/>
@@ -124,6 +142,34 @@ export const AgreementCreationForm = () => {
 					}}
 				/>
 			</div>
+			<Modal
+				show={isTokenModalOpen}
+				onClose={() => setIsTokenModalOpen(false)}
+			>
+				<Modal.Header>
+					<h3 className="text-slate-600 md:text-xl text-xl font-semibold">
+						{"Select Agreement Token"}		
+					</h3>
+				</Modal.Header>
+				<Modal.Body>
+					<div className="flex flex-col gap-2">
+						{tokens.map((token) => {
+							return (
+								<ButtonBase
+									className={"p-2 gap-1 border-2 font-semibold"}
+									onClick={() => {
+										setToken(token);
+										setIsTokenModalOpen(false);
+									}}
+								>
+									<>{token.name}</>
+								</ButtonBase>
+							);
+						})
+						}
+					</div>
+				</Modal.Body>
+			</Modal>
 		</>
 	);
 };
