@@ -52,7 +52,7 @@ const ContextSection = ({
 };
 
 export const JoinedAgreementActions = ({ id }: { id: string }) => {
-	const { userPosition } = useAgreementData();
+	const { userPosition, depositToken, collateralToken } = useAgreementData();
 	const { t } = useTranslation("common");
 	const [showDisputeModal, setDisputeModalVisibility] = useState(false);
 	const [showFinalizeModal, setFinalizeModalVisibility] = useState(false);
@@ -160,12 +160,12 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 								highlight={
 									<>
 										<div className="flex gap-2">
-											<span>{utils.formatUnits(userPosition?.deposit ?? 0)} $NATION</span>
+											<span>{utils.formatUnits(userPosition?.deposit ?? 0)} ${depositToken?.symbol ?? ""}</span>
 											<span className="text-gray-400 font-medium">Dispute deposit</span>
 										</div>
 										<div className="flex gap-2">
 											<span>
-												{utils.formatUnits(BigNumber.from(userPosition?.balance))} $NATION
+												{utils.formatUnits(BigNumber.from(userPosition?.balance))} ${collateralToken?.symbol ?? ""}
 											</span>
 											<span className="text-gray-400 font-medium">Collateral</span>
 										</div>

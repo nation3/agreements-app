@@ -89,7 +89,7 @@ export const DisputeDetails = () => {
 				data={
 					dispute.positions?.map(({ party, balance }, index) => [
 						<AccountDisplay key={index} address={party} />,
-						<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
+						<b key={index}> {utils.formatUnits(BigNumber.from(balance))} ${dispute.collateralToken?.symbol ?? ""}</b>,
 					]) || []
 				}
 			/>
