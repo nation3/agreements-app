@@ -12,7 +12,7 @@ import {
 	DisputeResolutionContext,
 	DisputeResolutionContextType,
 	Position,
-	Token
+	Token,
 } from "./DisputeResolutionContext";
 
 export const DisputeResolutionProvider = ({
@@ -35,11 +35,19 @@ export const DisputeResolutionProvider = ({
 		return data?.token;
 	}, [data]);
 
-	const { data: tokenData } = useToken({address: tokenAddress, enabled: tokenAddress != undefined});
+	const { data: tokenData } = useToken({
+		address: tokenAddress,
+		enabled: tokenAddress != undefined,
+	});
 
 	const collateralToken = useMemo<Token | undefined>(() => {
 		if (tokenData)
-			return { name: tokenData.name, symbol: tokenData.symbol, decimals: tokenData.decimals, address: tokenData.address };
+			return {
+				name: tokenData.name,
+				symbol: tokenData.symbol,
+				decimals: tokenData.decimals,
+				address: tokenData.address,
+			};
 	}, [tokenData]);
 
 	const positions = useMemo(() => {

@@ -8,7 +8,7 @@ export interface Token {
 	symbol: string;
 	decimals: number;
 	address: string;
-};
+}
 
 export type Dispute = {
 	id: string;

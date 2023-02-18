@@ -3,8 +3,8 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useAgreementDispute, useAgreementFinalize } from "../../../hooks";
 import { Modal, ModalProps } from "flowbite-react";
 import { useTranslation } from "react-i18next";
-import disputeIcon from "../../../assets/svgs/dispute-icon.svg";
-import finalizeIcon from "../../../assets/svgs/finalize-icon.svg";
+import disputeIcon from "../../../public/svgs/dispute-icon.svg";
+import finalizeIcon from "../../../public/svgs/finalize-icon.svg";
 import { utils, BigNumber } from "ethers";
 import Image from "next/image";
 import { useAgreementData } from "../context/AgreementDataContext";
@@ -160,12 +160,16 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 								highlight={
 									<>
 										<div className="flex gap-2">
-											<span>{utils.formatUnits(userPosition?.deposit ?? 0)} ${depositToken?.symbol ?? ""}</span>
+											<span>
+												{utils.formatUnits(userPosition?.deposit ?? 0)} $
+												{depositToken?.symbol ?? ""}
+											</span>
 											<span className="text-gray-400 font-medium">Dispute deposit</span>
 										</div>
 										<div className="flex gap-2">
 											<span>
-												{utils.formatUnits(BigNumber.from(userPosition?.balance))} ${collateralToken?.symbol ?? ""}
+												{utils.formatUnits(BigNumber.from(userPosition?.balance))} $
+												{collateralToken?.symbol ?? ""}
 											</span>
 											<span className="text-gray-400 font-medium">Collateral</span>
 										</div>

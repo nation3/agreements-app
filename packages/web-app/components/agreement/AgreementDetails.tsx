@@ -62,7 +62,13 @@ const ShareButton = ({ url }: { url: string }) => {
 	);
 };
 
-const PositionsTable = ({ positions, token }: { positions: PositionMap | undefined, token: Token | undefined}) => {
+const PositionsTable = ({
+	positions,
+	token,
+}: {
+	positions: PositionMap | undefined;
+	token: Token | undefined;
+}) => {
 	const { screen } = useScreen();
 
 	return (
@@ -76,12 +82,18 @@ const PositionsTable = ({ positions, token }: { positions: PositionMap | undefin
 				screen === ScreenType.Desktop
 					? [
 							<AccountDisplay key={index} address={account} />,
-							<b key={index}> {utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}</b>,
+							<b key={index}>
+								{" "}
+								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
+							</b>,
 							<PositionStatusBadge key={index} status={status} />,
 					  ]
 					: [
 							<AccountDisplay key={index} address={account} />,
-							<b key={index}> {utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}</b>,
+							<b key={index}>
+								{" "}
+								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
+							</b>,
 					  ],
 			)}
 		/>

@@ -28,19 +28,27 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 	}, [agreementData]);
 
 	const { amount: disputeAmount } = useDisputeConfig();
-	
-	const { data: tokenData } = useToken({address: tokenAddress, enabled: tokenAddress != undefined});
-	
+
+	const { data: tokenData } = useToken({
+		address: tokenAddress,
+		enabled: tokenAddress != undefined,
+	});
+
 	const depositToken = {
 		name: "Nation3",
 		symbol: "NATION",
 		address: "0x333A4823466879eeF910A04D473505da62142069",
 		decimals: 18,
-	}
+	};
 
 	const collateralToken = useMemo<Token | undefined>(() => {
 		if (tokenData)
-			return { name: tokenData.name, symbol: tokenData.symbol, decimals: tokenData.decimals, address: tokenData.address };
+			return {
+				name: tokenData.name,
+				symbol: tokenData.symbol,
+				decimals: tokenData.decimals,
+				address: tokenData.address,
+			};
 	}, [tokenData]);
 
 	const disputeCost = useMemo(() => {

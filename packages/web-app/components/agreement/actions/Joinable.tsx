@@ -2,16 +2,14 @@ import { Tooltip } from "flowbite-react";
 import { useMemo, useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { BigNumber, BigNumberish, constants, utils } from "ethers";
-// import { useTokenBalance } from '../../../hooks/useToken';
 import { useAgreementJoin } from "../../../hooks/useAgreement";
 import { UserPosition } from "../context/types";
 import Image from "next/image";
 import { Button, Steps, IStep } from "@nation3/ui-components";
 import { Modal as FlowModal } from "flowbite-react";
-import courtIcon from "../../../assets/svgs/court.svg";
-import nationCoinIcon from "../../../assets/svgs/nation_coin.svg";
-import joinedIcon from "../../../assets/svgs/joined.svg";
-// import joinedSuccessIcon from "../../../assets/svgs/joined_success.svg";
+import courtIcon from "../../../public/svgs/court.svg";
+import nationCoinIcon from "../../../public/svgs/nation_coin.svg";
+import joinedIcon from "../../../public/svgs/joined.svg";
 import { usePermit2Allowance, usePermit2BatchTransferSignature } from "../../../hooks/usePermit2";
 import { useTranslation } from "next-i18next";
 import { ExclamationTriangleIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
@@ -80,11 +78,15 @@ const TokenSummary = ({
 			{/* <hr className="border-b mb-2"></hr> */}
 			<h3 className="text-sm text-slate-400 px-2 mb-1">{t("join.tokenSummary")}</h3>
 			<p className="flex text-sm justify-between items-center gap-5 px-2 text-gray-500">
-				<span className="font-semibold text-bluesky-500">{utils.formatUnits(deposit.amount)} ${deposit.symbol}</span>
+				<span className="font-semibold text-bluesky-500">
+					{utils.formatUnits(deposit.amount)} ${deposit.symbol}
+				</span>
 				<span className="flex items-center gap-1">
 					<span className="text-gray-400">Dispute deposit</span>
 					<InfoTooltip info={t("agreement.depositInfo")} className="w-4 h-4" />
-					{!enoughDeposit && <WarningTooltip info={"Not enough balance"} className="w-4 h-4 text-yellow-500" />}
+					{!enoughDeposit && (
+						<WarningTooltip info={"Not enough balance"} className="w-4 h-4 text-yellow-500" />
+					)}
 				</span>
 			</p>
 			<p className="text-sm flex justify-between items-center gap-5 px-2 text-gray-500">
@@ -94,7 +96,9 @@ const TokenSummary = ({
 				<span className="flex items-center gap-1">
 					<span className="text-gray-400">Collateral</span>
 					<InfoTooltip info={t("agreement.collateralInfo")} className="w-4 h-4" />
-					{!enoughCollateral && <WarningTooltip info={"Not enough balance"} className="w-4 h-4 text-yellow-500" />}
+					{!enoughCollateral && (
+						<WarningTooltip info={"Not enough balance"} className="w-4 h-4 text-yellow-500" />
+					)}
 				</span>
 			</p>
 		</div>
@@ -171,7 +175,7 @@ export const JoinableAgreementActions = ({
 	const { balance: collateralBalanceData } = useTokenBalance({
 		address: collateralToken?.address || constants.AddressZero,
 		account: address || constants.AddressZero,
-		enabled: !!address && !!collateralToken?.address
+		enabled: !!address && !!collateralToken?.address,
 	});
 
 	const isSameToken = useMemo((): boolean => {
@@ -199,7 +203,7 @@ export const JoinableAgreementActions = ({
 			return depositUserBalance.lt(requiredDeposit.add(requiredCollateral));
 		}
 		return !enoughDeposit;
-	}, [isSameToken, requiredDeposit, requiredCollateral, depositUserBalance, enoughDeposit]);	
+	}, [isSameToken, requiredDeposit, requiredCollateral, depositUserBalance, enoughDeposit]);
 
 	const enoughBalance = useMemo((): boolean => {
 		if (isSameToken) {
@@ -233,7 +237,10 @@ export const JoinableAgreementActions = ({
 	const { permit, signature, signPermit, signSuccess, signError } =
 		usePermit2BatchTransferSignature({
 			tokenTransfers: [
-				{ token: depositToken?.address ?? constants.AddressZero, amount: requiredDeposit ? requiredDeposit : 0 },
+				{
+					token: depositToken?.address ?? constants.AddressZero,
+					amount: requiredDeposit ? requiredDeposit : 0,
+				},
 				{ token: collateralToken?.address ?? constants.AddressZero, amount: requiredCollateral },
 			],
 			spender: frameworkAddress,
@@ -351,7 +358,7 @@ export const JoinableAgreementActions = ({
 						</div>
 					</FlowModal.Header>
 					<div className="flex flex-col items-center justify-center pt-4 border-t-2 border-bluesky-200">
-						{(depositTokenApproved && collateralTokenApproved) ? (
+						{depositTokenApproved && collateralTokenApproved ? (
 							<>
 								<TokenSummary
 									deposit={{ symbol: depositToken?.symbol ?? "", amount: requiredDeposit }}
@@ -360,15 +367,15 @@ export const JoinableAgreementActions = ({
 									enoughCollateral={enoughCollateral}
 								/>
 								{missingNATION && (
-								<span className="flex items-center gap-1">
-									Get some
-									<a href="https://app.balancer.fi/#/ethereum/trade/ether/0x333A4823466879eeF910A04D473505da62142069">
-										<GradientLink
-											href="https://docs.nation3.org/agreements/creating-an-agreement"
-											caption="$NATION"
-										/>
-									</a>
-								</span>
+									<span className="flex items-center gap-1">
+										Get some
+										<a href="https://app.balancer.fi/#/ethereum/trade/ether/0x333A4823466879eeF910A04D473505da62142069">
+											<GradientLink
+												href="https://docs.nation3.org/agreements/creating-an-agreement"
+												caption="$NATION"
+											/>
+										</a>
+									</span>
 								)}
 								<div className="flex w-full px-8 my-5">
 									<hr className="w-full" />
@@ -383,9 +390,7 @@ export const JoinableAgreementActions = ({
 								/>
 							</>
 						) : (
-							<Permit2Setup
-								tokens={permitTokens}
-							/>
+							<Permit2Setup tokens={permitTokens} />
 						)}
 					</div>
 				</FlowModal>

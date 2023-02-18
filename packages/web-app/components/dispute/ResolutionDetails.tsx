@@ -3,12 +3,7 @@ import { Position, useDispute } from "./context/DisputeResolutionContext";
 import { Accordion } from "flowbite-react";
 import { useCohort } from "../../hooks/useCohort";
 import { CountDown } from "../../components/CountDown";
-import {
-	ActionBadge,
-	Button,
-	Table,
-	utils as n3utils,
-} from "@nation3/ui-components";
+import { ActionBadge, Button, Table, utils as n3utils } from "@nation3/ui-components";
 import { useMemo } from "react";
 import { AccountDisplay } from "../AccountDisplay";
 import { CardHeader } from "../CardHeader";
@@ -19,7 +14,10 @@ const SettlementTable = ({ token, positions }: { token: string; positions: Posit
 			columns={["participant", "stake"]}
 			data={positions.map(({ party, balance }, index) => [
 				<AccountDisplay key={index} address={party} />,
-				<b key={index}> {utils.formatUnits(balance)} ${token}</b>,
+				<b key={index}>
+					{" "}
+					{utils.formatUnits(balance)} ${token}
+				</b>,
 			])}
 		/>
 	);
@@ -100,8 +98,8 @@ export const ProposedResolutionDetails = () => {
 								<Accordion.Panel key={i}>
 									<Accordion.Title>
 										#{txNonce} Settlement proposed by{" "}
-										<AccountDisplay address={confirmations[0].owner} /> |{" "}
-										{confirmations.length}/{confirmationsRequired} approvals
+										<AccountDisplay address={confirmations[0].owner} /> | {confirmations.length}/
+										{confirmationsRequired} approvals
 									</Accordion.Title>
 									<Accordion.Content>
 										<div className="flex flex-col gap-8">

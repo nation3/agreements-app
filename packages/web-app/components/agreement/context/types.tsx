@@ -20,7 +20,7 @@ export interface Token {
 	symbol: string;
 	decimals: number;
 	address: string;
-};
+}
 
 export type PositionMap = { [address: string]: PositionParams };
 export type ResolverMap = { [address: string]: ResolverParams };

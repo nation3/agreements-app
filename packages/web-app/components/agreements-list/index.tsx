@@ -23,9 +23,7 @@ export const AgreementList = () => {
 				<Table
 					className={"max-h-full"}
 					columns={
-						screen === ScreenType.Desktop
-							? ["Id", "Created on", "Status"]
-							: ["Id", "Status"]
+						screen === ScreenType.Desktop ? ["Id", "Created on", "Status"] : ["Id", "Status"]
 					}
 					data={agreements.map(({ id, createdAt, status }) =>
 						screen === ScreenType.Desktop
