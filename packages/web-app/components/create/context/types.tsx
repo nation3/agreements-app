@@ -8,6 +8,7 @@ export interface Token {
 	symbol: string;
 	address: string;
 	decimals: number;
+	icon?: string | StaticImageData;
 }
 
 export enum CreateView {
