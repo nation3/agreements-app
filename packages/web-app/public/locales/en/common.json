@@ -26,6 +26,9 @@
             "description": "These are the terms that the parties who enter the agreement will abide by. If one of the parties fails to comply with these terms, their financial stake can be taken away to compensate the other parties. The terms must be written in Linked Markdown.",
             "warning": "You need to provide a valid terms file to continue."
         },
+        "collateralToken": {
+            "description": "Set the parties collateral token:"
+        },
         "agreementPositions": {
             "title": "2. Parties and stakes",
             "description": "These are the participants that can enter the agreement, and how much collateral they must deposit to enter it.",

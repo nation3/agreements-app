@@ -1,6 +1,5 @@
 import { ChangeEvent, useMemo, useState } from "react";
-import { PlusIcon } from "@heroicons/react/20/solid";
-import { XCircleIcon } from "@heroicons/react/24/outline";
+import { PlusCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import {
 	Button,
 	ButtonBase,
@@ -108,7 +107,7 @@ export const AgreementCreationForm = () => {
 			<div className="flex flex-col gap-4">
 				<h2 className="font-display font-medium text-xl">{t("create.agreementPositions.title")}</h2>
 				<div className="mb-4">
-					<p className="mb-4 text-slate-500 text-md">Set the parties collateral token:</p>
+					<p className="mb-4 text-slate-500 text-md">{t("create.collateralToken.description")}</p>
 					<div className="flex items-center">
 						<button
 							className="hover:bg-gray-100 hover:border-gray-400 transition-colors bg-gray-50 text-gray-800 text-sm rounded-lg block p-2.5 px-5 border border-gray-300 shadow-sm"
@@ -116,7 +115,6 @@ export const AgreementCreationForm = () => {
 						>
 							Select token
 						</button>
-						{/* <p className="ml-5">${token ? token.symbol : ""}</p> */}
 						{token && (
 							<div className="ml-4 flex items-center">
 								{token.icon && <Image height={20} width={20} alt={token.name} src={token.icon} />}
@@ -128,12 +126,11 @@ export const AgreementCreationForm = () => {
 				<p className="text-slate-500 text-md">{t("create.agreementPositions.description")}</p>
 				<div className="flex flex-col gap-2">
 					<div className="flex items-center">
-						<div className="basis-3/5 text-slate-400 text-sm">Parties addresses</div>
+						<div className="basis-3/5 text-slate-400 text-sm">Addresses</div>
 						<div className="basis-2/5 mr-8 text-slate-400 text-sm">
 							{token && (
 								<div className="flex items-center">
 									<p className="mr-2 text-slate-400">${token.symbol}</p>
-									{/* {token.icon && <Image height={15} width={15} alt={token.name} src={token.icon} />} */}
 								</div>
 							)}
 						</div>
@@ -143,7 +140,7 @@ export const AgreementCreationForm = () => {
 							<ParticipantRow
 								ensProvider={provider}
 								positions={positions}
-								token={token ? "$" + token?.symbol : ""}
+								token={token ? `${token.symbol}` : "$"}
 								index={index}
 								onChange={setPositions}
 							/>
@@ -160,7 +157,7 @@ export const AgreementCreationForm = () => {
 					))}
 					<div className="flex justify-center">
 						<IconButton
-							icon={<PlusIcon className="w-6 h-6" />}
+							icon={<PlusCircleIcon className="w-6 h-6" />}
 							rounded={true}
 							onClick={() =>
 								setPositions([...positions, { account: "", balance: utils.parseUnits("0") }])
@@ -182,7 +179,7 @@ export const AgreementCreationForm = () => {
 			</div>
 			<Modal show={isTokenModalOpen} onClose={() => setIsTokenModalOpen(false)}>
 				<Modal.Header>
-					<p className="text-slate-600">{"Select the collateral token:"}</p>
+					<p className="text-slate-600">{"Select the collateral token"}</p>
 				</Modal.Header>
 				<Modal.Body>
 					<div className="flex flex-col gap-2">

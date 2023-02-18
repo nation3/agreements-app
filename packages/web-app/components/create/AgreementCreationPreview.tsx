@@ -18,7 +18,8 @@ import { useEffect } from "react";
 
 export const AgreementCreationPreview = () => {
 	const router = useRouter();
-	const { title, terms, termsHash, token, id, salt, positions, changeView } = useAgreementCreation();
+	const { title, terms, termsHash, token, id, salt, positions, changeView } =
+		useAgreementCreation();
 
 	const {
 		create,
@@ -72,7 +73,9 @@ export const AgreementCreationPreview = () => {
 				columns={["participant", "stake"]}
 				data={positions.map(({ account, balance }, index) => [
 					<AccountDisplay key={index} address={account} />,
-					<b key={index}> {utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}</b>,
+					<b key={index}>
+						{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
+					</b>,
 				])}
 			/>
 			{/* Info */}
