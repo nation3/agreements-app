@@ -32,6 +32,7 @@ interface Permit2TransferSignatureConfig {
 interface Permit2BatchTransferSignatureConfig {
 	tokenTransfers: TokenTransfer[];
 	spender: string;
+	address: string;
 }
 
 export const usePermit2Allowance = ({
@@ -80,10 +81,10 @@ export const usePermit2TransferSignature = ({
 		() => ({
 			permitted: tokenTransfer,
 			spender,
-			nonce,
+			nonce: nonce ?? 0,
 			deadline: constants.MaxInt256,
 		}),
-		[tokenTransfer],
+		[tokenTransfer, nonce],
 	);
 
 	const domain = useMemo(
@@ -119,23 +120,21 @@ export const usePermit2TransferSignature = ({
 export const usePermit2BatchTransferSignature = ({
 	tokenTransfers,
 	spender,
+	address,
 }: Permit2BatchTransferSignatureConfig) => {
 	const { permit2Address } = useConstants();
 	const { chain } = useNetwork();
 
-	const nonce = useMemo(
-		() => BigNumber.from(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)),
-		[],
-	);
+	const nonce = useAvailableNonce(address);
 
 	const permit: PermitBatchTransferFrom = useMemo(
 		() => ({
 			permitted: tokenTransfers,
 			spender,
-			nonce,
+			nonce: nonce ?? 0,
 			deadline: constants.MaxInt256,
 		}),
-		[tokenTransfers],
+		[tokenTransfers, nonce],
 	);
 
 	const domain = useMemo(
@@ -169,6 +168,7 @@ export const usePermit2BatchTransferSignature = ({
 };
 
 export const useAvailableNonce = (address: string) => {
+	const { permit2Address } = useConstants();
 	const [wordPos, setWordPos] = useState(0);
 	const [nonce, setNonce] = useState<BigNumber>();
 

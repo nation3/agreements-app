@@ -244,6 +244,7 @@ export const JoinableAgreementActions = ({
 				{ token: collateralToken?.address ?? constants.AddressZero, amount: requiredCollateral },
 			],
 			spender: frameworkAddress,
+			address: address ?? constants.AddressZero,
 		});
 
 	useEffect(() => {
