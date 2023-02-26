@@ -7,9 +7,12 @@ import {
 	AgreementDataProvider,
 } from "../../components/agreement";
 import { DisputeResolutionProvider, DisputeActions } from "../../components/dispute";
-import { frameworkAddress } from "../../lib/constants";
 
 import { useAgreementData } from "../../components/agreement/context/AgreementDataContext";
+
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { GetServerSideProps } from "next";
+import { useConstants } from "../../hooks/useConstants";
 
 const Agreement = () => {
 	const { status } = useAgreementData();
@@ -23,6 +26,7 @@ const Agreement = () => {
 };
 
 const AgreementPage = () => {
+	const { frameworkAddress } = useConstants();
 	const router = useRouter();
 	const { query } = router;
 
@@ -42,6 +46,15 @@ const AgreementPage = () => {
 			</AgreementDataProvider>
 		</div>
 	);
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale as string, ["common"])),
+			// Will be passed to the page component as props
+		},
+	};
 };
 
 export default AgreementPage;

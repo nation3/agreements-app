@@ -19,9 +19,10 @@ export type IStepsProps = {
 	steps: IStep[];
 	icon: string | null;
 	title: string;
+	isCTAdisabled?: boolean;
 	stepIndex: number;
 	// Set up as loading if the step in progress. Back to null to stop loading animation.
-	loadingIndex?: number | null | undefined;
+	isStepLoading?: boolean | undefined;
 	areStepsFinished?: boolean;
 	finishMessage?: ReactElement | undefined;
 	finishImage?: string | undefined;
@@ -48,20 +49,20 @@ const IStepsDefaultProps = {
 	icon: null,
 	title: "Title",
 	stepIndex: 0,
-	loadingIndex: 0,
+	isLoading: true,
 };
 
 type IStepInfo = {
 	stepInfo: IStep;
 	index: number;
 	stepIndex: number;
-	loadingIndex: number | null | undefined;
+	isLoading: boolean;
 	listLenght: number;
 };
 
 const Step = (props: IStepInfo) => {
 	const { screen } = useScreen();
-	const { stepInfo, index, stepIndex, listLenght, loadingIndex } = props;
+	const { stepInfo, index, stepIndex, listLenght, isLoading } = props;
 
 	return (
 		<div
@@ -76,10 +77,10 @@ const Step = (props: IStepInfo) => {
 				<div
 					className={cx(
 						"transition-all text-slate-600 font-semibold border-2 w-10 h-10 p-2 m-2 text-sm rounded-full flex items-center justify-center relative",
-						index === stepIndex && loadingIndex !== index && "border-bluesky ",
+						index === stepIndex && "border-bluesky ",
 					)}
 				>
-					{index === loadingIndex && (
+					{index === stepIndex && isLoading && (
 						<Spinner className="w-11 h-11 absolute -left-1 -top-1 text-bluesky" />
 					)}
 					{index + 1}
@@ -127,12 +128,17 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 		// icon,
 		// title,
 		stepIndex,
-		loadingIndex,
+		isStepLoading,
+		isCTAdisabled = false,
 		areStepsFinished,
 		finishImage,
 		finishMessage,
 		finishAction,
 	} = props;
+
+	const stepAction = () => {
+		!isCTAdisabled && steps[stepIndex].action();
+	};
 
 	return (
 		<section className="max-w-3xl w-full bg-white rounded-lg relative shadow-xl">
@@ -146,7 +152,7 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 			</div> */}
 
 			{areStepsFinished ? (
-				<div className="border-t-2 border-bluesky-200 p-8 flex flex-col items-center">
+				<div className="p-8 flex flex-col items-center">
 					<div className="mb-8">
 						<div className="w-32">{finishImage && <img className="" src={finishImage} />}</div>
 					</div>
@@ -154,7 +160,7 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 					<Button className="px-6 w-32" label="Finish" onClick={finishAction} />
 				</div>
 			) : (
-				<div className="border-t-2 border-bluesky-200 pb-24 pt-8 px-8 flex justify-between">
+				<div className="pb-24 pt-8 px-8 flex justify-between">
 					<div className="w-full pr-16 relative">
 						{steps?.map((step, index) => (
 							<Step
@@ -162,7 +168,7 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 								listLenght={steps.length}
 								stepInfo={step}
 								stepIndex={stepIndex}
-								loadingIndex={loadingIndex}
+								isLoading={isStepLoading ?? false}
 								index={index}
 							/>
 						))}
@@ -176,18 +182,18 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 			)}
 			{!areStepsFinished && (
 				<div
-					onClick={steps[stepIndex].action}
+					onClick={stepAction}
 					className={cx(
 						"py-3 group transition-all px-5 m-5 border-bluesky border-2 rounded-lg absolute bottom-3 right-3 flex justify-start min-w-[200px] items-center text-bluesky gap-2",
-						loadingIndex !== null
-							? "opacity-30"
+						isStepLoading || isCTAdisabled
+							? "opacity-50"
 							: "cursor-pointer  hover:bg-bluesky hover:text-white",
 					)}
 				>
 					<p className="">{!areStepsFinished ? steps && steps[stepIndex].stepCTA : "Finish"}</p>
 					<ArrowRightIcon
 						className={cx(
-							loadingIndex === null && "group-hover:ml-1 group-hover:mr-0 transition-all",
+							isStepLoading && "group-hover:ml-1 group-hover:mr-0 transition-all",
 							"mr-1 h-5",
 						)}
 					/>

@@ -6,10 +6,10 @@ import {
 } from "@uniswap/permit2-sdk";
 import { useTokenAllowance, useTokenApprovals } from "./useToken";
 import permit2Interface from "../abis/Permit2.json";
-import { permit2Address } from "../lib/constants";
+import { firstZeroBitPosition } from "../utils/bytes";
 import { BigNumber, BigNumberish, constants } from "ethers";
 import { useEffect, useMemo, useState } from "react";
-import { firstZeroBitPosition } from "../utils/bytes";
+import { useConstants } from "./useConstants";
 
 interface Permit2AllowanceConfig {
 	account: string;
@@ -40,6 +40,7 @@ export const usePermit2Allowance = ({
 	required,
 	enabled = true,
 }: Permit2AllowanceConfig) => {
+	const { permit2Address } = useConstants();
 	const tokenAllowanceConfig = {
 		address: token,
 		owner: account,
@@ -70,6 +71,7 @@ export const usePermit2TransferSignature = ({
 	spender,
 	address,
 }: Permit2TransferSignatureConfig) => {
+	const { permit2Address } = useConstants();
 	const { chain } = useNetwork();
 
 	const nonce = useAvailableNonce(address);
@@ -118,6 +120,7 @@ export const usePermit2BatchTransferSignature = ({
 	tokenTransfers,
 	spender,
 }: Permit2BatchTransferSignatureConfig) => {
+	const { permit2Address } = useConstants();
 	const { chain } = useNetwork();
 
 	const nonce = useMemo(

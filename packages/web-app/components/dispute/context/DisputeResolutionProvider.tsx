@@ -5,11 +5,14 @@ import { useResolution } from "../../../hooks/useArbitrator";
 import { useResolutionProposals } from "../../../hooks/useCohort";
 import { abiEncodingPacked, hashEncoding } from "../../../utils/hash";
 import { fetchResolutionMetadata } from "../../../utils";
+import { useConstants } from "../../../hooks/useConstants";
+import { useToken } from "wagmi";
 
 import {
 	DisputeResolutionContext,
 	DisputeResolutionContextType,
 	Position,
+	Token,
 } from "./DisputeResolutionContext";
 
 export const DisputeResolutionProvider = ({
@@ -26,9 +29,39 @@ export const DisputeResolutionProvider = ({
 		enabled: id != "undefined",
 	});
 
+	// const { amount } = useAppealConfig();
+
+	const tokenAddress = useMemo(() => {
+		return data?.token;
+	}, [data]);
+
+	const { data: tokenData } = useToken({
+		address: tokenAddress,
+		enabled: tokenAddress != undefined,
+	});
+
+	const collateralToken = useMemo<Token | undefined>(() => {
+		if (tokenData)
+			return {
+				name: tokenData.name,
+				symbol: tokenData.symbol,
+				decimals: tokenData.decimals,
+				address: tokenData.address,
+			};
+	}, [tokenData]);
+
 	const positions = useMemo(() => {
 		return agreementPositions?.map(([party, balance]) => ({ party, balance }));
 	}, [agreementPositions]);
+
+	// TODO: Change on Next iteration
+	const { appealCost } = useConstants();
+
+	/* 	
+	const appealCost = useMemo(() => {
+		return amount ?? BigNumber.from(0);
+	}, [amount]); 
+	*/
 
 	const balance = useMemo(() => {
 		return agreementPositions?.reduce(
@@ -70,6 +103,7 @@ export const DisputeResolutionProvider = ({
 		id,
 		status: data?.status == "Disputed" ? "Open" : "Closed",
 		termsHash: data?.termsHash,
+		collateralToken: collateralToken,
 		balance,
 		positions,
 	};
@@ -91,6 +125,7 @@ export const DisputeResolutionProvider = ({
 	const provider: DisputeResolutionContextType = {
 		dispute,
 		resolution,
+		appealCost,
 		proposedResolutions: proposals ?? [],
 	};
 

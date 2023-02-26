@@ -3,11 +3,11 @@ import Safe from "@safe-global/safe-core-sdk";
 import { SafeMultisigConfirmationResponse } from "@safe-global/safe-core-sdk-types";
 import SafeServiceClient from "@safe-global/safe-service-client";
 import EthersAdapter from "@safe-global/safe-ethers-lib";
-import { arbitratorAddress, cohortAddress, safeTxServiceUrl } from "../lib/constants";
 import { useEffect, useState } from "react";
 import { ethers, Signer, BigNumber, constants } from "ethers";
 import { useAccount, useSigner } from "wagmi";
 import { ResolutionInput } from "./useArbitrator";
+import { useConstants } from "./useConstants";
 
 export type ResolutionProposal = {
 	txHash: string;
@@ -55,6 +55,7 @@ const useSafe = ({
 };
 
 export const useCohort = () => {
+	const { arbitratorAddress, cohortAddress, safeTxServiceUrl } = useConstants();
 	const safeAddress = cohortAddress;
 	const [judges, setJudges] = useState<string[]>();
 	const { data: signer } = useSigner();
@@ -129,12 +130,14 @@ export const useCohort = () => {
 type SafeDecodedParameters = { name: string; type: string; value: any }[];
 
 export const useResolutionProposals = ({ id }: { id: string }) => {
+	const { cohortAddress, safeTxServiceUrl } = useConstants();
 	const { data: signer } = useSigner();
 	const { safeServiceClient } = useSafe({
 		safeAddress: cohortAddress,
 		signer: signer as Signer,
 		txServiceUrl: safeTxServiceUrl,
 	});
+
 	const [proposals, setProposals] = useState<ResolutionProposal[]>();
 
 	const fetchProposalForDispute = async (id: string) => {

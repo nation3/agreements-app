@@ -1,10 +1,12 @@
 // import { BigNumber, utils } from "ethers";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import frameworkInterface from "../abis/CollateralAgreementFramework.json";
 import { Resolver } from "../utils/criteria";
-import { frameworkAddress } from "../lib/constants";
+import { useConstants } from "./useConstants";
+import { BigNumber } from "ethers";
+import { frameworkAddress } from "../lib/constants-goerli";
 
 const frameworkAbi = frameworkInterface.abi;
 
@@ -24,6 +26,7 @@ const agreementStatus = (status: number) => {
 };
 
 export const useAgreementData = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
+	const { frameworkAddress } = useConstants();
 	const { data: agreementData } = useContractRead({
 		addressOrName: frameworkAddress,
 		contractInterface: frameworkAbi,
@@ -64,6 +67,7 @@ export const useAgreementCreate = ({
 	onSuccess?: (data?: unknown) => void;
 	onTxSuccess?: (data?: unknown) => void;
 }) => {
+	const { frameworkAddress } = useConstants();
 	const { write, data, ...args } = useContractWrite({
 		mode: "recklesslyUnprepared",
 		addressOrName: frameworkAddress,
@@ -77,6 +81,11 @@ export const useAgreementCreate = ({
 			}
 		},
 		onSuccess,
+		overrides: {
+			gasLimit: 190000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
+		},
 	});
 
 	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
@@ -105,6 +114,8 @@ export const useAgreementCreate = ({
 };
 
 export const useAgreementJoin = () => {
+	const { frameworkAddress } = useConstants();
+
 	const {
 		write: joinAgreement,
 		data,
@@ -116,6 +127,11 @@ export const useAgreementJoin = () => {
 		functionName: "joinAgreement",
 		onError(error) {
 			console.log(error);
+		},
+		overrides: {
+			gasLimit: 320000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
@@ -147,6 +163,7 @@ export const useAgreementJoin = () => {
 };
 
 export const useAgreementDispute = ({ id }: { id: string }) => {
+	const { frameworkAddress } = useConstants();
 	const {
 		write: disputeAgreement,
 		data,
@@ -158,6 +175,11 @@ export const useAgreementDispute = ({ id }: { id: string }) => {
 		functionName: "disputeAgreement",
 		onError(error) {
 			console.log(error);
+		},
+		overrides: {
+			gasLimit: 120000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
@@ -175,6 +197,7 @@ export const useAgreementDispute = ({ id }: { id: string }) => {
 };
 
 export const useAgreementFinalize = ({ id }: { id: string }) => {
+	const { frameworkAddress } = useConstants();
 	const {
 		write: finalizeAgreement,
 		data,
@@ -186,6 +209,11 @@ export const useAgreementFinalize = ({ id }: { id: string }) => {
 		functionName: "finalizeAgreement",
 		onError(error) {
 			console.log(error);
+		},
+		overrides: {
+			gasLimit: 120000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
@@ -203,6 +231,7 @@ export const useAgreementFinalize = ({ id }: { id: string }) => {
 };
 
 export const useAgreementWithdraw = ({ id }: { id: string }) => {
+	const { frameworkAddress } = useConstants();
 	const {
 		write: withdrawFromAgreement,
 		data,
@@ -214,6 +243,11 @@ export const useAgreementWithdraw = ({ id }: { id: string }) => {
 		functionName: "withdrawFromAgreement",
 		onError(error) {
 			console.log(error);
+		},
+		overrides: {
+			gasLimit: 120000,
+			// maxFeePerGas: 250000000,
+			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 
@@ -228,4 +262,25 @@ export const useAgreementWithdraw = ({ id }: { id: string }) => {
 	};
 
 	return { withdraw, data, isProcessing, isTxSuccess, ...args };
+};
+
+export const useDisputeConfig = (): {
+	token: string | undefined;
+	amount: BigNumber | undefined;
+	recipient: string | undefined;
+} => {
+	const { frameworkAddress } = useConstants();
+	const { data: appealConfig } = useContractRead({
+		addressOrName: frameworkAddress,
+		contractInterface: frameworkAbi,
+		functionName: "deposits",
+		onError(error) {
+			console.log(error);
+		},
+	});
+	return {
+		token: appealConfig?.token,
+		amount: appealConfig?.amount,
+		recipient: appealConfig?.recipient,
+	};
 };

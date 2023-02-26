@@ -2,6 +2,7 @@ export interface PositionParams {
 	status: number;
 	balance: string;
 }
+
 export interface ResolverParams {
 	balance: string;
 	proof: string[];
@@ -10,7 +11,15 @@ export interface ResolverParams {
 export interface UserPosition {
 	status: number;
 	balance: string;
+	deposit?: number | undefined;
 	resolver?: ResolverParams;
+}
+
+export interface Token {
+	name: string;
+	symbol: string;
+	decimals: number;
+	address: string;
 }
 
 export type PositionMap = { [address: string]: PositionParams };

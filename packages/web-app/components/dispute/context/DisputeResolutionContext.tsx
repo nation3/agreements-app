@@ -3,11 +3,18 @@ import { BigNumber } from "ethers";
 import { ResolutionProposal } from "../../../hooks/useCohort";
 
 export type Position = { party: string; balance: BigNumber };
+export interface Token {
+	name: string;
+	symbol: string;
+	decimals: number;
+	address: string;
+}
 
 export type Dispute = {
 	id: string;
 	status: string;
 	termsHash: string | undefined;
+	collateralToken: Token | undefined;
 	balance: BigNumber | undefined;
 	positions: Position[] | undefined;
 };
@@ -22,6 +29,7 @@ export type Resolution = {
 
 export type DisputeResolutionContextType = {
 	dispute: Dispute;
+	appealCost: BigNumber | undefined;
 	resolution: Resolution | undefined;
 	proposedResolutions: ResolutionProposal[];
 };

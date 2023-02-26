@@ -1,22 +1,24 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useAgreementData } from "./context/AgreementDataContext";
 import { PositionMap } from "./context/types";
 import { PositionStatusBadge } from "../../components";
 import {
 	Table,
-	Button,
+	ButtonBase,
 	ActionBadge,
 	utils as n3utils,
-	AddressDisplay,
 	useScreen,
 	ScreenType,
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
-import { useProvider } from "wagmi";
 import { Modal } from "flowbite-react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import { AgreementConstants } from "./AgreementConstants";
+import { ShareIcon, CheckIcon } from "@heroicons/react/20/solid";
 import { CardHeader } from "../CardHeader";
+import { AccountDisplay } from "../AccountDisplay";
+import { useUrl } from "../../hooks";
+import { useTranslation } from "next-i18next";
+import { Token } from "./context/types";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -25,8 +27,48 @@ interface AgreementDataDisplayProps {
 	termsHash: string;
 }
 
-const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) => {
-	const provider = useProvider({ chainId: 1 });
+const ShareButton = ({ url }: { url: string }) => {
+	const [isShared, setIsShared] = useState<boolean>(false);
+	const icon = useMemo(
+		() =>
+			isShared ? (
+				<span className="p-2 hover:bg-bluesky-600/10 rounded-lg">
+					<CheckIcon className="w-6 h-6 text-bluesky-600" />
+				</span>
+			) : (
+				<span className="p-2">
+					<ShareIcon className="w-6 h-6" />
+				</span>
+			),
+		[isShared],
+	);
+
+	const copy = useCallback(async () => {
+		try {
+			await navigator.share({ url });
+		} catch {
+			navigator.clipboard.writeText(String(url));
+		}
+		setIsShared(true);
+		setTimeout(() => setIsShared(false), 1000);
+	}, [url]);
+
+	return (
+		<div>
+			<ButtonBase className="bg-transparent hover:bg-gray-50 text-gray-500" onClick={() => copy()}>
+				{icon}
+			</ButtonBase>
+		</div>
+	);
+};
+
+const PositionsTable = ({
+	positions,
+	token,
+}: {
+	positions: PositionMap | undefined;
+	token: Token | undefined;
+}) => {
 	const { screen } = useScreen();
 
 	return (
@@ -39,13 +81,19 @@ const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) =
 			data={Object.entries(positions ?? {}).map(([account, { balance, status }], index) =>
 				screen === ScreenType.Desktop
 					? [
-							<AddressDisplay key={index} ensProvider={provider} address={account} />,
-							<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
+							<AccountDisplay key={index} address={account} />,
+							<b key={index}>
+								{" "}
+								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
+							</b>,
 							<PositionStatusBadge key={index} status={status} />,
 					  ]
 					: [
-							<AddressDisplay key={index} ensProvider={provider} address={account} />,
-							<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
+							<AccountDisplay key={index} address={account} />,
+							<b key={index}>
+								{" "}
+								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
+							</b>,
 					  ],
 			)}
 		/>
@@ -58,9 +106,11 @@ export const AgreementDataDisplay = ({
 	status,
 	termsHash,
 }: AgreementDataDisplayProps) => {
+	const { t } = useTranslation("common");
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
+	const { url: shareUrl } = useUrl();
 
 	const copyAgreementId = useCallback(() => {
 		if (id) {
@@ -78,13 +128,15 @@ export const AgreementDataDisplay = ({
 		}
 	}, [termsHash]);
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	useEffect(() => {}, [isHashCopied, isAgreementId]);
-
 	return (
 		<>
 			<div className="flex flex-col gap-3 text-gray-700">
-				<CardHeader title={title} id={id} status={status} />
+				<CardHeader
+					title={title}
+					id={id}
+					status={status}
+					actions={<ShareButton url={shareUrl} />}
+				/>
 				<div className="flex flex-col md:flex-row gap-1 justify-start md:items-center">
 					<ActionBadge
 						label="ID"
@@ -109,24 +161,21 @@ export const AgreementDataDisplay = ({
 
 			{/* TERMS HASH INFO MOCAL */}
 			<Modal show={isTermsModalUp} onClose={() => setIsTermsModalUp(false)}>
-				<Modal.Header>{AgreementConstants.termsHash}</Modal.Header>
+				<Modal.Header>{t("agreement.termsHash")}</Modal.Header>
 				<Modal.Body>
 					<div className="space-y-6">
 						<p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-							{AgreementConstants.termsDescription}
+							{t("agreement.termsHashDescription")}
 						</p>
 					</div>
 				</Modal.Body>
-				<Modal.Footer>
-					<Button label="Close" onClick={() => setIsTermsModalUp(false)}></Button>
-				</Modal.Footer>
 			</Modal>
 		</>
 	);
 };
 
 export const AgreementDetails = () => {
-	const { id, title, status, termsHash, positions } = useAgreementData();
+	const { id, title, status, termsHash, collateralToken, positions } = useAgreementData();
 
 	return (
 		<>
@@ -138,7 +187,7 @@ export const AgreementDetails = () => {
 				termsHash={termsHash || constants.HashZero}
 			/>
 			{/* Participants table */}
-			<PositionsTable positions={positions} />
+			<PositionsTable token={collateralToken} positions={positions} />
 		</>
 	);
 };

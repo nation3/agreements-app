@@ -1,13 +1,19 @@
 import { createContext, useContext } from "react";
-import { CreateView, InputPositionList } from "./types";
+import { CreateView, InputPositionList, Token } from "./types";
 
 export type AgreementCreationContextType = {
 	view: CreateView;
 	salt: string;
+	title: string;
 	terms: string;
+	termsHash: string;
+	token: Token | undefined;
+	id: string;
 	positions: InputPositionList;
 	changeView: (view: CreateView) => void;
+	setTitle: (text: string) => void;
 	setTerms: (text: string) => void;
+	setToken: (token: Token) => void;
 	setPositions: (positions: InputPositionList) => void;
 };
 
