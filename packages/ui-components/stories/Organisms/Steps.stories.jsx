@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Steps from '../../src/components/Organisms/steps/Steps';
-import courtIcon from "../../../web-app/assets/svgs/court.svg";
-import nationCoinIcon from "../../../web-app/assets/svgs/nation_coin.svg";
+import courtIcon from "../assets/court.svg";
+import nationCoinIcon from "../assets/nation_coin.svg";
 
 export default {
 	component: Steps,

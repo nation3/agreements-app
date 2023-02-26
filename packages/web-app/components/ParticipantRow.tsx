@@ -12,10 +12,12 @@ type Position = { account: string; balance: BigNumber };
 export const ParticipantRow = ({
 	positions,
 	index,
+	token,
 	onChange,
 	ensProvider,
 }: {
 	positions: Position[];
+	token: string;
 	index: number;
 	onChange?: (positions: Position[]) => void;
 	ensProvider?: providers.BaseProvider;
@@ -49,7 +51,7 @@ export const ParticipantRow = ({
 			<div className="basis-2/5">
 				<TokenBalanceInput
 					defaultValue={utils.formatUnits(positions[index].balance)}
-					token={"NATION"}
+					token={token}
 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
 						const purged = purgeFloat(e.target.value);
 						if (parseFloat(purged) < 0) return;

@@ -3,7 +3,7 @@ import { ReactNode, useState, useMemo } from "react";
 import { AgreementCreationContext, AgreementCreationContextType } from "./AgreementCreationContext";
 
 import { hexHash, abiEncoding, hashEncoding } from "../../../utils";
-import { CreateView } from "./types";
+import { CreateView, Token } from "./types";
 import { useConstants } from "../../../hooks/useConstants";
 
 export const AgreementCreationProvider = ({ children }: { children: ReactNode }) => {
@@ -11,6 +11,7 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 	const [salt] = useState(hashEncoding(Date.now().toString()));
 	const [title, setTitle] = useState("");
 	const [terms, setTerms] = useState("");
+	const [token, setToken] = useState<Token>();
 	const [positions, setPositions] = useState([
 		{ account: "", balance: BigNumber.from(0) },
 		{ account: "", balance: BigNumber.from(0) },
@@ -30,12 +31,14 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 		salt,
 		title,
 		terms,
+		token,
 		termsHash,
 		positions,
 		id,
 		changeView,
 		setTitle,
 		setTerms,
+		setToken,
 		setPositions,
 	};
 

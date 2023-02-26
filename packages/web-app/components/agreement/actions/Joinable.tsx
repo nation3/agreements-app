@@ -2,19 +2,17 @@ import { Tooltip } from "flowbite-react";
 import { useMemo, useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { BigNumber, BigNumberish, constants, utils } from "ethers";
-// import { useTokenBalance } from '../../../hooks/useToken';
 import { useAgreementJoin } from "../../../hooks/useAgreement";
 import { UserPosition } from "../context/types";
 import Image from "next/image";
 import { Button, Steps, IStep } from "@nation3/ui-components";
 import { Modal as FlowModal } from "flowbite-react";
-import courtIcon from "../../../assets/svgs/court.svg";
-import nationCoinIcon from "../../../assets/svgs/nation_coin.svg";
-import joinedIcon from "../../../assets/svgs/joined.svg";
-// import joinedSuccessIcon from "../../../assets/svgs/joined_success.svg";
+import courtIcon from "../../../public/svgs/court.svg";
+import nationCoinIcon from "../../../public/svgs/nation_coin.svg";
+import joinedIcon from "../../../public/svgs/joined.svg";
 import { usePermit2Allowance, usePermit2BatchTransferSignature } from "../../../hooks/usePermit2";
 import { useTranslation } from "next-i18next";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { ExclamationTriangleIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
 import { Permit2Setup } from "../../Permit2Setup";
 import { useTokenBalance } from "../../../hooks/useToken";
 import { GradientLink } from "../../GradientLink";
@@ -29,26 +27,43 @@ const InfoTooltip = ({ info, className }: { info: string; className?: string }) 
 	);
 };
 
+const WarningTooltip = ({ info, className }: { info: string; className?: string }) => {
+	return (
+		<Tooltip style="light" animation="duration-150" content={info}>
+			<ExclamationTriangleIcon className={className} />
+		</Tooltip>
+	);
+};
+
+interface TokenDisplay {
+	amount: BigNumber;
+	symbol: string;
+}
+
 const TokenSummary = ({
-	balance,
+	// balance,
 	deposit,
 	collateral,
+	enoughDeposit = true,
+	enoughCollateral = true,
 }: {
-	balance: BigNumber;
-	deposit: BigNumber;
-	collateral: BigNumber;
+	// balance: BigNumber;
+	deposit: TokenDisplay;
+	collateral: TokenDisplay;
+	enoughDeposit?: boolean;
+	enoughCollateral?: boolean;
 }) => {
 	const { t } = useTranslation("common");
 
-	const formattedBalance = balance ? utils.formatUnits(balance) : "";
+	// const formattedBalance = balance ? utils.formatUnits(balance) : "";
 
 	return (
 		<div className="flex flex-col w-full items-start px-8 md:px-20 py-7 gap-1">
-			<h3 className="text-sm text-slate-400 px-2 mb-1">{t("join.yourBalance")}</h3>
-			<p className="text-sm flex justify-between items-center gap-5 px-2 text-gray-500">
-				<span className="font-semibold text-bluesky-500">{formattedBalance} $NATION</span>
-				{/* TODO: Refactor eval */}
-				{!balance.gte(deposit.add(collateral)) && (
+			{/* <h3 className="text-sm text-slate-400 px-2 mb-1">{t("join.yourBalance")}</h3> */}
+			{/* <p className="text-sm flex justify-between items-center gap-5 px-2 text-gray-500"> */}
+			{/* <span className="font-semibold text-bluesky-500">{formattedBalance} $NATION</span> */}
+			{/* TODO: Refactor eval */}
+			{/*!balance.gte(deposit.add(collateral)) && (
 					<span className="flex items-center gap-1">
 						⚠️ Get some
 						<a href="https://app.balancer.fi/#/ethereum/trade/ether/0x333A4823466879eeF910A04D473505da62142069">
@@ -58,25 +73,32 @@ const TokenSummary = ({
 							/>
 						</a>
 					</span>
-				)}
-			</p>
-			<hr className="border-b mb-2"></hr>
-
+				)*/}
+			{/* </p> */}
+			{/* <hr className="border-b mb-2"></hr> */}
 			<h3 className="text-sm text-slate-400 px-2 mb-1">{t("join.tokenSummary")}</h3>
 			<p className="flex text-sm justify-between items-center gap-5 px-2 text-gray-500">
-				<span className="font-semibold text-bluesky-500">{utils.formatUnits(deposit)} $NATION</span>
+				<span className="font-semibold text-bluesky-500">
+					{utils.formatUnits(deposit.amount)} ${deposit.symbol}
+				</span>
 				<span className="flex items-center gap-1">
 					<span className="text-gray-400">Dispute deposit</span>
 					<InfoTooltip info={t("agreement.depositInfo")} className="w-4 h-4" />
+					{!enoughDeposit && (
+						<WarningTooltip info={"Not enough balance"} className="w-4 h-4 text-yellow-500" />
+					)}
 				</span>
 			</p>
 			<p className="text-sm flex justify-between items-center gap-5 px-2 text-gray-500">
 				<span className="font-semibold text-bluesky-500">
-					{utils.formatUnits(collateral)} $NATION
+					{utils.formatUnits(collateral.amount)} ${collateral.symbol}
 				</span>
 				<span className="flex items-center gap-1">
 					<span className="text-gray-400">Collateral</span>
 					<InfoTooltip info={t("agreement.collateralInfo")} className="w-4 h-4" />
+					{!enoughCollateral && (
+						<WarningTooltip info={"Not enough balance"} className="w-4 h-4 text-yellow-500" />
+					)}
 				</span>
 			</p>
 		</div>
@@ -93,7 +115,7 @@ export const JoinableAgreementActions = ({
 	const { frameworkAddress, NATION } = useConstants();
 	const { t } = useTranslation("common");
 	const { address } = useAccount();
-	const { disputeCost: requiredDeposit } = useAgreementData();
+	const { disputeCost: requiredDeposit, collateralToken, depositToken } = useAgreementData();
 	const [isJoinAgreementModalOpen, setIsJoinAgreementModalOpen] = useState<boolean>(false);
 	const [stepsIndex, setStepsIndex] = useState<number>(0);
 	const [isStepLoading, setStepLoading] = useState<boolean>(false);
@@ -125,50 +147,101 @@ export const JoinableAgreementActions = ({
 	const {
 		isEnough: depositTokenApproved,
 		approve: approveDepositToken,
-		approvalSuccess,
-		approvalError,
+		// approvalSuccess: depositApprovalSuccess,
+		// approvalError: depositApprovalError,
 	} = usePermit2Allowance({
-		token: NATION,
-		account: address || constants.AddressZero,
+		token: depositToken?.address ?? constants.AddressZero,
+		account: address ?? constants.AddressZero,
+		enabled: !!address && !!depositToken?.address,
 	});
 
-	// FIXME: Combine approval for collateral token when != deposit token
-	/* 	const { isEnough: collateralTokenApproved, approve: approveCollateralToken } =
-		usePermit2Allowance({
-			token: NATION,
-			account: address || constants.AddressZero,
-		}); */
-
-	const { balance: nationBalanceData } = useTokenBalance({
-		address: NATION,
-		account: address || constants.AddressZero,
+	const {
+		isEnough: collateralTokenApproved,
+		approve: approveCollateralToken,
+		// approvalSuccess: collateralApprovalSuccess,
+		// approvalError: collateralApprovalError,
+	} = usePermit2Allowance({
+		token: collateralToken?.address ?? constants.AddressZero,
+		account: address ?? constants.AddressZero,
+		enabled: !!address && !!collateralToken?.address,
 	});
 
-	const nationBalance = useMemo(() => {
-		return BigNumber.isBigNumber(nationBalanceData) ? nationBalanceData : BigNumber.from(0);
-	}, [nationBalanceData]);
-	/* 
+	const { balance: depositBalanceData } = useTokenBalance({
+		address: depositToken?.address || constants.AddressZero,
+		account: address || constants.AddressZero,
+		enabled: !!address && !!depositToken?.address,
+	});
+
+	const { balance: collateralBalanceData } = useTokenBalance({
+		address: collateralToken?.address || constants.AddressZero,
+		account: address || constants.AddressZero,
+		enabled: !!address && !!collateralToken?.address,
+	});
+
+	const isSameToken = useMemo((): boolean => {
+		return depositToken?.address === collateralToken?.address;
+	}, [depositToken, collateralToken]);
+
+	const depositUserBalance = useMemo(() => {
+		return BigNumber.isBigNumber(depositBalanceData) ? depositBalanceData : BigNumber.from(0);
+	}, [depositBalanceData]);
+
+	const collateralUserBalance = useMemo(() => {
+		return BigNumber.isBigNumber(collateralBalanceData) ? collateralBalanceData : BigNumber.from(0);
+	}, [collateralBalanceData]);
+
+	const enoughDeposit = useMemo((): boolean => {
+		return depositUserBalance.gte(requiredDeposit);
+	}, [depositUserBalance, requiredDeposit]);
+
+	const enoughCollateral = useMemo((): boolean => {
+		return collateralUserBalance.gte(requiredCollateral);
+	}, [collateralUserBalance, requiredCollateral]);
+
+	const missingNATION = useMemo((): boolean => {
+		if (isSameToken) {
+			return depositUserBalance.lt(requiredDeposit.add(requiredCollateral));
+		}
+		return !enoughDeposit;
+	}, [isSameToken, requiredDeposit, requiredCollateral, depositUserBalance, enoughDeposit]);
+
 	const enoughBalance = useMemo((): boolean => {
-		if (depositTokenBalance && collateralTokenBalance) {
-			return requiredCollateral.lte(BigNumber.from(collateralTokenBalance));
-		} else {
-			return false;
+		if (isSameToken) {
+			return depositUserBalance.gte(requiredDeposit.add(requiredCollateral));
 		}
-	}, [depositTokenBalance, collateralTokenBalance, requiredCollateral]);
- */
-	useEffect(() => {
-		if (approvalSuccess || approvalError) {
-			setStepLoading(false);
+		return depositUserBalance.gte(requiredDeposit) && collateralUserBalance.gte(requiredCollateral);
+	}, [isSameToken, depositUserBalance, collateralUserBalance, requiredDeposit, requiredCollateral]);
+
+	const permitTokens = useMemo(() => {
+		const tokens = [
+			{
+				address: depositToken?.address ?? constants.AddressZero,
+				name: depositToken?.symbol ?? "NATION",
+				isApproved: depositTokenApproved,
+				approve: approveDepositToken,
+			},
+		];
+		if (depositToken?.address !== collateralToken?.address) {
+			tokens.push({
+				address: collateralToken?.address ?? constants.AddressZero,
+				name: collateralToken?.symbol ?? "NATION",
+				isApproved: collateralTokenApproved,
+				approve: approveCollateralToken,
+			});
 		}
-	}, [approvalSuccess, approvalError]);
+		return tokens;
+	}, [depositToken, collateralToken, depositTokenApproved, approveDepositToken]);
 
 	/* PERMIT SIGNATURE */
 
 	const { permit, signature, signPermit, signSuccess, signError } =
 		usePermit2BatchTransferSignature({
 			tokenTransfers: [
-				{ token: NATION, amount: requiredDeposit ? requiredDeposit : 0 },
-				{ token: NATION, amount: requiredCollateral },
+				{
+					token: depositToken?.address ?? constants.AddressZero,
+					amount: requiredDeposit ? requiredDeposit : 0,
+				},
+				{ token: collateralToken?.address ?? constants.AddressZero, amount: requiredCollateral },
 			],
 			spender: frameworkAddress,
 		});
@@ -179,25 +252,6 @@ export const JoinableAgreementActions = ({
 			setStepLoading(false);
 		}
 	}, [signSuccess, signError]);
-
-	/* LISTENER APPROVAL EVENT */
-	/*
-    useEffect(() => {
-        if (approvalSuccess) {
-                        setStepsIndex(stepsIndex + 1);
-                    setStepsLoadingIndex(null);
-        } else if (approvalError) {
-                        setStepsLoadingIndex(null);
-                    setStepsError({
-                        header: "Approval failed ⚠️",
-                    description:
-                    "The process for the initial approval of the $NATION required failed. Please review it and confirm the signing acordingly",
-                    isError: true,
-            });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [approvalSuccess, approvalError]);
-                    */
 
 	/* STEPS 2 - SIGN */
 
@@ -222,9 +276,9 @@ export const JoinableAgreementActions = ({
 		setStepsIndex(signature ? 1 : 0);
 		// TODO: Rethink this, array mode steps are definetly not the best.
 		/* 		const manageSteps = [...stepsBase];
-        Array.from(Array(index).keys()).forEach(() => {
-                        manageSteps.shift();
-        }); */
+		Array.from(Array(index).keys()).forEach(() => {
+						manageSteps.shift();
+		}); */
 	}, [signature]);
 
 	const steps: IStep[] = [
@@ -304,20 +358,30 @@ export const JoinableAgreementActions = ({
 						</div>
 					</FlowModal.Header>
 					<div className="flex flex-col items-center justify-center pt-4 border-t-2 border-bluesky-200">
-						{depositTokenApproved ? (
+						{depositTokenApproved && collateralTokenApproved ? (
 							<>
 								<TokenSummary
-									balance={nationBalance}
-									deposit={requiredDeposit}
-									collateral={requiredCollateral}
+									deposit={{ symbol: depositToken?.symbol ?? "", amount: requiredDeposit }}
+									collateral={{ symbol: collateralToken?.symbol ?? "", amount: requiredCollateral }}
+									enoughDeposit={enoughDeposit}
+									enoughCollateral={enoughCollateral}
 								/>
+								{missingNATION && (
+									<span className="flex items-center gap-1">
+										Get some
+										<a href="https://app.balancer.fi/#/ethereum/trade/ether/0x333A4823466879eeF910A04D473505da62142069">
+											<GradientLink
+												href="https://docs.nation3.org/agreements/creating-an-agreement"
+												caption="$NATION"
+											/>
+										</a>
+									</span>
+								)}
 								<div className="flex w-full px-8 my-5">
 									<hr className="w-full" />
 								</div>
 								<Steps
-									isCTAdisabled={
-										nationBalance && !nationBalance.gte(requiredCollateral.add(requiredDeposit))
-									}
+									isCTAdisabled={!enoughBalance}
 									steps={steps}
 									icon={courtIcon}
 									title={"Join Agreement"}
@@ -326,16 +390,7 @@ export const JoinableAgreementActions = ({
 								/>
 							</>
 						) : (
-							<Permit2Setup
-								tokens={[
-									{
-										address: NATION,
-										name: "NATION",
-										isApproved: depositTokenApproved,
-										approve: approveDepositToken,
-									},
-								]}
-							/>
+							<Permit2Setup tokens={permitTokens} />
 						)}
 					</div>
 				</FlowModal>

@@ -1,12 +1,6 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
-import {
-	Table,
-	Alert,
-	ActionBadge,
-	Button,
-	utils as n3utils,
-} from "@nation3/ui-components";
+import { Table, Alert, ActionBadge, Button, utils as n3utils } from "@nation3/ui-components";
 import { BigNumber, utils, constants } from "ethers";
 import { ResolutionDetails, ProposedResolutionDetails } from "./ResolutionDetails";
 import { useDispute } from "./context/DisputeResolutionContext";
@@ -89,7 +83,10 @@ export const DisputeDetails = () => {
 				data={
 					dispute.positions?.map(({ party, balance }, index) => [
 						<AccountDisplay key={index} address={party} />,
-						<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
+						<b key={index}>
+							{" "}
+							{utils.formatUnits(BigNumber.from(balance))} ${dispute.collateralToken?.symbol ?? ""}
+						</b>,
 					]) || []
 				}
 			/>

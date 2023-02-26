@@ -72,7 +72,7 @@ export const ResolutionForm = () => {
 						<TokenBalanceInput
 							key={index}
 							defaultValue={utils.formatUnits(balance)}
-							token={"NATION"}
+							token={dispute.collateralToken?.symbol ?? ""}
 							onChange={(e: ChangeEvent<HTMLInputElement>) => {
 								const purged = purgeFloat(e.target.value);
 								if (parseFloat(purged) < 0) return;

@@ -11,7 +11,7 @@ export interface constants {
 	arbitratorAddress: `0x${string}`;
 	cohortAddress: `0x${string}`;
 	safeTxServiceUrl: string;
-	subGraphUrl: string | undefined;
+	subgraphURI: string | undefined;
 	appealCost: BigNumber | undefined;
 }
 

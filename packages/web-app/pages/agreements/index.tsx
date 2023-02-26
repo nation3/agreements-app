@@ -6,6 +6,8 @@ import { client } from "../../lib/subgraph";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import { GetStaticProps } from "next";
+import { useConstants } from "../../hooks/useConstants";
+import { subgraphURI as defaultURI } from "../../lib/constants";
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
 	return {
@@ -18,10 +20,11 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 
 const Agreements = () => {
 	const router = useRouter();
+	const { subgraphURI } = useConstants();
 
 	return (
 		<div id="agreementsPage" className="w-full max-w-3xl h-2/3">
-			<ApolloProvider client={client}>
+			<ApolloProvider client={client(subgraphURI ?? defaultURI ?? "")}>
 				<AgreementListProvider>
 					<Card className="flex flex-col w-full items-stretch gap-8 text-gray-800">
 						<div className="flex flex-row items-center justify-between gap-2 text-gray-700">

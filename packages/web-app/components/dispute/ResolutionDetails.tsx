@@ -3,23 +3,21 @@ import { Position, useDispute } from "./context/DisputeResolutionContext";
 import { Accordion } from "flowbite-react";
 import { useCohort } from "../../hooks/useCohort";
 import { CountDown } from "../../components/CountDown";
-import {
-	ActionBadge,
-	Button,
-	Table,
-	utils as n3utils,
-} from "@nation3/ui-components";
+import { ActionBadge, Button, Table, utils as n3utils } from "@nation3/ui-components";
 import { useMemo } from "react";
 import { AccountDisplay } from "../AccountDisplay";
 import { CardHeader } from "../CardHeader";
 
-const SettlementTable = ({ positions }: { positions: Position[] }) => {
+const SettlementTable = ({ token, positions }: { token: string; positions: Position[] }) => {
 	return (
 		<Table
 			columns={["participant", "stake"]}
 			data={positions.map(({ party, balance }, index) => [
 				<AccountDisplay key={index} address={party} />,
-				<b key={index}> {utils.formatUnits(balance)} $NATION</b>,
+				<b key={index}>
+					{" "}
+					{utils.formatUnits(balance)} ${token}
+				</b>,
 			])}
 		/>
 	);
@@ -28,11 +26,13 @@ const SettlementTable = ({ positions }: { positions: Position[] }) => {
 const ResolutionDataDisplay = ({
 	mark,
 	status,
+	token,
 	settlement,
 	unlockTime,
 }: {
 	mark?: string;
 	status: string;
+	token: string;
 	settlement: Position[];
 	unlockTime?: number;
 }) => {
@@ -57,19 +57,20 @@ const ResolutionDataDisplay = ({
 					)}
 				</div>
 			</div>
-			{settlement && <SettlementTable positions={settlement} />}
+			{settlement && <SettlementTable token={token} positions={settlement} />}
 		</div>
 	);
 };
 
 export const ResolutionDetails = () => {
-	const { resolution } = useDispute();
+	const { dispute, resolution } = useDispute();
 
 	if (resolution) {
 		return (
 			<ResolutionDataDisplay
 				mark={resolution.id}
 				status={resolution.status}
+				token={dispute.collateralToken?.symbol ?? ""}
 				settlement={resolution.settlement ?? []}
 				unlockTime={resolution.unlockTime}
 			/>
@@ -80,7 +81,7 @@ export const ResolutionDetails = () => {
 };
 
 export const ProposedResolutionDetails = () => {
-	const { proposedResolutions } = useDispute();
+	const { dispute, proposedResolutions } = useDispute();
 	const { approve, reject } = useCohort();
 
 	if (proposedResolutions) {
@@ -97,13 +98,14 @@ export const ProposedResolutionDetails = () => {
 								<Accordion.Panel key={i}>
 									<Accordion.Title>
 										#{txNonce} Settlement proposed by{" "}
-										<AccountDisplay address={confirmations[0].owner} /> |{" "}
-										{confirmations.length}/{confirmationsRequired} approvals
+										<AccountDisplay address={confirmations[0].owner} /> | {confirmations.length}/
+										{confirmationsRequired} approvals
 									</Accordion.Title>
 									<Accordion.Content>
 										<div className="flex flex-col gap-8">
 											<ResolutionDataDisplay
 												status="Proposed"
+												token={dispute.collateralToken?.symbol ?? ""}
 												settlement={resolution.settlement ?? []}
 											/>
 											{confirmationsRequired > confirmations.length && (

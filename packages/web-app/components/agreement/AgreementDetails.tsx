@@ -18,6 +18,7 @@ import { CardHeader } from "../CardHeader";
 import { AccountDisplay } from "../AccountDisplay";
 import { useUrl } from "../../hooks";
 import { useTranslation } from "next-i18next";
+import { Token } from "./context/types";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -61,7 +62,13 @@ const ShareButton = ({ url }: { url: string }) => {
 	);
 };
 
-const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) => {
+const PositionsTable = ({
+	positions,
+	token,
+}: {
+	positions: PositionMap | undefined;
+	token: Token | undefined;
+}) => {
 	const { screen } = useScreen();
 
 	return (
@@ -75,12 +82,18 @@ const PositionsTable = ({ positions }: { positions: PositionMap | undefined }) =
 				screen === ScreenType.Desktop
 					? [
 							<AccountDisplay key={index} address={account} />,
-							<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
+							<b key={index}>
+								{" "}
+								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
+							</b>,
 							<PositionStatusBadge key={index} status={status} />,
 					  ]
 					: [
 							<AccountDisplay key={index} address={account} />,
-							<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
+							<b key={index}>
+								{" "}
+								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
+							</b>,
 					  ],
 			)}
 		/>
@@ -162,7 +175,7 @@ export const AgreementDataDisplay = ({
 };
 
 export const AgreementDetails = () => {
-	const { id, title, status, termsHash, positions } = useAgreementData();
+	const { id, title, status, termsHash, collateralToken, positions } = useAgreementData();
 
 	return (
 		<>
@@ -174,7 +187,7 @@ export const AgreementDetails = () => {
 				termsHash={termsHash || constants.HashZero}
 			/>
 			{/* Participants table */}
-			<PositionsTable positions={positions} />
+			<PositionsTable token={collateralToken} positions={positions} />
 		</>
 	);
 };

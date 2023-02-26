@@ -15,12 +15,11 @@ import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { CreateView } from "./context/types";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useConstants } from "../../hooks/useConstants";
 
 export const AgreementCreationPreview = () => {
 	const router = useRouter();
-	const { title, terms, termsHash, id, salt, positions, changeView } = useAgreementCreation();
-	const { NATION } = useConstants();
+	const { title, terms, termsHash, token, id, salt, positions, changeView } =
+		useAgreementCreation();
 
 	const {
 		create,
@@ -56,7 +55,7 @@ export const AgreementCreationPreview = () => {
 			termsHash: metadata.termsHash,
 			criteria: metadata.criteria,
 			metadataURI,
-			token: NATION,
+			token: token?.address ?? constants.AddressZero,
 			salt,
 		});
 	};
@@ -74,7 +73,9 @@ export const AgreementCreationPreview = () => {
 				columns={["participant", "stake"]}
 				data={positions.map(({ account, balance }, index) => [
 					<AccountDisplay key={index} address={account} />,
-					<b key={index}> {utils.formatUnits(BigNumber.from(balance))} $NATION</b>,
+					<b key={index}>
+						{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
+					</b>,
 				])}
 			/>
 			{/* Info */}

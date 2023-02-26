@@ -1,11 +1,11 @@
 import { ReactNode, useState, useEffect, useMemo } from "react";
 
 import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataContext";
-import { ResolverMap, PositionMap, UserPosition } from "./types";
+import { ResolverMap, PositionMap, UserPosition, Token } from "./types";
 import { useAgreementData, useDisputeConfig } from "../../../hooks/useAgreement";
 import { fetchAgreementMetadata } from "../../../utils/metadata";
 import { trimHash } from "../../../utils/hash";
-import { useAccount } from "wagmi";
+import { useAccount, useToken } from "wagmi";
 import { BigNumber } from "ethers";
 
 export const AgreementDataProvider = ({ id, children }: { id: string; children: ReactNode }) => {
@@ -23,7 +23,33 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		enabled: id != "undefined",
 	});
 
+	const tokenAddress = useMemo(() => {
+		return agreementData?.token;
+	}, [agreementData]);
+
 	const { amount: disputeAmount } = useDisputeConfig();
+
+	const { data: tokenData } = useToken({
+		address: tokenAddress,
+		enabled: tokenAddress != undefined,
+	});
+
+	const depositToken = {
+		name: "Nation3",
+		symbol: "NATION",
+		address: "0x333A4823466879eeF910A04D473505da62142069",
+		decimals: 18,
+	};
+
+	const collateralToken = useMemo<Token | undefined>(() => {
+		if (tokenData)
+			return {
+				name: tokenData.name,
+				symbol: tokenData.symbol,
+				decimals: tokenData.decimals,
+				address: tokenData.address,
+			};
+	}, [tokenData]);
 
 	const disputeCost = useMemo(() => {
 		return disputeAmount ?? BigNumber.from(0);
@@ -119,6 +145,8 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		id,
 		title,
 		termsHash,
+		collateralToken,
+		depositToken,
 		status,
 		disputeCost,
 		resolvers,

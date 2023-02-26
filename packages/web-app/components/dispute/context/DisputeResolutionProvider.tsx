@@ -1,16 +1,18 @@
 import { BigNumber } from "ethers";
 import { ReactNode, useMemo, useState, useEffect } from "react";
 import { useAgreementData } from "../../../hooks/useAgreement";
-import { useAppealConfig, useResolution } from "../../../hooks/useArbitrator";
+import { useResolution } from "../../../hooks/useArbitrator";
 import { useResolutionProposals } from "../../../hooks/useCohort";
 import { abiEncodingPacked, hashEncoding } from "../../../utils/hash";
 import { fetchResolutionMetadata } from "../../../utils";
 import { useConstants } from "../../../hooks/useConstants";
+import { useToken } from "wagmi";
 
 import {
 	DisputeResolutionContext,
 	DisputeResolutionContextType,
 	Position,
+	Token,
 } from "./DisputeResolutionContext";
 
 export const DisputeResolutionProvider = ({
@@ -28,6 +30,25 @@ export const DisputeResolutionProvider = ({
 	});
 
 	// const { amount } = useAppealConfig();
+
+	const tokenAddress = useMemo(() => {
+		return data?.token;
+	}, [data]);
+
+	const { data: tokenData } = useToken({
+		address: tokenAddress,
+		enabled: tokenAddress != undefined,
+	});
+
+	const collateralToken = useMemo<Token | undefined>(() => {
+		if (tokenData)
+			return {
+				name: tokenData.name,
+				symbol: tokenData.symbol,
+				decimals: tokenData.decimals,
+				address: tokenData.address,
+			};
+	}, [tokenData]);
 
 	const positions = useMemo(() => {
 		return agreementPositions?.map(([party, balance]) => ({ party, balance }));
@@ -82,6 +103,7 @@ export const DisputeResolutionProvider = ({
 		id,
 		status: data?.status == "Disputed" ? "Open" : "Closed",
 		termsHash: data?.termsHash,
+		collateralToken: collateralToken,
 		balance,
 		positions,
 	};

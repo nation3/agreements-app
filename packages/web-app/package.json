@@ -38,6 +38,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^12.1.4",
+    "sharp": "^0.31.3",
     "wagmi": "^0.6.7",
     "web3.storage": "^4.4.0"
   },
