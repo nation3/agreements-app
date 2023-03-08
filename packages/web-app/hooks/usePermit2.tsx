@@ -1,12 +1,14 @@
-import { useNetwork, useSignTypedData } from "wagmi";
+import { useNetwork, useSignTypedData, useContractRead } from "wagmi";
 import {
 	SignatureTransfer,
 	PermitTransferFrom,
 	PermitBatchTransferFrom,
 } from "@uniswap/permit2-sdk";
 import { useTokenAllowance, useTokenApprovals } from "./useToken";
+import permit2Interface from "../abis/Permit2.json";
+import { firstZeroBitPosition } from "../utils/bytes";
 import { BigNumber, BigNumberish, constants } from "ethers";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useConstants } from "./useConstants";
 
 interface Permit2AllowanceConfig {
@@ -24,11 +26,13 @@ interface TokenTransfer {
 interface Permit2TransferSignatureConfig {
 	tokenTransfer: TokenTransfer;
 	spender: string;
+	address: string;
 }
 
 interface Permit2BatchTransferSignatureConfig {
 	tokenTransfers: TokenTransfer[];
 	spender: string;
+	address: string;
 }
 
 export const usePermit2Allowance = ({
@@ -66,23 +70,21 @@ export const usePermit2Allowance = ({
 export const usePermit2TransferSignature = ({
 	tokenTransfer,
 	spender,
+	address,
 }: Permit2TransferSignatureConfig) => {
 	const { permit2Address } = useConstants();
 	const { chain } = useNetwork();
 
-	const nonce = useMemo(
-		() => BigNumber.from(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)),
-		[],
-	);
+	const nonce = useAvailableNonce(address);
 
 	const permit: PermitTransferFrom = useMemo(
 		() => ({
 			permitted: tokenTransfer,
 			spender,
-			nonce,
+			nonce: nonce ?? 0,
 			deadline: constants.MaxInt256,
 		}),
-		[tokenTransfer],
+		[tokenTransfer, nonce],
 	);
 
 	const domain = useMemo(
@@ -118,23 +120,21 @@ export const usePermit2TransferSignature = ({
 export const usePermit2BatchTransferSignature = ({
 	tokenTransfers,
 	spender,
+	address,
 }: Permit2BatchTransferSignatureConfig) => {
 	const { permit2Address } = useConstants();
 	const { chain } = useNetwork();
 
-	const nonce = useMemo(
-		() => BigNumber.from(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)),
-		[],
-	);
+	const nonce = useAvailableNonce(address);
 
 	const permit: PermitBatchTransferFrom = useMemo(
 		() => ({
 			permitted: tokenTransfers,
 			spender,
-			nonce,
+			nonce: nonce ?? 0,
 			deadline: constants.MaxInt256,
 		}),
-		[tokenTransfers],
+		[tokenTransfers, nonce],
 	);
 
 	const domain = useMemo(
@@ -165,4 +165,34 @@ export const usePermit2BatchTransferSignature = ({
 	} = useSignTypedData(signTypedDataConfig);
 
 	return { permit, signature, signPermit, signSuccess, signError };
+};
+
+export const useAvailableNonce = (address: string) => {
+	const { permit2Address } = useConstants();
+	const [wordPos, setWordPos] = useState(0);
+	const [nonce, setNonce] = useState<BigNumber>();
+
+	const { data: word } = useContractRead({
+		addressOrName: permit2Address,
+		contractInterface: permit2Interface.abi,
+		functionName: "nonceBitmap",
+		args: [address, wordPos],
+	});
+
+	useEffect(() => {
+		if (!word) return;
+
+		if (BigNumber.isBigNumber(word)) {
+			if (word.eq(constants.MaxUint256)) {
+				setWordPos((wordPos) => wordPos + 1);
+				return;
+			}
+
+			const bitPos = firstZeroBitPosition(word);
+
+			setNonce(BigNumber.from(wordPos).shl(8).add(bitPos));
+		}
+	}, [word, wordPos]);
+
+	return nonce;
 };

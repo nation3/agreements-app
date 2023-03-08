@@ -60,6 +60,7 @@ export const DisputeActions = () => {
 	const { permit, signature, signPermit, signSuccess, signError } = usePermit2TransferSignature({
 		tokenTransfer: { token: NATION, amount: appealCost ?? BigNumber.from(0) },
 		spender: arbitratorAddress,
+		address: address ?? constants.AddressZero,
 	});
 
 	useEffect(() => {
