@@ -163,51 +163,81 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		return BigNumber.from(userPosition?.resolver?.balance || 0);
 	}, [userPosition]);
 
+	const depositPermit2AllowanceConfig = useMemo(
+		() => ({
+			token: depositToken?.address ?? constants.AddressZero,
+			account: address ?? constants.AddressZero,
+			enabled: !!address && !!depositToken?.address,
+		}),
+		[address, depositToken],
+	);
+
+	const collateralPermit2AllowanceConfig = useMemo(
+		() => ({
+			token: collateralToken?.address ?? constants.AddressZero,
+			account: address ?? constants.AddressZero,
+			enabled: !!address && !!collateralToken?.address,
+		}),
+		[address, collateralToken],
+	);
+
 	const {
 		isEnough: depositTokenPermit2,
 		approve: approveDepositTokenPermit2,
 		approvalLoading: depositTokenPermit2ApprovalLoading,
-	} = usePermit2Allowance({
-		token: depositToken?.address ?? constants.AddressZero,
-		account: address ?? constants.AddressZero,
-		enabled: !!address && !!depositToken?.address,
-	});
+	} = usePermit2Allowance(depositPermit2AllowanceConfig);
 
 	const {
 		isEnough: collateralTokenPermit2,
 		approve: approveCollateralTokenPermit2,
 		approvalLoading: collateralTokenPermit2ApprovalLoading,
-	} = usePermit2Allowance({
-		token: collateralToken?.address ?? constants.AddressZero,
-		account: address ?? constants.AddressZero,
-		enabled: !!address && !!collateralToken?.address,
-	});
+	} = usePermit2Allowance(collateralPermit2AllowanceConfig);
 
-	const { allowance: depositTokenAllowanceData } = useTokenAllowance({
-		address: depositToken?.address || constants.AddressZero,
-		owner: address || constants.AddressZero,
-		spender: frameworkAddress,
-		enabled: !!address && !!depositToken?.address,
-	});
+	const depositAllowanceConfig = useMemo(
+		() => ({
+			address: depositToken?.address || constants.AddressZero,
+			owner: address || constants.AddressZero,
+			spender: frameworkAddress,
+			enabled: !!address && !!depositToken?.address,
+		}),
+		[address, depositToken, frameworkAddress],
+	);
 
-	const { allowance: collateralTokenAllowanceData } = useTokenAllowance({
-		address: collateralToken?.address || constants.AddressZero,
-		owner: address || constants.AddressZero,
-		spender: frameworkAddress,
-		enabled: !!address && !!collateralToken?.address,
-	});
+	const collateralAllowanceConfig = useMemo(
+		() => ({
+			address: collateralToken?.address || constants.AddressZero,
+			owner: address || constants.AddressZero,
+			spender: frameworkAddress,
+			enabled: !!address && !!collateralToken?.address,
+		}),
+		[address, collateralToken, frameworkAddress],
+	);
 
-	const { balance: depositBalanceData } = useTokenBalance({
-		address: depositToken?.address || constants.AddressZero,
-		account: address || constants.AddressZero,
-		enabled: !!address && !!depositToken?.address,
-	});
+	const { allowance: depositTokenAllowanceData } = useTokenAllowance(depositAllowanceConfig);
 
-	const { balance: collateralBalanceData } = useTokenBalance({
-		address: collateralToken?.address || constants.AddressZero,
-		account: address || constants.AddressZero,
-		enabled: !!address && !!collateralToken?.address,
-	});
+	const { allowance: collateralTokenAllowanceData } = useTokenAllowance(collateralAllowanceConfig);
+
+	const depositBalanceConfig = useMemo(
+		() => ({
+			address: depositToken?.address || constants.AddressZero,
+			account: address || constants.AddressZero,
+			enabled: !!address && !!depositToken?.address,
+		}),
+		[address, depositToken],
+	);
+
+	const collateralBalanceConfig = useMemo(
+		() => ({
+			address: collateralToken?.address || constants.AddressZero,
+			account: address || constants.AddressZero,
+			enabled: !!address && !!collateralToken?.address,
+		}),
+		[address, collateralToken],
+	);
+
+	const { balance: depositBalanceData } = useTokenBalance(depositBalanceConfig);
+
+	const { balance: collateralBalanceData } = useTokenBalance(collateralBalanceConfig);
 
 	const isSameToken = useMemo((): boolean => {
 		return depositToken?.address === collateralToken?.address;
@@ -249,17 +279,27 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		return collateralTokenAllowance.gte(requiredCollateral);
 	}, [collateralTokenAllowance, requiredCollateral]);
 
-	const { approve: approveDepositToken, approvalLoading: depositTokenApprovalLoading } =
-		useTokenApprovals({
+	const depositApprovalConfig = useMemo(
+		() => ({
 			address: depositToken?.address || constants.AddressZero,
 			spender: frameworkAddress,
-		});
+		}),
+		[depositToken, frameworkAddress],
+	);
 
-	const { approve: approveCollateralToken, approvalLoading: collateralTokenApprovalLoading } =
-		useTokenApprovals({
+	const collateralApprovalConfig = useMemo(
+		() => ({
 			address: collateralToken?.address || constants.AddressZero,
 			spender: frameworkAddress,
-		});
+		}),
+		[collateralToken, frameworkAddress],
+	);
+
+	const { approve: approveDepositToken, approvalLoading: depositTokenApprovalLoading } =
+		useTokenApprovals(depositApprovalConfig);
+
+	const { approve: approveCollateralToken, approvalLoading: collateralTokenApprovalLoading } =
+		useTokenApprovals(collateralApprovalConfig);
 
 	const approveDeposit = useCallback(() => {
 		const amount = isSameToken ? requiredDeposit.add(requiredCollateral) : requiredDeposit;
@@ -287,18 +327,27 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		return depositUserBalance.gte(requiredDeposit) && collateralUserBalance.gte(requiredCollateral);
 	}, [isSameToken, depositUserBalance, collateralUserBalance, requiredDeposit, requiredCollateral]);
 
-	const { permit, signature, signPermit, signSuccess, signError } =
-		usePermit2BatchTransferSignature({
-			tokenTransfers: [
-				{
-					token: depositToken?.address ?? constants.AddressZero,
-					amount: requiredDeposit ? requiredDeposit : 0,
-				},
-				{ token: collateralToken?.address ?? constants.AddressZero, amount: requiredCollateral },
-			],
+	const tokenTransfers = useMemo(() => {
+		return [
+			{
+				token: depositToken?.address ?? constants.AddressZero,
+				amount: requiredDeposit ? requiredDeposit : 0,
+			},
+			{ token: collateralToken?.address ?? constants.AddressZero, amount: requiredCollateral },
+		];
+	}, [depositToken, collateralToken, requiredDeposit, requiredCollateral]);
+
+	const usePermit2BatchTransferSignatureConfig = useMemo(
+		() => ({
+			tokenTransfers,
 			spender: frameworkAddress,
 			address: address ?? constants.AddressZero,
-		});
+		}),
+		[tokenTransfers, frameworkAddress, address],
+	);
+
+	const { permit, signature, signPermit, signSuccess, signError } =
+		usePermit2BatchTransferSignature(usePermit2BatchTransferSignatureConfig);
 
 	const depositAction = useMemo(() => {
 		if (usePermit2) {
