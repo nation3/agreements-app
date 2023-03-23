@@ -5,6 +5,7 @@ import { PositionStatusBadge } from "../../components";
 import {
 	Table,
 	ButtonBase,
+	DropInput,
 	ActionBadge,
 	utils as n3utils,
 	useScreen,
@@ -19,6 +20,7 @@ import { AccountDisplay } from "../AccountDisplay";
 import { useUrl } from "../../hooks";
 import { useTranslation } from "next-i18next";
 import { Token } from "./context/types";
+import { hexHash } from "../../utils";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -110,6 +112,8 @@ export const AgreementDataDisplay = ({
 	const [isHashCopied, setIsHashCopied] = useState<boolean>(false);
 	const [isAgreementId, setIsAgreementId] = useState<boolean>(false);
 	const [isTermsModalUp, setIsTermsModalUp] = useState<boolean>(false);
+	const [isVerificationModalUp, setIsVerificationModalUp] = useState<boolean>(false);
+	const [termsVerificationSuccess, setTermsVerificationSuccess] = useState<boolean>();
 	const { url: shareUrl } = useUrl();
 
 	const copyAgreementId = useCallback(() => {
@@ -137,7 +141,7 @@ export const AgreementDataDisplay = ({
 					status={status}
 					actions={<ShareButton url={shareUrl} />}
 				/>
-				<div className="flex flex-col md:flex-row gap-1 justify-start md:items-center">
+				<div className="flex flex-col gap-1 justify-start">
 					<ActionBadge
 						label="ID"
 						tooltip
@@ -145,21 +149,31 @@ export const AgreementDataDisplay = ({
 						data={n3utils.shortenHash(id ?? constants.HashZero)}
 						dataAction={copyAgreementId}
 					/>
-					<div className="flex items-center">
+					<div className="flex items-center gap-1">
 						<ActionBadge
 							tooltip
 							tooltipContent={isHashCopied ? "Copied" : "Click to copy"}
-							label="Terms hash"
+							label={t("agreement.termsHash")}
 							data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
 							icon={<InformationCircleIcon className="w-4 h-4" />}
 							iconAction={() => setIsTermsModalUp(true)}
 							dataAction={copyTermsHash}
 						/>
+						<div className="flex w-fit">
+							<ButtonBase
+								className={
+									"rounded-full py-0.5 px-3 font-semibold text-gray-700 border-2 border-gray-100"
+								}
+								onClick={() => setIsVerificationModalUp(true)}
+							>
+								{t("agreement.termsHashVerification")}
+							</ButtonBase>
+						</div>
 					</div>
 				</div>
 			</div>
 
-			{/* TERMS HASH INFO MOCAL */}
+			{/* TERMS HASH INFO MODAL */}
 			<Modal show={isTermsModalUp} onClose={() => setIsTermsModalUp(false)}>
 				<Modal.Header>{t("agreement.termsHash")}</Modal.Header>
 				<Modal.Body>
@@ -167,6 +181,41 @@ export const AgreementDataDisplay = ({
 						<p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
 							{t("agreement.termsHashDescription")}
 						</p>
+					</div>
+				</Modal.Body>
+			</Modal>
+
+			{/* TERMS VERIFICATION MODAL */}
+			<Modal show={isVerificationModalUp} onClose={() => setIsVerificationModalUp(false)}>
+				<Modal.Header>{t("agreement.termsHashVerification")}</Modal.Header>
+				<Modal.Body>
+					<div className="space-y-6">
+						<p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+							{t("agreement.termsHashVerificationDescription")}
+						</p>
+						<DropInput
+							dropzoneConfig={{
+								accept: { "text/markdown": [".md"] },
+								maxFiles: 1,
+								onDrop: (acceptedFiles: File[]) => {
+									acceptedFiles[0].text().then((text: string) => {
+										const hash = hexHash(text);
+										setTermsVerificationSuccess(hash === termsHash);
+									});
+								},
+							}}
+							showFiles={true}
+						/>
+						{termsVerificationSuccess === true && (
+							<p className="text-base leading-relaxed text-green-500 dark:text-green-400">
+								{t("agreement.termsHashVerificationSuccess")}
+							</p>
+						)}
+						{termsVerificationSuccess === false && (
+							<p className="text-base leading-relaxed text-red-500 dark:text-red-400">
+								{t("agreement.termsHashVerificationFailure")}
+							</p>
+						)}
 					</div>
 				</Modal.Body>
 			</Modal>
