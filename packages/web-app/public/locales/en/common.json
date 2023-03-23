@@ -36,22 +36,21 @@
         }
     },
     "join": {
-        "yourBalance": "Wallet balance",
-        "tokenSummary": "Token Requirements for entering the Agreement",
-        "permitSignature": {
-            "title": "Approve tokens transfer",
-            "description": "Approve the transfer of collateral and dispute tokens to the agrement through signature.",
-            "action": "Approve"
+        "title": "Join Agreement",
+        "summary": "These are the tokens required for you to join the agreement. Once you complete the join, they will be locked into the agreement and you will be binded by its terms.",
+        "gaslessApprovals": {
+            "title": "Gasless approvals",
+            "info": "Enable gasless approvals once per token and save gas on every agreement join afterwards."
         },
-        "joinAgreement": {
-            "title": "Join Agreement",
-            "description": "Transfer the collateral and dispute tokens to the agreement. You will be binded by the terms of the agreement from this moment on.",
-            "action": "Join",
-            "error": "The transaction to join the agreement was not successful. Try again or copy the error and ask for help."
+        "signPermit": {
+            "title": "Approve tokens transfers gasless",
+            "info": "Approve all tokens transfer by signing only once.",
+            "action": "Approve transfers"
         }
     },
     "dispute": {
         "title": "Dispute Agreement",
+        "yourBalance": "Wallet balance",
         "description": "Raising a dispute will put the agreement on hold until the dispute is settled by the court.",
         "disputeCost": {
             "title": "Dispute cost",

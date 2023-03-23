@@ -379,22 +379,18 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 							/>
 						</div>
 					)}
-					<h3 className="text-slate-600 md:text-xl text-xl font-semibold">{"Join Agreement"}</h3>
+					<h3 className="text-slate-600 md:text-xl text-xl font-semibold">{t("join.title")}</h3>
 				</div>
 			</FlowModal.Header>
 			<div className="flex flex-col items-center justify-center pt-4">
 				<div className="flex flex-col w-full items-start px-8 pt-3 pb-8 gap-1 text-slate-400 text-sm">
 					<div className="flex w-full md:w-2/3">
-						{/* <h3 className="text-sm text-slate-400 px-2 mb-1">{t("join.tokenSummary")}</h3> */}
-						<h3 className="mb-3">
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nisl eget
-							tincidunt lacinia, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet
-						</h3>
+						<h3 className="text-sm text-slate-400 px-2 mb-1">{t("join.summary")}</h3>
 					</div>
 					<div className="flex w-full items-center justify-end gap-2 py-2 border-b">
 						<div className="flex w-full items-center justify-end gap-1">
-							<p>Gasless approvals</p>
-							<InfoTooltip info={t("agreement.depositInfo")} className="w-5 h-5" />
+							<p>{t("join.gaslessApprovals.title")}</p>
+							<InfoTooltip info={t("join.gaslessApprovals.info")} className="w-5 h-5" />
 						</div>
 						<Toggle onToggle={(checked) => setUsePermit2(checked)} />
 					</div>
@@ -421,11 +417,14 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 							// Button to sign permit2
 							<div className="flex w-full justify-between items-start gap-2 pt-3 pb-2">
 								<span className="flex items-center gap-1">
-									<span className="text-lg">Approve token transfers gasless</span>
-									<InfoTooltip info={""} className="w-4 h-4" />
+									<span className="text-lg">{t("join.signPermit.title")}</span>
+									<InfoTooltip info={t("join.signPermit.info")} className="w-4 h-4" />
 								</span>
 								<div className="flex w-fit">
-									<CompactOutlineButton label={"Approve transfers"} onClick={() => signPermit()} />
+									<CompactOutlineButton
+										label={t("join.signPermit.action")}
+										onClick={() => signPermit()}
+									/>
 								</div>
 							</div>
 						)}
