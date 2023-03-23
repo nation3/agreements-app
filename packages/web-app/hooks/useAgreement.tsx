@@ -1,12 +1,11 @@
 // import { BigNumber, utils } from "ethers";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import frameworkInterface from "../abis/CollateralAgreementFramework.json";
 import { Resolver } from "../utils/criteria";
 import { useConstants } from "./useConstants";
 import { BigNumber } from "ethers";
-import { frameworkAddress } from "../lib/constants-goerli";
 
 const frameworkAbi = frameworkInterface.abi;
 
@@ -113,7 +112,87 @@ export const useAgreementCreate = ({
 	return { create, isProcessing, data, isTxSuccess, ...args };
 };
 
-export const useAgreementJoin = () => {
+type JoinWithPermitArgs = {
+	id: string;
+	resolver: Resolver;
+	permit: PermitBatchTransferFrom;
+	signature: string;
+};
+
+type JoinWithApprovalArgs = {
+	id: string;
+	resolver: Resolver;
+};
+
+type JoinMode = "permit" | "approval";
+type JoinParametersBasedOnPermit<T extends JoinMode> = T extends "permit"
+	? JoinWithPermitArgs
+	: JoinWithApprovalArgs;
+
+export const useAgreementJoin = <T extends JoinMode>({ mode }: { mode?: T }) => {
+	const { join: joinWithPermit, ...argsWithPermit } = useAgreementJoinPermit();
+	const { join: joinWithApproval, ...argsWithApproval } = useAgreementJoinApproved();
+
+	const join = useCallback(
+		(args: JoinParametersBasedOnPermit<T>) => {
+			if (mode === "permit") {
+				return joinWithPermit(args as JoinWithPermitArgs);
+			} else {
+				return joinWithApproval(args as JoinWithApprovalArgs);
+			}
+		},
+		[joinWithApproval, joinWithPermit, mode],
+	);
+
+	const args = useMemo(() => {
+		if (mode === "permit") {
+			return argsWithPermit;
+		} else {
+			return argsWithApproval;
+		}
+	}, [argsWithApproval, argsWithPermit, mode]);
+
+	return { join, ...args };
+};
+
+export const useAgreementJoinApproved = () => {
+	const { frameworkAddress } = useConstants();
+
+	const {
+		write: joinAgreement,
+		data,
+		...args
+	} = useContractWrite({
+		mode: "recklesslyUnprepared",
+		addressOrName: frameworkAddress,
+		contractInterface: frameworkAbi,
+		functionName: "joinAgreementApproved",
+		onError(error) {
+			console.log(error);
+		},
+		overrides: {
+			gasLimit: 320000,
+		},
+	});
+
+	const { isLoading: isProcessing, isSuccess: isTxSuccess } = useWaitForTransaction({
+		hash: data?.hash,
+	});
+
+	const join = async ({ id, resolver }: { id: string; resolver: Resolver }) => {
+		if (!resolver.proof) {
+			return;
+		} else {
+			return joinAgreement?.({
+				recklesslySetUnpreparedArgs: [id, resolver],
+			});
+		}
+	};
+
+	return { join, data, isProcessing, isTxSuccess, ...args };
+};
+
+export const useAgreementJoinPermit = () => {
 	const { frameworkAddress } = useConstants();
 
 	const {
@@ -130,8 +209,6 @@ export const useAgreementJoin = () => {
 		},
 		overrides: {
 			gasLimit: 320000,
-			// maxFeePerGas: 250000000,
-			// maxPriorityFeePerGas: 250000000,
 		},
 	});
 

@@ -82,13 +82,13 @@ export const ConnectButton = () => {
 							return (
 								<>
 									<div className="flex items-center justify-end">
-										<div className="hidden md:flex gap-2 font-medium cursor-default items-center text-slate-300 mr-5">
-											{chain && chain.id === 5 && <span>{chain.name} </span>}
-											{/* // TODO: Change network action */}
-											{/* 				<span className="w-4 ml-2">
-												<ChevronDownIcon />
-											</span> */}
-										</div>
+										<button
+											className="hidden md:flex gap-2 font-medium cursor-default items-center text-slate-300 mr-5"
+											onClick={() => openChainModal()}
+										>
+											{/* {chain && chain.id === 5 && <span>{chain.name} </span>} */}
+											<span>{chain.name} </span>
+										</button>
 										<AccountButton
 											className="font-semibold text-slate-600 tracking-wide shadow rounded-full md:pl-5 md:pr-2 md:py-2 p-2 bg-white hover:bg-gray-100"
 											avatar={

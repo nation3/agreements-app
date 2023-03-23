@@ -44,14 +44,7 @@ export const useTokenAllowance = ({
 	return { allowance };
 };
 
-export const useTokenApprovals = ({
-	address,
-	spender,
-}: {
-	address: string;
-	owner: string;
-	spender: string;
-}) => {
+export const useTokenApprovals = ({ address, spender }: { address: string; spender: string }) => {
 	const {
 		write: approveToken,
 		isLoading: approvalLoading,

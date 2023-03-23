@@ -153,7 +153,6 @@ export const usePermit2BatchTransferSignature = ({
 			types,
 			value: values,
 		};
-		// console.log(config.values);
 		return config;
 	}, [domain, permit]);
 
