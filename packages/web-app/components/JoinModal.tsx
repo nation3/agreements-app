@@ -18,6 +18,7 @@ import { useAgreementData } from "./agreement/context/AgreementDataContext";
 import { useAccount } from "wagmi";
 import { useConstants } from "../hooks/useConstants";
 import { useTokenAllowance, useTokenApprovals } from "../hooks/useToken";
+import Link from "next/link";
 
 const InfoTooltip = ({ info, className }: { info: string; className?: string }) => {
 	return (
@@ -48,7 +49,7 @@ const Toggle = ({ onToggle }: { onToggle?: (checked: boolean) => void }) => {
 	return (
 		<label className="relative inline-flex items-center cursor-pointer">
 			<input type="checkbox" className="sr-only peer" checked={isChecked} onChange={toggle} />
-			<div className="w-11 h-6 bg-transparent border-2 border-gray-300 peer-focus:outline-none peer-focus:ring-0 peer-focus:ring-bluesky rounded-full peer peer-checked:border-greensea peer-checked:after:bg-greensea peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[6px] after:bg-gray-200 after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+			<div className="w-10 h-6 bg-transparent border-2 border-gray-300 peer-focus:outline-none peer-focus:ring-0 peer-focus:ring-bluesky rounded-full peer peer-checked:border-greensea peer-checked:after:bg-greensea peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-gray-200 after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
 		</label>
 	);
 };
@@ -100,7 +101,7 @@ const OutlineButton = ({
 	);
 };
 
-const AssetDisplay = ({
+const AssetApprove = ({
 	title,
 	amount,
 	symbol,
@@ -120,6 +121,39 @@ const AssetDisplay = ({
 	return (
 		<div className="flex w-full justify-between items-end gap-2 pt-3 pb-2 border-b border-bluesky-100">
 			<div className="flex flex-col gap-2">
+				<p className="font-semibold text-2xl text-bluesky flex items-center">
+					${symbol}
+					<span>
+						<WarningTooltip
+							info={warning}
+							className={cx("w-4 h-4 ml-2 text-yellow-500", showWarning ? "block" : "hidden")}
+						/>
+					</span>
+				</p>
+			</div>
+			<div className="flex w-fit">{action}</div>
+		</div>
+	);
+};
+
+const AssetDisplay = ({
+	title,
+	amount,
+	symbol,
+	info,
+	warning,
+	showWarning,
+}: {
+	title: string;
+	amount: BigNumberish;
+	symbol: string;
+	info: string;
+	warning: string;
+	showWarning: boolean;
+}) => {
+	return (
+		<div className="flex w-full justify-between items-end gap-2 pt-3 pb-2 border-b border-bluesky-100">
+			<div className="flex flex-col gap-2">
 				<span className="flex items-center gap-1">
 					<span className="text-lg">{title}</span>
 					<InfoTooltip info={info} className="w-4 h-4" />
@@ -132,7 +166,6 @@ const AssetDisplay = ({
 					{utils.formatUnits(amount)} ${symbol}
 				</span>
 			</div>
-			<div className="flex w-fit">{action}</div>
 		</div>
 	);
 };
@@ -350,7 +383,13 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		usePermit2BatchTransferSignature(usePermit2BatchTransferSignatureConfig);
 
 	const depositAction = useMemo(() => {
-		if (usePermit2) {
+		if (!enoughDeposit) {
+			return (
+				<Link target="_blank" href="https://app.balancer.fi/#/ethereum/swap">
+					<CompactOutlineButton label={`${"Get $" + depositToken?.symbol}`} />
+				</Link>
+			);
+		} else if (usePermit2) {
 			if (typeof depositTokenPermit2 === "undefined" || depositTokenPermit2ApprovalLoading)
 				return <Spinner className="w-7 h-7 text-bluesky" />;
 			if (depositTokenPermit2) return <CheckCircleIcon className="w-7 h-7 text-bluesky" />;
@@ -363,6 +402,7 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		}
 	}, [
 		usePermit2,
+		enoughDeposit,
 		depositTokenPermit2,
 		depositTokenPermit2ApprovalLoading,
 		enoughDepositAllowance,
@@ -372,7 +412,13 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 	]);
 
 	const collateralAction = useMemo(() => {
-		if (usePermit2) {
+		if (!enoughCollateral) {
+			return (
+				<Link target="_blank" href="https://app.balancer.fi/#/ethereum/swap">
+					<CompactOutlineButton label={`${"Get $" + collateralToken?.symbol}`} />
+				</Link>
+			);
+		} else if (usePermit2) {
 			if (typeof collateralTokenPermit2 === "undefined" || collateralTokenPermit2ApprovalLoading)
 				return <Spinner className="w-7 h-7 text-bluesky" />;
 			if (collateralTokenPermit2) return <CheckCircleIcon className="w-7 h-7 text-bluesky" />;
@@ -434,16 +480,43 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 			<div className="flex flex-col items-center justify-center pt-4">
 				<div className="flex flex-col w-full items-start px-8 pt-3 pb-8 gap-1 text-slate-400 text-sm">
 					<div className="flex w-full md:w-2/3">
-						<h3 className="text-sm text-slate-400 px-2 mb-1">{t("join.summary")}</h3>
+						<h3 className="text-sm text-slate-400  mb-1">{t("join.summary")}</h3>
 					</div>
-					<div className="flex w-full items-center justify-end gap-2 py-2 border-b">
-						<div className="flex w-full items-center justify-end gap-1">
-							<p>{t("join.gaslessApprovals.title")}</p>
-							<InfoTooltip info={t("join.gaslessApprovals.info")} className="w-5 h-5" />
+
+					<p className=" mt-4 text-slate-600 font-semibold">Token requirements</p>
+					<div className="flex w-full gap-3">
+						<AssetDisplay
+							title={"Dispute deposit"}
+							amount={requiredDeposit}
+							symbol={depositToken?.symbol ?? ""}
+							info={t("agreement.depositInfo")}
+							warning={"Not enough balance"}
+							showWarning={!enoughDeposit}
+						/>
+						<AssetDisplay
+							title={"Collateral"}
+							amount={requiredCollateral}
+							symbol={collateralToken?.symbol ?? ""}
+							info={t("agreement.collateralInfo")}
+							warning={"Not enough balance"}
+							showWarning={!enoughCollateral}
+						/>
+					</div>
+					<div className="mt-4 flex w-full items-center justify-between gap-2 py-2">
+						<div>
+							<p className="w-full h-full text-slate-600 font-semibold">Token approvals</p>
 						</div>
-						<Toggle onToggle={(checked) => setUsePermit2(checked)} />
+						{enoughDeposit && enoughCollateral && (
+							<>
+								<div className="flex w-full items-center justify-end gap-1">
+									<p className="text-md">{t("join.gaslessApprovals.title")}</p>
+									<InfoTooltip info={t("join.gaslessApprovals.info")} className="w-5 h-5" />
+								</div>
+								<Toggle onToggle={(checked) => setUsePermit2(checked)} />
+							</>
+						)}
 					</div>
-					<AssetDisplay
+					<AssetApprove
 						title={"Dispute deposit"}
 						amount={requiredDeposit}
 						symbol={depositToken?.symbol ?? ""}
@@ -451,18 +524,27 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 						warning={"Not enough balance"}
 						showWarning={!enoughDeposit}
 						action={depositAction}
-					/>
-					<AssetDisplay
-						title={"Collateral"}
-						amount={requiredCollateral}
-						symbol={collateralToken?.symbol ?? ""}
-						info={t("agreement.collateralInfo")}
-						warning={"Not enough balance"}
-						showWarning={!enoughCollateral}
-						action={collateralAction}
-					/>
+					></AssetApprove>
+					{depositToken?.symbol !== collateralToken?.symbol && (
+						<AssetApprove
+							title={"Collateral"}
+							amount={requiredCollateral}
+							symbol={collateralToken?.symbol ?? ""}
+							info={t("agreement.collateralInfo")}
+							warning={"Not enough balance"}
+							showWarning={!enoughCollateral}
+							action={collateralAction}
+						></AssetApprove>
+					)}
+					{!enoughDeposit ||
+						(!enoughCollateral && (
+							<div className="flex mt-4">
+								<WarningTooltip info={""} className={cx("w-4 h-4 mr-2 text-yellow-500")} />
+								<p>{t("agreement.lackingTokens")}</p>
+							</div>
+						))}
 					<div className="flex w-full min-h-[3.5rem]">
-						{usePermit2 && (
+						{usePermit2 && enoughDeposit && enoughCollateral && (
 							// Button to sign permit2
 							<div className="flex w-full justify-between items-start gap-2 pt-3 pb-2">
 								<span className="flex items-center gap-1">

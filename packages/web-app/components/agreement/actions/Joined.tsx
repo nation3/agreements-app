@@ -8,6 +8,8 @@ import finalizeIcon from "../../../public/svgs/finalize-icon.svg";
 import { utils, BigNumber } from "ethers";
 import Image from "next/image";
 import { useAgreementData } from "../context/AgreementDataContext";
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 interface ContextModalProps extends Pick<ModalProps, "show" | "onClose"> {
 	icon: ReactNode;
@@ -88,14 +90,54 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 
 	return (
 		<>
-			<div className="flex gap-2 items-center justify-between">
-				<Button label="Dispute" onClick={() => setDisputeModalVisibility(true)} />
-				<Button
-					disabled={userPosition?.status === 2}
-					label="Finalize"
-					onClick={() => setFinalizeModalVisibility(true)}
-				/>
+			<div className="grid grid-cols-2 gap-6">
+				{/* FINALISE ACTION BLOCK */}
+				<div className="w-full flex-col items-stretch h-full flex justify-between">
+					<div className="flex flex-col justify-between">
+						<div className="flex mb-4 items-center">
+							<span>
+								<CheckCircleIcon className="w-7 h-7 text-bluesky" />
+							</span>
+							<h3 className="text-xl text-slate-700 ml-2 font-semibold">
+								{t("agreementActions.finalizeHeadline")}
+							</h3>
+						</div>
+						<p className="text-slate-500 text-sm mb-4">
+							{t("agreementActions.finalizeDescription")}
+							<b className="text-slate-600">{t("agreementActions.finalizeDescriptionBold")}</b>.
+						</p>
+					</div>
+					<Button
+						outlined
+						label={t("agreementActions.finalizeCTA")}
+						onClick={() => setDisputeModalVisibility(true)}
+					/>
+				</div>
+
+				{/* DISPUTE ACTION BLOCK */}
+				<div className="w-full flex-col h-full flex justify-between">
+					<div className="flex flex-col justify-between h-full">
+						<div className="flex mb-4 items-center">
+							<span>
+								<ExclamationCircleIcon className="w-7 h-7 text-bluesky" />
+							</span>
+							<h3 className="text-xl text-slate-700 ml-2 font-semibold">
+								{t("agreementActions.disputeHeadline")}
+							</h3>
+						</div>
+						<p className="text-slate-500 text-sm mb-4">
+							{t("agreementActions.disputeDescription")}
+						</p>
+					</div>
+					<Button
+						disabled={userPosition?.status === 2}
+						outlined
+						label={t("agreementActions.disputeCTA")}
+						onClick={() => setFinalizeModalVisibility(true)}
+					/>
+				</div>
 			</div>
+
 			<ContextModal
 				icon={
 					<Image
