@@ -483,7 +483,7 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 						<h3 className="text-sm text-slate-400  mb-1">{t("join.summary")}</h3>
 					</div>
 
-					<p className=" mt-4 text-slate-600 font-semibold">Token requirements</p>
+					<p className=" mt-4 text-slate-600 font-semibold">{t("join.requirementsHeadline")}</p>
 					<div className="flex w-full gap-3">
 						<AssetDisplay
 							title={"Dispute deposit"}
@@ -503,9 +503,9 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 						/>
 					</div>
 					<div className="mt-4 flex w-full items-center justify-between gap-2 py-2">
-						<div>
-							<p className="w-full h-full text-slate-600 font-semibold">Token approvals</p>
-						</div>
+						<p className="w-full h-full text-slate-600 font-semibold">
+							{t("join.approvalsHeadline")}
+						</p>
 						{enoughDeposit && enoughCollateral && (
 							<>
 								<div className="flex w-full items-center justify-end gap-1">
