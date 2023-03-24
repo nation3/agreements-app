@@ -110,7 +110,7 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 					<Button
 						outlined
 						label={t("agreementActions.finalizeCTA")}
-						onClick={() => setDisputeModalVisibility(true)}
+						onClick={() => setFinalizeModalVisibility(true)}
 					/>
 				</div>
 
@@ -133,7 +133,7 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 						disabled={userPosition?.status === 2}
 						outlined
 						label={t("agreementActions.disputeCTA")}
-						onClick={() => setFinalizeModalVisibility(true)}
+						onClick={() => setDisputeModalVisibility(true)}
 					/>
 				</div>
 			</div>
