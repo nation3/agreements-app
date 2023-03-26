@@ -12,7 +12,7 @@ export const AgreementActions = (): ReactElement => {
 		if (userPosition && userPosition.status == 0)
 			return (
 				<>
-					<TermsVerificationAlert />
+					{/* <TermsVerificationAlert /> */}
 					<JoinableAgreementActions id={id} userPosition={userPosition} />
 				</>
 			);

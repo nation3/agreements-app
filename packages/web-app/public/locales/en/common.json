@@ -58,6 +58,10 @@
             "title": "Approve tokens transfers gasless",
             "info": "Approve all tokens transfer by signing only once.",
             "action": "Approve transfers"
+        },
+        "actions":{
+            "header": "Join Agreement",
+            "description": "Accept the terms of the agreement and transfer the assets exposed collateralising them"
         }
     },
     "dispute": {

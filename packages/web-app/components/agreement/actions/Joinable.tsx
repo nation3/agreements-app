@@ -6,6 +6,7 @@ import { useTranslation } from "next-i18next";
 import { useConstants } from "../../../hooks/useConstants";
 import { useAgreementData } from "../context/AgreementDataContext";
 import { JoinModal } from "../../JoinModal";
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
 
 export const JoinableAgreementActions = ({
 	id,
@@ -22,9 +23,31 @@ export const JoinableAgreementActions = ({
 
 	return (
 		<>
-			<div className="flex flex-col gap-1">
-				<Button label="Join Agreement" onClick={() => setIsJoinAgreementModalOpen(true)} />
+			<div className="grid grid-cols-2 gap-6">
+				{/* JOIN ACTION BLOCK */}
+				<div className="w-full flex-col items-stretch h-full flex justify-between">
+					<div className="flex flex-col justify-between">
+						<div className="flex mb-4 items-center">
+							<span>
+								<CheckCircleIcon className="w-7 h-7 text-bluesky" />
+							</span>
+							<h3 className="text-xl text-slate-700 ml-2 font-semibold">
+								{t("join.actions.header")}
+							</h3>
+						</div>
+						<p className="text-slate-500 text-sm mb-4">{t("join.actions.description")}</p>
+					</div>
+					<div>
+						<Button
+							className="flex w-auto px-10 rounded-full"
+							outlined
+							label={t("join.actions.header")}
+							onClick={() => setIsJoinAgreementModalOpen(true)}
+						/>
+					</div>
+				</div>
 			</div>
+
 			<JoinModal
 				onClose={() => setIsJoinAgreementModalOpen(false)}
 				isOpen={isJoinAgreementModalOpen}

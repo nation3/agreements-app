@@ -107,11 +107,14 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 							<b className="text-slate-600">{t("agreementActions.finalizeDescriptionBold")}</b>.
 						</p>
 					</div>
-					<Button
-						outlined
-						label={t("agreementActions.finalizeCTA")}
-						onClick={() => setFinalizeModalVisibility(true)}
-					/>
+					<div>
+						<Button
+							className="flex w-auto px-12 rounded-full"
+							outlined
+							label={t("agreementActions.finalizeCTA")}
+							onClick={() => setFinalizeModalVisibility(true)}
+						/>
+					</div>
 				</div>
 
 				{/* DISPUTE ACTION BLOCK */}
@@ -129,12 +132,15 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 							{t("agreementActions.disputeDescription")}
 						</p>
 					</div>
-					<Button
-						disabled={userPosition?.status === 2}
-						outlined
-						label={t("agreementActions.disputeCTA")}
-						onClick={() => setDisputeModalVisibility(true)}
-					/>
+					<div>
+						<Button
+							className="flex w-auto px-12 rounded-full"
+							disabled={userPosition?.status === 2}
+							outlined
+							label={t("agreementActions.disputeCTA")}
+							onClick={() => setDisputeModalVisibility(true)}
+						/>
+					</div>
 				</div>
 			</div>
 
