@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, ReactNode } from "react";
+import { useMemo, useState, useCallback, ReactNode, useEffect } from "react";
 import { Tooltip, Modal as FlowModal } from "flowbite-react";
 import Image from "next/image";
 import cx from "classnames";
@@ -13,12 +13,14 @@ import {
 	CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslation } from "next-i18next";
-import { ButtonBase, Spinner } from "@nation3/ui-components";
+import { ButtonBase, Spinner, InfoAlert } from "@nation3/ui-components";
 import { useAgreementData } from "./agreement/context/AgreementDataContext";
 import { useAccount } from "wagmi";
 import { useConstants } from "../hooks/useConstants";
 import { useTokenAllowance, useTokenApprovals } from "../hooks/useToken";
 import Link from "next/link";
+import { client } from "../lib/subgraph";
+import { Button } from "@nation3/ui-components";
 
 const InfoTooltip = ({ info, className }: { info: string; className?: string }) => {
 	return (
@@ -457,7 +459,12 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		return usePermit2 ? "permit" : "approval";
 	}, [usePermit2]);
 
-	const { join, isLoading: joinLoading } = useAgreementJoin({ mode: joinMode });
+	const { join, isProcessing: joinLoading, isTxSuccess } = useAgreementJoin({ mode: joinMode });
+
+	useEffect(() => {
+		// TODO: Refactor into promises chains on click instead of listening events
+		isTxSuccess && window && window.location.reload();
+	}, [isTxSuccess]);
 
 	return (
 		<FlowModal show={isOpen} onClose={onClose}>
@@ -545,34 +552,40 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 						))}
 					<div className="flex w-full min-h-[3.5rem]">
 						{usePermit2 && enoughDeposit && enoughCollateral && (
-							// Button to sign permit2
-							<div className="flex w-full justify-between items-start gap-2 pt-3 pb-2">
-								<span className="flex items-center gap-1">
-									<span className="text-lg">{t("join.signPermit.title")}</span>
-									<InfoTooltip info={t("join.signPermit.info")} className="w-4 h-4" />
-								</span>
-								<div className="flex w-fit">
-									<CompactOutlineButton
-										label={t("join.signPermit.action")}
-										onClick={() => signPermit()}
-									/>
+							<div>
+								<div className="flex w-full justify-between items-start gap-2 pt-3 pb-2 mb-6">
+									<span className="flex items-center gap-1">
+										<span className="text-lg">{t("join.signPermit.title")}</span>
+										<InfoTooltip info={t("join.signPermit.info")} className="w-4 h-4" />
+									</span>
+									<div className="flex w-fit">
+										<CompactOutlineButton
+											label={t("join.signPermit.action")}
+											onClick={() => signPermit()}
+										/>
+									</div>
 								</div>
+								<InfoAlert message="Gassless approvals reportedly causing problems with ledger wallets. Not recommended." />
 							</div>
 						)}
 					</div>
 					<div className="flex w-full justify-end mt-5">
-						<OutlineButton
-							label="Join Agreement"
-							disabled={!canJoin}
-							loading={joinLoading}
-							onClick={() => {
-								if (usePermit2) {
-									join({ id, resolver: userResolver, permit, signature });
-								} else {
-									join({ id, resolver: userResolver });
-								}
-							}}
-						/>
+						<div className="w-60">
+							<Button
+								className="rounded-full px-6"
+								outlined
+								label="Join Agreement"
+								disabled={!canJoin}
+								isLoading={joinLoading}
+								onClick={() => {
+									if (usePermit2) {
+										join({ id, resolver: userResolver, permit, signature });
+									} else {
+										join({ id, resolver: userResolver });
+									}
+								}}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
