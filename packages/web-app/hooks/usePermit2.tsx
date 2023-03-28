@@ -42,12 +42,15 @@ export const usePermit2Allowance = ({
 	enabled = true,
 }: Permit2AllowanceConfig) => {
 	const { permit2Address } = useConstants();
-	const tokenAllowanceConfig = {
-		address: token,
-		owner: account,
-		spender: permit2Address,
-		enabled,
-	};
+	const tokenAllowanceConfig = useMemo(
+		() => ({
+			address: token,
+			owner: account,
+			spender: permit2Address,
+			enabled,
+		}),
+		[account, token, enabled],
+	);
 
 	const { allowance } = useTokenAllowance(tokenAllowanceConfig);
 
@@ -153,7 +156,6 @@ export const usePermit2BatchTransferSignature = ({
 			types,
 			value: values,
 		};
-		// console.log(config.values);
 		return config;
 	}, [domain, permit]);
 

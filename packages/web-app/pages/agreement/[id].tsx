@@ -19,8 +19,12 @@ const Agreement = () => {
 
 	return (
 		<>
-			<AgreementDetails />
-			{status == "Disputed" ? <DisputeActions /> : <AgreementActions />}
+			<Card className="flex flex-col gap-8 w-full justify-center text-gray-800">
+				<AgreementDetails />
+			</Card>
+			<Card className="flex flex-col gap-8 w-full justify-center text-gray-800 mt-4">
+				{status == "Disputed" ? <DisputeActions /> : <AgreementActions />}
+			</Card>
 		</>
 	);
 };
@@ -39,9 +43,7 @@ const AgreementPage = () => {
 						label={"Go back to agreements"}
 						onRoute={router.push}
 					/>
-					<Card className="flex flex-col gap-8 w-full justify-center text-gray-800">
-						<Agreement />
-					</Card>
+					<Agreement />
 				</DisputeResolutionProvider>
 			</AgreementDataProvider>
 		</div>

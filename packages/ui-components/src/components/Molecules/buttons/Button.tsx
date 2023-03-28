@@ -46,13 +46,14 @@ export const Button = (props: ButtonProps) => {
 			className={cx(
 				"px-2 py-3 transition-colors gap-1 tracking-wide text-base font-medium border-2",
 				outlined
-					? "bg-white border-bluesky-500 text-bluesky-400 hover:text-white hover:bg-bluesky-500"
+					? "bg-white border-bluesky-500 text-bluesky-400"
 					: "text-white bg-bluesky-400 border-bluesky-400",
 				disabled
 					? "bg-bluesky-100 border-bluesky-100"
 					: !disabled
 					? "bg-bluesky-500 border-bluesky-500"
 					: "",
+				outlined && !disabled && "hover:text-white hover:bg-bluesky-500 hover:border-bluesky-500", 
 				`${className && className}`,
 			)}
 			disabled={disabled}

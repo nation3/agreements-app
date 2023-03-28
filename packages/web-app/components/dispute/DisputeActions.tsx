@@ -205,7 +205,7 @@ export const DisputeActions = () => {
 										<>
 											<div className="flex flex-col w-full mt-8 items-start px-8 md:px-20 py-3 gap-1">
 												<h3 className="text-sm text-slate-400 px-2 mb-1">
-													{t("join.yourBalance")}
+													{t("dispute.yourBalance")}
 												</h3>
 												<p className="flex justify-between items-center gap-5 px-2 text-bluesky-500">
 													<span className="font-semibold ">{formattedBalance} $NATION</span>
