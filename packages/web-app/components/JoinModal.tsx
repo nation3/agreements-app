@@ -13,13 +13,12 @@ import {
 	CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslation } from "next-i18next";
-import { ButtonBase, Spinner, InfoAlert } from "@nation3/ui-components";
+import { ButtonBase, Spinner } from "@nation3/ui-components";
 import { useAgreementData } from "./agreement/context/AgreementDataContext";
 import { useAccount } from "wagmi";
 import { useConstants } from "../hooks/useConstants";
 import { useTokenAllowance, useTokenApprovals } from "../hooks/useToken";
 import Link from "next/link";
-import { client } from "../lib/subgraph";
 import { Button } from "@nation3/ui-components";
 
 const InfoTooltip = ({ info, className }: { info: string; className?: string }) => {
@@ -59,10 +58,12 @@ const Toggle = ({ onToggle }: { onToggle?: (checked: boolean) => void }) => {
 const CompactOutlineButton = ({
 	label,
 	onClick,
+	isLoading,
 	disabled = false,
 }: {
 	label: string;
 	onClick?: () => any;
+	isLoading?: boolean;
 	disabled?: boolean;
 }) => {
 	return (
@@ -83,12 +84,10 @@ const OutlineButton = ({
 	label,
 	disabled = false,
 	onClick,
-	loading = false,
 }: {
 	label: string;
 	disabled?: boolean;
 	onClick?: () => void;
-	loading?: boolean;
 }) => {
 	return (
 		<div
@@ -184,6 +183,7 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		depositToken,
 	} = useAgreementData();
 	const [usePermit2, setUsePermit2] = useState<boolean>(false);
+	const [signLoading, setSignLoading] = useState<boolean>(false);
 
 	const userResolver = useMemo(
 		() => ({
@@ -347,13 +347,13 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 	}, [approveCollateralToken, requiredDeposit, requiredCollateral, isSameToken]);
 
 	/*
-    const missingNATION = useMemo((): boolean => {
-        if (isSameToken) {
-            return depositUserBalance.lt(requiredDeposit.add(requiredCollateral));
-        }
-        return !enoughDeposit;
-    }, [isSameToken, requiredDeposit, requiredCollateral, depositUserBalance, enoughDeposit]);
-    */
+	const missingNATION = useMemo((): boolean => {
+		if (isSameToken) {
+			return depositUserBalance.lt(requiredDeposit.add(requiredCollateral));
+		}
+		return !enoughDeposit;
+	}, [isSameToken, requiredDeposit, requiredCollateral, depositUserBalance, enoughDeposit]);
+	*/
 
 	const enoughBalance = useMemo((): boolean => {
 		if (isSameToken) {
@@ -381,8 +381,14 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		[tokenTransfers, frameworkAddress, address],
 	);
 
-	const { permit, signature, signPermit, signSuccess, signError } =
+	const { permit, signature, signPermit, signError, signSuccess } =
 		usePermit2BatchTransferSignature(usePermit2BatchTransferSignatureConfig);
+
+	useEffect(() => {
+		if (signError || signSuccess) {
+			setSignLoading(false);
+		}
+	}, [signError, signSuccess]);
 
 	const depositAction = useMemo(() => {
 		if (!enoughDeposit) {
@@ -441,6 +447,20 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		collateralTokenApprovalLoading,
 		enoughCollateralAllowance,
 	]);
+
+	const signAction = useMemo(() => {
+		if (signSuccess && signature) return <CheckCircleIcon className="w-7 h-7 text-bluesky" />;
+		if (signLoading) return <Spinner className="w-6 h-6 text-bluesky" />;
+		return (
+			<CompactOutlineButton
+				label={t("join.signPermit.action")}
+				onClick={() => {
+					signPermit();
+					setSignLoading(true);
+				}}
+			/>
+		);
+	}, [signSuccess, signature, signLoading]);
 
 	const canJoin = useMemo(() => {
 		console.log("balance", enoughBalance);
@@ -550,22 +570,14 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 								<p>{t("agreement.lackingTokens")}</p>
 							</div>
 						))}
-					<div className="flex w-full min-h-[3.5rem]">
+					<div className="flex w-full min-h-[5rem]">
 						{usePermit2 && enoughDeposit && enoughCollateral && (
-							<div>
-								<div className="flex w-full justify-between items-start gap-2 pt-3 pb-2 mb-6">
-									<span className="flex items-center gap-1">
-										<span className="text-lg">{t("join.signPermit.title")}</span>
-										<InfoTooltip info={t("join.signPermit.info")} className="w-4 h-4" />
-									</span>
-									<div className="flex w-fit">
-										<CompactOutlineButton
-											label={t("join.signPermit.action")}
-											onClick={() => signPermit()}
-										/>
-									</div>
-								</div>
-								<InfoAlert message="Gassless approvals reportedly causing problems with ledger wallets. Not recommended." />
+							<div className="flex w-full justify-between items-start gap-2 pt-3 pb-2 mb-6">
+								<span className="flex items-center gap-1">
+									<span className="text-lg">{t("join.signPermit.title")}</span>
+									<InfoTooltip info={t("join.signPermit.info")} className="w-4 h-4" />
+								</span>
+								<div className="flex w-fit">{signAction}</div>
 							</div>
 						)}
 					</div>
@@ -589,6 +601,17 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 					</div>
 				</div>
 			</div>
+			{usePermit2 && (
+				<div className="absolute mt-3 flex w-full px-5 py-3 gap-1 items-center justify-between bg-yellow-100 rounded-bottom-lg rounded-lg text-sm">
+					<div className="px-5">
+						<ExclamationTriangleIcon className="w-4 h-4 text-yellow-800" />
+					</div>
+					<p className="grow flex flex-col text-yellow-600">
+						<span>Gassless approvals reportedly causing problems with Ledger wallets.</span>
+						<span>Use traditional approvals if you are using Ledger.</span>
+					</p>
+				</div>
+			)}
 		</FlowModal>
 	);
 };
