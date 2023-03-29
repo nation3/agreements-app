@@ -381,7 +381,7 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		[tokenTransfers, frameworkAddress, address],
 	);
 
-	const { permit, signature, signPermit, signError, signSuccess } =
+	const { permit, signature, signPermit, signError, signSuccess, signReady } =
 		usePermit2BatchTransferSignature(usePermit2BatchTransferSignatureConfig);
 
 	useEffect(() => {
@@ -450,7 +450,7 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 
 	const signAction = useMemo(() => {
 		if (signSuccess && signature) return <CheckCircleIcon className="w-7 h-7 text-bluesky" />;
-		if (signLoading) return <Spinner className="w-6 h-6 text-bluesky" />;
+		if (signLoading || !signReady) return <Spinner className="w-6 h-6 text-bluesky" />;
 		return (
 			<CompactOutlineButton
 				label={t("join.signPermit.action")}
@@ -460,12 +460,9 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 				}}
 			/>
 		);
-	}, [signSuccess, signature, signLoading]);
+	}, [signSuccess, signature, signLoading, signPermit, signReady]);
 
 	const canJoin = useMemo(() => {
-		console.log("balance", enoughBalance);
-		console.log("permit2", usePermit2);
-		console.log("signature", signature);
 		if (!enoughBalance) return false;
 		if (usePermit2) {
 			return signature !== undefined ? true : false;

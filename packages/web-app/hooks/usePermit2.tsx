@@ -130,15 +130,15 @@ export const usePermit2BatchTransferSignature = ({
 
 	const nonce = useAvailableNonce(address);
 
-	const permit: PermitBatchTransferFrom = useMemo(
-		() => ({
+	const permit: PermitBatchTransferFrom | undefined = useMemo(() => {
+		if (!nonce) return;
+		return {
 			permitted: tokenTransfers,
 			spender,
-			nonce: nonce ?? 0,
+			nonce,
 			deadline: constants.MaxInt256,
-		}),
-		[tokenTransfers, nonce],
-	);
+		};
+	}, [tokenTransfers, nonce]);
 
 	const domain = useMemo(
 		() => ({
@@ -150,6 +150,7 @@ export const usePermit2BatchTransferSignature = ({
 	);
 
 	const signTypedDataConfig = useMemo(() => {
+		if (!permit) return;
 		const { types, values } = SignatureTransfer.getPermitData(permit, permit2Address, 5);
 		const config = {
 			domain,
@@ -159,6 +160,11 @@ export const usePermit2BatchTransferSignature = ({
 		return config;
 	}, [domain, permit]);
 
+	const signReady = useMemo(() => {
+		if (!signTypedDataConfig || !signTypedDataConfig.value) return false;
+		return true;
+	}, [signTypedDataConfig]);
+
 	const {
 		data: signature,
 		isSuccess: signSuccess,
@@ -166,7 +172,7 @@ export const usePermit2BatchTransferSignature = ({
 		signTypedData: signPermit,
 	} = useSignTypedData(signTypedDataConfig);
 
-	return { permit, signature, signPermit, signSuccess, signError };
+	return { permit, signature, signPermit, signSuccess, signError, signReady };
 };
 
 export const useAvailableNonce = (address: string) => {
