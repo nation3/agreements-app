@@ -9,3 +9,5 @@ LINK: https://www.figma.com/file/LJh6k4lGbEZINmWrQxJkBA/Design-Tokens?node-id=61
 -----------------------
 
 */
+
+export default{}
