@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    background-color: rgb(249, 250, 251)
-}
+@layer base {
+    h1 {
+      @apply text-2xl;
+    }
+    h2 {
+      @apply text-xl;
+    }
+  }
+
+@layer components {
+    .c-gradient-dark {
+      @apply bg-gradient-to-r from-pr-c-blue3 to-pr-c-green3;
+    }
+    .c-gradient-light {
+      @apply bg-gradient-to-r from-pr-c-blue1 to-pr-c-green1;
+    }
+    .select2-search {
+      @apply border border-gray-300 rounded;
+    }
+    .select2-results__group {
+      @apply text-lg font-bold text-gray-900;
+    }
+  }

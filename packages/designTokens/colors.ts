@@ -11,53 +11,47 @@ LINK: https://www.figma.com/file/LJh6k4lGbEZINmWrQxJkBA/Design-Tokens?node-id=1-
 */
 
 export const colors = {
-    gradient: {
-        dark: "#1f2938",
-        light: "#f4faff",
-    },
-    neutral: {
-        100:"#FFFFFF",
-        200:"#F5FBFF",
-        300:"#E2EFF9",
-        400:"#ACC5DA",
-        500:"#7395B2",
-        600:"#426685",
-        700:"#224059",
-        800:"#172B3C",
-    },
-    primary:{
-        blue1:"#E9F8FF",
-        blue2:"#B7E5FF",
-        blue3:"#69C9FF",
-        green1:"#EAFFF5",
-        green2:"#B5FFD9",
-        green3:"#88F1BB",
-    },
-    secondary:{},
-    warning:{},
-    danger:{},
-    bluesky: {
-        100: "#D9F1FF",
-        200: "#A1DDFF",
-        300: "#69c9ff",
-        400: "#44B7F9",
-        500: "#209EE6",
-        600: "#0880C4",
-        700: "#00659F",
-        800: "#004C78",
-        900: "#003654",
-        DEFAULT: "#69c9ff",
-    },
-    greensea: {
-        100: "#D9FFE6",
-        200: "#AFF8CE",
-        300: "#88F1BB",
-        400: "#5DE2A7",
-        500: "#36D399",
-        600: "#17B689",
-        700: "#009A73",
-        800: "#00785C",
-        900: "#005441",
-        DEFAULT: "#88F1BB",
-    },
-}
+    "pr": {
+        "c-blue3": "#69c9ff",
+        "c-Blu2": "#b7e5ff",
+        "c-Blue1": "#e9f8ff",
+        "c-Green3": "#88f1bb",
+        "c-Green2": "#b5ffd9",
+        "c-Green1": "#eafff5"
+       },
+       "sc": {
+        "c-1A": "#7176ff",
+        "c-1B": "#a3a7ff",
+        "c-1C": "#d6d8ff",
+        "c-2A": "#ffafe4",
+        "c-2B": "#ffc7ec",
+        "c-2C": "#ffe0f5",
+        "c-3A": "#ffb16f",
+        "c-3B": "#ffcda3",
+        "c-3C": "#ffe9d6",
+        "c-4A": "#7cd3d4",
+        "c-4B": "#a3e0e1",
+        "c-4C": "#c9eded",
+        "c-5A": "#decda3",
+        "c-5B": "#ebe1c7",
+        "c-5C": "#f8f5ec",
+        "c-6A": "#fbed74",
+        "c-6B": "#fcf4a6",
+        "c-6C": "#fefad7"
+       },
+       "neutral": {
+        "c-800": "#172b3c",
+        "c-700": "#224059",
+        "c-600": "#426685",
+        "c-500": "#7395b2",
+        "c-400": "#acc5da",
+        "c-300": "#e2eff9",
+        "c-200": "#f5fbff",
+        "c-100": "#ffffff"
+       },
+       "semantic": {
+        "c-Success": "#61da96",
+        "c-Warning": "#ffb943",
+        "c-Danger": "#ff704d"
+       }
+  }
