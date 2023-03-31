@@ -10,11 +10,8 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
-			colors: n3theme.colors,
-			fontSize: n3theme.fontSize,
-			fontFamily: n3theme.fontFamily,
-			boxShadow: n3theme.elevation,
-			borderRadius: n3theme.roundness,
+			// as soon as the theme is fully mature and covering all aspects we can load it up directly alone as theme.
+			...n3theme
 		},
 	},
 	plugins: [require("flowbite/plugin")],

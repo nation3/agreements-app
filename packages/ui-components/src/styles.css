@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
+
+
+@layer base {
+    h1,h2,h3,h4 {
+      @apply font-bossa;
+    }
+    b, strong, i, em, u, strike, small, big, sub, sup, mark, button, p, span, h5 {
+      @apply font-inter;
+    }
+    table, th, td, caption {
+      @apply font-inter;
+    }
+  }
+
+@layer components {
+    /*  COLOR ADDITIONS */
+    .c-gradient-dark {
+      @apply bg-gradient-to-r from-pr-c-blue3 to-pr-c-green3;
+    }
+    .c-gradient-light {
+      @apply bg-gradient-to-r from-pr-c-blue1 to-pr-c-green1;
+    }
+
+
+    /* DESING TOKENS FONTS */
+    .select2-search {
+      @apply border border-gray-300 rounded;
+    }
+    .select2-results__group {
+      @apply text-lg font-bold text-gray-900;
+    }
+  }
