@@ -13,11 +13,11 @@ LINK: https://www.figma.com/file/LJh6k4lGbEZINmWrQxJkBA/Design-Tokens?node-id=1-
 export const colors = {
     "pr": {
         "c-blue3": "#69c9ff",
-        "c-Blu2": "#b7e5ff",
-        "c-Blue1": "#e9f8ff",
-        "c-Green3": "#88f1bb",
-        "c-Green2": "#b5ffd9",
-        "c-Green1": "#eafff5"
+        "c-blue2": "#b7e5ff",
+        "c-blue1": "#e9f8ff",
+        "c-green3": "#88f1bb",
+        "c-green2": "#b5ffd9",
+        "c-green1": "#eafff5"
        },
        "sc": {
         "c-1A": "#7176ff",
