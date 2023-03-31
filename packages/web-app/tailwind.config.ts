@@ -1,6 +1,6 @@
 // tailwind.config.ts
 import type { Config } from "tailwindcss";
-import n3theme from '../designTokens/index';
+import n3theme from '../theme/index';
 
 const config: Config = {
 	content: [
