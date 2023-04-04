@@ -32,17 +32,16 @@
     "react": ">=16"
   },
   "dependencies": {
-    "@heroicons/react": "^2.0.11",
     "classnames": "^2.3.2",
     "clsx": "^1.2.1",
     "ethers": "^5.7.2",
-    "flowbite": "^1.5.3",
-    "flowbite-react": "^0.1.11",
-    "framer-motion": "^7.5.1",
     "react-blockies": "^1.4.1",
     "react-dropzone": "^14.2.2"
   },
   "devDependencies": {
+    "tailwindcss": "file:../shared/node_modules/tailwindcss",
+    "postcss": "file:../shared/node_modules/postcss",
+    "autoprefixer": "file:../shared/node_modules/autoprefixer",
     "@babel/core": "^7.19.3",
     "@rollup/plugin-url": "^8.0.1",
     "@storybook/addon-actions": "^6.5.12",
