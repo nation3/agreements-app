@@ -5,13 +5,13 @@ interface Props {
 	classname?: string;
 }
 
-export const Headline3 = (props: Props) => {
+export const BodyHeadline = (props: Props) => {
 	return (
-		<h3
+		<h5
 			{...props}
-			className={`text-3xl md:text-4xl font-bold mb-min2 md:mb-min3  ${props.classname}`}
+			className={`text-base md:text-lg font-bold md:pb-min3 pb-min2 ${props.classname}`}
 		>
 			{props.children}
-		</h3>
+		</h5>
 	);
 };

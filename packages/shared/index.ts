@@ -20,13 +20,14 @@
  */
 
 // index.ts
-import * as colors from "./colors";
+import * as colors from "./theme/colors";
 import * as effects from "./effects";
 import * as icons from "./icons";
 import * as spacing from "./spacing";
 import * as typography from "./typography";
 import * as illustrations from "./illustrations";
 import * as screens from "./screens";
+import {grid} from './grid';
 
 export default {
   ...colors,
@@ -36,4 +37,5 @@ export default {
   ...screens,
   ...typography,
   ...illustrations,
+  ...grid
 };

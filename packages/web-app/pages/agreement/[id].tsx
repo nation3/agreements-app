@@ -13,21 +13,7 @@ import { useAgreementData } from "../../components/agreement/context/AgreementDa
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps } from "next";
 import { useConstants } from "../../hooks/useConstants";
-
-const Agreement = () => {
-	const { status } = useAgreementData();
-
-	return (
-		<>
-			<Card className="flex flex-col gap-8 w-full justify-center text-gray-800">
-				<AgreementDetails />
-			</Card>
-			<Card className="flex flex-col gap-8 w-full justify-center text-gray-800 mt-4">
-				{status == "Disputed" ? <DisputeActions /> : <AgreementActions />}
-			</Card>
-		</>
-	);
-};
+import { Agreement } from "../../components/agreement/AgreementDetails";
 
 const AgreementPage = () => {
 	const { frameworkAddress } = useConstants();
@@ -35,18 +21,15 @@ const AgreementPage = () => {
 	const { query } = router;
 
 	return (
-		<div className="w-full max-w-3xl">
-			<AgreementDataProvider id={String(query.id)}>
-				<DisputeResolutionProvider framework={frameworkAddress} id={String(query.id)}>
-					<BackLinkButton
-						route={"/agreements"}
-						label={"Go back to agreements"}
-						onRoute={router.push}
-					/>
+		<AgreementDataProvider id={String(query.id)}>
+			<DisputeResolutionProvider framework={frameworkAddress} id={String(query.id)}>
+				<article className="w-full flex justify-center">
+					<div className="absolute top h-60 w-full bg-pr-c-green1 z-1"></div>
+
 					<Agreement />
-				</DisputeResolutionProvider>
-			</AgreementDataProvider>
-		</div>
+				</article>
+			</DisputeResolutionProvider>
+		</AgreementDataProvider>
 	);
 };
 

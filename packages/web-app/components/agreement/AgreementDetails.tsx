@@ -7,7 +7,7 @@ import {
 	ButtonBase,
 	ActionBadge,
 	utils as n3utils,
-	useScreen,
+	Base1,
 	ScreenType,
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
@@ -19,6 +19,17 @@ import { AccountDisplay } from "../AccountDisplay";
 import { useUrl } from "../../hooks";
 import { useTranslation } from "next-i18next";
 import { Token } from "./context/types";
+import PositionsTable from "../PositionsTable";
+import Parties from "../Parties";
+import { Card } from "@nation3/ui-components";
+import { Headline3 } from "@nation3/ui-components";
+import { Body1 } from "@nation3/ui-components";
+import { Body2 } from "@nation3/ui-components";
+import { AgreementActions } from "../agreement";
+import { DisputeActions } from "../dispute";
+import { BodyHeadline } from "@nation3/ui-components";
+import { Headline2 } from "@nation3/ui-components";
+import { Headline4 } from "@nation3/ui-components";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -62,44 +73,6 @@ const ShareButton = ({ url }: { url: string }) => {
 	);
 };
 
-const PositionsTable = ({
-	positions,
-	token,
-}: {
-	positions: PositionMap | undefined;
-	token: Token | undefined;
-}) => {
-	const { screen } = useScreen();
-
-	return (
-		<Table
-			columns={
-				screen === ScreenType.Desktop
-					? ["participant", "stake", "status"]
-					: ["participant", "stake"]
-			}
-			data={Object.entries(positions ?? {}).map(([account, { balance, status }], index) =>
-				screen === ScreenType.Desktop
-					? [
-							<AccountDisplay key={index} address={account} />,
-							<b key={index}>
-								{" "}
-								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
-							</b>,
-							<PositionStatusBadge key={index} status={status} />,
-					  ]
-					: [
-							<AccountDisplay key={index} address={account} />,
-							<b key={index}>
-								{" "}
-								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
-							</b>,
-					  ],
-			)}
-		/>
-	);
-};
-
 export const AgreementDataDisplay = ({
 	id,
 	title,
@@ -131,12 +104,12 @@ export const AgreementDataDisplay = ({
 	return (
 		<>
 			<div className="flex flex-col gap-3 text-gray-700">
-				<CardHeader
+				{/* 				<CardHeader
 					title={title}
 					id={id}
 					status={status}
 					actions={<ShareButton url={shareUrl} />}
-				/>
+				/> */}
 				<div className="flex flex-col md:flex-row gap-1 justify-start md:items-center">
 					<ActionBadge
 						label="ID"
@@ -174,20 +147,37 @@ export const AgreementDataDisplay = ({
 	);
 };
 
-export const AgreementDetails = () => {
+export const Agreement = () => {
 	const { id, title, status, termsHash, collateralToken, positions } = useAgreementData();
-
 	return (
-		<>
-			{/* Title and details */}
-			<AgreementDataDisplay
-				id={id}
-				title={title || "Agreement"}
-				status={status || "Unknonw"}
-				termsHash={termsHash || constants.HashZero}
-			/>
-			{/* Participants table */}
-			<PositionsTable token={collateralToken} positions={positions} />
-		</>
+		<section id="agreement" className="grid grid-cols-12 gap-base z-10 mt-40">
+			{/* HEADER */}
+			<div className="col-start-1 col-end-12 gap-y-min3">
+				<Body2>Agreement</Body2>
+				<Headline3>{title}</Headline3>
+			</div>
+
+			{/* CORE AGREEMENT DATA */}
+			<div className="col-start-1 col-end-9 flex flex-col w-full text-gray-800">
+				{/* Title and details */}
+				<Card>
+					<AgreementDataDisplay
+						id={id}
+						title={title || "Agreement"}
+						status={status || "Unknonw"}
+						termsHash={termsHash || constants.HashZero}
+					/>
+
+					{/* Participants */}
+					<Headline4 className="pb-base">Positions & Stakes</Headline4>
+					<Parties token={collateralToken} positions={positions} />
+				</Card>
+			</div>
+
+			{/* AGREEMENT ACTIONS */}
+			<div className="p-base w-full bg-white rounded-lg border-2 border-neutral-c-200 col-start-9 col-end-12 flex flex-col justify-center text-gray-800">
+				{status == "Disputed" ? <DisputeActions /> : <AgreementActions />}
+			</div>
+		</section>
 	);
 };

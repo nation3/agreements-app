@@ -5,12 +5,10 @@ interface Props {
 	classname?: string;
 }
 
-const Body1 = (props: Props) => {
+export const Body1 = (props: Props) => {
 	return (
 		<p {...props} className={`text-xs md:text-sm ${props.classname}`}>
 			{props.children}
 		</p>
 	);
 };
-
-export default Body1;

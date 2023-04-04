@@ -5,12 +5,10 @@ interface Props {
 	classname?: string;
 }
 
-const Headline4 = (props: Props) => {
+export const Headline4 = (props: Props) => {
 	return (
-		<h4 {...props} className={`text-lg md:text-3xl ${props.classname}`}>
+		<h4 {...props} className={`text-lg md:text-3xl pb-min3 md:pb-base ${props.classname}`}>
 			{props.children}
 		</h4>
 	);
 };
-
-export default Headline4;

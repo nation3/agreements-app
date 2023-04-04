@@ -23,7 +23,7 @@ export const JoinableAgreementActions = ({
 
 	return (
 		<>
-			<div className="grid grid-cols-2 gap-6">
+			<div className="grid grid-cols-1 gap-6">
 				{/* JOIN ACTION BLOCK */}
 				<div className="w-full flex-col items-stretch h-full flex justify-between">
 					<div className="flex flex-col justify-between">

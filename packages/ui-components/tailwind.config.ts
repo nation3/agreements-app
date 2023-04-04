@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss'
-import n3theme from '../theme/index';
+import n3theme from '../shared/index';
 
 const config: Config = {
 	content: [
