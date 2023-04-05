@@ -1,3 +1,4 @@
+import React from "react";
 import { Card, Button } from "@nation3/ui-components";
 import { useRouter } from "next/router";
 import { AgreementList, AgreementListProvider } from "../../components/agreements-list";

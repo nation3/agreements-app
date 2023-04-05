@@ -5,7 +5,7 @@ import { DisputeResolutionProvider } from "../../components/dispute/context/Disp
 import { DisputeDetails, DisputeArbitrationActions } from "../../components/dispute";
 import { useCohort } from "../../hooks/useCohort";
 import { useAccount } from "wagmi";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { useConstants } from "../../hooks/useConstants";
 
 const DisputePage = () => {

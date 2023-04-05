@@ -19,6 +19,7 @@
     "watch:all": "concurrently \"yarn watch\" \"yarn watch:css\"",
     "build": "tsdx build",
     "build:css": "postcss src/styles.css -o dist/styles.css",
+    "build:all": "concurrently \"yarn build\" \"yarn build:css\"",
     "test": "tsdx test --passWithNoTests",
     "lint:check": "yarn lint:check:format && yarn lint:check:eslint",
     "lint:check:eslint": "eslint src",

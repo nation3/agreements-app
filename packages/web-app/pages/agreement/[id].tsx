@@ -1,11 +1,8 @@
+import React from "react";
 import { useRouter } from "next/router";
 import { Card, BackLinkButton } from "@nation3/ui-components";
 
-import {
-	AgreementDetails,
-	AgreementActions,
-	AgreementDataProvider,
-} from "../../components/agreement";
+import { Agreement, AgreementActions, AgreementDataProvider } from "../../components/agreement";
 import { DisputeResolutionProvider, DisputeActions } from "../../components/dispute";
 
 import { useAgreementData } from "../../components/agreement/context/AgreementDataContext";
@@ -13,7 +10,6 @@ import { useAgreementData } from "../../components/agreement/context/AgreementDa
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps } from "next";
 import { useConstants } from "../../hooks/useConstants";
-import { Agreement } from "../../components/agreement/AgreementDetails";
 
 const AgreementPage = () => {
 	const { frameworkAddress } = useConstants();

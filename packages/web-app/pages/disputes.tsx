@@ -1,3 +1,4 @@
+import React from "react";
 import { Card } from "@nation3/ui-components";
 import { DisputeList, DisputeListProvider } from "../components/disputes-list";
 import { ApolloProvider } from "@apollo/client";

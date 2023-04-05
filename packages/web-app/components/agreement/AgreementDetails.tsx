@@ -7,7 +7,6 @@ import {
 	ButtonBase,
 	ActionBadge,
 	utils as n3utils,
-	Base1,
 	ScreenType,
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
@@ -152,9 +151,9 @@ export const Agreement = () => {
 	return (
 		<section id="agreement" className="grid grid-cols-12 gap-base z-10 mt-40">
 			{/* HEADER */}
-			<div className="col-start-1 col-end-12 gap-y-min3">
+			<div className="col-start-1 col-end-12 gap-y-min">
 				<Body2>Agreement</Body2>
-				<Headline3>{title}</Headline3>
+				<Headline3 className="pb-0">{title}</Headline3>
 			</div>
 
 			{/* CORE AGREEMENT DATA */}

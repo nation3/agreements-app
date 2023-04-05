@@ -2,12 +2,12 @@ import React, { ReactNode } from "react";
 
 interface Props {
 	children: ReactNode;
-	classname?: string;
+	className?: string;
 }
 
 export const Body2 = (props: Props) => {
 	return (
-		<p {...props} className={`text-sm md:text-base ${props.classname}`}>
+		<p {...props} className={`text-sm md:text-base ${props.className}`}>
 			{props.children}
 		</p>
 	);

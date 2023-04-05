@@ -5,10 +5,11 @@ import { utils, BigNumber } from "ethers";
 import { AccountDisplay } from "./AccountDisplay";
 import cx from "classnames";
 import { BodyHeadline } from "@nation3/ui-components";
+import React from "react";
 
 interface Position {
 	account: string;
-	balance: BigNumber;
+	balance: string;
 	status: number;
 }
 
