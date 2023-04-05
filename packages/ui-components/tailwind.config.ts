@@ -5,8 +5,6 @@ const config: Config = {
 	content: [
 		"./src/**/*.{js,ts,jsx,tsx}",
 		"./stories/**/*.{js,ts,jsx,tsx}",
-		"../web-app/components/**/*.{js,ts,jsx,tsx}",
-		"../web-app/pages/**/*.{js,ts,jsx,tsx}",
 		"../../node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
 	],
 	safelist: [
