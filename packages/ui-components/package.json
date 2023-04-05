@@ -39,9 +39,6 @@
     "react-dropzone": "^14.2.2"
   },
   "devDependencies": {
-    "tailwindcss": "file:../shared/node_modules/tailwindcss",
-    "postcss": "file:../shared/node_modules/postcss",
-    "autoprefixer": "file:../shared/node_modules/autoprefixer",
     "@babel/core": "^7.19.3",
     "@rollup/plugin-url": "^8.0.1",
     "@storybook/addon-actions": "^6.5.12",
