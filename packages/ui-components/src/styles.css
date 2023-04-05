@@ -26,12 +26,4 @@
       @apply bg-gradient-to-r from-pr-c-blue1 to-pr-c-green1;
     }
 
-
-    /* DESING TOKENS FONTS */
-    .select2-search {
-      @apply border border-gray-300 rounded;
-    }
-    .select2-results__group {
-      @apply text-lg font-bold text-gray-900;
-    }
   }

@@ -1,10 +1,12 @@
 import type { Config } from 'tailwindcss'
-import n3theme from '../shared/index';
+import n3theme from './theme/index';
 
 const config: Config = {
 	content: [
 		"./src/**/*.{js,ts,jsx,tsx}",
 		"./stories/**/*.{js,ts,jsx,tsx}",
+		"../web-app/components/**/*.{js,ts,jsx,tsx}",
+		"../web-app/pages/**/*.{js,ts,jsx,tsx}",
 		"../../node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
 	],
 	safelist: [
