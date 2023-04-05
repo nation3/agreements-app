@@ -57,7 +57,6 @@
     "postcss": "file:../shared/node_modules/postcss",
     "prettier": "^2.7.1",
     "start-server-and-test": "^1.14.0",
-    "tailwindcss": "file:../shared/node_modules/tailwindcss",
     "typescript": "^4.7.2"
   }
 }

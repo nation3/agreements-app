@@ -1,6 +1,6 @@
 // tailwind.config.ts
 import type { Config } from "tailwindcss";
-import n3theme from '../shared/theme/index';
+import n3theme from '@nation3/ui-components/theme';
 import presetEnv from '../../shared/node_modules/@babel/preset-env';
 import presetReact from '../../shared/node_modules/@babel/preset-env';
 
