@@ -10,7 +10,7 @@ const ITokenPreviewDefaultProps = {};
 const TokenPreview: React.FC<ITokenPreviewProps> = (props) => {
 	const { symbol } = props;
 	// const token = useToken(symbol);
-	useEffect(() => {}, []);
+	// useEffect(() => {}, []);
 
 	return <React.Fragment></React.Fragment>;
 };
