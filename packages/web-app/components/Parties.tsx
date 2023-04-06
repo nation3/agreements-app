@@ -6,7 +6,6 @@ import { AccountDisplay } from "./AccountDisplay";
 import cx from "classnames";
 import { BodyHeadline } from "@nation3/ui-components";
 import React from "react";
-import { useToken } from "../hooks/useTokenList";
 
 interface Position {
 	account: string;
