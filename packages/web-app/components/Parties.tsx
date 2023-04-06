@@ -1,11 +1,12 @@
 import { PositionMap, Token } from "./agreement/context/types";
 import { PositionStatusBadge } from ".";
-import { Table, useScreen, ScreenType } from "@nation3/ui-components";
+import { Table, useScreen, ScreenType, Body2, Body3 } from "@nation3/ui-components";
 import { utils, BigNumber } from "ethers";
 import { AccountDisplay } from "./AccountDisplay";
 import cx from "classnames";
 import { BodyHeadline } from "@nation3/ui-components";
 import React from "react";
+import { useToken } from "../hooks/useTokenList";
 
 interface Position {
 	account: string;
@@ -65,7 +66,7 @@ const Parties = ({
 					<BodyHeadline>
 						{message} ({positions.length})
 					</BodyHeadline>
-					<div key={message} className={cx("mb-base p-base w-full rounded-md", "bg-" + color)}>
+					<div key={message} className={cx("mb-base p-min3 w-full rounded-md", "bg-" + color)}>
 						<div className="grid grid-cols-5 gap-16">
 							<div className="col-start-1 col-end-4">
 								<p className="text-neutral-c-500">Address</p>
@@ -78,15 +79,15 @@ const Parties = ({
 							</div>
 						</div>
 						{positions.map(({ account, balance, status }) => (
-							<section key={account} className="grid grid-cols-5 gap-16">
-								<div className="col-start-1 col-end-4">
+							<section key={account} className="grid grid-cols-5 gap-16 mt-min1">
+								<div className="col-start-1 col-end-4 flex">
 									<AccountDisplay address={account} />
 								</div>
 								<div className="col-start-4 col-end-4">
-									<b>{utils.formatUnits(BigNumber.from(balance))}</b>
+									<Body3>{utils.formatUnits(BigNumber.from(balance))}</Body3>
 								</div>
 								<div className="col-start-5 col-end-5">
-									<span>{token?.symbol ?? ""}</span>
+									<Body3>{token?.symbol ?? ""}</Body3>
 								</div>
 							</section>
 						))}

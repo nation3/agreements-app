@@ -10,6 +10,7 @@ import { useAgreementData } from "../../components/agreement/context/AgreementDa
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps } from "next";
 import { useConstants } from "../../hooks/useConstants";
+import Image from "next/image";
 
 const AgreementPage = () => {
 	const { frameworkAddress } = useConstants();
@@ -20,7 +21,9 @@ const AgreementPage = () => {
 		<AgreementDataProvider id={String(query.id)}>
 			<DisputeResolutionProvider framework={frameworkAddress} id={String(query.id)}>
 				<article className="w-full flex justify-center">
-					<div className="absolute top h-60 w-full bg-pr-c-green1 z-1"></div>
+					<div className="absolute top h-[300px] w-full bg-pr-c-green1 z-5">
+						<Image src="/illustrations/header1.svg" fill object-fit="cover" alt={""} />
+					</div>
 
 					<Agreement />
 				</article>

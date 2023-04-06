@@ -54,6 +54,13 @@ export const colors = {
         "c-Warning": "#ffb943",
         "c-Danger": "#ff704d"
        },
+       glass:{
+        "c-20": "#ffffff20",
+        "c-30": "#ffffff30",
+        "c-40": "#ffffff40",
+        "c-50": "#ffffff50",
+        "c-80": "#ffffff80",
+       },
        bluesky: {
         100: "#D9F1FF",
         200: "#A1DDFF",

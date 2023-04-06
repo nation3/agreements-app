@@ -151,13 +151,13 @@ export const Agreement = () => {
 	return (
 		<section id="agreement" className="grid grid-cols-12 gap-base z-10 mt-40">
 			{/* HEADER */}
-			<div className="col-start-1 col-end-12 gap-y-min">
+			<div className="col-start-1 col-end-13 gap-y-min2">
 				<Body2>Agreement</Body2>
 				<Headline3 className="pb-0">{title}</Headline3>
 			</div>
 
 			{/* CORE AGREEMENT DATA */}
-			<div className="col-start-1 col-end-9 flex flex-col w-full text-gray-800">
+			<div className="col-start-1 col-end-10 flex flex-col w-full text-gray-800">
 				{/* Title and details */}
 				<Card>
 					<AgreementDataDisplay
@@ -174,7 +174,7 @@ export const Agreement = () => {
 			</div>
 
 			{/* AGREEMENT ACTIONS */}
-			<div className="p-base w-full bg-white rounded-lg border-2 border-neutral-c-200 col-start-9 col-end-12 flex flex-col justify-center text-gray-800">
+			<div className="p-base w-full bg-white rounded-lg border-2 border-neutral-c-200 col-start-10 col-end-13 flex flex-col justify-center text-gray-800">
 				{status == "Disputed" ? <DisputeActions /> : <AgreementActions />}
 			</div>
 		</section>

@@ -22,4 +22,5 @@ export const spacing = {
         '26': '64px',
         '30': '80px',
         '40': '120px',
+        'header': '300px',
 }
