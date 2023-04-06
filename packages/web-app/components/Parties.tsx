@@ -68,7 +68,7 @@ const Parties = ({
 					</BodyHeadline>
 					<div key={message} className={cx("mb-base p-min3 w-full rounded-md", "bg-" + color)}>
 						<div className="grid grid-cols-5 gap-16">
-							<div className="col-start-1 col-end-4">
+							<div className="col-stat-1 col-end-4 text-left flex">
 								<p className="text-neutral-c-500">Address</p>
 							</div>
 							<div className="col-start-4 col-end-4">
@@ -79,7 +79,7 @@ const Parties = ({
 							</div>
 						</div>
 						{positions.map(({ account, balance, status }) => (
-							<section key={account} className="grid grid-cols-5 gap-16 mt-min1">
+							<section key={account} className="grid grid-cols-5 gap-16 mt-min2">
 								<div className="col-start-1 col-end-4 flex">
 									<AccountDisplay address={account} />
 								</div>

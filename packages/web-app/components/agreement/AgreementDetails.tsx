@@ -102,14 +102,14 @@ export const AgreementDataDisplay = ({
 
 	return (
 		<>
-			<div className="flex flex-col gap-3 text-gray-700">
+			<div className="flex gap-3 text-gray-700 mb-min2">
 				{/* 				<CardHeader
 					title={title}
 					id={id}
 					status={status}
 					actions={<ShareButton url={shareUrl} />}
 				/> */}
-				<div className="flex flex-col md:flex-row gap-1 justify-start md:items-center">
+				<div className="flex flex-col md:flex-row gap-1 justify-start md:items-center mr-min1">
 					<ActionBadge
 						label="ID"
 						tooltip
@@ -117,17 +117,17 @@ export const AgreementDataDisplay = ({
 						data={n3utils.shortenHash(id ?? constants.HashZero)}
 						dataAction={copyAgreementId}
 					/>
-					<div className="flex items-center">
-						<ActionBadge
-							tooltip
-							tooltipContent={isHashCopied ? "Copied" : "Click to copy"}
-							label="Terms hash"
-							data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
-							icon={<InformationCircleIcon className="w-4 h-4" />}
-							iconAction={() => setIsTermsModalUp(true)}
-							dataAction={copyTermsHash}
-						/>
-					</div>
+				</div>
+				<div className="flex items-center">
+					<ActionBadge
+						tooltip
+						tooltipContent={isHashCopied ? "Copied" : "Click to copy"}
+						label="Terms hash"
+						data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
+						icon={<InformationCircleIcon className="w-4 h-4" />}
+						iconAction={() => setIsTermsModalUp(true)}
+						dataAction={copyTermsHash}
+					/>
 				</div>
 			</div>
 

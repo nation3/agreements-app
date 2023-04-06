@@ -7,7 +7,7 @@ interface Props {
 
 export const Body3 = (props: Props) => {
 	return (
-		<p {...props} className={`text-base md:text-lg ${props.className}`}>
+		<p {...props} className={`text-xs md:text-sm ${props.className}`}>
 			{props.children}
 		</p>
 	);

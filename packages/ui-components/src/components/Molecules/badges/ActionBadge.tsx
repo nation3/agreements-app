@@ -28,7 +28,7 @@ export const ActionBadge = ({
 	const body = (
 		<>
 			{data && (
-				<button className={`bg-white px-2.5 rounded-md`} onClick={() => dataAction?.()}>
+				<button className={`bg-white px-min2 my-min1 rounded-md`} onClick={() => dataAction?.()}>
 					{data}
 				</button>
 			)}
@@ -37,7 +37,7 @@ export const ActionBadge = ({
 
 	return (
 		<span
-			className={`flex w-fit items-center gap-2 px-1.5 py-1 rounded-lg text-${textColor} bg-${bgColor}`}
+			className={`flex w-fit items-center gap-2 px-min3 py-min2 rounded-lg text-${textColor} bg-${bgColor}`}
 			{...props}
 		>
 			<span className="pl-1">{label}</span>

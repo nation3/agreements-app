@@ -28,7 +28,7 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 								</div>
 							</Link>
 							<Link href="/agreements" className="cursor-pointer ">
-								<div className="p-min2 bg-white shadow-md rounded-md ml-min3">
+								<div className="py-min2 px-min3 bg-white shadow rounded-md ml-min3">
 									<p className="text-xs text-slate-600">Agreements</p>
 								</div>
 							</Link>
