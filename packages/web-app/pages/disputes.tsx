@@ -10,20 +10,23 @@ const Disputes = () => {
 	const { subgraphURI } = useConstants();
 
 	return (
-		<div id="agreementsPage" className="w-full max-w-3xl h-2/3">
-			<ApolloProvider client={client(subgraphURI ?? defaultURI ?? "")}>
-				<DisputeListProvider>
-					<Card className="flex flex-col w-full items-stretch gap-8 text-gray-800">
-						<div className="flex flex-row items-center justify-between gap-2 text-gray-700">
-							<h1 className="pl-2 font-display font-medium text-xl md:text-3xl text-slate-600">
-								Open Disputes
-							</h1>
-						</div>
-						<DisputeList />
-					</Card>
-				</DisputeListProvider>
-			</ApolloProvider>
-		</div>
+		<ApolloProvider client={client(subgraphURI ?? defaultURI ?? "")}>
+			<DisputeListProvider>
+				<article className=" w-full flex justify-center">
+					<div className="absolute top h-60 w-full bg-pr-c-green1 z-1"></div>
+					<div id="disputesPage" className="grid grid-cols-12 gap-24 z-10 mt-40">
+						<Card className="col-start-1 col-end-10 flex flex-col w-full gap-24 text-gray-800">
+							<div className="flex flex-row items-center justify-between gap-2 text-gray-700">
+								<h1 className="pl-2 font-display font-medium text-xl md:text-3xl text-slate-600">
+									Open Disputes
+								</h1>
+							</div>
+							<DisputeList />
+						</Card>
+					</div>
+				</article>
+			</DisputeListProvider>
+		</ApolloProvider>
 	);
 };
 

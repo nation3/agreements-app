@@ -30,7 +30,7 @@ const Agreements = () => {
 					<div className="absolute top h-60 w-full bg-pr-c-green1 z-1"></div>
 					<div id="agreementsPage" className="grid grid-cols-12 gap-24 z-10 mt-40">
 						{/* <div className="col-start-1 col-end-12 h-40 bg-pr-c-green2"></div> */}
-						<Card className="col-start-1 col-end-12 flex flex-col w-full gap-24 text-gray-800">
+						<Card className="col-start-1 col-end-10 flex flex-col w-full gap-24 text-gray-800">
 							<div className="flex flex-row items-center justify-between gap-2 text-gray-700">
 								<h1 className="pl-2 font-display font-medium text-xl md:text-3xl text-slate-600">
 									Agreements
