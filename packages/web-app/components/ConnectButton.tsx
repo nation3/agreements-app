@@ -9,7 +9,7 @@ export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 	return ensImage ? (
 		<img src={ensImage} width={size} height={size} alt="ENS Avatar" className={`rounded-full`} />
 	) : (
-		<div className="rounded-full overflow-hidden flex items-center bg-pr-c-green1">
+		<div className="rounded-full overflow-hidden flex items-center bg-pr-c-green2">
 			<UserIcon className="w-[50px] h-[50px]" />
 		</div>
 	);
@@ -87,7 +87,7 @@ export const ConnectButton = () => {
 											<span>{chain.name} </span>
 										</button>
 										<AccountButton
-											color="pr-c-green3"
+											borderColor="pr-c-green3"
 											avatar={
 												<AccountAvatar
 													address={account.address}

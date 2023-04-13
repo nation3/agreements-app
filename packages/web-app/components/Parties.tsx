@@ -67,8 +67,11 @@ const Parties = ({
 					<BodyHeadline className="mb-min3">
 						{message} ({positions.length})
 					</BodyHeadline>
-					<div key={message} className={cx("mb-base p-min3 w-full rounded-md", "bg-" + color)}>
-						{positions.map(({ account, balance, status }) => (
+					{positions.map(({ account, balance, status }) => (
+						<div
+							key={message}
+							className={cx("mb-base last:mb-0 p-min3 w-full rounded-md", "bg-" + color)}
+						>
 							<section key={account} className="grid grid-cols-5 md:gap-16 gap-8">
 								<div className="col-start-1 col-end-6 md:col-end-4 flex">
 									<div>
@@ -93,8 +96,8 @@ const Parties = ({
 									<Body3>{token?.symbol ?? ""}</Body3>
 								</div>
 							</section>
-						))}
-					</div>
+						</div>
+					))}
 				</>
 			))}
 		</>
