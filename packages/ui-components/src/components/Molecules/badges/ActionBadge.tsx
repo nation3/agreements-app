@@ -37,7 +37,7 @@ export const ActionBadge = ({
 
 	return (
 		<span
-			className={`flex w-fit items-center gap-2 px-min3 py-min2 rounded-lg text-${textColor} bg-${bgColor}`}
+			className={`flex w-fit items-center gap-2  px-min2 py-min1 md:px-min3 md:py-min2 rounded-lg text-${textColor} bg-${bgColor}`}
 			{...props}
 		>
 			<span className="pl-1">{label}</span>

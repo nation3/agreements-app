@@ -8,6 +8,7 @@ import {
 	ActionBadge,
 	utils as n3utils,
 	ScreenType,
+	WarnDocumentOrange,
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
 import { Modal } from "flowbite-react";
@@ -29,6 +30,11 @@ import { DisputeActions } from "../dispute";
 import { BodyHeadline } from "@nation3/ui-components";
 import { Headline2 } from "@nation3/ui-components";
 import { Headline4 } from "@nation3/ui-components";
+import cx from "classnames";
+import NoActions from "./actions/NoActions";
+import { Body3 } from "@nation3/ui-components";
+import NotFoundAgreement from "./NotFound";
+import AgreementSkeleton from "./AgreementSkeleton";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -102,7 +108,7 @@ export const AgreementDataDisplay = ({
 
 	return (
 		<>
-			<div className="flex gap-3 text-gray-700 mb-min2">
+			<div className="flex md:flex-row flex-col gap-3 text-gray-700 mb-min2">
 				{/* 				<CardHeader
 					title={title}
 					id={id}
@@ -147,17 +153,31 @@ export const AgreementDataDisplay = ({
 };
 
 export const Agreement = () => {
-	const { id, title, status, termsHash, collateralToken, positions } = useAgreementData();
-	return (
-		<section id="agreement" className="grid grid-cols-12 gap-base z-10 mt-40">
+	const { id, title, status, termsHash, collateralToken, positions, isLoading } =
+		useAgreementData();
+	console.log("terms", termsHash);
+
+	return isLoading ? (
+		<AgreementSkeleton></AgreementSkeleton>
+	) : isLoading && termsHash === undefined ? (
+		<NotFoundAgreement />
+	) : (
+		<section
+			id="agreement"
+			className={cx(
+				"grid sm-only:grid-flow-row sm-only:grid-cols-1 sm-only:auto-rows-auto gap-24",
+				"md:grid-cols-12 md:gap-24",
+				"z-10 mt-40 m-min3",
+			)}
+		>
 			{/* HEADER */}
-			<div className="col-start-1 col-end-13 gap-y-min2">
+			<div className={cx("md:col-start-1 md:col-end-13 ")}>
 				<Body2>Agreement</Body2>
 				<Headline3 className="pb-0">{title}</Headline3>
 			</div>
 
 			{/* CORE AGREEMENT DATA */}
-			<div className="col-start-1 col-end-10 flex flex-col w-full text-gray-800">
+			<div className={cx("md:col-start-1 md:col-end-10 md:gap-16", "w-full text-gray-800")}>
 				{/* Title and details */}
 				<Card>
 					<AgreementDataDisplay
@@ -174,8 +194,20 @@ export const Agreement = () => {
 			</div>
 
 			{/* AGREEMENT ACTIONS */}
-			<div className="p-base w-full bg-white rounded-lg border-2 border-neutral-c-200 col-start-10 col-end-13 flex flex-col justify-center text-gray-800">
-				{status == "Disputed" ? <DisputeActions /> : <AgreementActions />}
+			<div
+				className={cx(
+					// "sticky bottom-base",
+					"md:col-start-10 md:col-end-13",
+				)}
+			>
+				<div className="w-full flex flex-col bg-white rounded-lg border-2 border-neutral-c-200">
+					<div className="border-b-2 border-neutral-c-200 p-base">
+						<BodyHeadline>Available Actions</BodyHeadline>
+					</div>
+					<div className="p-base">
+						{status == "Disputed" ? <DisputeActions /> : <AgreementActions />}
+					</div>
+				</div>
 			</div>
 		</section>
 	);

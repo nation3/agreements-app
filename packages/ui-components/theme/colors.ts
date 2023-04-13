@@ -35,9 +35,9 @@ export const colors = {
         "c-5A": "#decda3",
         "c-5B": "#ebe1c7",
         "c-5C": "#f8f5ec",
-        "c-6A": "#fbed74",
-        "c-6B": "#fcf4a6",
-        "c-6C": "#fefad7"
+        "yellow3": "#fbed74",
+        "yellow2": "#fcf4a6",
+        "yellow1": "#fefad7"
        },
        "neutral": {
         "c-800": "#172b3c",

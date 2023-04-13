@@ -23,15 +23,11 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 					<section className="col-start-1 col-end-13 flex items-center justify-between">
 						<div className="w-full flex items-center h-full">
 							<Link href="/" className="cursor-pointer">
-								<div className="h-double w-double">
+								<div className="h-[50px] w-[50px]">
 									<Nation3Logo />
 								</div>
 							</Link>
-							<Link href="/agreements" className="cursor-pointer ">
-								<div className="py-min2 px-min3 bg-white shadow rounded-md ml-min3">
-									<p className="text-xs text-slate-600">Agreements</p>
-								</div>
-							</Link>
+							<div className="">{navItems}</div>
 						</div>
 						{/* <div className="basis-1/2 flex items-center justify-center">{navItems}</div> */}
 						<div className="flex items-center justify-end gap-5">

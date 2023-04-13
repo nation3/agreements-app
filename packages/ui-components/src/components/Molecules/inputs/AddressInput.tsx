@@ -47,7 +47,7 @@ export const AddressInput = ({
 				type="text"
 				id="text-input"
 				className={clsx(
-					`bg-gray-50 text-gray-800 text-sm rounded-lg block w-full p-2.5`,
+					`border-neutral-300 bg-white text-gray-800 text-sm rounded block w-full p-min2 border-2`,
 					isValid
 						? `border border-gray-300 focus:border-${focusColor} focus:ring-${focusColor}`
 						: "border-solid ring-1 border-red-600 ring-red-600 focus:border-red-600 focus:ring-red-600",

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Button, IStep, Steps } from "@nation3/ui-components";
+import { Button, IStep, Steps, Card } from "@nation3/ui-components";
 import { BigNumber, constants } from "ethers";
 import { Modal as FlowModal } from "flowbite-react";
 import Image from "next/image";
@@ -20,6 +20,7 @@ import { useTranslation } from "next-i18next";
 import { useConstants } from "../../hooks/useConstants";
 import { GradientLink } from "../GradientLink";
 import { useTokenBalance } from "../../hooks/useToken";
+import React from "react";
 
 export const DisputeArbitrationActions = () => {
 	const [mode, setMode] = useState("view");
@@ -29,9 +30,17 @@ export const DisputeArbitrationActions = () => {
 	if (mode == "edit") {
 		return <ResolutionForm />;
 	} else if (resolution == undefined) {
-		return <Button label="Propose a settlement" onClick={() => setMode("edit")} />;
+		return (
+			<Card className="">
+				<Button label="Propose a settlement" onClick={() => setMode("edit")} />
+			</Card>
+		);
 	} else {
-		return <Button label="Propose a new settlement" onClick={() => setMode("edit")} />;
+		return (
+			<Card className="">
+				<Button label="Propose a new settlement" onClick={() => setMode("edit")} />
+			</Card>
+		);
 	}
 };
 

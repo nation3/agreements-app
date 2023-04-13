@@ -1,7 +1,7 @@
 export const screens = {
     'sm': '640px',
     // => @media (min-width: 640px) { ... }
-
+    'sm-only': {'max': '767px'},
     'md': '768px',
     // => @media (min-width: 768px) { ... }
 

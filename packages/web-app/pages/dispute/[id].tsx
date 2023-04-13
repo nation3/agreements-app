@@ -13,6 +13,7 @@ import React, { useMemo } from "react";
 import { useConstants } from "../../hooks/useConstants";
 import { Agreement, AgreementActions } from "../../components/agreement";
 import Image from "next/image";
+import cx from "classnames";
 
 const DisputePage = () => {
 	const router = useRouter();
@@ -32,21 +33,40 @@ const DisputePage = () => {
 				<div className="absolute top h-[300px] w-full bg-pr-c-green1 z-5">
 					<Image src="/illustrations/header1.svg" fill object-fit="cover" alt={""} />
 				</div>
-				<section id="agreement" className="grid grid-cols-12 gap-base z-10 mt-40">
-					<div className="w-full">
+
+				<section
+					id="agreement"
+					className={cx(
+						"grid sm-only:grid-flow-row sm-only:grid-cols-1 sm-only:auto-rows-auto gap-24",
+						"md:grid-cols-12 md:gap-24",
+						"z-10 mt-40 m-min3",
+					)}
+				>
+					{/* <div className="w-full">
 						<BackLinkButton
 							route={"/disputes"}
 							label={"Go back to disputes"}
 							onRoute={router.push}
 						/>
-					</div>
-					<div className="col-start-1 col-end-10 flex flex-col w-full text-gray-800">
+					</div> */}
+
+					{/* CORE DISPUTE DATA */}
+					<div className={cx("md:col-start-2 md:col-end-11 md:gap-16", "w-full text-gray-800")}>
 						<Card className="flex flex-col gap-8 w-full text-gray-800">
 							<DisputeDetails />
 						</Card>
 					</div>
-					<div className="p-base w-full bg-white rounded-lg border-2 border-neutral-c-200 col-start-10 col-end-13 flex flex-col justify-center text-gray-800">
-						{isArbitrator && <DisputeArbitrationActions />}
+
+					{/* DISPUTE ACTIONS */}
+					<div
+						className={cx(
+							// "sticky bottom-base",
+							"md:col-start-2 md:col-end-11",
+						)}
+					>
+						<div className="w-full flex flex-col bg-white rounded-lg">
+							{isArbitrator && <DisputeArbitrationActions />}
+						</div>
 					</div>
 				</section>
 			</article>

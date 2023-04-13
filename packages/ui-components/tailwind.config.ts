@@ -22,6 +22,11 @@ const config: Config = {
 	theme: {
 			...n3theme
 	},
+	variants: {
+		extend: {
+		  padding: ['responsive'],
+		},
+	  },
 	plugins: [require("flowbite/plugin")],
 };
 

@@ -2,7 +2,8 @@ const postcss = require("rollup-plugin-postcss");
 const autoprefixer = require("autoprefixer");
 const cssnano = require("cssnano");
 const svg = require("rollup-plugin-svg");
-// const img = require("rollup-plugin-img");
+const svgr = require("@svgr/rollup");
+const url = require("@rollup/plugin-url");
 
 module.exports = {
 	// This function will run for each entry/format/env combination
@@ -12,21 +13,17 @@ module.exports = {
 				config: {
 					path: "./postcss.config.js",
 				},
-				extensions: [".css"],
+				extensions: [".css", ".scss"],
 				minimize: true,
 				inject: {
 					insertAt: "top",
 				},
 			}),
 		);
-		// Add the SVG plugin
-		config.plugins.push(
-			svg({
-				// Optional: Specify React as the DOM renderer
-				dom: "React",
-			}),
-		);
 
+		config.plugins.push(svgr({ icon: true }));
+
+		config.plugins.push(url());
 		// Add the image plugin
 		// config.plugins.push(
 		//   img({

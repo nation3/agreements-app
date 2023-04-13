@@ -10,6 +10,7 @@ import { useAgreementList } from "./context/AgreementListContext";
 import { useTranslation } from "next-i18next";
 import courtIll from "./../../public/court-ill.png";
 import { GradientLink } from "../GradientLink";
+import React from "react";
 
 export const AgreementList = () => {
 	const { t } = useTranslation("common");

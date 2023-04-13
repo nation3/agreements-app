@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useAccount } from "wagmi";
 import { UserPosition } from "../context/types";
 import { Button } from "@nation3/ui-components";
