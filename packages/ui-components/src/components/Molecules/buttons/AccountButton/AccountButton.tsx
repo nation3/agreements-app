@@ -24,6 +24,6 @@ export const AccountButton = ({ avatar, account, borderColor, ...props }: Accoun
 					{avatar}
 				</div>
 			</div>
-		</ButtonBase>
+		</div>
 	);
 };
