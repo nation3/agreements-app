@@ -158,8 +158,8 @@ export const Agreement = () => {
 	console.log("terms", termsHash);
 
 	return isLoading ? (
-		<AgreementSkeleton></AgreementSkeleton>
-	) : isLoading && termsHash === undefined ? (
+		<AgreementSkeleton />
+	) : !isLoading && termsHash === undefined ? (
 		<NotFoundAgreement />
 	) : (
 		<section
