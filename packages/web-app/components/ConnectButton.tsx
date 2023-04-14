@@ -4,10 +4,26 @@ import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import React from "react";
+import { useEnsAvatar } from "wagmi";
+import { useState } from "react";
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
-	return ensImage ? (
-		<img src={ensImage} width={size} height={size} alt="ENS Avatar" className={`rounded-full`} />
+	const [avatarLoadError, setAvatarLoadError] = useState<boolean>(false);
+
+	const handleAvatarError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+		event.currentTarget.onerror = null;
+		setAvatarLoadError(true);
+	};
+
+	return ensImage && !avatarLoadError ? (
+		<img
+			onError={handleAvatarError}
+			src={ensImage}
+			width={size}
+			height={size}
+			alt="ENS Avatar"
+			className={`rounded-full`}
+		/>
 	) : (
 		<div className="rounded-full overflow-hidden flex items-center bg-pr-c-green2">
 			<UserIcon className="w-[50px] h-[50px]" />

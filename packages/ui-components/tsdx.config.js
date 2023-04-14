@@ -22,8 +22,14 @@ module.exports = {
 		);
 
 		config.plugins.push(svgr({ icon: true }));
-
-		config.plugins.push(url());
+		config.plugins.push(
+			url({
+				limit: 0, // Always emit files as separate assets
+				include: ["**/*.svg"], // You can adjust the pattern to match other image types if needed
+				fileName: "assets/[name][extname]",
+				// publicPath: '/static/', // Adjust the public path as needed
+			}),
+		);
 		// Add the image plugin
 		// config.plugins.push(
 		//   img({

@@ -53,7 +53,7 @@ export const Button = (props: ButtonProps) => {
 					: !disabled
 					? "bg-bluesky-500 border-bluesky-500"
 					: "",
-				outlined && !disabled && "hover:text-white hover:bg-bluesky-500 hover:border-bluesky-500", 
+				outlined && !disabled && "hover:text-white hover:bg-bluesky-500 hover:border-bluesky-500",
 				`${className && className}`,
 			)}
 			disabled={disabled}
