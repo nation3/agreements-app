@@ -1,7 +1,8 @@
 export const grid = {
   gridTemplateColumns: {
     '12': 'repeat(12, 80px)',
-    '6': 'repeat(6, 32px)',
+    'xl': 'repeat(12, 80px)',
+    'lg': 'repeat(12, 58px)',
   },
 /*   gridColumn: {
     'span-1': 'span 1 / span 1',

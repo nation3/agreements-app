@@ -108,14 +108,14 @@ export const AgreementDataDisplay = ({
 
 	return (
 		<>
-			<div className="flex md:flex-row flex-col gap-3 text-gray-700 mb-min2">
+			<div className="flex lg:flex-row flex-col gap-3 text-gray-700 mb-min2">
 				{/* 				<CardHeader
 					title={title}
 					id={id}
 					status={status}
 					actions={<ShareButton url={shareUrl} />}
 				/> */}
-				<div className="flex flex-col md:flex-row gap-1 justify-start md:items-center mr-min1">
+				<div className="flex flex-col lg:flex-row gap-1 justify-start lg:items-center mr-min1">
 					<ActionBadge
 						label="ID"
 						tooltip
@@ -157,27 +157,32 @@ export const Agreement = () => {
 		useAgreementData();
 	console.log("terms", termsHash);
 
-	return isLoading ? (
-		<AgreementSkeleton />
-	) : !isLoading && termsHash === undefined ? (
+	return !termsHash && !isLoading ? (
 		<NotFoundAgreement />
+	) : isLoading ? (
+		<AgreementSkeleton />
 	) : (
 		<section
 			id="agreement"
 			className={cx(
-				"grid sm-only:grid-flow-row sm-only:grid-cols-1 sm-only:auto-rows-auto gap-24",
-				"md:grid-cols-12 md:gap-24",
+				"grid grid-flow-row grid-cols-1 auto-rows-auto gap-16",
+				"lg:grid-cols-lg lg:gap-24",
+				"xl:grid-cols-xl",
 				"z-10 mt-40 m-min3",
 			)}
 		>
 			{/* HEADER */}
-			<div className={cx("md:col-start-1 md:col-end-13 ")}>
+			<div className={cx("lg:col-start-1 lg:col-end-13 ")}>
 				<Body2>Agreement</Body2>
 				<Headline3 className="pb-0">{title}</Headline3>
 			</div>
-
 			{/* CORE AGREEMENT DATA */}
-			<div className={cx("md:col-start-1 md:col-end-10 md:gap-16", "w-full text-gray-800")}>
+			<div
+				className={cx(
+					"lg:col-start-1 lg:col-end-9 xl:col-end-10 lg:gap-16",
+					"w-full text-gray-800",
+				)}
+			>
 				{/* Title and details */}
 				<Card>
 					<AgreementDataDisplay
@@ -192,12 +197,11 @@ export const Agreement = () => {
 					<Parties token={collateralToken} positions={positions} />
 				</Card>
 			</div>
-
 			{/* AGREEMENT ACTIONS */}
 			<div
 				className={cx(
 					// "sticky bottom-base",
-					"md:col-start-10 md:col-end-13",
+					"lg:col-start-9 xl:col-start-10 lg:col-end-13",
 				)}
 			>
 				<div className="w-full flex flex-col bg-white rounded-lg border-2 border-neutral-c-200">

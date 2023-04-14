@@ -77,7 +77,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 			setStatus(agreementData.status);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		if (agreementData.status && agreementData.termsHash) {
+		if (agreementData.status) {
 			setIsLoading(false);
 		}
 	}, [agreementData]);
