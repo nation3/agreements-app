@@ -1,8 +1,7 @@
 import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { appWithTranslation } from "next-i18next";
-
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import Head from "next/head";
 import type { AppProps } from "next/app";
@@ -44,21 +43,25 @@ const HeaderNavigation = () => {
 		setIsDisputesVisible(judges.includes(address));
 	}, [address, judges]);
 
-	const isActiveRoute = (route: string) => router.pathname.startsWith(route);
-
 	return (
-		<div className="flex items-center gap-2 font-medium text-lg text-slate-500">
+		<>
 			{isDisputesVisible && (
 				<>
-					<Link href="/disputes" className={`${isActiveRoute("/dispute") && "text-slate-700"}`}>
-						<div className="hover:bg-gray-100 p-2 px-4 rounded-xl">Disputes</div>
+					<Link
+						href="/agreements"
+						className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
+					>
+						Agreements
 					</Link>
-					<Link href="/agreements" className={`${isActiveRoute("/agreement") && "text-slate-700"}`}>
-						<div className="hover:bg-gray-100 p-2 px-4 rounded-xl">Agreements</div>
+					<Link
+						href="/disputes"
+						className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
+					>
+						Disputes
 					</Link>
 				</>
 			)}
-		</div>
+		</>
 	);
 };
 

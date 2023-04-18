@@ -1,5 +1,5 @@
-import { Button } from "@nation3/ui-components";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { Body3, Button } from "@nation3/ui-components";
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import { useAgreementDispute, useAgreementFinalize } from "../../../hooks";
 import { Modal, ModalProps } from "flowbite-react";
 import { useTranslation } from "react-i18next";
@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useAgreementData } from "../context/AgreementDataContext";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { BodyHeadline } from "@nation3/ui-components";
 
 interface ContextModalProps extends Pick<ModalProps, "show" | "onClose"> {
 	icon: ReactNode;
@@ -90,22 +91,22 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 
 	return (
 		<>
-			<div className="grid grid-cols-2 gap-6">
+			<div className="grid grid-cols-1 gap-6">
 				{/* FINALISE ACTION BLOCK */}
 				<div className="w-full flex-col items-stretch h-full flex justify-between">
-					<div className="flex flex-col justify-between">
-						<div className="flex mb-4 items-center">
+					<div className="flex flex-col justify-between mb-base">
+						<div className="flex mb-base items-center">
 							<span>
 								<CheckCircleIcon className="w-7 h-7 text-bluesky" />
 							</span>
-							<h3 className="text-xl text-slate-700 ml-2 font-semibold">
+							<BodyHeadline className="ml-min3">
 								{t("agreementActions.finalizeHeadline")}
-							</h3>
+							</BodyHeadline>
 						</div>
-						<p className="text-slate-500 text-sm mb-4">
+						<Body3>
 							{t("agreementActions.finalizeDescription")}
 							<b className="text-slate-600">{t("agreementActions.finalizeDescriptionBold")}</b>.
-						</p>
+						</Body3>
 					</div>
 					<div>
 						<Button
@@ -119,18 +120,16 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 
 				{/* DISPUTE ACTION BLOCK */}
 				<div className="w-full flex-col h-full flex justify-between">
-					<div className="flex flex-col justify-between h-full">
-						<div className="flex mb-4 items-center">
+					<div className="flex flex-col justify-between h-full mb-base">
+						<div className="flex mb-base items-center">
 							<span>
 								<ExclamationCircleIcon className="w-7 h-7 text-bluesky" />
 							</span>
-							<h3 className="text-xl text-slate-700 ml-2 font-semibold">
+							<BodyHeadline className="ml-min3">
 								{t("agreementActions.disputeHeadline")}
-							</h3>
+							</BodyHeadline>
 						</div>
-						<p className="text-slate-500 text-sm mb-4">
-							{t("agreementActions.disputeDescription")}
-						</p>
+						<Body3>{t("agreementActions.disputeDescription")}</Body3>
 					</div>
 					<div>
 						<Button

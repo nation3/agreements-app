@@ -1,5 +1,5 @@
 import { Button, Table, TokenBalanceInput } from "@nation3/ui-components";
-import { useState, useMemo, ChangeEvent, FocusEvent } from "react";
+import React, { useState, useMemo, ChangeEvent, FocusEvent } from "react";
 import { utils, BigNumber } from "ethers";
 
 import { useDispute, Position } from "./context/DisputeResolutionContext";
@@ -10,6 +10,8 @@ import { preparePutToIPFS } from "../../lib/ipfs";
 
 import { AccountDisplay } from "../AccountDisplay";
 import { useConstants } from "../../hooks/useConstants";
+import { Card } from "@nation3/ui-components";
+import { BodyHeadline } from "@nation3/ui-components";
 
 export const ResolutionForm = () => {
 	const { dispute } = useDispute();
@@ -59,10 +61,10 @@ export const ResolutionForm = () => {
 	};
 
 	return (
-		<div className="flex flex-col gap-2">
+		<Card className="">
 			<div>
-				<div className="text-md font-display">Settlement proposal</div>
-				<div className="border-2 rounded-xl"></div>
+				<BodyHeadline className="mb-base">Settlement proposal</BodyHeadline>
+				<div className="border-2 border-neutra-c-200 rounded-full my-min3"></div>
 			</div>
 			<Table
 				columns={["participant", "stake"]}
@@ -89,6 +91,6 @@ export const ResolutionForm = () => {
 				}
 			/>
 			<Button label="Propose" disabled={!isValidSettlement} onClick={() => submit()} />
-		</div>
+		</Card>
 	);
 };

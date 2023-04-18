@@ -3,6 +3,7 @@ import { utils, BigNumber, providers } from "ethers";
 import { AddressInput, TokenBalanceInput } from "@nation3/ui-components";
 
 import { purgeFloat } from "../utils";
+import React from "react";
 
 // TODO:
 // - Better way of updating array?
@@ -37,7 +38,7 @@ export const ParticipantRow = ({
 	};
 
 	return (
-		<div className="flex grow gap-2">
+		<div className="flex grow gap-2 rounded bg-pr-c-blue1 p-min3">
 			<div className="basis-3/5">
 				<AddressInput
 					defaultValue={positions[index].account}

@@ -1,20 +1,33 @@
 import Blockies from "react-blockies";
-import { AccountButton, ButtonBase } from "@nation3/ui-components";
+import { AccountButton, ButtonBase, UserIcon } from "@nation3/ui-components";
 import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow-me/rainbowkit";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
+import React from "react";
+import { useEnsAvatar } from "wagmi";
+import { useState } from "react";
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
-	return ensImage ? (
+	const [avatarLoadError, setAvatarLoadError] = useState<boolean>(false);
+
+	const handleAvatarError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+		event.currentTarget.onerror = null;
+		setAvatarLoadError(true);
+	};
+
+	return ensImage && !avatarLoadError ? (
 		<img
+			onError={handleAvatarError}
 			src={ensImage}
-			width={size * 4}
-			height={size * 4}
+			width={size}
+			height={size}
 			alt="ENS Avatar"
 			className={`rounded-full`}
 		/>
 	) : (
-		<Blockies seed={address} size={size} className="overflow-hidden rounded-full" />
+		<div className="rounded-full overflow-hidden flex items-center bg-pr-c-green2">
+			<UserIcon className="w-[50px] h-[50px]" />
+		</div>
 	);
 };
 
@@ -83,19 +96,19 @@ export const ConnectButton = () => {
 								<>
 									<div className="flex items-center justify-end">
 										<button
-											className="hidden md:flex gap-2 font-medium cursor-default items-center text-slate-300 mr-5"
+											className="hidden md:flex gap-2 font-medium cursor-default items-center text-neutral-400 mr-base"
 											onClick={() => openChainModal()}
 										>
 											{/* {chain && chain.id === 5 && <span>{chain.name} </span>} */}
 											<span>{chain.name} </span>
 										</button>
 										<AccountButton
-											className="font-semibold text-slate-600 tracking-wide shadow rounded-full md:pl-5 md:pr-2 md:py-2 p-2 bg-white hover:bg-gray-100"
+											borderColor="pr-c-green3"
 											avatar={
 												<AccountAvatar
 													address={account.address}
 													ensImage={account.ensAvatar ?? ""}
-													size={10}
+													size={50}
 												/>
 											}
 											account={account}

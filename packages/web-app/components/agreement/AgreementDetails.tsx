@@ -7,8 +7,8 @@ import {
 	ButtonBase,
 	ActionBadge,
 	utils as n3utils,
-	useScreen,
 	ScreenType,
+	WarnDocumentOrange,
 } from "@nation3/ui-components";
 import { utils, BigNumber, constants } from "ethers";
 import { Modal } from "flowbite-react";
@@ -19,6 +19,22 @@ import { AccountDisplay } from "../AccountDisplay";
 import { useUrl } from "../../hooks";
 import { useTranslation } from "next-i18next";
 import { Token } from "./context/types";
+import PositionsTable from "../PositionsTable";
+import Parties from "../Parties";
+import { Card } from "@nation3/ui-components";
+import { Headline3 } from "@nation3/ui-components";
+import { Body1 } from "@nation3/ui-components";
+import { Body2 } from "@nation3/ui-components";
+import { AgreementActions } from "../agreement";
+import { DisputeActions } from "../dispute";
+import { BodyHeadline } from "@nation3/ui-components";
+import { Headline2 } from "@nation3/ui-components";
+import { Headline4 } from "@nation3/ui-components";
+import cx from "classnames";
+import NoActions from "./actions/NoActions";
+import { Body3 } from "@nation3/ui-components";
+import NotFoundAgreement from "./NotFound";
+import AgreementSkeleton from "./AgreementSkeleton";
 
 interface AgreementDataDisplayProps {
 	id: string;
@@ -62,44 +78,6 @@ const ShareButton = ({ url }: { url: string }) => {
 	);
 };
 
-const PositionsTable = ({
-	positions,
-	token,
-}: {
-	positions: PositionMap | undefined;
-	token: Token | undefined;
-}) => {
-	const { screen } = useScreen();
-
-	return (
-		<Table
-			columns={
-				screen === ScreenType.Desktop
-					? ["participant", "stake", "status"]
-					: ["participant", "stake"]
-			}
-			data={Object.entries(positions ?? {}).map(([account, { balance, status }], index) =>
-				screen === ScreenType.Desktop
-					? [
-							<AccountDisplay key={index} address={account} />,
-							<b key={index}>
-								{" "}
-								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
-							</b>,
-							<PositionStatusBadge key={index} status={status} />,
-					  ]
-					: [
-							<AccountDisplay key={index} address={account} />,
-							<b key={index}>
-								{" "}
-								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
-							</b>,
-					  ],
-			)}
-		/>
-	);
-};
-
 export const AgreementDataDisplay = ({
 	id,
 	title,
@@ -130,14 +108,14 @@ export const AgreementDataDisplay = ({
 
 	return (
 		<>
-			<div className="flex flex-col gap-3 text-gray-700">
-				<CardHeader
+			<div className="flex lg:flex-row flex-col gap-3 text-gray-700 mb-min2">
+				{/* 				<CardHeader
 					title={title}
 					id={id}
 					status={status}
 					actions={<ShareButton url={shareUrl} />}
-				/>
-				<div className="flex flex-col md:flex-row gap-1 justify-start md:items-center">
+				/> */}
+				<div className="flex flex-col lg:flex-row gap-1 justify-start lg:items-center mr-min1">
 					<ActionBadge
 						label="ID"
 						tooltip
@@ -145,17 +123,17 @@ export const AgreementDataDisplay = ({
 						data={n3utils.shortenHash(id ?? constants.HashZero)}
 						dataAction={copyAgreementId}
 					/>
-					<div className="flex items-center">
-						<ActionBadge
-							tooltip
-							tooltipContent={isHashCopied ? "Copied" : "Click to copy"}
-							label="Terms hash"
-							data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
-							icon={<InformationCircleIcon className="w-4 h-4" />}
-							iconAction={() => setIsTermsModalUp(true)}
-							dataAction={copyTermsHash}
-						/>
-					</div>
+				</div>
+				<div className="flex items-center">
+					<ActionBadge
+						tooltip
+						tooltipContent={isHashCopied ? "Copied" : "Click to copy"}
+						label="Terms hash"
+						data={n3utils.shortenHash(termsHash ?? constants.HashZero)}
+						icon={<InformationCircleIcon className="w-4 h-4" />}
+						iconAction={() => setIsTermsModalUp(true)}
+						dataAction={copyTermsHash}
+					/>
 				</div>
 			</div>
 
@@ -174,20 +152,67 @@ export const AgreementDataDisplay = ({
 	);
 };
 
-export const AgreementDetails = () => {
-	const { id, title, status, termsHash, collateralToken, positions } = useAgreementData();
+export const Agreement = () => {
+	const { id, title, status, termsHash, collateralToken, positions, isLoading } =
+		useAgreementData();
+	console.log("terms", termsHash);
 
-	return (
-		<>
-			{/* Title and details */}
-			<AgreementDataDisplay
-				id={id}
-				title={title || "Agreement"}
-				status={status || "Unknonw"}
-				termsHash={termsHash || constants.HashZero}
-			/>
-			{/* Participants table */}
-			<PositionsTable token={collateralToken} positions={positions} />
-		</>
+	return !termsHash && !isLoading ? (
+		<NotFoundAgreement />
+	) : isLoading ? (
+		<AgreementSkeleton />
+	) : (
+		<section
+			id="agreement"
+			className={cx(
+				"grid grid-flow-row grid-cols-1 auto-rows-auto gap-16",
+				"lg:grid-cols-lg lg:gap-24",
+				"xl:grid-cols-xl",
+				"z-10 mt-40 m-min3",
+			)}
+		>
+			{/* HEADER */}
+			<div className={cx("lg:col-start-1 lg:col-end-13 ")}>
+				<Body2>Agreement</Body2>
+				<Headline3 className="pb-0">{title}</Headline3>
+			</div>
+			{/* CORE AGREEMENT DATA */}
+			<div
+				className={cx(
+					"lg:col-start-1 lg:col-end-9 xl:col-end-10 lg:gap-16",
+					"w-full text-gray-800",
+				)}
+			>
+				{/* Title and details */}
+				<Card>
+					<AgreementDataDisplay
+						id={id}
+						title={title || "Agreement"}
+						status={status || "Unknonw"}
+						termsHash={termsHash || constants.HashZero}
+					/>
+
+					{/* Participants */}
+					<Headline4 className="pb-base">Positions & Stakes</Headline4>
+					<Parties token={collateralToken} positions={positions} />
+				</Card>
+			</div>
+			{/* AGREEMENT ACTIONS */}
+			<div
+				className={cx(
+					// "sticky bottom-base",
+					"lg:col-start-9 xl:col-start-10 lg:col-end-13",
+				)}
+			>
+				<div className="w-full flex flex-col bg-white rounded-lg border-2 border-neutral-c-200">
+					<div className="border-b-2 border-neutral-c-200 p-base">
+						<BodyHeadline>Available Actions</BodyHeadline>
+					</div>
+					<div className="p-base">
+						{status == "Disputed" ? <DisputeActions /> : <AgreementActions />}
+					</div>
+				</div>
+			</div>
+		</section>
 	);
 };

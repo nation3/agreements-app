@@ -2,11 +2,18 @@ import { useRouter } from "next/router";
 import { Card, BackLinkButton } from "@nation3/ui-components";
 
 import { DisputeResolutionProvider } from "../../components/dispute/context/DisputeResolutionProvider";
-import { DisputeDetails, DisputeArbitrationActions } from "../../components/dispute";
+import {
+	DisputeDetails,
+	DisputeArbitrationActions,
+	DisputeActions,
+} from "../../components/dispute";
 import { useCohort } from "../../hooks/useCohort";
 import { useAccount } from "wagmi";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { useConstants } from "../../hooks/useConstants";
+import { Agreement, AgreementActions } from "../../components/agreement";
+import Image from "next/image";
+import cx from "classnames";
 
 const DisputePage = () => {
 	const router = useRouter();
@@ -21,15 +28,49 @@ const DisputePage = () => {
 	}, [judges, address]);
 
 	return (
-		<div className="w-full max-w-3xl">
-			<DisputeResolutionProvider framework={frameworkAddress} id={String(query.id)}>
-				<BackLinkButton route={"/disputes"} label={"Go back to disputes"} onRoute={router.push} />
-				<Card className="flex flex-col gap-8 w-full text-gray-800">
-					<DisputeDetails />
-					{isArbitrator && <DisputeArbitrationActions />}
-				</Card>
-			</DisputeResolutionProvider>
-		</div>
+		<DisputeResolutionProvider framework={frameworkAddress} id={String(query.id)}>
+			<article className="w-full flex justify-center">
+				<div className="absolute top h-[300px] w-full bg-pr-c-green1 z-5">
+					<Image src="/illustrations/header1.svg" fill object-fit="cover" alt={""} />
+				</div>
+
+				<section
+					id="agreement"
+					className={cx(
+						"grid sm-only:grid-flow-row sm-only:grid-cols-1 sm-only:auto-rows-auto gap-24",
+						"md:grid-cols-12 md:gap-24",
+						"z-10 mt-40 m-min3",
+					)}
+				>
+					{/* <div className="w-full">
+						<BackLinkButton
+							route={"/disputes"}
+							label={"Go back to disputes"}
+							onRoute={router.push}
+						/>
+					</div> */}
+
+					{/* CORE DISPUTE DATA */}
+					<div className={cx("md:col-start-2 md:col-end-11 md:gap-16", "w-full text-gray-800")}>
+						<Card className="flex flex-col gap-8 w-full text-gray-800">
+							<DisputeDetails />
+						</Card>
+					</div>
+
+					{/* DISPUTE ACTIONS */}
+					<div
+						className={cx(
+							// "sticky bottom-base",
+							"md:col-start-2 md:col-end-11",
+						)}
+					>
+						<div className="w-full flex flex-col bg-white rounded-lg">
+							{isArbitrator && <DisputeArbitrationActions />}
+						</div>
+					</div>
+				</section>
+			</article>
+		</DisputeResolutionProvider>
 	);
 };
 

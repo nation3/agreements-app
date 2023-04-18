@@ -38,22 +38,18 @@ export const DefaultLayout = ({ children, ...props }: DefaultLayoutProps) => {
 	};
 
 	return (
-		<div className="mx-auto bg-nation3-bg_grey">
+		<div className="mx-auto">
 			<div className="flex relative">
 				<NavBar />
-				<div
-					className={cx(
-						"grow flex min-h-screen w-full px-4 pt-2 pb-24 lg:pt-4 lg:pb-4 justify-center",
-					)}
-				>
-					<div
-						className={cx(
-							screen === ScreenType.Desktop ? "pt-28" : "pt-24",
-							"w-full flex justify-center",
-						)}
-					>
-						{children}
-					</div>
+				<div className={cx("min-h-screen w-full")}>
+					{/* 					<div
+						className={cx()
+						// screen === ScreenType.Desktop ? "pt-28" : "pt-24",
+						// "w-full flex justify-center",
+						}
+					> */}
+					{children}
+					{/* </div> */}
 				</div>
 			</div>
 		</div>

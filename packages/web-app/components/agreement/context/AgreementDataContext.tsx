@@ -4,6 +4,7 @@ import { BigNumber } from "ethers";
 
 export type AgreementDataContextType = {
 	id: string;
+	isLoading: boolean;
 	status: string | undefined;
 	title: string | undefined;
 	termsHash: string | undefined;

@@ -14,7 +14,12 @@
   },
   "scripts": {
     "start": "tsdx watch",
+    "watch": "tsdx watch",
+    "watch:css": "postcss src/styles.css -o dist/styles.css --watch",
+    "watch:all": "concurrently \"yarn watch\" \"yarn watch:css\"",
     "build": "tsdx build",
+    "build:css": "postcss src/styles.css -o dist/styles.css",
+    "build:all": "concurrently \"yarn build\" \"yarn build:css\"",
     "test": "tsdx test --passWithNoTests",
     "lint:check": "yarn lint:check:format && yarn lint:check:eslint",
     "lint:check:eslint": "eslint src",
@@ -35,11 +40,11 @@
     "flowbite-react": "^0.1.11",
     "framer-motion": "^7.5.1",
     "react-blockies": "^1.4.1",
-    "react-dropzone": "^14.2.2",
-    "tailwindcss": "^3.1.8"
+    "react-dropzone": "^14.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
+    "@rollup/plugin-url": "^8.0.1",
     "@storybook/addon-actions": "^6.5.12",
     "@storybook/addon-essentials": "^6.5.13",
     "@storybook/addon-interactions": "^6.5.12",
@@ -49,10 +54,12 @@
     "@storybook/manager-webpack5": "^6.5.12",
     "@storybook/react": "^6.5.12",
     "@storybook/testing-library": "^0.0.13",
+    "@svgr/rollup": "^7.0.0",
     "@types/react-blockies": "^1.4.1",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.42.1",
     "babel-loader": "^8.2.5",
+    "concurrently": "^8.0.1",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.2",
@@ -61,10 +68,16 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-storybook": "^0.6.7",
     "postcss": "^8.4.17",
+    "postcss-cli": "^10.1.0",
+    "postcss-scss": "^4.0.6",
     "prettier": "^2.7.1",
     "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-svg": "^2.0.0",
+    "sass": "^1.62.0",
     "storybook-dark-mode": "^2.0.4",
+    "tailwindcss": "^3.1.8",
+    "ts-loader": "^9.4.2",
     "tsdx": "^0.14.1",
-    "typescript": "^4.8.4"
+    "typescript": "^5.0.3"
   }
 }

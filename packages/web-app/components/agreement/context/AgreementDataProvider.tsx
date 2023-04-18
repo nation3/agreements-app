@@ -17,6 +17,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 	const [resolvers, setResolvers] = useState<ResolverMap>();
 	const [positions, setPositions] = useState<PositionMap>();
 	const [userPosition, setUserPosition] = useState<UserPosition>();
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 
 	const { data: agreementData, positions: agreementPositions } = useAgreementData({
 		id: id,
@@ -76,6 +77,9 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 			setStatus(agreementData.status);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
+		if (agreementData.status) {
+			setIsLoading(false);
+		}
 	}, [agreementData]);
 
 	/* Update positions when fetched agreement positions or new resolvers */
@@ -152,6 +156,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		resolvers,
 		positions,
 		userPosition,
+		isLoading,
 	};
 
 	return <AgreementDataContext.Provider value={provider}>{children}</AgreementDataContext.Provider>;

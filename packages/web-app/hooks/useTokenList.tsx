@@ -50,6 +50,14 @@ const goerliTokens = [
 	},
 ];
 
+const empty = {
+	name: "?",
+	symbol: "?",
+	address: "",
+	decimals: 18,
+	icon: "",
+};
+
 export const useTokenList = (): Token[] => {
 	const { chain } = useNetwork();
 
@@ -65,4 +73,21 @@ export const useTokenList = (): Token[] => {
 	}, [chain]);
 
 	return tokens;
+};
+
+export const findToken = (tokenSymbol: string): Token => {
+	const { chain } = useNetwork();
+
+	const token = useMemo(() => {
+		switch (chain?.id) {
+			case 1:
+				return mainnetTokens.find((token) => token.symbol === tokenSymbol);
+			case 5:
+				return goerliTokens.find((token) => token.symbol === tokenSymbol);
+			default:
+				return mainnetTokens.find((token) => token.symbol === tokenSymbol);
+		}
+	}, [chain]);
+
+	return token ? token : empty;
 };

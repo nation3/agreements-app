@@ -10,6 +10,7 @@ import { useAgreementList } from "./context/AgreementListContext";
 import { useTranslation } from "next-i18next";
 import courtIll from "./../../public/court-ill.png";
 import { GradientLink } from "../GradientLink";
+import React from "react";
 
 export const AgreementList = () => {
 	const { t } = useTranslation("common");
@@ -32,11 +33,11 @@ export const AgreementList = () => {
 									<span key={`${id}-date`}>
 										{new Date(Number(createdAt) * 1000).toLocaleDateString()}
 									</span>,
-									<Badge key={`${id}-status`} label={status} bgColor="slate-300" />,
+									<Badge key={`${id}-status`} label={status} bgColor="pr-c-blue2" />,
 							  ]
 							: [
 									<span key={id}>{utils.shortenHash(id)}</span>,
-									<Badge key={`${id}-status`} label={status} bgColor="slate-300" />,
+									<Badge key={`${id}-status`} label={status} bgColor="pr-c-blue2" />,
 							  ],
 					)}
 					clickHandlers={agreements.map(
