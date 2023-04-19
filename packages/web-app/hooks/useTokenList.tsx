@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useNetwork } from "wagmi";
-import { Token } from "../components/create/context/types";
+import { Token } from "../components/agreementCreate/context/types";
 
 const mainnetTokens = [
 	{

@@ -5,7 +5,7 @@ import { Card, Headline3, Body2, BodyHeadline, Headline4 } from "@nation3/ui-com
 import { AgreementActions } from "../agreement";
 import { DisputeActions } from "../dispute";
 import cx from "classnames";
-import { AgreementDataDisplay } from "./AgreementDetails";
+import { AgreementDataDisplay } from "./AgreementView";
 
 const IAgreementSkeletonDefaultProps = {};
 

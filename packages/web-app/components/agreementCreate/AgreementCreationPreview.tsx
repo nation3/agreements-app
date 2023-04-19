@@ -4,7 +4,6 @@ import { utils, BigNumber, constants } from "ethers";
 
 import { useAgreementCreate } from "../../hooks/useAgreement";
 
-import { AgreementDataDisplay } from "../agreement/AgreementDetails";
 import { generateAgreementMetadata } from "../../utils";
 import { preparePutToIPFS } from "../../lib/ipfs";
 import { AccountDisplay } from "../AccountDisplay";
@@ -16,6 +15,7 @@ import { CreateView } from "./context/types";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import React from "react";
+import { AgreementDataDisplay } from "../agreement/AgreementDataDisplay";
 
 export const AgreementCreationPreview = () => {
 	const router = useRouter();

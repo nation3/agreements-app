@@ -1,14 +1,14 @@
 import React from "react";
 import { Card, Button } from "@nation3/ui-components";
 import { useRouter } from "next/router";
-import { AgreementList, AgreementListProvider } from "../../components/agreements-list";
+import { AgreementList, AgreementListProvider } from "../components/agreements-list";
 import { ApolloProvider } from "@apollo/client";
-import { client } from "../../lib/subgraph";
+import { client } from "../lib/subgraph";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import { GetStaticProps } from "next";
-import { useConstants } from "../../hooks/useConstants";
-import { subgraphURI as defaultURI } from "../../lib/constants";
+import { useConstants } from "../hooks/useConstants";
+import { subgraphURI as defaultURI } from "../lib/constants";
 import cx from "classnames";
 import { Headline3 } from "@nation3/ui-components";
 
@@ -49,7 +49,7 @@ const Agreements = () => {
 							<div className="md:flex items-center justify-between gap-2 text-gray-700">
 								<Headline3 className="mb-base">My Agreements</Headline3>
 								<div className="flex">
-									<Button label="New Agreement" onClick={() => router.push("/agreements/create")} />
+									<Button label="New Agreement" onClick={() => router.push("/agreement/create")} />
 								</div>
 							</div>
 							<AgreementList />
