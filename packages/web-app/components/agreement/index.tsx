@@ -1,3 +1,3 @@
 export { AgreementDataProvider } from "./context/AgreementDataProvider";
-export { Agreement } from "./AgreementDetails";
+export { AgreementView } from "./AgreementView";
 export { AgreementActions } from "./AgreementActions";

@@ -28,7 +28,7 @@ const DisputePage = () => {
 	}, [judges, address]);
 
 	return (
-		<DisputeResolutionProvider framework={frameworkAddress} id={String(query.id)}>
+		<DisputeResolutionProvider framework={frameworkAddress} id={String(query.disputeId)}>
 			<article className="w-full flex justify-center">
 				<div className="absolute top h-[300px] w-full bg-pr-c-green1 z-5">
 					<Image src="/illustrations/header1.svg" fill object-fit="cover" alt={""} />

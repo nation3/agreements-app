@@ -7,6 +7,7 @@ import {
 	DropInput,
 	InfoAlert,
 	TextInput,
+	Breadcrumbs,
 	Card,
 } from "@nation3/ui-components";
 import { utils } from "ethers";
@@ -113,6 +114,8 @@ export const AgreementCreationForm = () => {
 							)}
 						</div>
 						<hr />
+					</Card>
+					<Card>
 						<div className="flex flex-col gap-4">
 							<h2 className="font-display font-medium text-xl">
 								{t("create.agreementPositions.title")}
@@ -182,48 +185,49 @@ export const AgreementCreationForm = () => {
 							</div>
 							{!isValidCriteria && <InfoAlert message={t("create.agreementPositions.warning")} />}
 						</div>
-						<div className="flex flex-col gap-2">
-							<Button
-								label="Create Agreement"
-								disabled={!isValidAgreement}
-								onClick={() => {
-									setTitle(title || defaultTitle);
-									changeView(CreateView.Preview);
-								}}
-							/>
-						</div>
-						<Modal show={isTokenModalOpen} onClose={() => setIsTokenModalOpen(false)}>
-							<Modal.Header>
-								<p className="text-slate-600">{"Select the collateral token"}</p>
-							</Modal.Header>
-							<Modal.Body>
-								<div className="flex flex-col gap-2">
-									{tokens.map((token) => {
-										return (
-											<ButtonBase
-												key={token.address}
-												className={
-													"p-2 gap-1 border-2 font-semibold hover:bg-slate-50 transition-colors hover:border-bluesky-200"
-												}
-												onClick={() => {
-													setToken(token);
-													setIsTokenModalOpen(false);
-												}}
-											>
-												<div className="flex items-center ">
-													{token.icon && (
-														<Image height={25} width={25} alt={token.name} src={token.icon} />
-													)}
-													<p className="ml-2">{token.name}</p>
-												</div>
-											</ButtonBase>
-										);
-									})}
-								</div>
-							</Modal.Body>
-						</Modal>
 					</Card>
+					<Card>Preview</Card>
+					<div className="flex flex-col gap-2">
+						<Button
+							label="Create Agreement"
+							disabled={!isValidAgreement}
+							onClick={() => {
+								setTitle(title || defaultTitle);
+								changeView(CreateView.Preview);
+							}}
+						/>
+					</div>
 				</div>
+				<Modal show={isTokenModalOpen} onClose={() => setIsTokenModalOpen(false)}>
+					<Modal.Header>
+						<p className="text-slate-600">{"Select the collateral token"}</p>
+					</Modal.Header>
+					<Modal.Body>
+						<div className="flex flex-col gap-2">
+							{tokens.map((token) => {
+								return (
+									<ButtonBase
+										key={token.address}
+										className={
+											"p-2 gap-1 border-2 font-semibold hover:bg-slate-50 transition-colors hover:border-bluesky-200"
+										}
+										onClick={() => {
+											setToken(token);
+											setIsTokenModalOpen(false);
+										}}
+									>
+										<div className="flex items-center ">
+											{token.icon && (
+												<Image height={25} width={25} alt={token.name} src={token.icon} />
+											)}
+											<p className="ml-2">{token.name}</p>
+										</div>
+									</ButtonBase>
+								);
+							})}
+						</div>
+					</Modal.Body>
+				</Modal>
 			</section>
 		</>
 	);

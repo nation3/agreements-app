@@ -22,7 +22,7 @@ export const DropInput = ({ label, dropzoneConfig, showFiles, onPreview }: DropI
 			<div
 				{...getRootProps({
 					className:
-						"flex items-center justify-center w-full px-2 py-3 rounded-lg font-primary text-gray-500 bg-gray-50 border-2 border-dashed",
+						"flex items-center justify-center w-full px-base py-double rounded font-primary text-gray-500 bg-gray-50 border-2 border-dashed",
 				})}
 			>
 				<input {...getInputProps()} />
