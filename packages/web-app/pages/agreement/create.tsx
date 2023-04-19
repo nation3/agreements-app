@@ -1,5 +1,3 @@
-import React from "react";
-import { Card, BackLinkButton } from "@nation3/ui-components";
 import { useRouter } from "next/router";
 import { AgreementCreationProvider } from "../../components/agreementCreate/context/AgreementCreationProvider";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";

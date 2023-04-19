@@ -9,6 +9,11 @@ import {
 	InfoAlert,
 	TextInput,
 	Breadcrumbs,
+	Headline4,
+	Body3,
+	Body1,
+	Headline3,
+	BodyHeadline,
 	Card,
 } from "@nation3/ui-components";
 import { utils } from "ethers";
@@ -26,15 +31,6 @@ import { useTokenList } from "../../hooks/useTokenList";
 
 import Image from "next/image";
 import { useEffect } from "react";
-import React from "react";
-import { Body1 } from "@nation3/ui-components";
-import { Headline4 } from "@nation3/ui-components";
-import { Body3 } from "@nation3/ui-components";
-import { Headline1 } from "@nation3/ui-components";
-import { Headline2 } from "@nation3/ui-components";
-import { Headline3, BodyHeadline } from "@nation3/ui-components";
-import { AgreementActions } from "../agreement";
-import { DisputeActions } from "../dispute";
 import cx from "classnames";
 
 export const AgreementCreation = () => {
