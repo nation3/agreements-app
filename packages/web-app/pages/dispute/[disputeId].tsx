@@ -1,17 +1,12 @@
 import { useRouter } from "next/router";
-import { Card, BackLinkButton } from "@nation3/ui-components";
+import { Card } from "@nation3/ui-components";
 
 import { DisputeResolutionProvider } from "../../components/dispute/context/DisputeResolutionProvider";
-import {
-	DisputeDetails,
-	DisputeArbitrationActions,
-	DisputeActions,
-} from "../../components/dispute";
+import { DisputeDetails, DisputeArbitrationActions } from "../../components/dispute";
 import { useCohort } from "../../hooks/useCohort";
 import { useAccount } from "wagmi";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useConstants } from "../../hooks/useConstants";
-import { Agreement, AgreementActions } from "../../components/agreement";
 import Image from "next/image";
 import cx from "classnames";
 
