@@ -27,12 +27,12 @@
     "create": {
         "header": "New Agreement",
         "agreementTitle": {
-            "title": "Title",
+            "title": "Agreement name",
             "description": "The title that will be used to distinguish the agreement in the UI.",
             "warning": "This title will be public."
         },
         "agreementTerms": {
-            "title": "1. Agreement Terms",
+            "title": "Agreement Terms & file name",
             "description": "These are the terms that the parties who enter the agreement will abide by. If one of the parties fails to comply with these terms, their financial stake can be taken away to compensate the other parties. The terms must be written in Linked Markdown.",
             "warning": "You need to provide a valid terms file to continue."
         },
