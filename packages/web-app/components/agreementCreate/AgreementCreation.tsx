@@ -39,6 +39,10 @@ import { N3Agreement } from "@nation3/ui-components";
 import { N3World } from "@nation3/ui-components";
 import { N3User } from "@nation3/ui-components";
 import { Body2 } from "@nation3/ui-components";
+import classNames from "classnames";
+import AgreementCreateIntro from "./AgreementCreateIntro";
+import { AgreementTerms } from "./AgreementTerms";
+import { AgreementParties } from "./AgreementParties";
 
 export const AgreementCreation = () => {
 	const { view } = useAgreementCreation();
@@ -74,6 +78,10 @@ export const AgreementCreation = () => {
 		// Set default token
 		setToken(tokens[0]);
 	}, []);
+
+	const openTokenModal = (state: boolean) => {
+		setIsTokenModalOpen(state);
+	};
 
 	const termsCard = (
 		<section className={cx("")}>
@@ -124,8 +132,8 @@ export const AgreementCreation = () => {
 				<hr />
 			</>
 			<div className="flex justify-between">
-				<Button label="Back" className="flex" onClick={() => setActiveStep(0)} />
-				<Button label="Next" className="flex" onClick={() => setActiveStep(2)} />
+				<Button label="Back" onClick={() => setActiveStep(0)} />
+				<Button label="Next" onClick={() => setActiveStep(2)} />
 			</div>
 		</section>
 	);
@@ -198,73 +206,32 @@ export const AgreementCreation = () => {
 		</>
 	);
 
-	const introCard = (
-		<>
-			<div className="grid grid-cols-12 gap-24">
-				<Card size="double" className="col-start-1 col-end-13 flex justify-center items-center">
-					{/* <IconRenderer icon={<N3World />} backgroundColor="black" size="sm" rounded /> */}
-					<div className="max-w-lg flex-col items-center flex">
-						<IconRenderer
-							className="mb-base"
-							icon={<N3Agreement />}
-							backgroundColor="pr-c-green1"
-							size="sm"
-							rounded
-						/>
-						<Body1>Nation3 Jurisdiction</Body1>
-						<Headline4>Agreement</Headline4>
-						<Body3 className="text-center mb-base">
-							Lorem ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu.
-							Bibendum fringilla tincidunt viverra vestibulum justo fusce ultricies cras.
-						</Body3>
-						<Button label="Create New Agreement" onClick={() => setActiveStep(1)}></Button>
-					</div>
-				</Card>
-				<Card className="col-start-1 col-end-7">
-					<IconRenderer
-						className="mb-base"
-						icon={<N3World />}
-						backgroundColor="pr-c-green1"
-						size="sm"
-						rounded
-					/>
-					<Body1>What is an agreement?</Body1>
-					<Body3 className="text-neutral-c-600 my-min3">
-						Lorem ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu. Lorem
-						ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu.
-					</Body3>
-					<Body1>Learn more</Body1>
-				</Card>
-				<Card className="col-start-7 col-end-13">
-					<IconRenderer
-						className="mb-base"
-						icon={<N3User />}
-						backgroundColor="pr-c-green1"
-						size="sm"
-						rounded
-					/>
-					<Body1>Quick tips for great agreements</Body1>
-					<Body3 className="text-neutral-c-600 my-min3">
-						Lorem ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu. Lorem
-						ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu.
-					</Body3>
-					<Body1>Learn more</Body1>
-				</Card>
-			</div>
-		</>
-	);
-
 	return (
 		<>
-			<article id="agreementCreation" className="grid grid-cols-12 gap-base z-10 mt-40 pb-double">
+			<article
+				id="agreementCreation"
+				className={cx(
+					"grid grid-flow-row grid-cols-1 auto-rows-auto gap-base z-10 mt-40 m-base pb-double",
+					"lg:grid-cols-lg lg:gap-24",
+					"xl:grid-cols-xl",
+				)}
+			>
 				<div className="col-start-1 col-end-13 flex flex-col w-full text-gray-800">
 					<Headline3 className="font-semibold">Create Agreement</Headline3>
 				</div>
+
+				{/* INTRO */}
+				{activeStep === 0 && <AgreementCreateIntro setActiveStep={setActiveStep} />}
+
+				{/* STEPS  */}
 				{activeStep !== 0 && (
 					<>
 						<Card
-							size="double"
-							className="col-start-1 col-end-10 flex flex-col w-full text-gray-800"
+							className={cx(
+								"col-start-1 col-end-13",
+								"lg:col-start-1 lg:col-end-9 xl:col-end-10 lg:gap-16",
+								"w-full text-gray-800",
+							)}
 						>
 							<div className="mb-min2">
 								<Breadcrumbs
@@ -278,13 +245,18 @@ export const AgreementCreation = () => {
 									onStepChange={(index: number) => setActiveStep(index)}
 								/>
 							</div>
-							{activeStep === 1 && termsCard}
-							{activeStep === 2 && partiesCard}
+							{activeStep === 1 && (
+								<AgreementTerms setActiveStep={setActiveStep} openTokenModal={openTokenModal} />
+							)}
+							{activeStep === 2 && (
+								<AgreementParties setActiveStep={setActiveStep} openTokenModal={openTokenModal} />
+							)}
 							{activeStep === 3 && <AgreementCreationPreview />}
 						</Card>
 						<div
 							className={cx(
 								// "sticky bottom-base",
+								"hidden md:block",
 								"lg:col-start-9 xl:col-start-10 lg:col-end-13",
 							)}
 						>
@@ -297,8 +269,9 @@ export const AgreementCreation = () => {
 						</div>
 					</>
 				)}
-				{activeStep === 0 && introCard}
 			</article>
+
+			{/* MODAL */}
 			<Modal show={isTokenModalOpen} onClose={() => setIsTokenModalOpen(false)}>
 				<Modal.Header>
 					<p className="text-slate-600">{"Select the collateral token"}</p>

@@ -1,5 +1,5 @@
 import Blockies from "react-blockies";
-import { AccountButton, ButtonBase, UserIcon } from "@nation3/ui-components";
+import { AccountButton, ButtonBase, UserIcon, useScreen, ScreenType } from "@nation3/ui-components";
 import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow-me/rainbowkit";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
@@ -26,12 +26,13 @@ export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 		/>
 	) : (
 		<div className="rounded-full overflow-hidden flex items-center bg-pr-c-green2">
-			<UserIcon className="w-[50px] h-[50px]" />
+			<UserIcon className={`w-[${size}px] h-[${size}px]`} />
 		</div>
 	);
 };
 
 export const ConnectButton = () => {
+	const { screen } = useScreen();
 	return (
 		<RainbowConnectButton.Custom>
 			{({
@@ -108,7 +109,7 @@ export const ConnectButton = () => {
 												<AccountAvatar
 													address={account.address}
 													ensImage={account.ensAvatar ?? ""}
-													size={50}
+													size={screen == ScreenType.Desktop ? 50 : 32}
 												/>
 											}
 											account={account}

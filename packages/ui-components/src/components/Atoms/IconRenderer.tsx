@@ -1,6 +1,7 @@
 import React from "react";
 import cx from "classnames";
 import Image from "next/image";
+import styled from "styled-components";
 
 type Icon = React.ReactNode | string;
 
@@ -20,15 +21,27 @@ const iconSpacing = {
 	xl: 384,
 };
 
+const CenteredIcon = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	width: 100%;
+	svg {
+		height: 100%;
+		width: 100%;
+	}
+`;
+
 const IconRenderer: React.FC<IconRendererProps> = (props) => {
 	const { icon, backgroundColor, size, className, rounded = false } = props;
 	const squareSize = iconSpacing[size];
 
 	const renderIcon = (icon: Icon) => {
 		if (typeof icon === "string") {
-			return <Image src={icon} alt="Icon" width={squareSize / 1.5} height={squareSize / 1.5} />;
+			return <Image src={icon} alt="Icon" fill />;
 		}
-		return icon;
+		return <CenteredIcon>{icon}</CenteredIcon>;
 	};
 
 	return (
@@ -47,8 +60,8 @@ const IconRenderer: React.FC<IconRendererProps> = (props) => {
 		>
 			<div
 				style={{
-					width: squareSize,
-					height: squareSize,
+					width: squareSize / 1.7,
+					height: squareSize / 1.7,
 				}}
 				className="flex items-center justify-center"
 			>

@@ -2,6 +2,8 @@ import React, { ReactNode, ReactElement } from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
 import cx from "classnames";
 import Spinner from "../../Atoms/Spinner";
+import { Body2 } from "../../Atoms";
+import classNames from "classnames";
 
 export interface ButtonBaseProps extends HTMLMotionProps<"button"> {
 	disabled?: boolean;
@@ -15,12 +17,13 @@ export interface ButtonProps extends Omit<ButtonBaseProps, "children"> {
 	outlined?: boolean;
 	label?: ReactNode;
 	isLoading?: boolean;
+	className?: string;
 }
 
 export const ButtonBase = ({ children, className, ...props }: ButtonBaseProps) => {
 	return (
 		<motion.button
-			className={`flex items-center justify-center w-full transition rounded-lg ${className}`}
+			className={`flex items-center justify-center rounded-lg ${className}`}
 			whileTap={{ scale: 0.95 }}
 			{...props}
 		>
@@ -44,14 +47,10 @@ export const Button = (props: ButtonProps) => {
 	return (
 		<ButtonBase
 			className={cx(
-				"px-2 py-3 transition-colors gap-1 tracking-wide text-base font-medium border-2",
-				"text-white bg-bluesky-400 border-bluesky-400",
+				"px-base py-min2 transition-colors gap-1 border-2 text-neutral-c-800 w-auto",
 				disabled
-					? "bg-bluesky-100 border-bluesky-100"
-					: !disabled
-					? "bg-bluesky-500 border-bluesky-500"
-					: "",
-				outlined && !disabled && "hover:text-white hover:bg-bluesky-500 hover:border-bluesky-500",
+					? "text-neutral-c-300  border-neutral-c-300"
+					: "text-neutral-c-500  border-pr-c-blue3",
 				`${className && className}`,
 			)}
 			disabled={disabled}
@@ -62,7 +61,7 @@ export const Button = (props: ButtonProps) => {
 			) : (
 				<>
 					{iconLeft && iconLeft}
-					{label && label}
+					<Body2 className="font-medium tracking-wide">{label && label}</Body2>
 					{!iconLeft && iconRight && iconRight}
 				</>
 			)}
