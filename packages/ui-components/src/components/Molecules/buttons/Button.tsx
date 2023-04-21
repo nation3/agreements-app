@@ -45,9 +45,7 @@ export const Button = (props: ButtonProps) => {
 		<ButtonBase
 			className={cx(
 				"px-2 py-3 transition-colors gap-1 tracking-wide text-base font-medium border-2",
-				outlined
-					? "bg-white border-bluesky-500 text-bluesky-400"
-					: "text-white bg-bluesky-400 border-bluesky-400",
+				"text-white bg-bluesky-400 border-bluesky-400",
 				disabled
 					? "bg-bluesky-100 border-bluesky-100"
 					: !disabled

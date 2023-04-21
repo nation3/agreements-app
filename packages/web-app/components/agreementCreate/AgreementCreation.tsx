@@ -14,6 +14,7 @@ import {
 	Body1,
 	Headline3,
 	BodyHeadline,
+	HeadlineBasic,
 	Card,
 } from "@nation3/ui-components";
 import { utils } from "ethers";
@@ -32,10 +33,16 @@ import { useTokenList } from "../../hooks/useTokenList";
 import Image from "next/image";
 import { useEffect } from "react";
 import cx from "classnames";
+import { Headline2 } from "@nation3/ui-components";
+import { IconRenderer } from "@nation3/ui-components";
+import { N3Agreement } from "@nation3/ui-components";
+import { N3World } from "@nation3/ui-components";
+import { N3User } from "@nation3/ui-components";
+import { Body2 } from "@nation3/ui-components";
 
 export const AgreementCreation = () => {
 	const { view } = useAgreementCreation();
-	const [activeCard, setActiveStep] = useState<number>(0);
+	const [activeStep, setActiveStep] = useState<number>(0);
 
 	const { t } = useTranslation("common");
 	const provider = useProvider({ chainId: 1 });
@@ -69,79 +76,62 @@ export const AgreementCreation = () => {
 	}, []);
 
 	const termsCard = (
-		<div className="grid grid-cols-12 gap-24">
-			<section className={cx("lg:col-start-1 lg:col-end-10")}>
-				<Card>
-					<div className="text-gray-800">
-						<h1 className="font-display font-medium text-2xl">{t("create.header")}</h1>
+		<section className={cx("")}>
+			<>
+				{/* <div className="text-gray-800">
+					<h1 className="font-display font-medium text-2xl">{t("create.header")}</h1>
+				</div> */}
+				<div className="flex flex-col gap-4">
+					<div>
+						<HeadlineBasic className="font-display font-medium text-xl">
+							{t("create.agreementTerms.title")}
+						</HeadlineBasic>
+						{/* <Body1>{t("create.agreementTerms.description")}</Body1>
+						<GradientLink
+							href="https://docs.nation3.org/agreements/creating-an-agreement"
+							caption="Learn more"
+						/> */}
 					</div>
 					<div className="flex flex-col gap-4">
-						<div>
-							<h2 className="font-display font-medium text-xl">
-								{t("create.agreementTerms.title")}
-							</h2>
-							<p>{t("create.agreementTerms.description")}</p>
-							<GradientLink
-								href="https://docs.nation3.org/agreements/creating-an-agreement"
-								caption="Learn more"
-							/>
-						</div>
-						<div className="flex flex-col gap-4">
-							<div>
-								<h3 className="flex gap-1 font-display">
-									<span className="text-lg font-medium">{t("create.agreementTitle.title")}</span>
-									<span className="text-md text-slate-600">(Optional)</span>
-								</h3>
-								<p>{t("create.agreementTitle.description")}</p>
-							</div>
-							<TextInput
-								value={title}
-								placeholder={defaultTitle}
-								onChange={(e: ChangeEvent<HTMLInputElement>) => {
-									setTitle(e.target.value);
-								}}
-							/>
-						</div>
-						<div className="flex flex-col gap-2">
-							<Body3>Markdown file</Body3>
-							<DropInput
-								dropzoneConfig={{
-									accept: { "text/markdown": [".md"] },
-									maxFiles: 1,
-									onDrop: (acceptedFiles: File[]) => {
-										acceptedFiles[0].text().then((text: string) => setTerms(text));
-									},
-								}}
-								showFiles={true}
-							/>
-						</div>
-						{!terms && <InfoAlert message={t("create.agreementTerms.warning")} />}
+						<Body2 className="flex gap-1 font-display">
+							<span className="text-lg font-medium">{t("create.agreementTitle.title")}</span>
+							{/* <span className="text-md text-slate-600">(Optional)</span> */}
+						</Body2>
+						<TextInput
+							value={title}
+							placeholder={defaultTitle}
+							focusColor="pr-c-green2"
+							onChange={(e: ChangeEvent<HTMLInputElement>) => {
+								setTitle(e.target.value);
+							}}
+						/>
 					</div>
-					<hr />
-				</Card>
-				<div className="flex justify-between">
-					<Button label="Back" className="flex" onClick={() => setActiveStep(0)} />
-					<Button label="Next" className="flex" onClick={() => setActiveStep(2)} />
-				</div>
-			</section>
-			<div
-				className={cx(
-					// "sticky bottom-base",
-					"lg:col-start-9 xl:col-start-10 lg:col-end-13",
-				)}
-			>
-				<div className="w-full flex flex-col bg-white rounded-lg border-2 border-neutral-c-200">
-					<div className="border-b-2 border-neutral-c-200 p-base">
-						<BodyHeadline>Agreement Data</BodyHeadline>
+					<div className="flex flex-col gap-2">
+						<Body2>Markdown file</Body2>
+						<DropInput
+							dropzoneConfig={{
+								accept: { "text/markdown": [".md"] },
+								maxFiles: 1,
+								onDrop: (acceptedFiles: File[]) => {
+									acceptedFiles[0].text().then((text: string) => setTerms(text));
+								},
+							}}
+							showFiles={true}
+						/>
 					</div>
-					<div className="p-base"></div>
+					{!terms && <InfoAlert message={t("create.agreementTerms.warning")} />}
 				</div>
+				<hr />
+			</>
+			<div className="flex justify-between">
+				<Button label="Back" className="flex" onClick={() => setActiveStep(0)} />
+				<Button label="Next" className="flex" onClick={() => setActiveStep(2)} />
 			</div>
-		</div>
+		</section>
 	);
 
 	const partiesCard = (
-		<Card>
+		<>
 			<div className="flex flex-col gap-4">
 				<h2 className="font-display font-medium text-xl">{t("create.agreementPositions.title")}</h2>
 				<div className="mb-4">
@@ -205,32 +195,56 @@ export const AgreementCreation = () => {
 				</div>
 				{!isValidCriteria && <InfoAlert message={t("create.agreementPositions.warning")} />}
 			</div>
-		</Card>
+		</>
 	);
 
 	const introCard = (
 		<>
 			<div className="grid grid-cols-12 gap-24">
-				<Card className="col-start-1 col-end-13 flex justify-center flex-col">
-					<Body1>Nation3 Jurisdiction</Body1>
-					<Headline4>Agreement</Headline4>
-					<Body3>
-						Lorem ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu.
-						Bibendum fringilla tincidunt viverra vestibulum justo fusce ultricies cras.
-					</Body3>
-					<Button label="Create Agreement" onClick={() => setActiveStep(1)}></Button>
+				<Card size="double" className="col-start-1 col-end-13 flex justify-center items-center">
+					{/* <IconRenderer icon={<N3World />} backgroundColor="black" size="sm" rounded /> */}
+					<div className="max-w-lg flex-col items-center flex">
+						<IconRenderer
+							className="mb-base"
+							icon={<N3Agreement />}
+							backgroundColor="pr-c-green1"
+							size="sm"
+							rounded
+						/>
+						<Body1>Nation3 Jurisdiction</Body1>
+						<Headline4>Agreement</Headline4>
+						<Body3 className="text-center mb-base">
+							Lorem ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu.
+							Bibendum fringilla tincidunt viverra vestibulum justo fusce ultricies cras.
+						</Body3>
+						<Button label="Create New Agreement" onClick={() => setActiveStep(1)}></Button>
+					</div>
 				</Card>
 				<Card className="col-start-1 col-end-7">
+					<IconRenderer
+						className="mb-base"
+						icon={<N3World />}
+						backgroundColor="pr-c-green1"
+						size="sm"
+						rounded
+					/>
 					<Body1>What is an agreement?</Body1>
-					<Body3>
+					<Body3 className="text-neutral-c-600 my-min3">
 						Lorem ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu. Lorem
 						ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu.
 					</Body3>
 					<Body1>Learn more</Body1>
 				</Card>
 				<Card className="col-start-7 col-end-13">
+					<IconRenderer
+						className="mb-base"
+						icon={<N3User />}
+						backgroundColor="pr-c-green1"
+						size="sm"
+						rounded
+					/>
 					<Body1>Quick tips for great agreements</Body1>
-					<Body3>
+					<Body3 className="text-neutral-c-600 my-min3">
 						Lorem ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu. Lorem
 						ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu.
 					</Body3>
@@ -242,27 +256,48 @@ export const AgreementCreation = () => {
 
 	return (
 		<>
-			<article id="agreementCreation" className="grid grid-cols-12 gap-base z-10 mt-40">
+			<article id="agreementCreation" className="grid grid-cols-12 gap-base z-10 mt-40 pb-double">
 				<div className="col-start-1 col-end-13 flex flex-col w-full text-gray-800">
 					<Headline3 className="font-semibold">Create Agreement</Headline3>
 				</div>
-				<div className="col-start-1 col-end-13 flex flex-col w-full text-gray-800">
-					<Breadcrumbs
-						steps={[
-							{ title: "Intro", hidden: true },
-							{ title: "Terms" },
-							{ title: "Positions" },
-							{ title: "Preview" },
-						]}
-						onStepChange={(index: number) => setActiveStep(index)}
-					/>
-				</div>
-				<div className="col-start-1 col-end-13 flex flex-col w-full text-gray-800">
-					{activeCard === 0 && introCard}
-					{activeCard === 1 && termsCard}
-					{activeCard === 2 && partiesCard}
-					{activeCard === 3 && <AgreementCreationPreview />}
-				</div>
+				{activeStep !== 0 && (
+					<>
+						<Card
+							size="double"
+							className="col-start-1 col-end-10 flex flex-col w-full text-gray-800"
+						>
+							<div className="mb-min2">
+								<Breadcrumbs
+									steps={[
+										{ title: "Intro", hidden: true },
+										{ title: "Name & Terms" },
+										{ title: "Positions" },
+										{ title: "Preview" },
+									]}
+									hidden={activeStep === 0}
+									onStepChange={(index: number) => setActiveStep(index)}
+								/>
+							</div>
+							{activeStep === 1 && termsCard}
+							{activeStep === 2 && partiesCard}
+							{activeStep === 3 && <AgreementCreationPreview />}
+						</Card>
+						<div
+							className={cx(
+								// "sticky bottom-base",
+								"lg:col-start-9 xl:col-start-10 lg:col-end-13",
+							)}
+						>
+							<div className="w-full flex flex-col bg-white rounded-lg border-2 border-neutral-c-200">
+								<div className="border-b-2 border-neutral-c-200 p-base">
+									<BodyHeadline>Agreement Data</BodyHeadline>
+								</div>
+								<div className="p-base"></div>
+							</div>
+						</div>
+					</>
+				)}
+				{activeStep === 0 && introCard}
 			</article>
 			<Modal show={isTokenModalOpen} onClose={() => setIsTokenModalOpen(false)}>
 				<Modal.Header>
@@ -294,25 +329,6 @@ export const AgreementCreation = () => {
 					</div>
 				</Modal.Body>
 			</Modal>
-		</>
-	);
-
-	return (
-		<>
-			<section id="agreement" className="grid grid-cols-12 gap-base z-10 mt-40">
-				<div className="col-start-2 col-end-11 flex flex-col w-full text-gray-800">
-					<div className="flex flex-col gap-2">
-						<Button
-							label="Create Agreement"
-							disabled={!isValidAgreement}
-							onClick={() => {
-								setTitle(title || defaultTitle);
-								changeView(CreateView.Preview);
-							}}
-						/>
-					</div>
-				</div>
-			</section>
 		</>
 	);
 };

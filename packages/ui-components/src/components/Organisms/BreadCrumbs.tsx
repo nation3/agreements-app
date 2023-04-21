@@ -1,5 +1,6 @@
 import React, { FC, useState } from "react";
 import { Body3 } from "../Atoms";
+import cx from "classnames";
 
 interface Step {
 	title: string;
@@ -9,16 +10,21 @@ interface Step {
 interface BreadcrumbsProps {
 	steps: Step[];
 	onStepChange: (index: number) => void;
+	hidden?: boolean;
 }
 
 const Breadcrumbs: FC<BreadcrumbsProps> = (props) => {
-	const { steps, onStepChange } = props;
+	const { steps, onStepChange, hidden = false } = props;
 	const [activeStep, setActiveStep] = useState<number>(0);
 
 	const handleStepChange = (index: number) => {
 		setActiveStep(index);
 		onStepChange(index);
 	};
+
+	if (hidden) {
+		return null;
+	}
 
 	return (
 		<nav className="flex items-center gap-4">
@@ -28,16 +34,23 @@ const Breadcrumbs: FC<BreadcrumbsProps> = (props) => {
 				}
 
 				return (
-					<React.Fragment key={index}>
-						<button
-							className={`py-min2 px-min3 ${
-								activeStep === index ? "text-neutral-c-800 " : "text-neutral-c-500"
+					<div className={`flex w-full`} key={index}>
+						<div
+							className={`mr-min3 last:mr-0 w-full cursor-pointer ${
+								activeStep >= index ? "text-neutral-c-800 " : "text-neutral-c-500"
 							}`}
 							onClick={() => handleStepChange(index)}
 						>
+							<div
+								className={cx(
+									"h-[4px] w-full rounded mb-min1",
+									activeStep >= index ? "bg-pr-c-green3" : "bg-pr-c-green1",
+								)}
+							></div>
+
 							<Body3>{step.title}</Body3>
-						</button>
-						{index < steps.length - 1 && !steps[index + 1].hidden && (
+						</div>
+						{/* {index < steps.length - 1 && !steps[index + 1].hidden && (
 							<svg
 								className="w-4 h-4 text-neutral-c-500"
 								viewBox="0 0 24 24"
@@ -52,8 +65,8 @@ const Breadcrumbs: FC<BreadcrumbsProps> = (props) => {
 									strokeLinejoin="round"
 								/>
 							</svg>
-						)}
-					</React.Fragment>
+						)} */}
+					</div>
 				);
 			})}
 		</nav>
