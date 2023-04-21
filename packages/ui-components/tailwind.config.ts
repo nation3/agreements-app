@@ -4,6 +4,7 @@ import n3theme from './src/theme/index';
 const config: Config = {
 	content: [
 		"./src/**/*.{js,ts,jsx,tsx}",
+		"./../web-app/**/*.{js,ts,jsx,tsx}",
 		"./stories/**/*.{js,ts,jsx,tsx}",
 		"../../node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
 	],
@@ -20,7 +21,9 @@ const config: Config = {
 		},
 	],
 	theme: {
+		extend: {
 			...n3theme
+		}
 	},
 	variants: {
 		extend: {

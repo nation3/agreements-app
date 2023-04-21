@@ -16,7 +16,7 @@ export const spacing = {
         'min3': '16px',
         'base': '24px',
         'base+': '32px',
-        '16': '40px',
+        'base++': '40px',
         'double': '48px',
         '20': '56px',
         '26': '64px',

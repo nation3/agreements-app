@@ -1,4 +1,5 @@
-import "../styles/globals.css";
+// import "../styles/globals.css";
+import "../../ui-components/dist/styles.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { appWithTranslation } from "next-i18next";
 import React, { memo, useEffect, useState } from "react";
