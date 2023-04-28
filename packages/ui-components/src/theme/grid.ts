@@ -24,6 +24,10 @@ export const grid = {
     'span-2': 'span 1 / span 2',
   }, */
   gap: {
+    'double': '48px',
+    'base': '24px',
+    'min3': '16px',
+    'min2': '8px',
     '24': '24px',
     '16': '16px',
     '8': '8px',

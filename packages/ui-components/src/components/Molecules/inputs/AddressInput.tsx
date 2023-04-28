@@ -1,11 +1,13 @@
 import clsx from "clsx";
-import React, { ChangeEvent, InputHTMLAttributes } from "react";
 import { ethers, providers } from "ethers";
+import React, { ChangeEvent, InputHTMLAttributes } from "react";
+import { Body3 } from "../../Atoms";
 
 export interface AddressInputProps extends InputHTMLAttributes<HTMLInputElement> {
 	focusColor?: string;
 	onBlur?: (e: ChangeEvent<HTMLInputElement>) => void;
 	ensProvider?: providers.BaseProvider | undefined;
+	label?: string | undefined;
 }
 
 export async function fetchEnsAddress({
@@ -24,12 +26,8 @@ export async function fetchEnsAddress({
 	}
 }
 
-export const AddressInput = ({
-	focusColor = "bluesky",
-	ensProvider,
-	onBlur,
-	...props
-}: AddressInputProps) => {
+export const AddressInput = (props: AddressInputProps) => {
+	const { focusColor = "pr-c-blue-3", ensProvider, label, onBlur } = props;
 	const [isValid, setIsValid] = React.useState(true);
 
 	const fetchAddress = async (value: string) => {
@@ -43,11 +41,12 @@ export const AddressInput = ({
 
 	return (
 		<div>
+			{label && <Body3>{label}</Body3>}
 			<input
 				type="text"
 				id="text-input"
 				className={clsx(
-					`border-neutral-300 bg-white text-gray-800 text-sm rounded block w-full p-min2 border-2`,
+					`border-neutral-c-300 bg-white p-min2 border-2 w-full rounded-base`,
 					isValid
 						? `border border-gray-300 focus:border-${focusColor} focus:ring-${focusColor}`
 						: "border-solid ring-1 border-red-600 ring-red-600 focus:border-red-600 focus:ring-red-600",

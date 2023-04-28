@@ -1,10 +1,10 @@
 import { BigNumber } from "ethers";
-import { ReactNode, useState, useMemo } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { AgreementCreationContext, AgreementCreationContextType } from "./AgreementCreationContext";
 
-import { hexHash, abiEncoding, hashEncoding } from "../../../utils";
-import { CreateView, Token } from "./types";
 import { useConstants } from "../../../hooks/useConstants";
+import { abiEncoding, hashEncoding, hexHash } from "../../../utils";
+import { CreateView, Token } from "./types";
 
 export const AgreementCreationProvider = ({ children }: { children: ReactNode }) => {
 	const [view, changeView] = useState(CreateView.Form);

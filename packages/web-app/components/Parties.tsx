@@ -1,12 +1,9 @@
-import { PositionMap, Token } from "./agreement/context/types";
-import { PositionStatusBadge } from ".";
-import { Table, useScreen, ScreenType, Body2, Body3, UserIcon } from "@nation3/ui-components";
-import { utils, BigNumber } from "ethers";
-import { AccountDisplay } from "./AccountDisplay";
+import { Body2, Body3, BodyHeadline, UserIcon, useScreen } from "@nation3/ui-components";
 import cx from "classnames";
-import { BodyHeadline } from "@nation3/ui-components";
-import React from "react";
+import { BigNumber, utils } from "ethers";
 import { useAccount } from "wagmi";
+import { AccountDisplay } from "./AccountDisplay";
+import { PositionMap, Token } from "./agreement/context/types";
 
 interface Position {
 	account: string;
@@ -28,7 +25,7 @@ const statusBadgeMap: { [key: number]: { message: string; color: string } } = {
 	4: { message: "Disputed", color: "neutral-c-200" },
 };
 
-const buildPositions = (positions: PositionMap | undefined): FilteredPositions[] => {
+export const buildParties = (positions: PositionMap | undefined): FilteredPositions[] => {
 	const result: FilteredPositions[] = [];
 
 	Object.entries(positions ?? {}).forEach(([account, { balance, status }]) => {
@@ -58,7 +55,9 @@ const Parties = ({
 }) => {
 	const { screen } = useScreen();
 	const { address: myAccount } = useAccount();
-	const filteredPositions = buildPositions(positions);
+	const filteredPositions = buildParties(positions);
+
+	console.log("POSITIONS => ", filteredPositions);
 
 	return (
 		<>
@@ -67,9 +66,9 @@ const Parties = ({
 					<BodyHeadline className="mb-min3">
 						{message} ({positions.length})
 					</BodyHeadline>
-					{positions.map(({ account, balance, status }) => (
+					{positions.map(({ account, balance, status }, i) => (
 						<div
-							key={message}
+							key={i}
 							className={cx("mb-base last:mb-0 p-min3 w-full rounded-md", "bg-" + color)}
 						>
 							<section key={account} className="grid grid-cols-5 md:gap-16 gap-8">

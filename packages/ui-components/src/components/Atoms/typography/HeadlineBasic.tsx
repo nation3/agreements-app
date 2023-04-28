@@ -7,7 +7,7 @@ interface Props {
 
 export const HeadlineBasic = (props: Props) => {
 	return (
-		<h5 {...props} className={`text-lg md:text-xl pb-min3 md:pb-base font-bold ${props.className}`}>
+		<h5 {...props} className={`text-lg md:text-xl font-bold ${props.className}`}>
 			{props.children}
 		</h5>
 	);

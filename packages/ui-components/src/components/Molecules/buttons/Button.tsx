@@ -1,12 +1,12 @@
-import React, { ReactNode, ReactElement } from "react";
-import { motion, HTMLMotionProps } from "framer-motion";
 import cx from "classnames";
-import Spinner from "../../Atoms/Spinner";
+import { HTMLMotionProps, motion } from "framer-motion";
+import React, { ReactElement, ReactNode } from "react";
 import { Body2 } from "../../Atoms";
-import classNames from "classnames";
+import Spinner from "../../Atoms/Spinner";
 
 export interface ButtonBaseProps extends HTMLMotionProps<"button"> {
 	disabled?: boolean;
+	size?: "normal" | "medium" | "small";
 }
 
 export interface ButtonProps extends Omit<ButtonBaseProps, "children"> {
@@ -20,10 +20,16 @@ export interface ButtonProps extends Omit<ButtonBaseProps, "children"> {
 	className?: string;
 }
 
-export const ButtonBase = ({ children, className, ...props }: ButtonBaseProps) => {
+export const ButtonBase = ({ children, className, size = "normal", ...props }: ButtonBaseProps) => {
+	const sizeClasses = {
+		normal: "px-base py-[14px]",
+		medium: "px-[18px] py-[14px]",
+		small: "px-min3 py-min2",
+	};
+
 	return (
 		<motion.button
-			className={`flex items-center justify-center rounded-lg ${className}`}
+			className={`flex items-center justify-center rounded-lg ${className} ${sizeClasses[size]}`}
 			whileTap={{ scale: 0.95 }}
 			{...props}
 		>
@@ -42,12 +48,13 @@ export const Button = (props: ButtonProps) => {
 		className,
 		isLoading = false,
 		onClick,
+		size,
 	} = props;
 
 	return (
 		<ButtonBase
 			className={cx(
-				"px-base py-min2 transition-colors gap-1 border-2 text-neutral-c-800 w-auto",
+				"cursor-pointer rounded-full gap-1 border-2 bg-white transition-all text-neutral-c-800 w-auto hover:shadow-md",
 				disabled
 					? "text-neutral-c-300  border-neutral-c-300"
 					: "text-neutral-c-500  border-pr-c-blue3",
@@ -55,6 +62,7 @@ export const Button = (props: ButtonProps) => {
 			)}
 			disabled={disabled}
 			onClick={onClick}
+			size={size}
 		>
 			{isLoading ? (
 				<Spinner className="w-5 h-5" />
