@@ -64,6 +64,7 @@ export const fontSize = {
     "6xl": "3.25rem",
     "7xl": "3.875rem",
     "8xl": "5.125rem",
+    "head": "22px",
   }
 
   export const fontFamily = {

@@ -7,7 +7,10 @@ interface Props {
 
 export const BodyHeadline = (props: Props) => {
 	return (
-		<h5 {...props} className={`text-base md:text-lg font-bold ${props.className}`}>
+		<h5
+			{...props}
+			className={`text-xl md:text-head tracking-wide font-semibold ${props.className}`}
+		>
 			{props.children}
 		</h5>
 	);

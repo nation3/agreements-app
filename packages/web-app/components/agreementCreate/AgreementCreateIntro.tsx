@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from "react";
 import {
-	Button,
-	Headline4,
-	Body3,
 	Body1,
+	Body3,
+	BodyHeadline,
+	Button,
 	Card,
 	IconRenderer,
 	N3Agreement,
-	N3World,
 	N3User,
+	N3World,
 } from "@nation3/ui-components";
-import { GradientLink } from "../GradientLink";
 import cx from "classnames";
-import classNames from "classnames";
+import React from "react";
+import { GradientLink } from "../GradientLink";
 
 type IAgreementCreateIntroProps = {
 	setActiveStep: (step: number) => void; // add setActiveStep as a prop
@@ -42,11 +41,10 @@ const AgreementCreateIntro: React.FC<IAgreementCreateIntroProps> = ({
 								size="sm"
 								rounded
 							/>
-							<Body1>Nation3 Jurisdiction</Body1>
-							<Headline4>Agreement</Headline4>
+							<BodyHeadline>New agreement</BodyHeadline>
 							<Body3 className="text-center mb-base">
-								Lorem ipsum dolor sit amet consectetur. Cras feugiat tellus lorem nec rhoncus eu.
-								Bibendum fringilla tincidunt viverra vestibulum justo fusce ultricies cras.
+								Nation3 has its own system of law, enforced by its own court and secured by economic
+								incentives.
 							</Body3>
 							<Button label="Create New Agreement" onClick={() => setActiveStep(1)}></Button>
 						</div>
