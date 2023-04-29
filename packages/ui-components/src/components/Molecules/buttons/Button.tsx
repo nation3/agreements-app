@@ -29,7 +29,7 @@ export const ButtonBase = ({ children, className, size = "normal", ...props }: B
 
 	return (
 		<motion.button
-			className={`flex items-center justify-center rounded-lg ${className} ${sizeClasses[size]}`}
+			className={`flex items-center justify-center rounded-full ${className} ${sizeClasses[size]}`}
 			whileTap={{ scale: 0.95 }}
 			{...props}
 		>

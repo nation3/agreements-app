@@ -1,6 +1,6 @@
-import React, { ReactChild, MouseEventHandler } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { AnimatePresence, motion } from "framer-motion";
+import React, { MouseEventHandler, ReactChild } from "react";
 
 export interface ModalProps {
 	children: ReactChild;

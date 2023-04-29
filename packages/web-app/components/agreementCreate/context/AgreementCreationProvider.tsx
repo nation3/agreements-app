@@ -11,6 +11,7 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 	const [salt] = useState(hashEncoding(Date.now().toString()));
 	const [title, setTitle] = useState("");
 	const [terms, setTerms] = useState("");
+	const [fileName, setFileName] = useState("");
 	const [token, setToken] = useState<Token>();
 	const [positions, setPositions] = useState([
 		{ account: "", balance: BigNumber.from(0) },
@@ -33,11 +34,13 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 		terms,
 		token,
 		termsHash,
+		fileName,
 		positions,
 		id,
 		changeView,
 		setTitle,
 		setTerms,
+		setFileName,
 		setToken,
 		setPositions,
 	};
