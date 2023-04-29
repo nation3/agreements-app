@@ -41,15 +41,18 @@ export const AddressInput = (props: AddressInputProps) => {
 
 	return (
 		<div>
-			{label && <Body3>{label}</Body3>}
+			{label && <Body3 color="neutral-c-600">{label}</Body3>}
 			<input
 				type="text"
 				id="text-input"
+				// className={clsx(
+				// 	`border-neutral-c-300 bg-white p-min2 border-2 w-full rounded-base`,
+				// 	isValid
+				// 		? `border border-gray-300 focus:border-${focusColor} focus:ring-${focusColor}`
+				// 		: "border-solid ring-1 border-red-600 ring-red-600 focus:border-red-600 focus:ring-red-600",
+				// )}
 				className={clsx(
-					`border-neutral-c-300 bg-white p-min2 border-2 w-full rounded-base`,
-					isValid
-						? `border border-gray-300 focus:border-${focusColor} focus:ring-${focusColor}`
-						: "border-solid ring-1 border-red-600 ring-red-600 focus:border-red-600 focus:ring-red-600",
+					`border-neutral-c-300 bg-white px-min3 border-2 h-double rounded-base focus:ring-${focusColor} focus:border-${focusColor} block flex-1 min-w-0 w-full text-sm border-gray-300 p-min3`,
 				)}
 				onBlur={(e) => {
 					fetchAddress(e.target.value)

@@ -1,8 +1,15 @@
-import { AddressInput, TokenBalanceInput } from "@nation3/ui-components";
+import {
+	AddressInput,
+	Body1,
+	Button,
+	IconRenderer,
+	N3Cross,
+	N3User,
+	TokenBalanceInput,
+} from "@nation3/ui-components";
 import { BigNumber, providers, utils } from "ethers";
+import Image from "next/image";
 import { ChangeEvent, FocusEvent } from "react";
-
-import { Body1, Button, N3Cross, UserIcon } from "@nation3/ui-components";
 import { Body3 } from "../../ui-components/src/components/Atoms";
 import { purgeFloat } from "../utils";
 
@@ -20,7 +27,7 @@ export const ParticipantRow = ({
 	ensProvider,
 }: {
 	positions: Position[];
-	token: string;
+	token: any;
 	index: number;
 	removePosition?: any;
 	onChange?: (positions: Position[]) => void;
@@ -41,27 +48,28 @@ export const ParticipantRow = ({
 	};
 
 	return (
-		<div className="flex flex-col w-full gap-min3 rounded-md bg-pr-c-blue1 p-min3 relative">
+		<div className="flex flex-col w-full gap-min3 rounded-md bg-neutral-c-200 p-min3 relative">
 			{removePosition && (
-				<div className="absolute top-min2 right-min2" onClick={() => removePosition()}>
+				<div className="absolute top-min3 right-min3" onClick={() => removePosition()}>
 					<Button
 						size="small"
 						label="Delete"
-						className="shadow"
-						iconLeft={<N3Cross className="w-base h-base" />}
+						className="shadow-sm hover:shadow"
+						iconLeft={<N3Cross className="w-min3 h-min3" />}
 						disabled={positions.length <= 2}
 					/>
 				</div>
 			)}
-			<div className="gap-base flex w-full">
-				<UserIcon className="h-base" />
+			<div className="gap-min3 flex items-center w-full">
+				<IconRenderer icon={<N3User />} backgroundColor={"pr-c-green1"} size={"xs"} />
 				<Body1 className="w-full text-neutral-c-800">Participant {index}</Body1>
 			</div>
-			<div className="flex grow gap-min3">
-				<div className="w-full">
+			<div className="flex flex-grow gap-min2">
+				<div className="grow">
 					<AddressInput
 						label="Address"
 						defaultValue={positions[index].account}
+						focusColor="pr-c-blue2"
 						placeholder="vitalik.eth"
 						ensProvider={ensProvider}
 						onBlur={(e: ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +77,7 @@ export const ParticipantRow = ({
 						}}
 					/>
 				</div>
-				<div className="basis-[130px]">
+				<div className="basis-36">
 					<TokenBalanceInput
 						label="Collateral"
 						defaultValue={utils.formatUnits(positions[index].balance)}
@@ -87,10 +95,18 @@ export const ParticipantRow = ({
 						}}
 					/>
 				</div>
-				<div>
-					<Body3>Token</Body3>
-					<div className="`border-neutral-c-300 bg-white p-min2 border-2 rounded-base basis-[130px]">
-						{token}
+				<div className="basis-36">
+					<Body3 color="neutral-c-600">Token</Body3>
+					<div className="gap-min2 flex items-center border-neutral-c-300 bg-white px-min3 h-double border-2 rounded-base min-w-0 w-full text-sm border-gray-300">
+						{/* {token?.icon && (
+							<IconRenderer icon={token?.icon} backgroundColor={"neutral-c-200"} size={"xs"} />
+						)} */}
+						{token?.icon && <Image height={20} width={20} alt={token.name} src={token?.icon} />}
+
+						<Body3>
+							{"$"}
+							{token?.symbol}
+						</Body3>
 					</div>
 				</div>
 			</div>

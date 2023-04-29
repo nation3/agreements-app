@@ -40,6 +40,7 @@
     "ethers": "^5.7.2",
     "flowbite": "^1.5.3",
     "flowbite-react": "^0.1.11",
+    "focus-trap-react": "^10.1.1",
     "framer-motion": "^7.5.1",
     "react-blockies": "^1.4.1",
     "react-dropzone": "^14.2.2",

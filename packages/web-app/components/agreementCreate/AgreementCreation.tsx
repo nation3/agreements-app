@@ -72,6 +72,7 @@ export const AgreementCreation = () => {
 									]}
 									hidden={activeStep === 0}
 									onStepChange={(index: number) => setActiveStep(index)}
+									activeStep={activeStep}
 								/>
 							</div>
 							{activeStep === 1 && <AgreementTerms setActiveStep={setActiveStep} />}

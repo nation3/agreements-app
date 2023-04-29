@@ -1,6 +1,6 @@
-import React, { FC, useState } from "react";
-import { Body3 } from "../Atoms";
 import cx from "classnames";
+import React, { FC } from "react";
+import { Body3 } from "../Atoms";
 
 interface Step {
 	title: string;
@@ -11,14 +11,13 @@ interface BreadcrumbsProps {
 	steps: Step[];
 	onStepChange: (index: number) => void;
 	hidden?: boolean;
+	activeStep: number; // Add activeStep as a prop
 }
 
 const Breadcrumbs: FC<BreadcrumbsProps> = (props) => {
-	const { steps, onStepChange, hidden = false } = props;
-	const [activeStep, setActiveStep] = useState<number>(0);
+	const { steps, onStepChange, hidden = false, activeStep } = props; // Remove the useState for activeStep
 
 	const handleStepChange = (index: number) => {
-		setActiveStep(index);
 		onStepChange(index);
 	};
 
@@ -36,7 +35,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = (props) => {
 				return (
 					<div className={`flex w-full`} key={index}>
 						<div
-							className={`mr-min3 last:mr-0 w-full cursor-pointer ${
+							className={`mr-min3 last:mr-0 w-full cursor-pointer gap-min2 flex flex-col ${
 								activeStep >= index ? "text-neutral-c-800 " : "text-neutral-c-500"
 							}`}
 							onClick={() => handleStepChange(index)}
@@ -50,22 +49,6 @@ const Breadcrumbs: FC<BreadcrumbsProps> = (props) => {
 
 							<Body3>{step.title}</Body3>
 						</div>
-						{/* {index < steps.length - 1 && !steps[index + 1].hidden && (
-							<svg
-								className="w-4 h-4 text-neutral-c-500"
-								viewBox="0 0 24 24"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									d="M9 5L16 12L9 19"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							</svg>
-						)} */}
 					</div>
 				);
 			})}

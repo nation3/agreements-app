@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { HTMLMotionProps, motion } from "framer-motion";
 import React, { ReactElement, ReactNode } from "react";
-import { Body2 } from "../../Atoms";
+import { Body3 } from "../../Atoms";
 import Spinner from "../../Atoms/Spinner";
 
 export interface ButtonBaseProps extends HTMLMotionProps<"button"> {
@@ -44,6 +44,7 @@ export const Button = (props: ButtonProps) => {
 		iconRight,
 		label,
 		outlined,
+		textColor,
 		disabled,
 		className,
 		isLoading = false,
@@ -54,7 +55,7 @@ export const Button = (props: ButtonProps) => {
 	return (
 		<ButtonBase
 			className={cx(
-				"cursor-pointer rounded-full gap-1 border-2 bg-white transition-all text-neutral-c-800 w-auto hover:shadow-md",
+				"cursor-pointer rounded-full shadow-sm hover:shadow gap-1 border-2 bg-white transition-all text-neutral-c-800 w-auto",
 				disabled
 					? "text-neutral-c-300  border-neutral-c-300"
 					: "text-neutral-c-500  border-pr-c-blue3",
@@ -69,7 +70,9 @@ export const Button = (props: ButtonProps) => {
 			) : (
 				<>
 					{iconLeft && iconLeft}
-					<Body2 className="font-medium tracking-wide">{label && label}</Body2>
+					<Body3 color={textColor ? textColor : ""} className="font-medium tracking-wide">
+						{label && label}
+					</Body3>
 					{!iconLeft && iconRight && iconRight}
 				</>
 			)}
