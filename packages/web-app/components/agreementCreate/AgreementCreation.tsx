@@ -1,4 +1,4 @@
-import { BodyHeadline, Breadcrumbs, Card, Headline3 } from "@nation3/ui-components";
+import { Breadcrumbs, Card, Headline3 } from "@nation3/ui-components";
 import { useMemo, useState } from "react";
 import { useProvider } from "wagmi";
 import { AgreementCreationPreview } from "./AgreementCreationPreview";
@@ -9,11 +9,11 @@ import { useTranslation } from "next-i18next";
 import { useTokenList } from "../../hooks/useTokenList";
 import { trimHash, validateCriteria } from "../../utils";
 
-import { Body3, IconRenderer, N3Agreement } from "@nation3/ui-components";
 import cx from "classnames";
 import AgreementCreateIntro from "./AgreementCreateIntro";
 import { AgreementParties } from "./AgreementCreationParties";
 import { AgreementTerms } from "./AgreementCreationTerms";
+import AgreementPreview from "./AgreementPreview";
 
 export const AgreementCreation = () => {
 	const { view } = useAgreementCreation();
@@ -23,7 +23,8 @@ export const AgreementCreation = () => {
 	const provider = useProvider({ chainId: 1 });
 	const tokens = useTokenList();
 
-	const { title, terms, positions, id, token, setToken } = useAgreementCreation();
+	const { title, terms, positions, id, token, setToken, termsHash, fileName } =
+		useAgreementCreation();
 
 	const defaultTitle = useMemo(() => `Agreement #${trimHash(id.toUpperCase())}`, [id]);
 
@@ -77,33 +78,7 @@ export const AgreementCreation = () => {
 							{activeStep === 2 && <AgreementParties setActiveStep={setActiveStep} />}
 							{activeStep === 3 && <AgreementCreationPreview />}
 						</Card>
-
-						{/* SIDE INFO */}
-						<div className={cx("hidden md:block", "lg:col-start-9 xl:col-start-10 lg:col-end-13")}>
-							<div className="w-full flex flex-col bg-white rounded-lg border-2 border-neutral-c-200">
-								<div className="border-b-2 border-neutral-c-200 p-base">
-									<IconRenderer
-										className="mb-base"
-										icon={<N3Agreement />}
-										backgroundColor="pr-c-green1"
-										size="sm"
-										rounded
-									/>
-									<BodyHeadline className="text-neutral-c-400">Add agreement name</BodyHeadline>
-								</div>
-								<div className="p-base">
-									<Body3 className="text-neutral-c-400 mb-min2">
-										{/* {terms ? terms : "Add agreement terms"} */}
-									</Body3>
-									<Body3 className="text-neutral-c-400 mb-min2">
-										{token ? token.symbol : "Select token for collateral"}
-									</Body3>
-									<Body3 className="text-neutral-c-400 mb-min2">
-										{token ? token.symbol : "Select token for collateral"}
-									</Body3>
-								</div>
-							</div>
-						</div>
+						<AgreementPreview />
 					</>
 				)}
 			</article>

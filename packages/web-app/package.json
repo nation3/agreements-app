@@ -33,6 +33,7 @@
     "i18next": "^22.4.9",
     "ipfs-car": "^0.9.1",
     "keccak256": "^1.0.6",
+    "markdown-it": "^13.0.1",
     "merkletreejs": "^0.3.0",
     "next": "latest",
     "next-i18next": "^13.0.3",
@@ -45,6 +46,7 @@
     "web3.storage": "^4.4.0"
   },
   "devDependencies": {
+    "@types/markdown-it": "^12.2.3",
     "@types/node": "17.0.35",
     "@types/react": "18.0.9",
     "@types/react-dom": "18.0.5",

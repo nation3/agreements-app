@@ -1,6 +1,6 @@
-import React from "react";
 import cx from "classnames";
 import Image from "next/image";
+import React from "react";
 import styled from "styled-components";
 
 type Icon = React.ReactNode | string;
@@ -11,6 +11,7 @@ interface IconRendererProps {
 	size: keyof typeof iconSpacing;
 	rounded?: boolean;
 	className?: string;
+	fillColor?: string;
 }
 
 const iconSpacing = {
@@ -21,7 +22,9 @@ const iconSpacing = {
 	xl: 384,
 };
 
-const CenteredIcon = styled.div`
+const CenteredIcon = styled.div<{
+	fill: string;
+}>`
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -30,18 +33,19 @@ const CenteredIcon = styled.div`
 	svg {
 		height: 100%;
 		width: 100%;
+		fill: ${(props) => "var(--tw-" + props.fill + ")"};
 	}
 `;
 
 const IconRenderer: React.FC<IconRendererProps> = (props) => {
-	const { icon, backgroundColor, size, className, rounded = false } = props;
+	const { icon, backgroundColor, size, className, rounded = false, fillColor = "" } = props;
 	const squareSize = iconSpacing[size];
 
 	const renderIcon = (icon: Icon) => {
 		if (typeof icon === "string") {
-			return <Image src={icon} alt="Icon" fill />;
+			return <Image src={icon} alt="Icon" />;
 		}
-		return <CenteredIcon>{icon}</CenteredIcon>;
+		return <CenteredIcon fill={fillColor}>{icon}</CenteredIcon>;
 	};
 
 	return (

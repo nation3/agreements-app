@@ -1,5 +1,5 @@
 import React, { InputHTMLAttributes } from "react";
-import { Body3 } from "../../Atoms";
+import { Body2 } from "../../Atoms";
 
 export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
 	focusColor?: string;
@@ -10,7 +10,7 @@ export const TextInput = (props: TextInputProps) => {
 	const { focusColor = "bluesky", label } = props;
 	return (
 		<div>
-			{label && <Body3>{label}</Body3>}
+			{label && <Body2 className="mb-min2">{label}</Body2>}
 			<input
 				type="text"
 				id="text-input"

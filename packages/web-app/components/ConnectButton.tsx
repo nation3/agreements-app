@@ -1,11 +1,14 @@
-import Blockies from "react-blockies";
-import { AccountButton, ButtonBase, UserIcon, useScreen, ScreenType } from "@nation3/ui-components";
-import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow-me/rainbowkit";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
-import React from "react";
-import { useEnsAvatar } from "wagmi";
-import { useState } from "react";
+import {
+	AccountButton,
+	Button,
+	ButtonBase,
+	ScreenType,
+	UserIcon,
+	useScreen,
+} from "@nation3/ui-components";
+import { AvatarComponent, ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
+import React, { useState } from "react";
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 	const [avatarLoadError, setAvatarLoadError] = useState<boolean>(false);
@@ -67,15 +70,12 @@ export const ConnectButton = () => {
 						{(() => {
 							if (!connected) {
 								return (
-									<ButtonBase
-										className="gap-1 p-1 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
+									<Button
+										label="Connect"
+										size="medium"
+										className="text-sm"
 										onClick={openConnectModal}
-									>
-										<span className="hidden font-regular tracking-wide md:inline md:w-32">
-											Connect
-										</span>
-										<UserCircleIcon className="w-12 h-12 -m-1" />
-									</ButtonBase>
+									></Button>
 								);
 							}
 
