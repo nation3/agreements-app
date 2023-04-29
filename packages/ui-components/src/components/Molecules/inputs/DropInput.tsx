@@ -41,7 +41,7 @@ export const DropInput = (props: DropInputProps) => {
 								return (
 									<div
 										key={i}
-										className="flex items-center gap-min2 cursor-pointer bg-white shadow-sm w-auto rounded-base pr-min2"
+										className="flex items-center gap-min2 cursor-pointer bg-white w-auto rounded-base pr-min2"
 									>
 										<IconRenderer
 											icon={<N3DocumentGrey />}

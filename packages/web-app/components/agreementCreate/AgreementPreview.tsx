@@ -36,16 +36,22 @@ const AgreementPreview: React.FC<IAgreementPreviewProps> = (props) => {
 						size="sm"
 						rounded
 					/>
-					<BodyHeadline className="text-neutral-c-400 mb-min3">{localTitle}</BodyHeadline>
+					<BodyHeadline color="text-neutral-c-400" className=" mb-min3">
+						{localTitle}
+					</BodyHeadline>
 					{localTerms && localFileName ? (
 						<div className="flex mb-min3">
-							<MarkdownFile markdownText={localTerms} hash={localFileName} />
+							<MarkdownFile fileName={fileName} markdownText={localTerms} hash={localFileName} />
 						</div>
 					) : (
-						<Body3 className="text-neutral-c-400 mb-min2">Add terms file</Body3>
+						<Body3 color="text-neutral-c-400" className=" mb-min2">
+							Add terms file
+						</Body3>
 					)}
-					<Body3 className="text-neutral-c-400 mb-min2">{localToken}</Body3>
-					<Body3 className="text-neutral-c-400 mb-min2">
+					<Body3 color="text-neutral-c-400" className="mb-min2">
+						{localToken}
+					</Body3>
+					<Body3 color="text-neutral-c-400" className=" mb-min2">
 						{token ? token.symbol : "Add participants"}
 					</Body3>
 				</div>

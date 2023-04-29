@@ -19,12 +19,13 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 	const defaultTitle = useMemo(() => `Agreement #${trimHash(id.toUpperCase())}`, [id]);
 
 	useEffect(() => {
+		setTerms("#### Agreement");
 		setTitle("Agreement");
 	}, []);
 
 	return (
 		<section className={cx("")}>
-			<div className="flex flex-col gap-base my-base">
+			<div className="flex flex-col gap-base mt-base">
 				<HeadlineBasic className="">{t("create.agreementTerms.title")}</HeadlineBasic>
 				<div className="flex flex-col">
 					<TextInput

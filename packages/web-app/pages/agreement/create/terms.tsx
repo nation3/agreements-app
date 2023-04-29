@@ -5,7 +5,6 @@ import { AgreementCreationProvider } from "../../../components/agreementCreate/c
 import { GetStaticProps } from "next";
 import Image from "next/image";
 import { AgreementCreationLayout } from "../../../components/agreementCreate/AgreementCreationLayout";
-import { AgreementTerms } from "../../../components/agreementCreate/AgreementCreationTerms";
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
 	return {
@@ -26,9 +25,7 @@ const AgreementCreationPage = () => {
 				<div className="absolute top h-[350px] w-full bg-pr-c-green1 z-5">
 					<Image src="/illustrations/header1.svg" fill object-fit="cover" alt={""} />
 				</div>
-				<AgreementCreationLayout>
-					<AgreementTerms />
-				</AgreementCreationLayout>
+				<AgreementCreationLayout></AgreementCreationLayout>
 			</article>
 		</AgreementCreationProvider>
 	);

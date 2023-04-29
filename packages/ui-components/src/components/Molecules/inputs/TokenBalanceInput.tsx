@@ -16,11 +16,11 @@ export const TokenBalanceInput = ({
 }: TokenBalanceInputProps) => {
 	return (
 		<div className="">
-			{label && <Body3>{label}</Body3>}
+			{label && <Body3 color="neutral-c-600">{label}</Body3>}
 			<input
 				type="text"
 				id="balance-input"
-				className={`border-neutral-c-300 bg-white p-min2 border-2 rounded-base focus:ring-${focusColor} focus:border-${focusColor} block flex-1 min-w-0 w-full text-sm border-gray-300 p-min3`}
+				className={`border-neutral-c-300 bg-white px-min3 h-double border-2 rounded-base focus:ring-${focusColor} focus:border-${focusColor} block flex-1 min-w-0 w-full text-sm border-gray-300 p-min3`}
 				placeholder={placeholder}
 				{...props}
 			/>
