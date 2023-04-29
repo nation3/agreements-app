@@ -8,7 +8,7 @@ export type AgreementCreationContextType = {
 	terms: string;
 	termsHash: string;
 	fileName: string;
-	token: Token | undefined;
+	token: Token;
 	id: string;
 	positions: InputPositionList;
 	changeView: (view: CreateView) => void;
