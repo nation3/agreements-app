@@ -77,7 +77,7 @@ export const AgreementCreation = () => {
 							</div>
 							{activeStep === 1 && <AgreementTerms setActiveStep={setActiveStep} />}
 							{activeStep === 2 && <AgreementParties setActiveStep={setActiveStep} />}
-							{activeStep === 3 && <AgreementCreationPreview />}
+							{activeStep === 3 && <AgreementCreationPreview setActiveStep={setActiveStep} />}
 						</Card>
 						<AgreementPreview />
 					</>
