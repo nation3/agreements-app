@@ -1,4 +1,3 @@
-import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 import { constants } from "ethers";
 
 import { useAgreementCreate } from "../../hooks/useAgreement";
@@ -94,7 +93,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 					<Button
 						label={
 							<div className="flex items-center gap-1">
-								<CheckBadgeIcon className="w-5 h-5" />
+								{/* <CheckBadgeIcon className="w-5 h-5" /> */}
 								{"Submit"}
 							</div>
 						}

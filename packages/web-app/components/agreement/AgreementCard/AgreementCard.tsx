@@ -38,7 +38,7 @@ const AgreementCard: React.FC<IAgreementCardProps> = (props) => {
 				<Body3 color="neutral-c-400">Parties</Body3>
 				<Body3 color="neutral-c-400">Collateral</Body3>
 			</div>
-			<div className="mb-min2">
+			<div className="flex flex-col mb-min2 gap-min2">
 				{positions.map(({ account, balance }, index) => (
 					<div className="flex justify-between" key={index}>
 						<AccountDisplay key={index} address={account} />
