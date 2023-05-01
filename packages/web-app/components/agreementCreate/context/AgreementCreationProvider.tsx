@@ -12,7 +12,15 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 	const [title, setTitle] = useState("");
 	const [terms, setTerms] = useState("");
 	const [fileName, setFileName] = useState("");
-	const [token, setToken] = useState<Token>();
+	const [fileStatus, setFileStatus] = useState("");
+	const [filePass, setFilePass] = useState("");
+	const [token, setToken] = useState<Token>({
+		name: "",
+		symbol: "",
+		address: "",
+		decimals: 2,
+		icon: "",
+	});
 	const [positions, setPositions] = useState([
 		{ account: "", balance: BigNumber.from(0) },
 		{ account: "", balance: BigNumber.from(0) },
@@ -35,12 +43,16 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 		token,
 		termsHash,
 		fileName,
+		fileStatus,
+		filePass,
 		positions,
 		id,
 		changeView,
 		setTitle,
 		setTerms,
 		setFileName,
+		setFilePass,
+		setFileStatus,
 		setToken,
 		setPositions,
 	};

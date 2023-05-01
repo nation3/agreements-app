@@ -25,7 +25,7 @@ export const DropInput = (props: DropInputProps) => {
 	return (
 		<div>
 			<div className="flex gap-min3 items-center">
-				{label && <Body2 className="mb-min2">{label}:</Body2>}
+				{label && <Body2 className="mb-min2">{label}</Body2>}
 			</div>
 			<div
 				{...getRootProps({

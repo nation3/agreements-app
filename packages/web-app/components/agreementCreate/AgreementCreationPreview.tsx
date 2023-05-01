@@ -5,10 +5,13 @@ import { useAgreementCreate } from "../../hooks/useAgreement";
 import { preparePutToIPFS } from "../../lib/ipfs";
 import { generateAgreementMetadata } from "../../utils";
 
-import { Button, HeadlineBasic } from "@nation3/ui-components";
+import { Button, Card, HeadlineBasic, ModalNew } from "@nation3/ui-components";
 
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Spinner from "../../../ui-components/src/components/Atoms/Spinner";
+import { encryptAES } from "../../utils/crypto";
 import AgreementCard from "../agreement/AgreementCard/AgreementCard";
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 
@@ -20,8 +23,19 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 	setActiveStep,
 }) => {
 	const router = useRouter();
-	const { title, terms, fileName, termsHash, token, id, salt, positions, changeView } =
-		useAgreementCreation();
+	const {
+		title,
+		terms,
+		fileName,
+		termsHash,
+		token,
+		id,
+		salt,
+		positions,
+		fileStatus,
+		filePass,
+		changeView,
+	} = useAgreementCreation();
 
 	const {
 		create,
@@ -49,6 +63,15 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 	}, [router, terms, positions, createSuccess, id, title]);
 
 	const submit = async () => {
+		setIsOpen(true);
+		// IS PUBLIC ENCRYPTED?
+		if (fileStatus && filePass) {
+			const encryptedTerms = encryptAES(terms, filePass);
+			/* Upload to IPFS */
+		}
+
+		// TODO: Modify upload based on file status
+
 		const metadata = generateAgreementMetadata({ title, terms, positions });
 
 		const { cid } = await preparePutToIPFS(metadata);
@@ -61,6 +84,15 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 			token: token?.address ?? constants.AddressZero,
 			salt,
 		});
+	};
+
+	// MODAL CONTROLLER
+	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const handleOpen = () => {
+		setIsOpen(true);
+	};
+	const handleClose = () => {
+		setIsOpen(false);
 	};
 
 	return (
@@ -102,6 +134,22 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 						onClick={() => submit()}
 					/>
 				</div>
+				<ModalNew isOpen={isOpen} onClose={handleClose}>
+					<motion.div
+						className="w-full rounded-lg"
+						initial={{ opacity: 0, y: -10, boxShadow: "0px 0px 0 rgba(0, 0, 0, 0.0)" }}
+						animate={{ opacity: 1, y: 0, boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)" }}
+						transition={{ duration: 0.15 }}
+					>
+						<Card>
+							<div>
+								<HeadlineBasic>Preparing Terms file</HeadlineBasic>
+								<div>Cool animation here... </div>
+								<Spinner className="w-5 h-5" />
+							</div>
+						</Card>
+					</motion.div>
+				</ModalNew>
 			</article>
 			{/* <section>
 				<AgreementDataDisplay
