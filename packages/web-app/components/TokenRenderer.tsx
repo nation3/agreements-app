@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useMemo } from "react";
+import React from "react";
 import { Body3 } from "../../ui-components/src/components/Atoms";
 import { findToken } from "../hooks/useTokenList";
 
@@ -9,7 +9,7 @@ const ITokenRendererDefaultProps = {};
 
 const TokenRenderer: React.FC<ITokenRendererProps> = (props) => {
 	const { tokenSymbol } = props;
-	const token = useMemo(() => findToken(tokenSymbol), [tokenSymbol]);
+	const token = findToken(tokenSymbol);
 	return (
 		<React.Fragment>
 			<div className="flex gap-min2 items-center">
