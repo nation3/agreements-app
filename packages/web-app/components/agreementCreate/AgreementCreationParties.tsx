@@ -3,13 +3,14 @@
 import { AddIcon, Body2, Button, HeadlineBasic } from "@nation3/ui-components";
 import { utils } from "ethers";
 import { useTranslation } from "next-i18next";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useProvider } from "wagmi";
 import { useTokenList } from "../../hooks/useTokenList";
 import { validateCriteria } from "../../utils";
 import { ParticipantRow } from "../ParticipantRow";
 import { TokenSelector } from "../TokenSelector";
 import { useAgreementCreation } from "./context/AgreementCreationContext";
+import { Token } from "./context/types";
 
 interface PartiesCardProps {
 	setActiveStep: (step: number) => void;
@@ -20,11 +21,13 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 	const { positions, token, setPositions, setToken, terms } = useAgreementCreation();
 	const provider = useProvider({ chainId: 1 });
 	const tokens = useTokenList();
+	const [selectedToken, setSelectedToken] = useState<Token>();
 
 	useEffect(() => {
 		// Set default token
+		setSelectedToken(token);
 		setToken(tokens[0]);
-	}, []);
+	}, [setToken, token, tokens]);
 	const isValidCriteria = useMemo(() => validateCriteria(positions), [positions]);
 
 	const isValidAgreement = useMemo(() => {
@@ -42,6 +45,7 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 					</Body2>
 					<div className="flex">
 						<TokenSelector onTokenSelect={(selectedToken) => setToken(selectedToken)} />
+						{/* {selectedToken?.symbol} */}
 					</div>
 				</div>
 				<div className="flex flex-col gap-min3">
