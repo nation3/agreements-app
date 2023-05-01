@@ -10,12 +10,9 @@ const ITokenRendererDefaultProps = {};
 const TokenRenderer: React.FC<ITokenRendererProps> = (props) => {
 	const { tokenSymbol } = props;
 	const token = findToken(tokenSymbol);
-	return (
+	return token?.symbol ? (
 		<React.Fragment>
 			<div className="flex gap-min2 items-center">
-				{/* {token?.icon && (
-							<IconRenderer icon={token?.icon} backgroundColor={"neutral-c-200"} size={"xs"} />
-						)} */}
 				{token?.icon && <Image height={20} width={20} alt={token.name} src={token.icon} />}
 				<Body3>
 					{"$"}
@@ -23,6 +20,8 @@ const TokenRenderer: React.FC<ITokenRendererProps> = (props) => {
 				</Body3>
 			</div>
 		</React.Fragment>
+	) : (
+		<></>
 	);
 };
 

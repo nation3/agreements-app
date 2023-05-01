@@ -1,8 +1,18 @@
 // TermsCard.tsx
 
-import { Button, DropInput, HeadlineBasic, InfoAlert, TextInput } from "@nation3/ui-components";
+import {
+	Body2,
+	Body3,
+	Button,
+	DropInput,
+	HeadlineBasic,
+	InfoAlert,
+	PasswordInput,
+	TextInput,
+} from "@nation3/ui-components";
 import { useTranslation } from "next-i18next";
-import { ChangeEvent, useMemo } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
+import { CustomRadioInput } from "../../../ui-components/src/components/Molecules/inputs/CustomRadioInput";
 import { trimHash } from "../../utils";
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 
@@ -10,19 +20,60 @@ interface AgreeementTermsProps {
 	setActiveStep: (step: number) => void;
 }
 
+type RadioDescriptionProps = {
+	status: string;
+};
+
+export const RadioDescription: React.FC<RadioDescriptionProps> = ({ status }) => {
+	const getDescription = () => {
+		switch (status) {
+			case "private":
+				return "The agreement will only be visible to the parties involved. The needs to be shared personally from each party.";
+			case "public":
+				return "The agreement will be visible to everyone, uploaded publicly to IPFS.";
+			case "public-encrypted":
+				return "The agreement will be visible to everyone, uploaded publicly to IPFS, but encrypted so it can be shared safely.";
+			default:
+				return "";
+		}
+	};
+
+	return (
+		<Body3 color="neutral-c-500 md:w-1/2" className="mt-min2 text-sm">
+			{getDescription()}
+		</Body3>
+	);
+};
+
 export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }) => {
 	const { t } = useTranslation("common");
-	const { title, terms, id, setTitle, setTerms, setFileName, fileName, termsHash } =
-		useAgreementCreation();
+	const {
+		title,
+		terms,
+		id,
+		fileStatus,
+		filePass,
+		setTitle,
+		setTerms,
+		setFileName,
+		setFilePass,
+		setFileStatus,
+		fileName,
+		termsHash,
+	} = useAgreementCreation();
 
 	const defaultTitle = useMemo(() => `Agreement #${trimHash(id.toUpperCase())}`, [id]);
+	const [radioValue, setRadioValue] = useState("private");
+	const handleRadioChange = (value: string) => {
+		setRadioValue(value);
+	};
 
 	return (
 		<section className="flex flex-col gap-base mt-base">
 			<HeadlineBasic className="">{t("create.agreementTerms.title")}</HeadlineBasic>
 			<div className="flex flex-col">
 				<TextInput
-					label={t("create.agreementTitle.title")}
+					label={"Agreement name"}
 					value={title}
 					placeholder={defaultTitle}
 					focusColor="pr-c-green2"
@@ -46,6 +97,51 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 					}}
 					showFiles={true}
 				/>
+			</div>
+			<div className="flex flex-col gap-2">
+				<Body2 className="mb-min2">{"Terms file status"}</Body2>
+				<div className="flex space-x-4">
+					<CustomRadioInput
+						id="private"
+						name="visibility"
+						value="private"
+						label="Private"
+						disabled={!terms}
+						checked={radioValue === "private"}
+						onChange={handleRadioChange}
+					/>
+					<CustomRadioInput
+						id="public"
+						name="visibility"
+						value="public"
+						label="Public"
+						disabled={!terms}
+						checked={radioValue === "public"}
+						onChange={handleRadioChange}
+					/>
+					<CustomRadioInput
+						id="public-encrypted"
+						name="visibility"
+						value="public-encrypted"
+						label="Public Encrypted"
+						disabled={!terms}
+						checked={radioValue === "public-encrypted"}
+						onChange={handleRadioChange}
+					/>
+					{/* Description */}
+				</div>
+				{terms && <RadioDescription status={radioValue} />}
+				{radioValue === "public-encrypted" && (
+					<PasswordInput
+						label={"Encryption password"}
+						value={filePass}
+						placeholder={"Password: "}
+						focusColor="pr-c-green2"
+						onChange={(e: ChangeEvent<HTMLInputElement>) => {
+							setFilePass(e.target.value);
+						}}
+					/>
+				)}
 			</div>
 			{!terms && <InfoAlert message={t("create.agreementTerms.warning")} />}
 			<div className="flex justify-between">

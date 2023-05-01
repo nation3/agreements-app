@@ -37,7 +37,7 @@ const CenteredIcon = styled.div<{
 `;
 
 const IllustrationRenderer: React.FC<IllustrationRendererProps> = (props) => {
-	const { icon, backgroundColor, size, className, rounded = false, fillColor = "" } = props;
+	const { icon, size, className, rounded = false, fillColor = "" } = props;
 	const squareSize = iconSpacing[size];
 
 	const renderIcon = (icon: Icon) => {
