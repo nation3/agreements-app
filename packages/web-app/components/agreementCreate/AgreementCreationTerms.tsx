@@ -28,11 +28,11 @@ export const RadioDescription: React.FC<RadioDescriptionProps> = ({ status }) =>
 	const getDescription = () => {
 		switch (status) {
 			case "private":
-				return "The agreement will only be visible to the parties involved. The needs to be shared personally from each party.";
+				return "The file will only be visible to the parties involved. It needs to be shared personally by each party.";
 			case "public":
-				return "The agreement will be visible to everyone, uploaded publicly to IPFS.";
+				return "The terms file will be visible to everyone as it will be uploaded publicly to IPFS.";
 			case "public-encrypted":
-				return "The agreement will be visible to everyone, uploaded publicly to IPFS, but encrypted so it can be shared safely.";
+				return "The terms file will be publicly accessible on IPFS, but it will be encrypted.";
 			default:
 				return "";
 		}
