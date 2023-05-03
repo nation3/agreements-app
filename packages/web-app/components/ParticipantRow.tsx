@@ -48,7 +48,7 @@ export const ParticipantRow = ({
 	return (
 		<AnimatePresence>
 			<motion.div
-				className="flex flex-col w-full gap-min3 rounded-md bg-neutral-c-200 p-min3 relative"
+				className="flex flex-col w-full gap-min3 rounded-md bg-neutral-c-200 p-min3 relative border-2 border-neutral-c-300"
 				initial={{ opacity: 0, y: -7 }}
 				animate={{ opacity: 1, y: 0 }}
 				exit={{ opacity: 0, y: -7 }}
@@ -77,7 +77,7 @@ export const ParticipantRow = ({
 							focusColor="pr-c-blue2"
 							placeholder="vitalik.eth"
 							ensProvider={ensProvider}
-							onBlur={(e: ChangeEvent<HTMLInputElement>) => {
+							onBlurCustom={(e: ChangeEvent<HTMLInputElement>) => {
 								updatePositionAccount(e.target.value);
 							}}
 						/>

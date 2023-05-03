@@ -1,11 +1,11 @@
 // import { BigNumber, utils } from "ethers";
-import { useCallback, useMemo } from "react";
 import { PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
+import { BigNumber } from "ethers";
+import { useCallback, useMemo } from "react";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import frameworkInterface from "../abis/CollateralAgreementFramework.json";
 import { Resolver } from "../utils/criteria";
 import { useConstants } from "./useConstants";
-import { BigNumber } from "ethers";
 
 const frameworkAbi = frameworkInterface.abi;
 

@@ -12,7 +12,7 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 	const [title, setTitle] = useState("");
 	const [terms, setTerms] = useState("");
 	const [fileName, setFileName] = useState("");
-	const [fileStatus, setFileStatus] = useState("");
+	const [fileStatus, setFileStatus] = useState("private");
 	const [filePass, setFilePass] = useState("");
 	const [token, setToken] = useState<Token>({
 		name: "",

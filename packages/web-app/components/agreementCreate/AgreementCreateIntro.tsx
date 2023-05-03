@@ -32,17 +32,17 @@ const AgreementCreateIntro: React.FC<IAgreementCreateIntroProps> = ({
 						"xl:grid-cols-xl",
 					)}
 				>
-					<Card className="md:p-double col-start-1 col-end-13 flex justify-center items-center">
-						<div className="max-w-lg flex-col items-center justify-center flex">
+					<Card className="md:p-double col-start-1 col-end-13 flex justify-center items-center ">
+						<div className="max-w-lg flex-col items-center justify-center flex gap-base">
 							<IconRenderer
-								className="mb-base"
+								className=""
 								icon={<N3Agreement />}
 								backgroundColor="pr-c-green1"
 								size="sm"
 								rounded
 							/>
 							<BodyHeadline>New agreement</BodyHeadline>
-							<Body3 className="text-center mb-base">
+							<Body3 className="text-center gap-y-min3">
 								Nation3 has its own system of law, enforced by its own court and secured by economic
 								incentives.
 							</Body3>

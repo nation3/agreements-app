@@ -66,6 +66,7 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 	const [radioValue, setRadioValue] = useState("private");
 	const handleRadioChange = (value: string) => {
 		setRadioValue(value);
+		setFileStatus(value);
 	};
 
 	return (
@@ -138,7 +139,7 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 						placeholder={"Password: "}
 						focusColor="pr-c-green2"
 						onChange={(e: ChangeEvent<HTMLInputElement>) => {
-							setFilePass(e.target.value);
+							setFilePass(e.target.value ? e.target.value : "");
 						}}
 					/>
 				)}

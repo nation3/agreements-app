@@ -58,7 +58,8 @@ export const AgreementCreation = () => {
 						<Card
 							className={cx(
 								"col-start-1 col-end-13",
-								"lg:col-start-1 lg:col-end-9 xl:col-end-10 lg:gap-16",
+								"lg:col-start-1 xl:col-end-10 lg:gap-16",
+								activeStep !== 4 ? "lg:col-end-9" : "lg:col-end-13",
 								"w-full text-gray-800",
 							)}
 						>
@@ -79,7 +80,7 @@ export const AgreementCreation = () => {
 							{activeStep === 2 && <AgreementParties setActiveStep={setActiveStep} />}
 							{activeStep === 3 && <AgreementCreationPreview setActiveStep={setActiveStep} />}
 						</Card>
-						<AgreementPreview />
+						{activeStep !== 4 && <AgreementPreview />}
 					</>
 				)}
 			</article>

@@ -11,7 +11,6 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Spinner from "../../../ui-components/src/components/Atoms/Spinner";
-import { encryptAES } from "../../utils/crypto";
 import AgreementCard from "../agreement/AgreementCard/AgreementCard";
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 
@@ -26,14 +25,14 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 	const {
 		title,
 		terms,
-		fileName,
 		termsHash,
 		token,
 		id,
 		salt,
 		positions,
-		fileStatus,
 		filePass,
+		fileName,
+		fileStatus,
 		changeView,
 	} = useAgreementCreation();
 
@@ -48,10 +47,16 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 	// TODO: Move it into a proper wrapper/callback instead of a listener
 	useEffect(() => {
 		const uploadMetadataToIPFS = async () => {
-			const metadata = generateAgreementMetadata({ title, terms, positions });
+			const metadata = await generateAgreementMetadata({
+				title,
+				terms,
+				positions,
+				fileName,
+				fileStatus,
+			});
 			const { put } = await preparePutToIPFS(metadata);
 			const cid = await put();
-			console.log(`metadata uploaded to ${cid}`);
+			console.log(`$$$ metadata uploaded to ${cid}`);
 		};
 
 		if (createSuccess) {
@@ -59,23 +64,23 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 				.then(() => router.push(`/agreement/${id}`))
 				.catch();
 		}
-		console.log("POSITIONS => ", positions);
+		console.log("$$$ POSITIONS => ", positions);
 	}, [router, terms, positions, createSuccess, id, title]);
 
 	const submit = async () => {
 		setIsOpen(true);
-		// IS PUBLIC ENCRYPTED?
-		if (fileStatus && filePass) {
-			const encryptedTerms = encryptAES(terms, filePass);
-			/* Upload to IPFS */
-		}
-
-		// TODO: Modify upload based on file status
-
-		const metadata = generateAgreementMetadata({ title, terms, positions });
+		const metadata = await generateAgreementMetadata({
+			title,
+			terms,
+			positions,
+			filePass,
+			fileName,
+			fileStatus,
+		});
 
 		const { cid } = await preparePutToIPFS(metadata);
 		const metadataURI = `ipfs://${cid}`;
+		console.log(`$$$ CID IPFS ${metadataURI}`);
 
 		create({
 			termsHash: metadata.termsHash,
@@ -109,6 +114,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 							termsHash={termsHash ?? constants.HashZero}
 							terms={terms}
 							fileName={fileName}
+							fileStatus={fileStatus}
 							positions={positions}
 						/>
 					</div>

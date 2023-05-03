@@ -17,13 +17,14 @@ type IAgreementCardProps = {
 	terms: string;
 	termsHash: string;
 	fileName: string;
+	fileStatus: string;
 	positions: InputPositionList;
 };
 
 const IAgreementCardDefaultProps = {};
 
 const AgreementCard: React.FC<IAgreementCardProps> = (props) => {
-	const { id, title, terms, status, termsHash, fileName, positions, token } = props;
+	const { id, title, terms, status, termsHash, fileName, fileStatus, positions, token } = props;
 
 	// useEffect(() => {}, []);
 
@@ -36,8 +37,13 @@ const AgreementCard: React.FC<IAgreementCardProps> = (props) => {
 		>
 			<Card size="base" className="p-min3 flex flex-col gap-min3 w-full">
 				<IllustrationRenderer icon={<N3AgreementDone />} size="sm" />
-				<div className="flex">
+				<div className="flex gap-min3">
 					<MarkdownFile fileName={fileName} markdownText={terms} hash={fileName} />
+					<div className="flex items-center gap-min2 cursor-pointer border-2 border-neutral-c-200 w-auto rounded-base px-min2 h-full">
+						<Body3 color="neutral-c-400" className="text-xs">
+							{fileStatus}
+						</Body3>
+					</div>
 				</div>
 				<TokenRenderer tokenSymbol={token?.symbol} />
 				<BodyHeadline color="text-neutral-c-400">{title}</BodyHeadline>

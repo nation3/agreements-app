@@ -1,5 +1,5 @@
 import { EyeIcon } from "@heroicons/react/24/outline";
-import React from "react";
+import React, { useMemo } from "react";
 import { DropzoneOptions, useDropzone } from "react-dropzone";
 import { N3AddFIle } from "../../../icons";
 import { N3DocumentGrey } from "../../../icons/index";
@@ -12,15 +12,17 @@ const PreviewButton = ({ onClick }: Pick<IconButtonProps, "onClick">) => (
 
 export interface DropInputProps {
 	label?: string;
+	value?: string;
 	showFiles?: boolean;
 	dropzoneConfig?: DropzoneOptions;
 	onPreview?: (content: File) => void;
 }
 
 export const DropInput = (props: DropInputProps) => {
-	const { label, dropzoneConfig, showFiles, onPreview } = props;
+	const { label, dropzoneConfig, showFiles, onPreview, value } = props;
 	const { acceptedFiles, getRootProps, getInputProps } = useDropzone({ ...dropzoneConfig });
-	console.log(label);
+
+	const acceptedFilesData = useMemo(() => acceptedFiles, []);
 
 	return (
 		<div>
@@ -37,7 +39,7 @@ export const DropInput = (props: DropInputProps) => {
 				{showFiles && (
 					<aside>
 						<ul className="p-2">
-							{acceptedFiles.map((file, i) => {
+							{acceptedFilesData.map((file, i) => {
 								return (
 									<div
 										key={i}
