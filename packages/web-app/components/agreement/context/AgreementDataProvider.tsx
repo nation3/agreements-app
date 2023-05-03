@@ -1,12 +1,12 @@
-import { ReactNode, useState, useEffect, useMemo } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 
-import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataContext";
-import { ResolverMap, PositionMap, UserPosition, Token } from "./types";
-import { useAgreementData, useDisputeConfig } from "../../../hooks/useAgreement";
-import { fetchAgreementMetadata } from "../../../utils/metadata";
-import { trimHash } from "../../../utils/hash";
-import { useAccount, useToken } from "wagmi";
 import { BigNumber } from "ethers";
+import { useAccount, useToken } from "wagmi";
+import { useAgreementData, useDisputeConfig } from "../../../hooks/useAgreement";
+import { trimHash } from "../../../utils/hash";
+import { fetchAgreementMetadata } from "../../../utils/metadata";
+import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataContext";
+import { PositionMap, ResolverMap, Token, UserPosition } from "./types";
 
 export const AgreementDataProvider = ({ id, children }: { id: string; children: ReactNode }) => {
 	const { address: userAddress } = useAccount();
@@ -19,6 +19,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 	const [userPosition, setUserPosition] = useState<UserPosition>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 
+	/* GET AGREEMENT DATA FROM CONTRACT */
 	const { data: agreementData, positions: agreementPositions } = useAgreementData({
 		id: id,
 		enabled: id != "undefined",
@@ -58,12 +59,18 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 
 	/* Update state when fetched agreement params */
 	useEffect(() => {
+		console.log("$$$ AGREEMENT DATA =>", agreementData);
+
+		/* TERMS HASH  */
 		if (agreementData?.termsHash && agreementData.termsHash != termsHash) {
 			setTermsHash(agreementData.termsHash);
 		}
-		if (agreementData?.metadataURI && agreementData.metadataURI != metadataURI) {
+
+		/* GET THE IPFS METADATA  */
+		if (agreementData?.metadataURI) {
 			setMetadataURI(agreementData.metadataURI);
 			fetchAgreementMetadata(agreementData.metadataURI).then((metadata) => {
+				console.log("$$$ AGREEMENT METADATA =>", metadata);
 				if (metadata.title && metadata.title != "Agreement") {
 					if (metadata.title != title) setTitle(metadata.title);
 				} else {
@@ -73,9 +80,12 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 					setResolvers((prevResolvers) => ({ ...prevResolvers, ...metadata.resolvers }));
 			});
 		}
+
+		/* SET STATUS  */
 		if (agreementData?.status && agreementData.status != status) {
 			setStatus(agreementData.status);
 		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		if (agreementData.status) {
 			setIsLoading(false);

@@ -35,10 +35,12 @@ const Breadcrumbs: FC<BreadcrumbsProps> = (props) => {
 				return (
 					<div className={`flex w-full`} key={index}>
 						<div
-							className={`mr-min3 last:mr-0 w-full cursor-pointer gap-min2 flex flex-col ${
+							className={`mr-min3 last:mr-0 w-full gap-min2 flex flex-col ${
 								activeStep >= index ? "text-neutral-c-800 " : "text-neutral-c-500"
-							}`}
-							onClick={() => handleStepChange(index)}
+							} ${index < activeStep && "cursor-pointer"}`}
+							onClick={() => {
+								index < activeStep && handleStepChange(index);
+							}}
 						>
 							<div
 								className={cx(

@@ -1,71 +1,59 @@
 import clsx from "clsx";
 import { ethers, providers } from "ethers";
-import React, { ChangeEvent, InputHTMLAttributes } from "react";
+import React, { ChangeEvent, InputHTMLAttributes, useState } from "react";
 import { Body3 } from "../../Atoms";
+import Spinner from "../../Atoms/Spinner";
 
 export interface AddressInputProps extends InputHTMLAttributes<HTMLInputElement> {
 	focusColor?: string;
-	onBlur?: (e: ChangeEvent<HTMLInputElement>) => void;
+	onBlurCustom?: (e: ChangeEvent<HTMLInputElement>) => void;
 	ensProvider?: providers.BaseProvider | undefined;
 	label?: string | undefined;
 }
 
-export async function fetchEnsAddress({
-	provider,
-	name,
-}: {
-	provider: providers.BaseProvider;
-	name: string;
-}): Promise<string | null> {
-	const address = await provider.resolveName(name);
-
-	try {
-		return address ? ethers.utils.getAddress(address) : null;
-	} catch (_error) {
-		return null;
-	}
-}
-
 export const AddressInput = (props: AddressInputProps) => {
-	const { focusColor = "pr-c-blue-3", ensProvider, label, onBlur } = props;
-	const [isValid, setIsValid] = React.useState(true);
+	const { focusColor = "pr-c-blue-3", ensProvider, label, onBlurCustom } = props;
+	const [isValid, setIsValid] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const fetchAddress = async (value: string) => {
+		setIsLoading(true);
 		try {
 			const address = (await ensProvider?.resolveName(value)) ?? value;
+			setIsLoading(false);
 			return ethers.utils.getAddress(address) ?? null;
 		} catch (_error) {
+			setIsLoading(false);
 			return null;
 		}
+	};
+
+	const handleBlur = async (e: ChangeEvent<HTMLInputElement>) => {
+		setTimeout(async () => {
+			const address = await fetchAddress(e.target.value);
+			e.target.value = address ?? e.target.value;
+			setIsValid(address ? true : false);
+			onBlurCustom?.(e);
+		}, 1500);
 	};
 
 	return (
 		<div>
 			{label && <Body3 color="neutral-c-600">{label}</Body3>}
-			<input
-				type="text"
-				id="text-input"
-				// className={clsx(
-				// 	`border-neutral-c-300 bg-white p-min2 border-2 w-full rounded-base`,
-				// 	isValid
-				// 		? `border border-gray-300 focus:border-${focusColor} focus:ring-${focusColor}`
-				// 		: "border-solid ring-1 border-red-600 ring-red-600 focus:border-red-600 focus:ring-red-600",
-				// )}
-				className={clsx(
-					`border-neutral-c-300 bg-white px-min3 border-2 h-double rounded-base focus:ring-${focusColor} focus:border-${focusColor} block flex-1 min-w-0 w-full text-sm border-gray-300 p-min3`,
+			<div className={clsx("flex items-center justify-center relative")}>
+				<input
+					type="text"
+					id="text-input"
+					className={clsx(
+						`border-neutral-c-300 flex bg-white border-2 relative h-double rounded-base focus:ring-${focusColor} focus:border-${focusColor} block flex-1 min-w-0 w-full text-sm border-gray-300`,
+					)}
+					onChange={handleBlur}
+					{...props}
+				/>
+				{isLoading && (
+					<Spinner className="text-pr-c-blue3 w-5 h-5 absolute right-min3 top-[14px]" />
 				)}
-				onBlur={(e) => {
-					fetchAddress(e.target.value)
-						.then((address) => {
-							e.target.value = address ?? e.target.value;
-							setIsValid(address ? true : false);
-							onBlur?.(e);
-							return null;
-						})
-						.catch((error) => console.log(error));
-				}}
-				{...props}
-			/>
+			</div>
 		</div>
 	);
 };
