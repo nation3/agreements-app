@@ -28,7 +28,7 @@ export const ModalNew: FC<ModalNewProps> = ({ isOpen, onClose, children }) => {
 			document.body.classList.add("overflow-hidden");
 			document.addEventListener("keydown", handleKeyDown);
 		} else {
-			document.body.classList.remove("overflow-hidyarn bden");
+			document.body.classList.remove("overflow-hidden");
 		}
 
 		return () => {
