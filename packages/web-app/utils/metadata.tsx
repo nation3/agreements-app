@@ -23,6 +23,12 @@ export const parseAgreementMetadata = (data: { [key: string]: any }): AgreementM
 	};
 };
 
+export const parseTermsFileMetadata = (data: { [key: string]: any }): { fileTerms: string } => {
+	return {
+		fileTerms: data.termsData,
+	};
+};
+
 export const parseResolutionMetadata = (data: { [key: string]: any }): ResolutionMetadata => {
 	return {
 		settlement: data.settlement ?? [],
@@ -42,7 +48,7 @@ export const fetchMetadata = async <T extends object>(
 		const response = await fetch(uri);
 		const raw = await response.json();
 		data = parser(raw);
-		console.log("$$$ Parsing data IPFS => ", uri, raw, data);
+		console.log("$$$ Parsing data from IPFS => ", data);
 	} catch (error) {
 		console.debug(`Failed to fetch metadata: ${uri}`, error);
 	}
@@ -52,6 +58,10 @@ export const fetchMetadata = async <T extends object>(
 
 export const fetchAgreementMetadata = async (fileURI: string): Promise<AgreementMetadata> => {
 	return fetchMetadata<AgreementMetadata>(fileURI, parseAgreementMetadata);
+};
+
+export const fetchAgreementTermsMetadata = async (termsURI: string): Promise<any> => {
+	return fetchMetadata<any>(termsURI, parseTermsFileMetadata);
 };
 
 export const fetchResolutionMetadata = async (fileURI: string): Promise<ResolutionMetadata> => {

@@ -1,3 +1,4 @@
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { FC, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -43,7 +44,7 @@ export const ModalNew: FC<ModalNewProps> = ({ isOpen, onClose, children }) => {
 					animate={{ opacity: 1, backdropFilter: "blur(10px)" }}
 					exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
 					transition={transitionBlur}
-					className="transition-all fixed w-screen h-screen inset-0 z-50 flex items-center justify-center p-4 bg-pr-c-green1 bg-opacity-30"
+					className="transition-all fixed w-screen h-screen inset-0 z-50 flex md:items-center items-end justify-center bg-pr-c-green1 bg-opacity-30"
 					onClick={isOpen && onClose}
 				>
 					<motion.div
@@ -52,13 +53,17 @@ export const ModalNew: FC<ModalNewProps> = ({ isOpen, onClose, children }) => {
 						animate={{ opacity: 1, y: 0 }}
 						exit={{ opacity: 0, y: -10 }}
 						transition={transition}
-						className="w-auto"
+						className="flex items-end"
 						onClick={(e) => {
 							e.stopPropagation();
 						}}
 					>
 						{children}
 					</motion.div>
+					<XMarkIcon
+						onClick={isOpen && onClose}
+						className="cursor-pointer absolute top-base right-base w-double h-double z-50 text-neutral-c-500"
+					/>
 				</motion.div>
 			)}
 		</AnimatePresence>,

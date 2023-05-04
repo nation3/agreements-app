@@ -9,12 +9,21 @@ export interface AddressInputProps extends InputHTMLAttributes<HTMLInputElement>
 	onBlurCustom?: (e: ChangeEvent<HTMLInputElement>) => void;
 	ensProvider?: providers.BaseProvider | undefined;
 	label?: string | undefined;
+	showEnsName?: boolean;
 }
 
 export const AddressInput = (props: AddressInputProps) => {
-	const { focusColor = "pr-c-blue-3", ensProvider, label, onBlurCustom } = props;
+	const {
+		focusColor = "pr-c-blue-3",
+		ensProvider,
+		label,
+		onBlurCustom,
+		showEnsName = false,
+	} = props;
 	const [isValid, setIsValid] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
+	const [inputValue, setInputValue] = useState("");
+	const [ensName, setEnsName] = useState("");
 
 	const fetchAddress = async (value: string) => {
 		setIsLoading(true);
@@ -29,12 +38,13 @@ export const AddressInput = (props: AddressInputProps) => {
 	};
 
 	const handleBlur = async (e: ChangeEvent<HTMLInputElement>) => {
-		setTimeout(async () => {
-			const address = await fetchAddress(e.target.value);
-			e.target.value = address ?? e.target.value;
-			setIsValid(address ? true : false);
-			onBlurCustom?.(e);
-		}, 1500);
+		const addressOrEns = e.target.value;
+		const address = await fetchAddress(addressOrEns);
+		setIsValid(address ? true : false);
+		if (address) {
+			setEnsName(addressOrEns); // Update the ENS name
+		}
+		onBlurCustom?.({ ...e, target: { ...e.target, value: address ?? e.target.value } });
 	};
 
 	return (
@@ -44,10 +54,12 @@ export const AddressInput = (props: AddressInputProps) => {
 				<input
 					type="text"
 					id="text-input"
+					value={showEnsName && ensName ? ensName : inputValue}
 					className={clsx(
 						`border-neutral-c-300 flex bg-white border-2 relative h-double rounded-base focus:ring-${focusColor} focus:border-${focusColor} block flex-1 min-w-0 w-full text-sm border-gray-300`,
 					)}
-					onChange={handleBlur}
+					onChange={(e) => setInputValue(e.target.value)}
+					onBlur={handleBlur}
 					{...props}
 				/>
 				{isLoading && (

@@ -7,10 +7,10 @@ import {
 	N3User,
 	TokenBalanceInput,
 } from "@nation3/ui-components";
-import { BigNumber, providers, utils } from "ethers";
+import { BigNumber, ethers, providers, utils } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { ChangeEvent, FocusEvent } from "react";
+import { ChangeEvent, FocusEvent, useState } from "react";
 import { Body3 } from "../../ui-components/src/components/Atoms";
 import { purgeFloat } from "../utils";
 
@@ -31,11 +31,18 @@ export const ParticipantRow = ({
 	onChange?: (positions: Position[]) => void;
 	ensProvider?: providers.BaseProvider;
 }) => {
-	const updatePositionAccount = (account: string) => {
-		// Deep copy of the array
-		const positions_ = positions.map((position) => ({ ...position }));
-		positions_[index].account = account;
-		onChange?.(positions_);
+	const [isEnsName, setIsEnsName] = useState(false);
+
+	const updatePositionAccount = (address: string, input: string) => {
+		const isEns = ethers.utils.isAddress(input) ? false : true;
+		setIsEnsName(isEns);
+		const newPositions = positions.map((position, i) => {
+			if (i === index) {
+				return { ...position, account: address };
+			}
+			return position;
+		});
+		onChange?.(newPositions);
 	};
 
 	const updatePositionBalance = (balance: string) => {
@@ -55,7 +62,10 @@ export const ParticipantRow = ({
 				transition={{ duration: 0.2, delay: index * 0.05 }}
 			>
 				{removePosition && (
-					<div className="absolute top-min3 right-min3" onClick={() => removePosition()}>
+					<div
+						className="absolute md:top-min3 md:right-min3 top-min2 right-min2"
+						onClick={() => removePosition()}
+					>
 						<Button
 							size="small"
 							label="Delete"
@@ -67,22 +77,23 @@ export const ParticipantRow = ({
 				)}
 				<div className="gap-min3 flex items-center w-full">
 					<IconRenderer icon={<N3User />} backgroundColor={"pr-c-green1"} size={"xs"} />
-					<Body1 className="w-full text-neutral-c-800">Participant {index}</Body1>
+					<Body1 className="w-full text-neutral-c-800">Participant {index + 1}</Body1>
 				</div>
-				<div className="flex flex-grow gap-min2">
-					<div className="grow">
+				<div className="flex flex-wrap md:flex-grow gap-min2">
+					<div className="sm-only:basis-full md:grow">
 						<AddressInput
 							label="Address"
 							defaultValue={positions[index].account}
 							focusColor="pr-c-blue2"
-							placeholder="vitalik.eth"
+							placeholder={"participant " + (index + 1) + " address"}
 							ensProvider={ensProvider}
+							showEnsName={isEnsName}
 							onBlurCustom={(e: ChangeEvent<HTMLInputElement>) => {
-								updatePositionAccount(e.target.value);
+								updatePositionAccount(e.target.value, e.target.value);
 							}}
 						/>
 					</div>
-					<div className="basis-36">
+					<div className="md:basis-36 basis-1/2">
 						<TokenBalanceInput
 							label="Collateral"
 							defaultValue={utils.formatUnits(positions[index].balance)}
@@ -100,7 +111,7 @@ export const ParticipantRow = ({
 							}}
 						/>
 					</div>
-					<div className="basis-36">
+					<div className="md:basis-36 basis-1/2">
 						<Body3 color="neutral-c-600">Token</Body3>
 						<div className="gap-min2 flex items-center border-neutral-c-300 bg-white px-min3 h-double border-2 rounded-base min-w-0 w-full text-sm border-gray-300">
 							{/* {token?.icon && (

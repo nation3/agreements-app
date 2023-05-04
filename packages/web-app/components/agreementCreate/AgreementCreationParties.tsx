@@ -1,10 +1,19 @@
 // PartiesCard.tsx
 
-import { AddIcon, Body2, Button, HeadlineBasic } from "@nation3/ui-components";
+import {
+	AddIcon,
+	Body2,
+	Button,
+	HeadlineBasic,
+	IconRenderer,
+	InfoAlert,
+} from "@nation3/ui-components";
 import { utils } from "ethers";
 import { useTranslation } from "next-i18next";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useProvider } from "wagmi";
+import { Body3 } from "../../../ui-components/src/components/Atoms";
 import { useTokenList } from "../../hooks/useTokenList";
 import { validateCriteria } from "../../utils";
 import { ParticipantRow } from "../ParticipantRow";
@@ -24,10 +33,18 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 	const [selectedToken, setSelectedToken] = useState<Token>();
 
 	useEffect(() => {
-		// Set default token
+		if (tokens.length > 0) {
+			setSelectedToken(tokens[0]);
+			setToken(tokens[0]);
+		}
+	}, [tokens, setToken]);
+
+	// Update token on select
+	useEffect(() => {
 		setSelectedToken(token);
-		setToken(tokens[0]);
-	}, [setToken, token, tokens]);
+		setToken(token);
+	}, [token]);
+
 	const isValidCriteria = useMemo(() => validateCriteria(positions), [positions]);
 
 	const isValidAgreement = useMemo(() => {
@@ -43,9 +60,26 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 					<Body2 className=" text-slate-500 text-md">
 						{t("create.collateralToken.description")}
 					</Body2>
-					<div className="flex">
+					<div className="flex items-center gap-base">
 						<TokenSelector onTokenSelect={(selectedToken) => setToken(selectedToken)} />
-						{/* {selectedToken?.symbol} */}
+						<div className="flex gap-min2 shadow rounded-base pr-min2 items-center">
+							{selectedToken?.icon && (
+								<>
+									<IconRenderer
+										size={"xs"}
+										backgroundColor={"pr-c-green1"}
+										icon={
+											<Image height={20} width={20} alt={token.name} src={selectedToken?.icon} />
+										}
+									/>
+								</>
+							)}
+
+							<Body3 className="text-xs">
+								{"$"}
+								{selectedToken?.symbol}
+							</Body3>
+						</div>
 					</div>
 				</div>
 				<div className="flex flex-col gap-min3">
@@ -72,16 +106,23 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 						}
 					/>
 				</div>
-				{/* {!isValidCriteria && <InfoAlert message={t("create.agreementPositions.warning")} />} */}
-				<div className="flex justify-between mt-base">
+				<div className="flex justify-between mt-base gap-min3">
 					<Button label="Back" onClick={() => setActiveStep(1)} />
-					<Button
-						disabled={!isValidAgreement}
-						label="Next"
-						onClick={() => {
-							setActiveStep(3);
-						}}
-					/>
+					<div className="flex gap-min3 items-center justify-end w-full">
+						{!isValidCriteria && (
+							<InfoAlert
+								className="w-full h-full rounded-full flex justify-center"
+								message={t("create.agreementPositions.warning")}
+							/>
+						)}
+						<Button
+							disabled={!isValidAgreement}
+							label="Next"
+							onClick={() => {
+								setActiveStep(3);
+							}}
+						/>
+					</div>
 				</div>
 			</div>
 		</>

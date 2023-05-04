@@ -40,7 +40,7 @@ export const AgreementCreation = () => {
 			<article
 				id="agreementCreation"
 				className={cx(
-					"grid grid-flow-row grid-cols-1 auto-rows-auto gap-base z-10 mt-40 m-base pb-double",
+					"grid grid-flow-row grid-cols-1 md:w-auto w-full auto-rows-auto gap-base z-10 mt-40 m-base pb-double",
 					"lg:grid-cols-lg lg:gap-24",
 					"xl:grid-cols-xl",
 				)}
@@ -58,9 +58,9 @@ export const AgreementCreation = () => {
 						<Card
 							className={cx(
 								"col-start-1 col-end-13",
-								"lg:col-start-1 xl:col-end-10 lg:gap-16",
-								activeStep !== 4 ? "lg:col-end-9" : "lg:col-end-13",
-								"w-full text-gray-800",
+								"lg:col-start-1 lg:gap-16",
+								activeStep !== 3 ? "lg:col-end-9 xl:col-end-10" : "lg:col-end-13",
+								"w-full text-gray-800 transition-all",
 							)}
 						>
 							<div className="mb-min2">
@@ -80,7 +80,7 @@ export const AgreementCreation = () => {
 							{activeStep === 2 && <AgreementParties setActiveStep={setActiveStep} />}
 							{activeStep === 3 && <AgreementCreationPreview setActiveStep={setActiveStep} />}
 						</Card>
-						{activeStep !== 4 && <AgreementPreview />}
+						{activeStep !== 3 && <AgreementPreview />}
 					</>
 				)}
 			</article>

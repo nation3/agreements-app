@@ -1,13 +1,13 @@
-import React, { ReactElement } from "react";
-import { useAgreementData } from "./context/AgreementDataContext";
+import { ReactElement } from "react";
+import { FinalizedAgreementActions } from "./actions/Finalized";
 import { JoinableAgreementActions } from "./actions/Joinable";
 import { JoinedAgreementActions } from "./actions/Joined";
-import { FinalizedAgreementActions } from "./actions/Finalized";
 import NoActions from "./actions/NoActions";
+import { useAgreementData } from "./context/AgreementDataContext";
 
 export const AgreementActions = (): ReactElement => {
 	const { id, userPosition, status: agreementStatus } = useAgreementData();
-	console.log("STATUS => ", agreementStatus);
+	console.log("$$$ STATUS => ", agreementStatus, userPosition);
 
 	if (userPosition) {
 		if (["Created", "Ongoing"].includes(String(agreementStatus))) {
@@ -21,5 +21,5 @@ export const AgreementActions = (): ReactElement => {
 			return <NoActions />;
 		}
 	}
-	return <></>;
+	return <NoActions />;
 };

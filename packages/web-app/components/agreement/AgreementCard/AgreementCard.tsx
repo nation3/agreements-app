@@ -7,6 +7,7 @@ import { AccountDisplay } from "../../AccountDisplay";
 import MarkdownFile from "../../MarkdownFile/MarkdownFile";
 import TokenRenderer from "../../TokenRenderer";
 import { InputPositionList } from "../../agreementCreate/context/types";
+import AgreementStatus from "../AgreementStatus";
 import { Token } from "../context/types";
 
 type IAgreementCardProps = {
@@ -36,14 +37,15 @@ const AgreementCard: React.FC<IAgreementCardProps> = (props) => {
 			transition={{ duration: 0.15 }}
 		>
 			<Card size="base" className="p-min3 flex flex-col gap-min3 w-full">
-				<IllustrationRenderer icon={<N3AgreementDone />} size="sm" />
+				<IllustrationRenderer customSize={60} icon={<N3AgreementDone />} size="sm" />
 				<div className="flex gap-min3">
-					<MarkdownFile fileName={fileName} markdownText={terms} hash={fileName} />
-					<div className="flex items-center gap-min2 cursor-pointer border-2 border-neutral-c-200 w-auto rounded-base px-min2 h-full">
-						<Body3 color="neutral-c-400" className="text-xs">
-							{fileStatus}
-						</Body3>
-					</div>
+					<MarkdownFile
+						fileName={fileName}
+						termsFile={terms}
+						hash={fileName}
+						fileStatus={fileStatus ? fileStatus : "private"}
+					/>
+					<AgreementStatus fileStatus={fileStatus} />
 				</div>
 				<TokenRenderer tokenSymbol={token?.symbol} />
 				<BodyHeadline color="text-neutral-c-400">{title}</BodyHeadline>

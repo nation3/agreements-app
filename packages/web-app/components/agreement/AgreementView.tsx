@@ -1,21 +1,34 @@
-import { useAgreementData } from "./context/AgreementDataContext";
-import { constants } from "ethers";
-import Parties from "../Parties";
-import { Card } from "@nation3/ui-components";
-import { Headline3 } from "@nation3/ui-components";
-import { Body2 } from "@nation3/ui-components";
-import { AgreementActions } from ".";
-import { DisputeActions } from "../dispute";
-import { BodyHeadline } from "@nation3/ui-components";
-import { Headline4 } from "@nation3/ui-components";
+import {
+	Body2,
+	Body3,
+	Card,
+	Headline3,
+	HeadlineBasic,
+	utils as n3utils,
+} from "@nation3/ui-components";
 import cx from "classnames";
-import NotFoundAgreement from "./NotFound";
+import { constants } from "ethers";
+import { AgreementActions } from ".";
+import Parties from "../Parties";
+import { DisputeActions } from "../dispute";
 import AgreementSkeleton from "./AgreementSkeleton";
-import { AgreementDataDisplay } from "./AgreementDataDisplay";
+import AgreementTermsData from "./AgreementTermsData";
+import NotFoundAgreement from "./NotFound";
+import { useAgreementData } from "./context/AgreementDataContext";
 
 export const AgreementView = () => {
-	const { id, title, status, termsHash, collateralToken, positions, isLoading } =
-		useAgreementData();
+	const {
+		id,
+		title,
+		status,
+		termsHash,
+		collateralToken,
+		positions,
+		isLoading,
+		fileName,
+		fileStatus,
+		termsFile,
+	} = useAgreementData();
 	console.log("terms", termsHash);
 
 	return !termsHash && !isLoading ? (
@@ -45,16 +58,22 @@ export const AgreementView = () => {
 				)}
 			>
 				{/* Title and details */}
-				<Card>
-					<AgreementDataDisplay
+				<Card className="flex flex-col gap-base">
+					{/* Participants */}
+					<HeadlineBasic className="">Agreements terms</HeadlineBasic>
+
+					<AgreementTermsData
 						id={id}
 						title={title || "Agreement"}
 						status={status || "Unknonw"}
 						termsHash={termsHash || constants.HashZero}
+						fileName={fileName}
+						fileStatus={fileStatus}
+						termsFile={termsFile}
 					/>
 
 					{/* Participants */}
-					<Headline4 className="pb-base">Positions & Stakes</Headline4>
+					<HeadlineBasic className="">Positions & Stakes</HeadlineBasic>
 					<Parties token={collateralToken} positions={positions} />
 				</Card>
 			</div>
@@ -62,17 +81,30 @@ export const AgreementView = () => {
 			<div
 				className={cx(
 					// "sticky bottom-base",
-					"lg:col-start-9 xl:col-start-10 lg:col-end-13",
+					"lg:col-start-9 xl:col-start-10 lg:col-end-13 flex flex-col gap-base",
 				)}
 			>
 				<div className="w-full flex flex-col bg-white rounded-lg border-2 border-neutral-c-200">
 					<div className="border-b-2 border-neutral-c-200 p-base">
-						<BodyHeadline>Available Actions</BodyHeadline>
+						<Body2 color="neutral-c-500">Available Actions</Body2>
 					</div>
 					<div className="p-base">
 						{status == "Disputed" ? <DisputeActions /> : <AgreementActions />}
 					</div>
 				</div>
+				<Card size="base" className="flex flex-col gap-min2">
+					<div className=" flex  w-auto rounded-base px-min2 h-full bg-white">
+						<Body3>
+							<span className="text-neutral-c-400 mr-min2">ID</span>{" "}
+							{n3utils.shortenHash(id ?? constants.HashZero)}
+						</Body3>
+					</div>
+					<div className=" flex  w-auto rounded-base px-min2 h-full bg-white">
+						<Body3>
+							<span className="text-neutral-c-400 mr-min2">Status</span> {status}
+						</Body3>
+					</div>
+				</Card>
 			</div>
 		</section>
 	);

@@ -1,6 +1,6 @@
-import { createContext, useContext } from "react";
-import { PositionMap, ResolverMap, UserPosition, Token } from "./types";
 import { BigNumber } from "ethers";
+import { createContext, useContext } from "react";
+import { PositionMap, ResolverMap, Token, UserPosition } from "./types";
 
 export type AgreementDataContextType = {
 	id: string;
@@ -14,6 +14,10 @@ export type AgreementDataContextType = {
 	resolvers: ResolverMap | undefined;
 	disputeCost: BigNumber;
 	userPosition: UserPosition | undefined;
+	fileStatus: string | undefined;
+	fileName: string | undefined;
+	termsFile: string | undefined;
+	isMetadataError: boolean;
 };
 
 export const AgreementDataContext = createContext<AgreementDataContextType | null>(null);

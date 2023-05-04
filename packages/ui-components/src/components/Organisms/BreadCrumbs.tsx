@@ -26,7 +26,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = (props) => {
 	}
 
 	return (
-		<nav className="flex items-center gap-4">
+		<nav className="flex gap-4">
 			{steps.map((step, index) => {
 				if (step.hidden) {
 					return null;
@@ -49,7 +49,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = (props) => {
 								)}
 							></div>
 
-							<Body3>{step.title}</Body3>
+							<Body3 className="sm-only:text-xs">{step.title}</Body3>
 						</div>
 					</div>
 				);
