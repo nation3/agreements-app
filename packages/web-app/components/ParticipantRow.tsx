@@ -86,8 +86,8 @@ export const ParticipantRow = ({
 					<IconRenderer icon={<N3User />} backgroundColor={"pr-c-green1"} size={"xs"} />
 					<Body1 className="w-full text-neutral-c-800">Participant {index + 1}</Body1>
 				</div>
-				<div className="flex flex-wrap md:flex-grow gap-min2">
-					<div className="sm-only:basis-full md:grow">
+				<div className="grid grid-cols-5 gap-min2">
+					<div className="col-start-1 col-end-6 lg:col-end-4">
 						<AddressInput
 							label="Address"
 							defaultValue={localPositions[index].account}
@@ -100,7 +100,7 @@ export const ParticipantRow = ({
 							}}
 						/>
 					</div>
-					<div className="md:basis-36 basis-1/2">
+					<div className="col-start-1 col-end-4 lg:col-start-4 lg:col-end-5">
 						<TokenBalanceInput
 							label="Collateral"
 							defaultValue={utils.formatUnits(localPositions[index].balance)}
@@ -118,7 +118,7 @@ export const ParticipantRow = ({
 							}}
 						/>
 					</div>
-					<div className="md:basis-36 basis-1/2">
+					<div className="col-start-4 col-end-6 lg:col-start-5 lg:col-end-6">
 						<Body3 color="neutral-c-600">Token</Body3>
 						<div className="gap-min2 flex items-center border-neutral-c-300 bg-white px-min3 h-double border-2 rounded-base min-w-0 w-full text-sm border-gray-300">
 							{/* {token?.icon && (
