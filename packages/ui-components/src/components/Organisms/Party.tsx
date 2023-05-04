@@ -1,6 +1,6 @@
 import React from "react";
 
-type IPartyProps = {};
+type IPartyProps = object;
 
 const IPartyDefaultProps = {};
 
