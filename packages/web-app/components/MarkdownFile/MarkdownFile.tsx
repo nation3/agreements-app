@@ -161,12 +161,13 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 				isOpen={isModalOpen}
 				onClose={() => {
 					setIsModalOpen(false);
-					// setIsValid(null);
+					setIsValid(null);
+					setAcceptedFiles([]); //
 				}}
 			>
 				<section
 					className={cx(
-						"w-full bg-white rounded-lg shadow-md border-2 border-neutral-c-200 flex items-center flex-col overflow-hidden",
+						"w-full md:h-auto h-full mt-double bg-white sm-only:rounded-t-lg md:rounded-lg shadow-md border-2 border-neutral-c-200 flex items-center flex-col overflow-hidden",
 						styles.markdownContainer,
 					)}
 				>
@@ -182,15 +183,15 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 								{" "}
 								Terms File Preview{" "}
 							</BodyHeadline>
-							<div className="flex gap-min3 mt-min2">
+							<div className="flex flex-wrap gap-min3 mt-min2">
 								{isValid ? (
-									<div className="border-2 border-neutral-c-200 ml-min2 w-auto rounded-base px-min2 h-full bg-pr-c-green1">
+									<div className="flex border-2 border-neutral-c-200 ml-min2 w-auto rounded-base px-min2  bg-pr-c-green1">
 										<Body3 color="neutral-c-700" className="text-xs">
 											Valid terms 💚
 										</Body3>
 									</div>
 								) : isValid === false ? (
-									<div className="border-2 border-sc-c-orange3 ml-min2 w-auto rounded-base px-min2 h-full bg-sc-c-orange1">
+									<div className="flex border-2 border-sc-c-orange3 ml-min2 w-auto rounded-base px-min2  bg-sc-c-orange1">
 										<Body3 color="neutral-c-700" className="text-xs">
 											Invalid terms ❌
 										</Body3>
@@ -199,14 +200,14 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 									<></>
 								)}
 								{fileName && (
-									<div className="border-2 border-neutral-c-200 w-auto rounded-base px-min2 h-full bg-white">
+									<div className="flex border-2 border-neutral-c-200 w-auto rounded-base px-min2  bg-white">
 										<Body3 color="neutral-c-400" className="text-xs">
 											{fileName}
 										</Body3>
 									</div>
 								)}
 								{hash && (
-									<div className="border-2 border-neutral-c-200 w-auto rounded-base px-min2 h-full bg-white">
+									<div className="flex border-2 border-neutral-c-200 w-auto rounded-base px-min2  bg-white">
 										<Body3 color="neutral-c-700" className="text-xs">
 											<span className="text-neutral-c-400 mr-min3">File hash</span>
 											{n3utils.shortenHash(hash ?? constants.HashZero)}
