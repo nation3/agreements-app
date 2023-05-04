@@ -72,7 +72,6 @@ export const AddressInput = (props: AddressInputProps) => {
 					<Spinner className="text-pr-c-blue3 w-5 h-5 absolute right-min3 top-[14px]" />
 				)}
 			</div>
-			{isLoading && <Spinner className="text-pr-c-blue3 w-5 h-5 absolute right-min3 top-[14px]" />}
 		</div>
 	);
 };

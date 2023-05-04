@@ -112,15 +112,17 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 						}
 					/>
 				</div>
-				<div className="flex justify-between mt-base gap-min3">
+				<div className="flex justify-end">
+					{!isValidCriteria && (
+						<InfoAlert
+							className="rounded-md text-sm flex"
+							message={t("create.agreementPositions.warning")}
+						/>
+					)}
+				</div>
+				<div className="flex justify-between gap-min3">
 					<Button label="Back" onClick={() => setActiveStep(1)} />
 					<div className="flex gap-min3 items-center justify-end w-full">
-						{!isValidCriteria && (
-							<InfoAlert
-								className="w-full h-full rounded-full flex justify-center"
-								message={t("create.agreementPositions.warning")}
-							/>
-						)}
 						<Button
 							disabled={!isValidAgreement}
 							label="Next"

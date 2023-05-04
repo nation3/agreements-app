@@ -11,7 +11,7 @@ import {
 	TextInput,
 } from "@nation3/ui-components";
 import { useTranslation } from "next-i18next";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { CustomRadioInput } from "../../../ui-components/src/components/Molecules/inputs/CustomRadioInput";
 import { trimHash } from "../../utils";
 import { useAgreementCreation } from "./context/AgreementCreationContext";
@@ -61,6 +61,7 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 		fileName,
 		termsHash,
 	} = useAgreementCreation();
+	const [acceptedFiles, setAcceptedFiles] = useState<File[]>([]);
 
 	const defaultTitle = useMemo(() => `Agreement #${trimHash(id.toUpperCase())}`, [id]);
 	const [radioValue, setRadioValue] = useState("private");
@@ -68,6 +69,15 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 		setRadioValue(value);
 		setFileStatus(value);
 	};
+	// Update accepted files when the terms or fileName change
+	useEffect(() => {
+		if (terms && fileName) {
+			const file = new File([terms], fileName, { type: "text/markdown" });
+			setAcceptedFiles([file]);
+		} else {
+			setAcceptedFiles([]);
+		}
+	}, [terms, fileName]);
 
 	return (
 		<section className="flex flex-col gap-base mt-base">
@@ -86,6 +96,7 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 			<div className="flex flex-col gap-2">
 				<DropInput
 					label="Agreement terms file"
+					acceptedFiles={acceptedFiles}
 					dropzoneConfig={{
 						accept: { "text/markdown": [".md"] },
 						maxFiles: 1,
