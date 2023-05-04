@@ -1,4 +1,4 @@
-// PartiesCard.tsx
+// AgreementCreationParties.tsx
 
 import {
 	AddIcon,
@@ -19,7 +19,7 @@ import { validateCriteria } from "../../utils";
 import { ParticipantRow } from "../ParticipantRow";
 import { TokenSelector } from "../TokenSelector";
 import { useAgreementCreation } from "./context/AgreementCreationContext";
-import { Token } from "./context/types";
+import { InputPositionList, Token } from "./context/types";
 
 interface PartiesCardProps {
 	setActiveStep: (step: number) => void;
@@ -31,6 +31,7 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 	const provider = useProvider({ chainId: 1 });
 	const tokens = useTokenList();
 	const [selectedToken, setSelectedToken] = useState<Token>();
+	const [localPositions, setlocalPositions] = useState<InputPositionList>(positions);
 
 	useEffect(() => {
 		if (tokens.length > 0) {
@@ -44,6 +45,11 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 		setSelectedToken(token);
 		setToken(token);
 	}, [token]);
+
+	useEffect(() => {
+		positions && setlocalPositions(positions);
+		console.log("$$$ =>  PARTIES POSITIONS", positions);
+	}, [positions]);
 
 	const isValidCriteria = useMemo(() => validateCriteria(positions), [positions]);
 
@@ -83,11 +89,11 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 					</div>
 				</div>
 				<div className="flex flex-col gap-min3">
-					{positions.map((_, index) => (
+					{localPositions.map((_, index) => (
 						<div key={index}>
 							<ParticipantRow
 								ensProvider={provider}
-								positions={positions}
+								positions={localPositions}
 								token={token}
 								index={index}
 								removePosition={() => setPositions(positions.filter((_, i) => i !== index))}

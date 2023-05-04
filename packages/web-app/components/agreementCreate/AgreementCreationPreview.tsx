@@ -127,7 +127,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 				</div>
 				<ModalNew isOpen={isOpen} onClose={handleClose}>
 					<motion.div
-						className="w-full rounded-lg"
+						className="w-full rounded-lg flex justify-center items-center"
 						initial={{ opacity: 0, y: -10, boxShadow: "0px 0px 0 rgba(0, 0, 0, 0.0)" }}
 						animate={{ opacity: 1, y: 0, boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)" }}
 						transition={{ duration: 0.15 }}

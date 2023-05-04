@@ -3,11 +3,11 @@ import { useRouter } from "next/router";
 import { AgreementDataProvider } from "../../components/agreement";
 import { DisputeResolutionProvider } from "../../components/dispute";
 
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps } from "next";
-import { useConstants } from "../../hooks/useConstants";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Image from "next/image";
 import { AgreementView } from "../../components/agreement/AgreementView";
+import { useConstants } from "../../hooks/useConstants";
 
 const AgreementPage = () => {
 	const { frameworkAddress } = useConstants();
