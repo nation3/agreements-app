@@ -1,6 +1,6 @@
 import { Body3, utils as n3utils } from "@nation3/ui-components";
 import { constants } from "ethers";
-import React, { useEffect } from "react";
+import React from "react";
 import MarkdownFile from "../MarkdownFile/MarkdownFile";
 import AgreementStatus from "./AgreementStatus";
 
@@ -18,8 +18,6 @@ const IAgreementTermsDataDefaultProps = {};
 
 const AgreementTermsData: React.FC<IAgreementTermsDataProps> = (props) => {
 	const { id, title, status, termsHash, fileName, fileStatus, termsFile } = props;
-
-	useEffect(() => {}, []);
 
 	return (
 		<section className="flex flex-wrap gap-min3 bg-neutral-c-200 px-min3 py-min3 md:py-base rounded-md">

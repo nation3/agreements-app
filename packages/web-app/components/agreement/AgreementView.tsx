@@ -31,10 +31,10 @@ export const AgreementView = () => {
 	} = useAgreementData();
 	console.log("terms", termsHash);
 
-	return !termsHash && !isLoading ? (
-		<NotFoundAgreement />
-	) : isLoading ? (
+	return isLoading ? (
 		<AgreementSkeleton />
+	) : !termsHash && !isLoading ? (
+		<NotFoundAgreement />
 	) : (
 		<section
 			id="agreement"

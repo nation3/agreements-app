@@ -1,14 +1,14 @@
-import { useRouter } from "next/router";
 import { Card } from "@nation3/ui-components";
+import { useRouter } from "next/router";
 
-import { DisputeResolutionProvider } from "../../components/dispute/context/DisputeResolutionProvider";
-import { DisputeDetails, DisputeArbitrationActions } from "../../components/dispute";
-import { useCohort } from "../../hooks/useCohort";
-import { useAccount } from "wagmi";
-import { useMemo } from "react";
-import { useConstants } from "../../hooks/useConstants";
-import Image from "next/image";
 import cx from "classnames";
+import Image from "next/image";
+import { useMemo } from "react";
+import { useAccount } from "wagmi";
+import { DisputeArbitrationActions, DisputeDetails } from "../../components/dispute";
+import { DisputeResolutionProvider } from "../../components/dispute/context/DisputeResolutionProvider";
+import { useCohort } from "../../hooks/useCohort";
+import { useConstants } from "../../hooks/useConstants";
 
 const DisputePage = () => {
 	const router = useRouter();

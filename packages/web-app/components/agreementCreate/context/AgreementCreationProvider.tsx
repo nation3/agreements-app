@@ -15,11 +15,11 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 	const [fileStatus, setFileStatus] = useState("private");
 	const [filePass, setFilePass] = useState("");
 	const [token, setToken] = useState<Token>({
-		name: "",
-		symbol: "",
-		address: "",
-		decimals: 2,
-		icon: "",
+		name: "Nation3",
+		symbol: "NATION",
+		address: "0x333A4823466879eeF910A04D473505da62142069",
+		decimals: 18,
+		icon: "/tokens/nation3.png",
 	});
 	const [positions, setPositions] = useState([
 		{ account: "", balance: BigNumber.from(0) },

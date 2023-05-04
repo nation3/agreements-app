@@ -10,9 +10,10 @@ import {
 import { BigNumber, ethers, providers, utils } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { ChangeEvent, FocusEvent, useState } from "react";
+import { ChangeEvent, FocusEvent, useEffect, useState } from "react";
 import { Body3 } from "../../ui-components/src/components/Atoms";
 import { purgeFloat } from "../utils";
+import { InputPositionList } from "./agreementCreate/context/types";
 
 type Position = { account: string; balance: BigNumber };
 
@@ -32,6 +33,12 @@ export const ParticipantRow = ({
 	ensProvider?: providers.BaseProvider;
 }) => {
 	const [isEnsName, setIsEnsName] = useState(false);
+	const [localPositions, setlocalPositions] = useState<InputPositionList>(positions);
+
+	useEffect(() => {
+		positions && setlocalPositions(positions);
+		console.log("$$$ =>  ROW POSITIONS", positions);
+	}, [positions]);
 
 	const updatePositionAccount = (address: string, input: string) => {
 		const isEns = ethers.utils.isAddress(input) ? false : true;
@@ -83,7 +90,7 @@ export const ParticipantRow = ({
 					<div className="sm-only:basis-full md:grow">
 						<AddressInput
 							label="Address"
-							defaultValue={positions[index].account}
+							defaultValue={localPositions[index].account}
 							focusColor="pr-c-blue2"
 							placeholder={"participant " + (index + 1) + " address"}
 							ensProvider={ensProvider}
@@ -96,7 +103,7 @@ export const ParticipantRow = ({
 					<div className="md:basis-36 basis-1/2">
 						<TokenBalanceInput
 							label="Collateral"
-							defaultValue={utils.formatUnits(positions[index].balance)}
+							defaultValue={utils.formatUnits(localPositions[index].balance)}
 							token={token}
 							onChange={(e: ChangeEvent<HTMLInputElement>) => {
 								const purged = purgeFloat(e.target.value);
