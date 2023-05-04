@@ -4,7 +4,7 @@ import { BigNumber } from "ethers";
 import { useAccount, useToken } from "wagmi";
 import { useAgreementData, useDisputeConfig } from "../../../hooks/useAgreement";
 import { trimHash } from "../../../utils/hash";
-import { fetchAgreementMetadata } from "../../../utils/metadata";
+import { fetchAgreementMetadata, fetchAgreementTermsMetadata } from "../../../utils/metadata";
 import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataContext";
 import { PositionMap, ResolverMap, Token, UserPosition } from "./types";
 
@@ -12,12 +12,16 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 	const { address: userAddress } = useAccount();
 	const [title, setTitle] = useState<string>();
 	const [status, setStatus] = useState<string>();
+	const [fileName, setFileName] = useState<string>();
+	const [fileStatus, setFileStatus] = useState<string>();
+	const [termsFile, setTermsFile] = useState<string>();
 	const [termsHash, setTermsHash] = useState<string>();
 	const [metadataURI, setMetadataURI] = useState<string>();
 	const [resolvers, setResolvers] = useState<ResolverMap>();
 	const [positions, setPositions] = useState<PositionMap>();
 	const [userPosition, setUserPosition] = useState<UserPosition>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [isMetadataError, setIsMetadataError] = useState<boolean>(true);
 
 	/* GET AGREEMENT DATA FROM CONTRACT */
 	const { data: agreementData, positions: agreementPositions } = useAgreementData({
@@ -58,6 +62,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 	}, [disputeAmount]);
 
 	/* Update state when fetched agreement params */
+	// TODO:// REMOVE EFFECT, it does not need to keep active listening.
 	useEffect(() => {
 		console.log("$$$ AGREEMENT DATA =>", agreementData);
 
@@ -66,19 +71,47 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 			setTermsHash(agreementData.termsHash);
 		}
 
-		/* GET THE IPFS METADATA  */
+		/* GET THE AGREEMENT METADATA  */
 		if (agreementData?.metadataURI) {
 			setMetadataURI(agreementData.metadataURI);
-			fetchAgreementMetadata(agreementData.metadataURI).then((metadata) => {
-				console.log("$$$ AGREEMENT METADATA =>", metadata);
-				if (metadata.title && metadata.title != "Agreement") {
-					if (metadata.title != title) setTitle(metadata.title);
-				} else {
-					setTitle(`Agreement #${trimHash(id.toUpperCase())}`);
-				}
-				if (metadata.resolvers)
-					setResolvers((prevResolvers) => ({ ...prevResolvers, ...metadata.resolvers }));
-			});
+			fetchAgreementMetadata(agreementData.metadataURI)
+				.then((metadata) => {
+					console.log("$$$ AGREEMENT METADATA =>", metadata);
+
+					/* SET STATE CUSTOM TITLE */
+					if (metadata.title && metadata.title != "Agreement") {
+						if (metadata.title != title) setTitle(metadata.title);
+					} else {
+						/* SET DEFAULT TITLE */
+						setTitle(`Agreement #${trimHash(id.toUpperCase())}`);
+					}
+
+					/* SET RESOLVERS POSITIONS TREE */
+					if (metadata.resolvers) {
+						setResolvers((prevResolvers) => ({ ...prevResolvers, ...metadata.resolvers }));
+					}
+
+					if (metadata.fileName) {
+						setFileName(metadata.fileName);
+					}
+
+					if (metadata.fileStatus) {
+						setFileStatus(metadata.fileStatus);
+					}
+					/* GET TERMS FILE URI */
+					if (metadata.termsUri) {
+						return fetchAgreementTermsMetadata(metadata.termsUri);
+					}
+				})
+				/* SET TERMS FILE METADATA */
+				.then((data: { fileTerms: string }) => {
+					console.log("$$$ TERMS FILE =>", data);
+					setTermsFile(data?.fileTerms);
+				})
+				.catch((err) => {
+					console.log("METADA ERROR =>", err);
+					setIsMetadataError(true);
+				});
 		}
 
 		/* SET STATUS  */
@@ -167,6 +200,10 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		positions,
 		userPosition,
 		isLoading,
+		fileStatus,
+		fileName,
+		termsFile,
+		isMetadataError,
 	};
 
 	return <AgreementDataContext.Provider value={provider}>{children}</AgreementDataContext.Provider>;

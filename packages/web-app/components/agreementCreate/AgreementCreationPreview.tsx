@@ -44,25 +44,9 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 		isProcessing: createProcessing,
 	} = useAgreementCreate({});
 
-	// TODO: Move it into a proper wrapper/callback instead of a listener
 	useEffect(() => {
-		const uploadMetadataToIPFS = async () => {
-			const metadata = await generateAgreementMetadata({
-				title,
-				terms,
-				positions,
-				fileName,
-				fileStatus,
-			});
-			const { put } = await preparePutToIPFS(metadata);
-			const cid = await put();
-			console.log(`$$$ metadata uploaded to ${cid}`);
-		};
-
 		if (createSuccess) {
-			uploadMetadataToIPFS()
-				.then(() => router.push(`/agreement/${id}`))
-				.catch();
+			router.push(`/agreement/${id}`);
 		}
 		console.log("$$$ POSITIONS => ", positions);
 	}, [router, terms, positions, createSuccess, id, title]);
@@ -78,7 +62,8 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 			fileStatus,
 		});
 
-		const { cid } = await preparePutToIPFS(metadata);
+		const { put } = await preparePutToIPFS(metadata);
+		const cid = await put();
 		const metadataURI = `ipfs://${cid}`;
 		console.log(`$$$ CID IPFS ${metadataURI}`);
 
@@ -102,9 +87,9 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 
 	return (
 		<>
-			<article className="flex flex-col gap-base">
+			<article className="flex flex-col w-full gap-base">
 				<HeadlineBasic className="mt-base">Review & Submit </HeadlineBasic>
-				<section className="bg-neutral-c-200 rounded-md p-base flex justify-center">
+				<section className="w-full md:bg-neutral-c-200 rounded-md md:p-base flex justify-center">
 					<div className="flex max-w-sm w-full">
 						<AgreementCard
 							token={token}
@@ -132,7 +117,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 						label={
 							<div className="flex items-center gap-1">
 								{/* <CheckBadgeIcon className="w-5 h-5" /> */}
-								{"Submit"}
+								{"Create Agreement"}
 							</div>
 						}
 						isLoading={createLoading || createProcessing}

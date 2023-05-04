@@ -9,6 +9,7 @@ interface IllustrationRendererProps {
 	icon: Icon;
 	size: keyof typeof iconSpacing;
 	rounded?: boolean;
+	customSize?: number;
 	className?: string;
 	fillColor?: string;
 }
@@ -37,9 +38,13 @@ const CenteredIcon = styled.div<{
 `;
 
 const IllustrationRenderer: React.FC<IllustrationRendererProps> = (props) => {
-	const { icon, size, className, rounded = false, fillColor = "" } = props;
-	const squareSize = iconSpacing[size];
-
+	const { icon, size, className, rounded = false, customSize, fillColor = "" } = props;
+	let squareSize;
+	if (customSize !== undefined) {
+		squareSize = customSize;
+	} else {
+		squareSize = iconSpacing[size];
+	}
 	const renderIcon = (icon: Icon) => {
 		if (typeof icon === "string") {
 			return <Image src={icon} alt="Icon" />;

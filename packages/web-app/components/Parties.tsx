@@ -1,4 +1,4 @@
-import { Body2, Body3, BodyHeadline, UserIcon, useScreen } from "@nation3/ui-components";
+import { Body2, Body3, UserIcon, useScreen } from "@nation3/ui-components";
 import cx from "classnames";
 import { BigNumber, utils } from "ethers";
 import { useAccount } from "wagmi";
@@ -18,7 +18,7 @@ interface FilteredPositions {
 }
 
 const statusBadgeMap: { [key: number]: { message: string; color: string } } = {
-	0: { message: "Pending", color: "pr-c-blue1" },
+	0: { message: "Pending", color: "neutral-c-200" },
 	1: { message: "Joined", color: "pr-c-green1" },
 	2: { message: "Finalized", color: "neutral-c-200" },
 	3: { message: "Withdrawn", color: "neutral-c-200" },
@@ -60,46 +60,48 @@ const Parties = ({
 	console.log("POSITIONS => ", filteredPositions);
 
 	return (
-		<>
+		<section>
 			{filteredPositions.map(({ message, color, positions }) => (
 				<>
-					<BodyHeadline className="mb-min3">
+					<Body2 className="mb-min3">
 						{message} ({positions.length})
-					</BodyHeadline>
-					{positions.map(({ account, balance, status }, i) => (
-						<div
-							key={i}
-							className={cx("mb-base last:mb-0 p-min3 w-full rounded-md", "bg-" + color)}
-						>
-							<section key={account} className="grid grid-cols-5 md:gap-16 gap-8">
-								<div className="col-start-1 col-end-6 md:col-end-4 flex">
-									<div>
-										<Body3 className="text-neutral-c-500 mb-min2">Address</Body3>
-										<div className="flex">
-											<AccountDisplay address={account} />
-											{myAccount === account && (
-												<div className="flex rounded ml-min3">
-													<UserIcon className="h-base" />
-													<Body2 className="ml-min2">You</Body2>
-												</div>
-											)}
+					</Body2>
+					<div>
+						{positions.map(({ account, balance, status }, i) => (
+							<div
+								key={i}
+								className={cx("mb-min2 last:mb-0 p-min3 w-full rounded-md", "bg-" + color)}
+							>
+								<section key={account} className="grid grid-cols-5 md:gap-16 gap-8">
+									<div className="col-start-1 col-end-6 md:col-end-4 flex">
+										<div>
+											<Body3 className="text-neutral-c-500 mb-min2">Address</Body3>
+											<div className="flex">
+												<AccountDisplay address={account} />
+												{myAccount === account && (
+													<div className="flex rounded ml-min3">
+														<UserIcon className="h-base" />
+														<Body2 className="ml-min2">You</Body2>
+													</div>
+												)}
+											</div>
 										</div>
 									</div>
-								</div>
-								<div className="col-start-1 col-end-3 md:col-start-4 md:col-end-4">
-									<Body3 className="text-neutral-c-500 mb-min2">Collateral</Body3>
-									<Body3>{utils.formatUnits(BigNumber.from(balance))}</Body3>
-								</div>
-								<div className="col-start-4 col-end-6 md:col-start-5 md:col-end-5">
-									<Body3 className="text-neutral-c-500 mb-min2">Token</Body3>
-									<Body3>{token?.symbol ?? ""}</Body3>
-								</div>
-							</section>
-						</div>
-					))}
+									<div className="col-start-1 col-end-3 md:col-start-4 md:col-end-4">
+										<Body3 className="text-neutral-c-500 mb-min2">Collateral</Body3>
+										<Body3>{utils.formatUnits(BigNumber.from(balance))}</Body3>
+									</div>
+									<div className="col-start-4 col-end-6 md:col-start-5 md:col-end-5">
+										<Body3 className="text-neutral-c-500 mb-min2">Token</Body3>
+										<Body3>{token?.symbol ?? ""}</Body3>
+									</div>
+								</section>
+							</div>
+						))}
+					</div>
 				</>
 			))}
-		</>
+		</section>
 	);
 };
 
