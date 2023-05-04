@@ -2,6 +2,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { FC, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { ScreenType, useScreen } from "../../../hooks/useScreen";
 
 interface ModalNewProps {
 	isOpen: boolean;
@@ -14,6 +15,7 @@ export const ModalNew: FC<ModalNewProps> = ({ isOpen, onClose, children }) => {
 
 	const transition = { duration: 0.2 };
 	const transitionBlur = { duration: 0.15 };
+	const { screen } = useScreen();
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
@@ -44,16 +46,16 @@ export const ModalNew: FC<ModalNewProps> = ({ isOpen, onClose, children }) => {
 					animate={{ opacity: 1, backdropFilter: "blur(10px)" }}
 					exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
 					transition={transitionBlur}
-					className="transition-all relative md:fixed w-screen h-screen inset-0 z-50 flex justify-center bg-pr-c-green1 bg-opacity-30"
+					className="transition-all fixed w-screen h-screen inset-0 z-50 flex justify-center bg-pr-c-green1 bg-opacity-30"
 					onClick={isOpen && onClose}
 				>
 					<motion.div
 						key="modal-content"
-						initial={{ opacity: 0, y: -10 }}
+						initial={{ opacity: 0, y: screen == ScreenType.Desktop ? -10 : +20 }}
 						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: -10 }}
+						exit={{ opacity: 0, y: screen == ScreenType.Desktop ? -10 : +20 }}
 						transition={transition}
-						className="flex w-full max-w-3xl justify-center"
+						className="flex md:h-auto h-full w-full md:max-w-3xl md:m-0 justify-center sm-only:items-end"
 						onClick={(e) => {
 							e.stopPropagation();
 						}}
