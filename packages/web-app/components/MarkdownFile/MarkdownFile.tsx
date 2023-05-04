@@ -32,7 +32,20 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 	const [password, setPassword] = useState("");
 	const [markdownContent, setMarkdownContent] = useState("");
 	const [isDecrypted, setIsDecrypted] = useState(false);
-	const [isValid, setIsValid] = useState<boolean>(false);
+
+	// NULL FOR EMPTY STATE
+	const [isValid, setIsValid] = useState<boolean | null>(false);
+
+	const [acceptedFiles, setAcceptedFiles] = useState<File[]>([]);
+	// Update accepted files when the terms or fileName change
+	useEffect(() => {
+		if (termsFile && fileName) {
+			const file = new File([termsFile], fileName, { type: "text/markdown" });
+			setAcceptedFiles([file]);
+		} else {
+			setAcceptedFiles([]);
+		}
+	}, [termsFile, fileName]);
 
 	/* INIT MARKDOWN */
 	const md = new MarkdownIt();
@@ -90,10 +103,13 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 				return (
 					<>
 						{!isValid ? (
-							<div className="px-base py-double">
-								<Body1>Validate & preview your terms file</Body1>
+							<div className="px-base pt-base w-full">
+								<Body1 color="neutral-c-700" className="mb-base">
+									Validate & preview your terms file
+								</Body1>
 								<DropInput
 									label="Drop your local terms file"
+									acceptedFiles={acceptedFiles}
 									dropzoneConfig={{
 										accept: { "text/markdown": [".md"] },
 										maxFiles: 1,
@@ -103,8 +119,11 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 												if (termsHash === hash) {
 													setIsValid(true);
 													setMarkdownContent(md.render(text));
+												} else {
+													setIsValid(false);
 												}
 											});
+											setAcceptedFiles(acceptedFiles);
 										},
 									}}
 									showFiles={true}
@@ -138,10 +157,16 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 			</div>
 
 			{/* POPPING TERMS MODAL  */}
-			<ModalNew isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+			<ModalNew
+				isOpen={isModalOpen}
+				onClose={() => {
+					setIsModalOpen(false);
+					// setIsValid(null);
+				}}
+			>
 				<section
 					className={cx(
-						"bg-white rounded-lg shadow-md border-2 border-neutral-c-200 flex items-center flex-col overflow-hidden",
+						"w-full bg-white rounded-lg shadow-md border-2 border-neutral-c-200 flex items-center flex-col overflow-hidden",
 						styles.markdownContainer,
 					)}
 				>
@@ -158,12 +183,20 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 								Terms File Preview{" "}
 							</BodyHeadline>
 							<div className="flex gap-min3 mt-min2">
-								{isValid && (
-									<div className="border-2 border-neutral-c-200 w-auto rounded-base px-min2 h-full bg-pr-c-green1">
+								{isValid ? (
+									<div className="border-2 border-neutral-c-200 ml-min2 w-auto rounded-base px-min2 h-full bg-pr-c-green1">
 										<Body3 color="neutral-c-700" className="text-xs">
 											Valid terms 💚
 										</Body3>
 									</div>
+								) : isValid === false ? (
+									<div className="border-2 border-sc-c-orange3 ml-min2 w-auto rounded-base px-min2 h-full bg-sc-c-orange1">
+										<Body3 color="neutral-c-700" className="text-xs">
+											Invalid terms ❌
+										</Body3>
+									</div>
+								) : (
+									<></>
 								)}
 								{fileName && (
 									<div className="border-2 border-neutral-c-200 w-auto rounded-base px-min2 h-full bg-white">

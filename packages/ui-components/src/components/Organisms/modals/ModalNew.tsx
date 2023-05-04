@@ -44,7 +44,7 @@ export const ModalNew: FC<ModalNewProps> = ({ isOpen, onClose, children }) => {
 					animate={{ opacity: 1, backdropFilter: "blur(10px)" }}
 					exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
 					transition={transitionBlur}
-					className="transition-all fixed w-screen h-screen inset-0 z-50 flex md:items-center items-end justify-center bg-pr-c-green1 bg-opacity-30"
+					className="transition-all relative md:fixed w-screen h-screen inset-0 z-50 flex justify-center bg-pr-c-green1 bg-opacity-30"
 					onClick={isOpen && onClose}
 				>
 					<motion.div
@@ -53,7 +53,7 @@ export const ModalNew: FC<ModalNewProps> = ({ isOpen, onClose, children }) => {
 						animate={{ opacity: 1, y: 0 }}
 						exit={{ opacity: 0, y: -10 }}
 						transition={transition}
-						className="flex items-end"
+						className="flex w-full max-w-3xl justify-center"
 						onClick={(e) => {
 							e.stopPropagation();
 						}}
