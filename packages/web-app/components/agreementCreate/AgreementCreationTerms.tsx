@@ -62,13 +62,6 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 		termsHash,
 	} = useAgreementCreation();
 	const [acceptedFiles, setAcceptedFiles] = useState<File[]>([]);
-
-	const defaultTitle = useMemo(() => `Agreement #${trimHash(id.toUpperCase())}`, [id]);
-	const [radioValue, setRadioValue] = useState("private");
-	const handleRadioChange = (value: string) => {
-		setRadioValue(value);
-		setFileStatus(value);
-	};
 	// Update accepted files when the terms or fileName change
 	useEffect(() => {
 		if (terms && fileName) {
@@ -78,6 +71,13 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 			setAcceptedFiles([]);
 		}
 	}, [terms, fileName]);
+
+	const defaultTitle = useMemo(() => `Agreement #${trimHash(id.toUpperCase())}`, [id]);
+	const [radioValue, setRadioValue] = useState("private");
+	const handleRadioChange = (value: string) => {
+		setRadioValue(value);
+		setFileStatus(value);
+	};
 
 	return (
 		<section className="flex flex-col gap-base mt-base">
@@ -105,6 +105,7 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 								setTerms(text);
 								setFileName(acceptedFiles[0].name);
 							});
+							setAcceptedFiles(acceptedFiles);
 						},
 					}}
 					showFiles={true}
