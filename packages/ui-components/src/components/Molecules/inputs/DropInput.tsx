@@ -14,15 +14,23 @@ export interface DropInputProps {
 	label?: string;
 	value?: string;
 	showFiles?: boolean;
+	acceptedFiles?: File[];
 	dropzoneConfig?: DropzoneOptions;
 	onPreview?: (content: File) => void;
 }
 
 export const DropInput = (props: DropInputProps) => {
-	const { label, dropzoneConfig, showFiles, onPreview, value } = props;
-	const { acceptedFiles, getRootProps, getInputProps } = useDropzone({ ...dropzoneConfig });
+	const { label, dropzoneConfig, showFiles, onPreview, value, acceptedFiles } = props;
+	const {
+		acceptedFiles: dropzoneAcceptedFiles,
+		getRootProps,
+		getInputProps,
+	} = useDropzone({ ...dropzoneConfig });
 
-	const acceptedFilesData = useMemo(() => acceptedFiles, []);
+	const acceptedFilesData = useMemo(
+		() => (acceptedFiles && acceptedFiles.length > 0 ? acceptedFiles : dropzoneAcceptedFiles),
+		[acceptedFiles, dropzoneAcceptedFiles],
+	);
 
 	return (
 		<div>
@@ -59,14 +67,14 @@ export const DropInput = (props: DropInputProps) => {
 						</ul>
 					</aside>
 				)}
-				{acceptedFiles.length === 0 && (
+				{(!acceptedFiles || acceptedFiles.length === 0) && (
 					<div className="cursor-pointer">
 						<IconRenderer icon={<N3AddFIle />} backgroundColor={"neutral-c-300"} size={"sm"} />
 					</div>
 				)}
 				<Body2 color="neutral-c-500 cursor-pointer" className="mt-min2">
 					{"Drag and Drop files here or click to "}
-					{acceptedFiles.length === 0 ? "upload" : "replace"}
+					{!acceptedFiles || acceptedFiles.length === 0 ? "upload" : "replace"}
 				</Body2>
 			</div>
 		</div>

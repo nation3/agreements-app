@@ -1,9 +1,10 @@
 import "./styles.css";
 
 export * from "./Templates";
+export * from "./animations";
 export * from "./components";
-export * from "./illustrations";
-export * from "./icons";
 export * from "./hooks/useScreen";
+export * from "./icons";
+export * from "./illustrations";
 
 export * as utils from "./utils";

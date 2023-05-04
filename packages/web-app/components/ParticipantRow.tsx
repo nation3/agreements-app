@@ -92,7 +92,7 @@ export const ParticipantRow = ({
 							label="Address"
 							defaultValue={localPositions[index].account}
 							focusColor="pr-c-blue2"
-							placeholder={"participant " + (index + 1) + " address"}
+							placeholder={"ens or address"}
 							ensProvider={ensProvider}
 							showEnsName={isEnsName}
 							onBlurCustom={(e: ChangeEvent<HTMLInputElement>) => {
