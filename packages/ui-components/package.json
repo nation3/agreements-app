@@ -42,8 +42,10 @@
     "flowbite-react": "^0.1.11",
     "focus-trap-react": "^10.1.1",
     "framer-motion": "^7.5.1",
+    "lottie-web": "^5.11.0",
     "react-blockies": "^1.4.1",
     "react-dropzone": "^14.2.2",
+    "react-lottie": "^1.2.3",
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
@@ -60,6 +62,7 @@
     "@storybook/testing-library": "^0.0.13",
     "@svgr/rollup": "^7.0.0",
     "@types/react-blockies": "^1.4.1",
+    "@types/react-lottie": "^1.2.6",
     "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.42.1",
