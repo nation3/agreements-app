@@ -1,7 +1,6 @@
-import React from "react";
-import { ReactNode } from "react";
-import Nation3Logo from "../Atoms/Nation3Logo";
 import Link from "next/link";
+import React, { ReactNode } from "react";
+import Nation3Logo from "../Atoms/Nation3Logo";
 
 type IBottomNavProps = {
 	connectionButton?: ReactNode;

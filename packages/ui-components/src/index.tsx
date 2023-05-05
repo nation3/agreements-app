@@ -1,7 +1,6 @@
 import "./styles.css";
 
 export * from "./Templates";
-export * from "./animations";
 export * from "./components";
 export * from "./hooks/useScreen";
 export * from "./icons";

@@ -53,11 +53,15 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 	/* INIT MARKDOWN */
 	const md = new MarkdownIt();
 	useEffect(() => {
-		setMarkdownContent(md.render(termsFile));
+		const mdFile = md.render(termsFile);
+		setMarkdownContent(mdFile);
+		mdFile === hash ? setIsValid(true) : setIsValid(false);
 	}, [termsFile]);
 
 	const handlePasswordSubmit = () => {
 		const decryptedTerms = decryptAES(termsFile, password);
+		const termsHash = hexHash(decryptedTerms);
+		termsHash === hash ? setIsValid(true) : setIsValid(false);
 		setIsDecrypted(true);
 		setMarkdownContent(md.render(decryptedTerms));
 	};
@@ -88,7 +92,7 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 									/>
 								</div>
 								<div className="flex">
-									<Button label="Decrypt" onClick={handlePasswordSubmit} />
+									<Button label="Unlock file" onClick={handlePasswordSubmit} />
 								</div>
 							</div>
 						) : (

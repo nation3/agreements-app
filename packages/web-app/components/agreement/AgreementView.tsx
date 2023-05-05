@@ -4,11 +4,17 @@ import {
 	Card,
 	Headline3,
 	HeadlineBasic,
+	IconRenderer,
+	N3IdIcon,
+	N3StatusIcon,
+	N3TypeIcon,
+	ShareButton,
 	utils as n3utils,
 } from "@nation3/ui-components";
 import cx from "classnames";
 import { constants } from "ethers";
 import { AgreementActions } from ".";
+import { useActiveURL } from "../../hooks";
 import Parties from "../Parties";
 import { DisputeActions } from "../dispute";
 import AgreementSkeleton from "./AgreementSkeleton";
@@ -30,6 +36,7 @@ export const AgreementView = () => {
 		termsFile,
 	} = useAgreementData();
 	console.log("$$$ status", status);
+	const activeURL = useActiveURL();
 
 	return isLoading ? (
 		<AgreementSkeleton />
@@ -61,6 +68,36 @@ export const AgreementView = () => {
 				<Card
 					className={cx("flex flex-col gap-base", status === "Disputed" && "border-sc-c-orange1")}
 				>
+					<div className="flex gap-base mb-base flex-col md:flex-row justify-between relative">
+						<div className="flex flex-wrap gap-min3 w-1/2 md:w-full">
+							<div className=" flex  w-auto rounded-base pr-min2 h-full bg-white items-center gap-min2">
+								<IconRenderer
+									icon={<N3StatusIcon />}
+									backgroundColor={"neutral-c-300"}
+									size={"xs"}
+								/>
+								<Body3>
+									<span className="text-neutral-c-400 mr-min2">Status</span> {status}
+								</Body3>
+							</div>
+							<div className=" flex  w-auto rounded-base pr-min2 h-full bg-white items-center gap-min2">
+								<IconRenderer icon={<N3IdIcon />} backgroundColor={"pr-c-green1"} size={"xs"} />
+								<Body3>
+									<span className="text-neutral-c-400 mr-min2">ID</span>{" "}
+									{n3utils.shortenHash(id ?? constants.HashZero)}
+								</Body3>
+							</div>
+							<div className=" flex  w-auto rounded-base pr-min2 h-full bg-white items-center gap-min2">
+								<IconRenderer icon={<N3TypeIcon />} backgroundColor={"pr-c-green1"} size={"xs"} />
+								<Body3>
+									<span className="text-neutral-c-400 mr-min2">Type</span> Collateral
+								</Body3>
+							</div>
+						</div>
+						<div className="absolute top-0 right-0 md:relative">
+							<ShareButton url={activeURL} />
+						</div>
+					</div>
 					{/* Participants */}
 					<HeadlineBasic className="">Agreements terms</HeadlineBasic>
 
@@ -106,7 +143,7 @@ export const AgreementView = () => {
 						{status == "Disputed" ? <DisputeActions /> : <AgreementActions />}
 					</div>
 				</div>
-				<Card
+				{/* 				<Card
 					size="base"
 					className={cx("flex flex-col gap-min2", status === "Disputed" && "border-sc-c-orange1")}
 				>
@@ -121,7 +158,7 @@ export const AgreementView = () => {
 							<span className="text-neutral-c-400 mr-min2">Status</span> {status}
 						</Body3>
 					</div>
-				</Card>
+				</Card> */}
 			</div>
 		</section>
 	);

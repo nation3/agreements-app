@@ -26,7 +26,7 @@
       @apply bg-gradient-to-r from-pr-c-blue1 to-pr-c-green1;
     }
     .c-gradient-warn {
-      @apply bg-gradient-to-r from-neutral-c-200 to-sc-c-orange1;
+      @apply bg-gradient-to-t from-white from-70% to-sc-c-orange1;
     }
 
   }

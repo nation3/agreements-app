@@ -69,11 +69,11 @@ export const Button = (props: ButtonProps) => {
 				<Spinner className="w-5 h-5" />
 			) : (
 				<>
-					{iconLeft && iconLeft}
+					{iconLeft && <span className="mr-min2">{iconLeft}</span>}
 					<Body3 color={textColor ? textColor : ""} className="font-medium tracking-wide">
 						{label && label}
 					</Body3>
-					{!iconLeft && iconRight && iconRight}
+					{!iconLeft && iconRight && <span className="ml-min2">{iconRight}</span>}
 				</>
 			)}
 		</ButtonBase>

@@ -1,23 +1,11 @@
-import { useCallback, useMemo, useState } from "react";
-import { ButtonBase } from "@nation3/ui-components";
-import { ShareIcon, CheckIcon } from "@heroicons/react/20/solid";
-import React from "react";
+import { CheckIcon } from "@heroicons/react/20/solid";
+import { Tooltip } from "flowbite-react";
+import React, { useCallback, useState } from "react";
+import { ShareIcon } from "../../icons";
+import { Body3, IconRenderer } from "../Atoms";
 
-const ShareButton = ({ url }: { url: string }) => {
+export const ShareButton = ({ url }: { url: string }) => {
 	const [isShared, setIsShared] = useState<boolean>(false);
-	const icon = useMemo(
-		() =>
-			isShared ? (
-				<span className="p-2 hover:bg-bluesky-600/10 rounded-lg">
-					<CheckIcon className="w-6 h-6 text-bluesky-600" />
-				</span>
-			) : (
-				<span className="p-2">
-					<ShareIcon className="w-6 h-6" />
-				</span>
-			),
-		[isShared],
-	);
 
 	const copy = useCallback(async () => {
 		try {
@@ -30,10 +18,23 @@ const ShareButton = ({ url }: { url: string }) => {
 	}, [url]);
 
 	return (
-		<div>
-			<ButtonBase className="bg-transparent hover:bg-gray-50 text-gray-500" onClick={() => copy()}>
-				{icon}
-			</ButtonBase>
+		<div
+			onClick={() => copy()}
+			className="flex cursor-pointer  w-auto rounded-base pr-min2 h-full bg-white items-center gap-min2 relative"
+		>
+			{isShared && (
+				<div className="text-xs text-neutral-c-500 absolute -top-16 bg-white p-min2 rounded-base border-2 border-neutral-c-300">
+					<Tooltip style="light" animation="duration-150" content={"Copied!"}>
+						{"Copied to clipboard"}
+					</Tooltip>
+				</div>
+			)}
+			<IconRenderer
+				icon={isShared ? <CheckIcon className="text-pr-c-green3" /> : <ShareIcon />}
+				backgroundColor={isShared ? "pr-c-green1" : "neutral-c-300"}
+				size={"xs"}
+			/>
+			<Body3 color="neutral-c-700">Share</Body3>
 		</div>
 	);
 };

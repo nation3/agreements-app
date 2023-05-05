@@ -8,9 +8,15 @@ interface ModalNewProps {
 	isOpen: boolean;
 	onClose: () => void;
 	children: React.ReactNode;
+	isClosingDisabled: boolean;
 }
 
-export const ModalNew: FC<ModalNewProps> = ({ isOpen, onClose, children }) => {
+export const ModalNew: FC<ModalNewProps> = ({
+	isOpen,
+	onClose,
+	children,
+	isClosingDisabled = false,
+}) => {
 	const modalRoot = document.getElementById("ui-root");
 
 	const transition = { duration: 0.2 };
@@ -62,10 +68,12 @@ export const ModalNew: FC<ModalNewProps> = ({ isOpen, onClose, children }) => {
 					> */}
 					{children}
 					{/* </motion.div> */}
-					<XMarkIcon
-						onClick={isOpen && onClose}
-						className="cursor-pointer absolute top-base right-base w-double h-double z-50 text-neutral-c-500"
-					/>
+					{!isClosingDisabled && (
+						<XMarkIcon
+							onClick={isOpen && onClose}
+							className="cursor-pointer absolute top-base right-base w-double h-double z-50 text-neutral-c-500"
+						/>
+					)}
 				</motion.div>
 			)}
 		</AnimatePresence>,
