@@ -11,7 +11,9 @@ export const Body2 = (props: Props) => {
 	return (
 		<p
 			{...props}
-			className={`text-sm md:text-base text-${color ? color : "neutral-c-800"} ${className}`}
+			className={`text-sm md:text-base tracking-wide text-${
+				color ? color : "neutral-c-800"
+			} ${className}`}
 		>
 			{children}
 		</p>

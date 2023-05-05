@@ -206,7 +206,7 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 									) : isValid === false ? (
 										<div className="flex border-2 border-sc-c-orange3 ml-min2 w-auto rounded-base px-min2  bg-sc-c-orange1">
 											<Body3 color="neutral-c-700" className="text-xs">
-												Invalid terms ❌
+												Invalid terms 📄
 											</Body3>
 										</div>
 									) : (
