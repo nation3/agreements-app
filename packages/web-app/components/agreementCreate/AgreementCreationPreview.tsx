@@ -106,7 +106,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 				</section>
 
 				{/* Action buttons */}
-				<div className="flex justify-between gap-2">
+				<div className="flex justify-between gap-min3 mt-min2 sm:mt-mt-min3">
 					<Button
 						label={<div className="flex items-center gap-1">{"Back"}</div>}
 						disabled={createLoading || createProcessing}
@@ -125,6 +125,8 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 						onClick={() => submit()}
 					/>
 				</div>
+
+				{/* MODAL */}
 				<ModalNew isOpen={isOpen} onClose={handleClose}>
 					<motion.div
 						className="w-full rounded-lg flex justify-center items-center"
@@ -142,25 +144,6 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 					</motion.div>
 				</ModalNew>
 			</article>
-			{/* <section>
-				<AgreementDataDisplay
-					id={id ?? constants.HashZero}
-					title={title}
-					status={"Preview"}
-					termsHash={termsHash ?? constants.HashZero}
-				/>
-				<Table
-					columns={["participant", "stake"]}
-					data={positions.map(({ account, balance }, index) => [
-						<AccountDisplay key={index} address={account} />,
-						<b key={index}>
-							{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
-						</b>,
-					])}
-				/>
-				<InfoAlert message="Keep the terms file safe. You will need to submit it as evidence in the case of a dispute." />
-				
-			</section> */}
 		</>
 	);
 };

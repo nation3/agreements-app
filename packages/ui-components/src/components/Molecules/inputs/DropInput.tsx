@@ -44,7 +44,7 @@ export const DropInput = (props: DropInputProps) => {
 			<div
 				{...getRootProps({
 					className:
-						"flex flex-col items-center justify-center w-full px-base py-double font-primary text-neutral-c-500 bg-neutral-c-200 border-2 border-dashed rounded",
+						"flex flex-col items-center justify-center w-full px-base py-double font-primary text-neutral-c-500 bg-neutral-c-200 border-2 border-dashed rounded-md",
 				})}
 			>
 				<input {...getInputProps()} />

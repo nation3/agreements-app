@@ -29,7 +29,7 @@ export const AgreementView = () => {
 		fileStatus,
 		termsFile,
 	} = useAgreementData();
-	console.log("terms", termsHash);
+	console.log("$$$ status", status);
 
 	return isLoading ? (
 		<AgreementSkeleton />
@@ -58,7 +58,9 @@ export const AgreementView = () => {
 				)}
 			>
 				{/* Title and details */}
-				<Card className="flex flex-col gap-base">
+				<Card
+					className={cx("flex flex-col gap-base", status === "Disputed" && "border-sc-c-orange1")}
+				>
 					{/* Participants */}
 					<HeadlineBasic className="">Agreements terms</HeadlineBasic>
 
@@ -86,15 +88,28 @@ export const AgreementView = () => {
 					"lg:col-start-9 xl:col-start-10 lg:col-end-13 flex flex-col gap-base",
 				)}
 			>
-				<div className="w-full flex flex-col bg-white rounded-lg border-2 border-neutral-c-200">
-					<div className="border-b-2 border-neutral-c-200 p-base">
-						<Body2 color="neutral-c-500">Available Actions</Body2>
+				<div
+					className={cx(
+						"w-full flex flex-col bg-white rounded-lg border-2 border-neutral-c-200",
+						status === "Disputed" && "border-sc-c-orange1",
+					)}
+				>
+					<div
+						className={cx(
+							"border-b-2 border-neutral-c-200 p-base",
+							status === "Disputed" && "border-sc-c-orange1",
+						)}
+					>
+						<Body2 color="neutral-c-700">Available Actions</Body2>
 					</div>
 					<div className="p-base">
 						{status == "Disputed" ? <DisputeActions /> : <AgreementActions />}
 					</div>
 				</div>
-				<Card size="base" className="flex flex-col gap-min2">
+				<Card
+					size="base"
+					className={cx("flex flex-col gap-min2", status === "Disputed" && "border-sc-c-orange1")}
+				>
 					<div className=" flex  w-auto rounded-base px-min2 h-full bg-white">
 						<Body3>
 							<span className="text-neutral-c-400 mr-min2">ID</span>{" "}
