@@ -8,7 +8,7 @@ interface ModalNewProps {
 	isOpen: boolean;
 	onClose: () => void;
 	children: React.ReactNode;
-	isClosingDisabled: boolean;
+	isClosingDisabled?: boolean;
 }
 
 export const ModalNew: FC<ModalNewProps> = ({
