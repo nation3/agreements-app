@@ -23,7 +23,7 @@ export const ShareButton = ({ url }: { url: string }) => {
 			className="flex cursor-pointer  w-auto rounded-base pr-min2 h-full bg-white items-center gap-min2 relative"
 		>
 			{isShared && (
-				<div className="text-xs text-neutral-c-500 absolute -top-16 bg-white p-min2 rounded-base border-2 border-neutral-c-300">
+				<div className="text-xs text-neutral-c-500 absolute -top-11 bg-white p-min2 rounded-base border-2 border-neutral-c-300">
 					<Tooltip style="light" animation="duration-150" content={"Copied!"}>
 						{"Copied!"}
 					</Tooltip>

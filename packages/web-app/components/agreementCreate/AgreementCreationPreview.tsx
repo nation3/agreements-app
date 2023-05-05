@@ -140,7 +140,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 				{/* MODAL */}
 				<ModalNew
 					isOpen={isOpen}
-					isClosingDisabled={isAgreementCreated}
+					isClosingDisabled={!isAgreementCreated}
 					onClose={() => {
 						router.push(`/agreement/${id}`);
 					}}
@@ -158,7 +158,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 					>
 						<Card size="base">
 							{/* TODO:   COMPONENTISE */}
-							{isAgreementCreated && (
+							{!isAgreementCreated && (
 								<div className="flex flex-col gap-base">
 									<div className="bg-neutral-c-200 rounded-lg px-base py-double border-2 border-neutral-c-300">
 										<AnimationLoader width={200} height={200} animationData={EncryptingAnimation} />
@@ -176,7 +176,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 							)}
 
 							{/* TODO:   COMPONENTISE */}
-							{!isAgreementCreated && (
+							{isAgreementCreated && (
 								<div className="flex flex-col gap-base">
 									<div className="bg-neutral-c-200 rounded-lg px-base py-double border-2 border-neutral-c-300">
 										<AnimationLoader width={200} height={200} animationData={CompleteAnimation} />
@@ -194,9 +194,9 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 									</div>
 									<motion.div
 										key="modal-content"
-										initial={{ opacity: 0, y: 0, scale: 0.8 }} // start from a smaller scale
-										animate={{ opacity: 1, y: 0, scale: 1 }} // animate to full size
-										exit={{ opacity: 0, y: 0, scale: 0.8 }} // shrink back on exit
+										initial={{ opacity: 0, y: 0, scale: 0.8 }}
+										animate={{ opacity: 1, y: 0, scale: 1 }}
+										exit={{ opacity: 0, y: 0, scale: 0.8 }}
 										transition={{ duration: 0.15 }}
 										className="w-full flex justify-end"
 										onClick={(e) => {
