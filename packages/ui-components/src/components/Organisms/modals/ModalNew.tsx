@@ -2,7 +2,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { FC, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { ScreenType, useScreen } from "../../../hooks/useScreen";
+import { useScreen } from "../../../hooks/useScreen";
 
 interface ModalNewProps {
 	isOpen: boolean;
@@ -46,10 +46,10 @@ export const ModalNew: FC<ModalNewProps> = ({ isOpen, onClose, children }) => {
 					animate={{ opacity: 1, backdropFilter: "blur(10px)" }}
 					exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
 					transition={transitionBlur}
-					className="transition-all fixed w-screen h-screen inset-0 z-50 flex justify-center bg-pr-c-green1 bg-opacity-30"
+					className="transition-all items-center fixed w-screen h-screen inset-0 z-50 flex justify-center bg-pr-c-green1 bg-opacity-30"
 					onClick={isOpen && onClose}
 				>
-					<motion.div
+					{/* <motion.div
 						key="modal-content"
 						initial={{ opacity: 0, y: screen == ScreenType.Desktop ? -10 : +20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -59,9 +59,9 @@ export const ModalNew: FC<ModalNewProps> = ({ isOpen, onClose, children }) => {
 						onClick={(e) => {
 							e.stopPropagation();
 						}}
-					>
-						{children}
-					</motion.div>
+					> */}
+					{children}
+					{/* </motion.div> */}
 					<XMarkIcon
 						onClick={isOpen && onClose}
 						className="cursor-pointer absolute top-base right-base w-double h-double z-50 text-neutral-c-500"

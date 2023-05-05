@@ -31,7 +31,7 @@ const AgreementStatus: React.FC<IAgreementStatusProps> = ({ fileStatus }) => {
 			{isEncrypted && (
 				<div className="border-2 border-neutral-c-200 w-auto rounded-base px-min2 h-full bg-white">
 					<Body3 color="neutral-c-500" className="text-xs">
-						Encrypted
+						Locked
 					</Body3>
 				</div>
 			)}

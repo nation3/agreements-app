@@ -75,7 +75,7 @@ export const useTokenList = (): Token[] => {
 	return tokens;
 };
 
-export const findToken = (tokenSymbol: string): Token => {
+export const useFindToken = (tokenSymbol: string): Token => {
 	const { chain } = useNetwork();
 
 	const token = useMemo(() => {
@@ -87,7 +87,7 @@ export const findToken = (tokenSymbol: string): Token => {
 			default:
 				return mainnetTokens.find((token) => token.symbol === tokenSymbol);
 		}
-	}, [chain]);
+	}, [chain, tokenSymbol]);
 
 	return token ? token : empty;
 };

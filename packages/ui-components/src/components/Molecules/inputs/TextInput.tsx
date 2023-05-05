@@ -10,7 +10,11 @@ export const TextInput = (props: TextInputProps) => {
 	const { focusColor = "bluesky", label } = props;
 	return (
 		<div>
-			{label && <Body2 className="mb-min2">{label}</Body2>}
+			{label && (
+				<Body2 color="neutral-c-600" className="mb-min2">
+					{label}
+				</Body2>
+			)}
 			<input
 				type="text"
 				id="text-input"

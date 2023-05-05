@@ -1,8 +1,8 @@
 import { IconRenderer } from "@nation3/ui-components";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Body3 } from "../../ui-components/src/components/Atoms";
-import { findToken } from "../hooks/useTokenList";
+import { useFindToken } from "../hooks/useTokenList";
 
 type ITokenRendererProps = { tokenSymbol: string };
 
@@ -10,23 +10,29 @@ const ITokenRendererDefaultProps = {};
 
 const TokenRenderer: React.FC<ITokenRendererProps> = (props) => {
 	const { tokenSymbol } = props;
-	const token = findToken(tokenSymbol);
-	return token?.symbol ? (
+	const token = useFindToken(tokenSymbol);
+	const [localToken, setlocalToken] = useState<any>(token);
+
+	useEffect(() => {
+		setlocalToken(token);
+	}, [token]);
+
+	return localToken?.icon ? (
 		<div className="flex">
 			<div className="flex gap-min2 shadow rounded-base pr-min2 items-center">
-				{token?.icon && (
+				{localToken.icon && (
 					<>
 						<IconRenderer
 							size={"xs"}
 							backgroundColor={"pr-c-green1"}
-							icon={<Image height={20} width={20} alt={token.name} src={token?.icon} />}
+							icon={<Image height={20} width={20} alt={token.name} src={localToken.icon} />}
 						/>
 					</>
 				)}
 
 				<Body3 className="text-xs">
 					{"$"}
-					{token?.symbol}
+					{localToken.symbol}
 				</Body3>
 			</div>
 		</div>
