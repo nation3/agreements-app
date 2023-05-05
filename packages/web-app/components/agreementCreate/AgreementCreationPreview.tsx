@@ -87,8 +87,8 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 
 	return (
 		<>
-			<article className="flex flex-col w-full gap-base">
-				<HeadlineBasic className="mt-base">Review & Submit </HeadlineBasic>
+			<article className="flex flex-col w-full gap-min3 md:gap-base">
+				<HeadlineBasic className="mt-min3 md:mt-base">Review & Submit </HeadlineBasic>
 				<section className="w-full md:bg-neutral-c-200 rounded-md md:p-base flex justify-center">
 					<div className="flex max-w-sm w-full">
 						<AgreementCard

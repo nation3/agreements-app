@@ -12,8 +12,10 @@ import {
 } from "@nation3/ui-components";
 import cx from "classnames";
 import { constants } from "ethers";
+import { motion } from "framer-motion";
 import MarkdownIt from "markdown-it";
 import { FC, useEffect, useState } from "react";
+import { ScreenType, useScreen } from "../../../ui-components/src/hooks/useScreen";
 import { decryptAES } from "../../utils/crypto";
 import { hexHash } from "../../utils/hash";
 import AgreementStatus from "../agreement/AgreementStatus";
@@ -32,9 +34,10 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 	const [password, setPassword] = useState("");
 	const [markdownContent, setMarkdownContent] = useState("");
 	const [isDecrypted, setIsDecrypted] = useState(false);
+	const { screen } = useScreen();
 
 	// NULL FOR EMPTY STATE
-	const [isValid, setIsValid] = useState<boolean | null>(false);
+	const [isValid, setIsValid] = useState<boolean | null>(null);
 
 	const [acceptedFiles, setAcceptedFiles] = useState<File[]>([]);
 	// Update accepted files when the terms or fileName change
@@ -74,21 +77,20 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 				return (
 					<>
 						{!isDecrypted ? (
-							<>
-								<TextInput
-									label="Unlock file"
-									type="password"
-									value={password}
-									onChange={(e) => setPassword(e.target.value)}
-									placeholder="Enter password"
-									className="border border-gray-300 rounded p-2"
-								/>
-								<Button
-									label="Decrypt"
-									onClick={handlePasswordSubmit}
-									className="bg-blue-500 text-white rounded p-2"
-								/>
-							</>
+							<div className="w-full p-base flex flex-col gap-min3">
+								<div className="flex">
+									<TextInput
+										label="Unlock file"
+										type="password"
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
+										placeholder="Enter password"
+									/>
+								</div>
+								<div className="flex">
+									<Button label="Decrypt" onClick={handlePasswordSubmit} />
+								</div>
+							</div>
 						) : (
 							<div className={cx("content px-base py-double", styles.contentHolder)}>
 								<div
@@ -165,62 +167,74 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 					setAcceptedFiles([]); //
 				}}
 			>
-				<section
-					className={cx(
-						"w-full md:h-auto h-full mt-double bg-white sm-only:rounded-t-lg md:rounded-lg shadow-md border-2 border-neutral-c-200 flex items-center flex-col overflow-hidden",
-						styles.markdownContainer,
-					)}
+				<motion.div
+					key="modal-content"
+					initial={{ opacity: 0, y: screen == ScreenType.Desktop ? -10 : +20 }}
+					animate={{ opacity: 1, y: 0 }}
+					exit={{ opacity: 0, y: screen == ScreenType.Desktop ? -10 : +20 }}
+					transition={{ duration: 0.2 }}
+					className="flex md:h-auto h-full w-full md:max-w-3xl md:m-0 justify-center sm-only:items-end"
+					onClick={(e) => {
+						e.stopPropagation();
+					}}
 				>
-					<div className="flex gap-base w-full p-base border-b-2 border-neutral-c-300 sticky top-0 bg-white sticky:shadow">
-						<IconRenderer
-							customSize={60}
-							icon={<N3Document />}
-							backgroundColor={"pr-c-green1"}
-							size={"sm"}
-						/>
-						<div className="flex flex-col gap-min1">
-							<BodyHeadline color="neutral-c-700" className="ml-min2">
-								{" "}
-								Terms File Preview{" "}
-							</BodyHeadline>
-							<div className="flex flex-wrap gap-min3 mt-min2">
-								{isValid ? (
-									<div className="flex border-2 border-neutral-c-200 ml-min2 w-auto rounded-base px-min2  bg-pr-c-green1">
-										<Body3 color="neutral-c-700" className="text-xs">
-											Valid terms 💚
-										</Body3>
-									</div>
-								) : isValid === false ? (
-									<div className="flex border-2 border-sc-c-orange3 ml-min2 w-auto rounded-base px-min2  bg-sc-c-orange1">
-										<Body3 color="neutral-c-700" className="text-xs">
-											Invalid terms ❌
-										</Body3>
-									</div>
-								) : (
-									<></>
-								)}
-								{fileName && (
-									<div className="flex border-2 border-neutral-c-200 w-auto rounded-base px-min2  bg-white">
-										<Body3 color="neutral-c-400" className="text-xs">
-											{fileName}
-										</Body3>
-									</div>
-								)}
-								{hash && (
-									<div className="flex border-2 border-neutral-c-200 w-auto rounded-base px-min2  bg-white">
-										<Body3 color="neutral-c-700" className="text-xs">
-											<span className="text-neutral-c-400 mr-min3">File hash</span>
-											{n3utils.shortenHash(hash ?? constants.HashZero)}
-										</Body3>
-									</div>
-								)}
-								<AgreementStatus fileStatus={fileStatus} />
+					<section
+						className={cx(
+							"w-full md:h-auto h-full bg-white sm-only:rounded-t-lg md:rounded-lg shadow-md border-2 border-neutral-c-200 flex items-center flex-col overflow-hidden",
+							styles.markdownContainer,
+						)}
+					>
+						<div className="flex gap-base w-full p-base border-b-2 border-neutral-c-300 sticky top-0 bg-white sticky:shadow">
+							<IconRenderer
+								customSize={60}
+								icon={<N3Document />}
+								backgroundColor={"pr-c-green1"}
+								size={"sm"}
+							/>
+							<div className="flex flex-col gap-min1">
+								<BodyHeadline color="neutral-c-700" className="ml-min2">
+									{" "}
+									Terms File Preview{" "}
+								</BodyHeadline>
+								<div className="flex flex-wrap gap-min3 mt-min2">
+									{isValid ? (
+										<div className="flex border-2 border-neutral-c-200 ml-min2 w-auto rounded-base px-min2  bg-pr-c-green1">
+											<Body3 color="neutral-c-700" className="text-xs">
+												Valid terms 💚
+											</Body3>
+										</div>
+									) : isValid === false ? (
+										<div className="flex border-2 border-sc-c-orange3 ml-min2 w-auto rounded-base px-min2  bg-sc-c-orange1">
+											<Body3 color="neutral-c-700" className="text-xs">
+												Invalid terms ❌
+											</Body3>
+										</div>
+									) : (
+										<></>
+									)}
+									{fileName && (
+										<div className="flex border-2 border-neutral-c-200 w-auto rounded-base px-min2  bg-white">
+											<Body3 color="neutral-c-400" className="text-xs">
+												{fileName}
+											</Body3>
+										</div>
+									)}
+									{hash && (
+										<div className="flex border-2 border-neutral-c-200 w-auto rounded-base px-min2  bg-white">
+											<Body3 color="neutral-c-700" className="text-xs">
+												<span className="text-neutral-c-400 mr-min3">File hash</span>
+												{n3utils.shortenHash(hash ?? constants.HashZero)}
+											</Body3>
+										</div>
+									)}
+									<AgreementStatus fileStatus={fileStatus} />
+								</div>
 							</div>
 						</div>
-					</div>
 
-					{renderContent()}
-				</section>
+						{renderContent()}
+					</section>
+				</motion.div>
 			</ModalNew>
 		</>
 	);

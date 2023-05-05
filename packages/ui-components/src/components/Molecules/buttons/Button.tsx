@@ -55,7 +55,7 @@ export const Button = (props: ButtonProps) => {
 	return (
 		<ButtonBase
 			className={cx(
-				"cursor-pointer rounded-full shadow-sm hover:shadow gap-1 border-2 bg-white transition-all text-neutral-c-800 w-auto",
+				"cursor-pointer rounded-full shadow-sm hover:shadow gap-min1 border-2 bg-white transition-all text-neutral-c-800 w-auto",
 				disabled
 					? "text-neutral-c-300  border-neutral-c-300"
 					: "text-neutral-c-500  border-pr-c-blue3",

@@ -63,9 +63,9 @@ const Parties = ({
 		<section>
 			{filteredPositions.map(({ message, color, positions }) => (
 				<>
-					<Body2 className="mb-min3">
+					<Body3 color="neutral-c-600" className="mt-min3 mb-min2 ml-min2">
 						{message} ({positions.length})
-					</Body2>
+					</Body3>
 					<div>
 						{positions.map(({ account, balance, status }, i) => (
 							<div

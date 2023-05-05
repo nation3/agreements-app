@@ -36,7 +36,7 @@ const AgreementCard: React.FC<IAgreementCardProps> = (props) => {
 			animate={{ opacity: 1, y: 0, boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)" }}
 			transition={{ duration: 0.15 }}
 		>
-			<Card size="base" className="p-min3 flex flex-col gap-min3 w-full">
+			<Card size="base" className="p-min3 md:p-base flex flex-col gap-min3 w-full">
 				<IllustrationRenderer customSize={60} icon={<N3AgreementDone />} size="sm" />
 				<div className="flex gap-min3">
 					<MarkdownFile

@@ -1,16 +1,13 @@
-import { Body3, Button } from "@nation3/ui-components";
-import React, { ReactNode, useEffect, useMemo, useState } from "react";
-import { useAgreementDispute, useAgreementFinalize } from "../../../hooks";
+import { Body3, BodyHeadline, Button } from "@nation3/ui-components";
+import { BigNumber, utils } from "ethers";
 import { Modal, ModalProps } from "flowbite-react";
+import Image from "next/image";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useAgreementDispute, useAgreementFinalize } from "../../../hooks";
 import disputeIcon from "../../../public/svgs/dispute-icon.svg";
 import finalizeIcon from "../../../public/svgs/finalize-icon.svg";
-import { utils, BigNumber } from "ethers";
-import Image from "next/image";
 import { useAgreementData } from "../context/AgreementDataContext";
-import { CheckCircleIcon } from "@heroicons/react/24/outline";
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-import { BodyHeadline } from "@nation3/ui-components";
 
 interface ContextModalProps extends Pick<ModalProps, "show" | "onClose"> {
 	icon: ReactNode;
@@ -91,56 +88,49 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 
 	return (
 		<>
-			<div className="grid grid-cols-1 gap-6">
+			<div className="grid grid-cols-1 gap-double">
 				{/* FINALISE ACTION BLOCK */}
-				<div className="w-full flex-col items-stretch h-full flex justify-between">
-					<div className="flex flex-col justify-between mb-base">
-						<div className="flex mb-base items-center">
-							<span>
-								<CheckCircleIcon className="w-7 h-7 text-bluesky" />
-							</span>
-							<BodyHeadline className="ml-min3">
-								{t("agreementActions.finalizeHeadline")}
-							</BodyHeadline>
+				<section className="grid grid-cols-1 gap-min3">
+					<div className="w-full flex-col items-stretch h-full flex justify-between gap-min3">
+						<div className="flex flex-col justify-between gap-min3">
+							<div className="flex items-center mr-min3">
+								<BodyHeadline color="neutral-c-800">
+									{t("agreementActions.finalizeHeadline")}
+								</BodyHeadline>
+							</div>
+							<Body3 color="neutral-c-500" className="text-sm ">
+								{t("agreementActions.finalizeDescription")}
+							</Body3>
 						</div>
-						<Body3>
-							{t("agreementActions.finalizeDescription")}
-							<b className="text-slate-600">{t("agreementActions.finalizeDescriptionBold")}</b>.
-						</Body3>
-					</div>
-					<div>
 						<Button
-							className="flex w-auto px-12 rounded-full"
 							outlined
 							label={t("agreementActions.finalizeCTA")}
 							onClick={() => setFinalizeModalVisibility(true)}
 						/>
 					</div>
-				</div>
+				</section>
 
 				{/* DISPUTE ACTION BLOCK */}
-				<div className="w-full flex-col h-full flex justify-between">
-					<div className="flex flex-col justify-between h-full mb-base">
-						<div className="flex mb-base items-center">
-							<span>
-								<ExclamationCircleIcon className="w-7 h-7 text-bluesky" />
-							</span>
-							<BodyHeadline className="ml-min3">
-								{t("agreementActions.disputeHeadline")}
-							</BodyHeadline>
+				<section className="grid grid-cols-1 gap-min3">
+					<div className="w-full flex-col items-stretch h-full flex justify-between gap-min3">
+						<div className="flex flex-col justify-between gap-min3">
+							<div className="flex items-center mr-min3">
+								<BodyHeadline color="neutral-c-800">
+									{t("agreementActions.disputeHeadline")}
+								</BodyHeadline>
+							</div>
+							<Body3 color="neutral-c-500" className="text-sm ">
+								{t("agreementActions.disputeDescription")}
+							</Body3>
 						</div>
-						<Body3>{t("agreementActions.disputeDescription")}</Body3>
-					</div>
-					<div>
 						<Button
-							className="flex w-auto px-12 rounded-full"
-							disabled={userPosition?.status === 2}
+							className="border-sc-c-orange3"
 							outlined
 							label={t("agreementActions.disputeCTA")}
 							onClick={() => setDisputeModalVisibility(true)}
 						/>
 					</div>
-				</div>
+				</section>
 			</div>
 
 			<ContextModal

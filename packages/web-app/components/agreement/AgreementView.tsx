@@ -73,8 +73,10 @@ export const AgreementView = () => {
 					/>
 
 					{/* Participants */}
-					<HeadlineBasic className="">Positions & Stakes</HeadlineBasic>
-					<Parties token={collateralToken} positions={positions} />
+					<div>
+						<HeadlineBasic className="mb-min3">Positions & Stakes</HeadlineBasic>
+						<Parties token={collateralToken} positions={positions} />
+					</div>
 				</Card>
 			</div>
 			{/* AGREEMENT ACTIONS */}
