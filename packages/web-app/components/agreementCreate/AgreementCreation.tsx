@@ -10,7 +10,7 @@ import { useTokenList } from "../../hooks/useTokenList";
 import { trimHash, validateCriteria } from "../../utils";
 
 import cx from "classnames";
-import AgreementCreateIntro from "./AgreementCreateIntro";
+import AgreementCreateIntro from "./AgreementCreationIntro";
 import { AgreementParties } from "./AgreementCreationParties";
 import { AgreementTerms } from "./AgreementCreationTerms";
 import AgreementPreview from "./AgreementPreview";

@@ -11,7 +11,6 @@ import {
 } from "@nation3/ui-components";
 import React from "react";
 import { GradientLink } from "../GradientLink";
-
 type IAgreementCreateIntroProps = {
 	setActiveStep: (step: number) => void; // add setActiveStep as a prop
 };
@@ -24,7 +23,7 @@ const AgreementCreateIntro: React.FC<IAgreementCreateIntroProps> = ({
 	return (
 		<React.Fragment>
 			<>
-				<Card className="md:p-double col-start-1 col-end-13 flex justify-center items-center ">
+				<Card className="md:p-double col-start-1 col-end-13 flex justify-center items-center relative">
 					<div className="max-w-lg flex-col items-center justify-center flex gap-base">
 						<IconRenderer
 							className=""

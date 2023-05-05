@@ -75,7 +75,9 @@ const Parties = ({
 								<section key={account} className="grid grid-cols-5 md:gap-16 gap-8">
 									<div className="col-start-1 col-end-6 md:col-end-4 flex">
 										<div>
-											<Body3 className="text-neutral-c-500 mb-min2">Address</Body3>
+											<Body3 color="neutral-c-500" className="mb-min2">
+												Address
+											</Body3>
 											<div className="flex">
 												<AccountDisplay address={account} />
 												{myAccount === account && (
@@ -87,12 +89,16 @@ const Parties = ({
 											</div>
 										</div>
 									</div>
-									<div className="col-start-1 col-end-3 md:col-start-4 md:col-end-4">
-										<Body3 className="text-neutral-c-500 mb-min2">Collateral</Body3>
+									<div className="col-start-1 col-end-3 md:col-start-4 md:col-end-4 flex justify-end flex-col">
+										<Body3 color="neutral-c-500" className="mb-min2">
+											Collateral
+										</Body3>
 										<Body3>{utils.formatUnits(BigNumber.from(balance))}</Body3>
 									</div>
-									<div className="col-start-4 col-end-6 md:col-start-5 md:col-end-5">
-										<Body3 className="text-neutral-c-500 mb-min2">Token</Body3>
+									<div className="col-start-4 col-end-6 md:col-start-5 md:col-end-5 flex justify-end flex-col">
+										<Body3 color="neutral-c-500" className="mb-min2">
+											Token
+										</Body3>
 										<Body3>{token?.symbol ?? ""}</Body3>
 									</div>
 								</section>

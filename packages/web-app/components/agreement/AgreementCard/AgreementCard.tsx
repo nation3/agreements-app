@@ -1,9 +1,15 @@
-import { Body3, BodyHeadline, Card, N3AgreementDone } from "@nation3/ui-components";
+import {
+	Body3,
+	BodyHeadline,
+	Card,
+	IllustrationRenderer,
+	N3AgreementDone,
+	ScreenType,
+	useScreen,
+} from "@nation3/ui-components";
 import { BigNumber, utils } from "ethers";
 import { motion } from "framer-motion";
 import React from "react";
-import IllustrationRenderer from "../../../../ui-components/src/components/Atoms/IllustrationRenderer";
-import { ScreenType, useScreen } from "../../../../ui-components/src/hooks/useScreen";
 import { AccountDisplay } from "../../AccountDisplay";
 import MarkdownFile from "../../MarkdownFile/MarkdownFile";
 import TokenRenderer from "../../TokenRenderer";
@@ -37,14 +43,11 @@ const AgreementCard: React.FC<IAgreementCardProps> = (props) => {
 			animate={{
 				opacity: 1,
 				y: 0,
-				boxShadow: `0px ${screen == ScreenType.Desktop ? "2px 6px" : "0px 0px"} rgba(0, 0, 0, 0.1)`,
+				boxShadow: `0px ${screen == ScreenType.Desktop ? "2px 6px" : "1px 4px"} rgba(0, 0, 0, 0.1)`,
 			}}
 			transition={{ duration: 0.15 }}
 		>
-			<Card
-				size="base"
-				className="p-[0px] sm:p-min3 md:p-base flex flex-col gap-min3 w-full sm-only:border-none"
-			>
+			<Card size="base" className="p-[0px] sm:p-min3 md:p-base flex flex-col gap-min3 w-full">
 				<IllustrationRenderer customSize={60} icon={<N3AgreementDone />} size="sm" />
 				<div className="flex flex-wrap gap-min3">
 					<MarkdownFile

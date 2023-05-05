@@ -7,10 +7,19 @@ import { generateAgreementMetadata } from "../../utils";
 
 import { Button, Card, HeadlineBasic, ModalNew } from "@nation3/ui-components";
 
+import {
+	AnimationLoader,
+	Body3,
+	BodyHeadline,
+	IllustrationRenderer,
+	N3AgreementDone,
+	useScreen,
+} from "@nation3/ui-components";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Spinner from "../../../ui-components/src/components/Atoms/Spinner";
+import CompleteAnimation from "../../public/animations/Complete.json";
+import EncryptingAnimation from "../../public/animations/Encrypting_file.json";
 import AgreementCard from "../agreement/AgreementCard/AgreementCard";
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 
@@ -43,10 +52,12 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 		// isError: createError,
 		isProcessing: createProcessing,
 	} = useAgreementCreate({});
+	const { screen } = useScreen();
+	const [isAgreementCreated, setisAgreementCreated] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (createSuccess) {
-			router.push(`/agreement/${id}`);
+			setisAgreementCreated(true);
 		}
 		console.log("$$$ POSITIONS => ", positions);
 	}, [router, terms, positions, createSuccess, id, title]);
@@ -127,19 +138,78 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 				</div>
 
 				{/* MODAL */}
-				<ModalNew isOpen={isOpen} onClose={handleClose}>
+				<ModalNew
+					isOpen={isOpen}
+					isClosingDisabled={isAgreementCreated}
+					onClose={() => {
+						router.push(`/agreement/${id}`);
+					}}
+				>
 					<motion.div
-						className="w-full rounded-lg flex justify-center items-center"
-						initial={{ opacity: 0, y: -10, boxShadow: "0px 0px 0 rgba(0, 0, 0, 0.0)" }}
-						animate={{ opacity: 1, y: 0, boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)" }}
-						transition={{ duration: 0.15 }}
+						key="modal-content"
+						initial={{ opacity: 0, y: +20 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: +20 }}
+						transition={{ duration: 0.2 }}
+						className="flex md:h-auto h-full w-full max-w-md md:m-0 justify-center sm-only:items-end shadow rounded-lg"
+						onClick={(e) => {
+							e.stopPropagation();
+						}}
 					>
-						<Card>
-							<div>
-								<HeadlineBasic>Preparing Terms file</HeadlineBasic>
-								<div>Cool animation here... </div>
-								<Spinner className="w-5 h-5" />
-							</div>
+						<Card size="base">
+							{/* TODO:   COMPONENTISE */}
+							{isAgreementCreated && (
+								<div className="flex flex-col gap-base">
+									<div className="bg-neutral-c-200 rounded-lg px-base py-double border-2 border-neutral-c-300">
+										<AnimationLoader width={200} height={200} animationData={EncryptingAnimation} />
+									</div>
+									<div className="flex gap-min3">
+										<IllustrationRenderer customSize={60} icon={<N3AgreementDone />} size="sm" />
+										<div>
+											<BodyHeadline color="neutral-c-700" className="mt-min1">
+												Preparing Agreement
+											</BodyHeadline>
+											<Body3 color="neutral-c-500">Please wait, your wallet will prompt.</Body3>
+										</div>
+									</div>
+								</div>
+							)}
+
+							{/* TODO:   COMPONENTISE */}
+							{!isAgreementCreated && (
+								<div className="flex flex-col gap-base">
+									<div className="bg-neutral-c-200 rounded-lg px-base py-double border-2 border-neutral-c-300">
+										<AnimationLoader width={200} height={200} animationData={CompleteAnimation} />
+									</div>
+									<div className="flex gap-min3">
+										<IllustrationRenderer customSize={60} icon={<N3AgreementDone />} size="sm" />
+										<div>
+											<BodyHeadline color="neutral-c-600" className="mt-min1">
+												Your Agreement is live! 🎉
+											</BodyHeadline>
+											<Body3 color="neutral-c-400">
+												Check it and share it with the other parties.
+											</Body3>
+										</div>
+									</div>
+									<motion.div
+										key="modal-content"
+										initial={{ opacity: 0, y: 0, scale: 0.8 }} // start from a smaller scale
+										animate={{ opacity: 1, y: 0, scale: 1 }} // animate to full size
+										exit={{ opacity: 0, y: 0, scale: 0.8 }} // shrink back on exit
+										transition={{ duration: 0.15 }}
+										className="w-full flex justify-end"
+										onClick={(e) => {
+											router.push(`/agreement/${id}`);
+										}}
+									>
+										<Button
+											label="Go to your agreement"
+											className="w-full text-neutral-c-600"
+										></Button>
+									</motion.div>
+								</div>
+							)}
 						</Card>
 					</motion.div>
 				</ModalNew>
