@@ -4,14 +4,13 @@ import { DisputeList, DisputeListProvider } from "../components/disputes-list";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../lib/subgraph";
 import { useConstants } from "../hooks/useConstants";
-import { subgraphURI as defaultURI } from "../lib/constants";
 import cx from "classnames";
 
 const Disputes = () => {
 	const { subgraphURI } = useConstants();
 
 	return (
-		<ApolloProvider client={client(subgraphURI ?? defaultURI ?? "")}>
+		<ApolloProvider client={client(subgraphURI as string)}>
 			<DisputeListProvider>
 				<article className=" w-full flex justify-center">
 					<div className="absolute top h-60 w-full bg-pr-c-green1 z-1"></div>

@@ -1,10 +1,36 @@
 import { publicProvider } from "wagmi/providers/public";
 import { configureChains, Chain } from "wagmi";
-import { goerli, mainnet } from "wagmi/chains";
+import { mainnet } from "wagmi/chains";
 import { getDefaultWallets } from "@rainbow-me/rainbowkit";
 import { providers } from "ethers";
 
 type FallbackProviderConfig = Omit<providers.FallbackProviderConfig, "provider">;
+
+// FIXME: Import from @wagmi/chains after wagmi core update
+const gnosis: Chain = {
+	id: 100,
+	name: "Gnosis",
+	network: "gnosis",
+	nativeCurrency: {
+		decimals: 18,
+		name: "Gnosis",
+		symbol: "xDAI",
+	},
+	rpcUrls: {
+		default: "https://rpc.gnosischain.com",
+		public: "https://rpc.gnosischain.com",
+	},
+	blockExplorers: {
+		etherscan: {
+			name: "Gnosisscan",
+			url: "https://gnosisscan.io/",
+		},
+		default: {
+			name: "Gnosis Chain Explorer",
+			url: "https://blockscout.com/xdai/mainnet/",
+		},
+	},
+};
 
 // Returns and alchemy provider based on the chain
 // if the chain is goerli, use the goerly alchemy api key from the env
@@ -55,7 +81,7 @@ export const providersToUse = () => {
 };
 
 export const chainsToUse = () => {
-	return [mainnet, goerli];
+	return [mainnet, gnosis];
 };
 
 export const { chains, provider, webSocketProvider } = configureChains(

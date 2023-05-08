@@ -8,7 +8,6 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import { GetStaticProps } from "next";
 import { useConstants } from "../hooks/useConstants";
-import { subgraphURI as defaultURI } from "../lib/constants";
 import cx from "classnames";
 import { Headline3 } from "@nation3/ui-components";
 
@@ -26,7 +25,7 @@ const Agreements = () => {
 	const { subgraphURI } = useConstants();
 
 	return (
-		<ApolloProvider client={client(subgraphURI ?? defaultURI ?? "")}>
+		<ApolloProvider client={client(subgraphURI as string)}>
 			<AgreementListProvider>
 				<article className="w-full flex justify-center">
 					<div className="absolute top h-60 w-full bg-pr-c-green1 z-1"></div>
