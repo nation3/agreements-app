@@ -8,7 +8,7 @@ export enum ScreenType {
 const reportScreen: () => ScreenType = () => {
 	if (typeof window !== "undefined") {
 		const w = window.innerWidth;
-		if (w < 1024) {
+		if (w < 768) {
 			return ScreenType.Mobile;
 		}
 	}

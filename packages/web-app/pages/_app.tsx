@@ -1,7 +1,8 @@
-import "../styles/globals.css";
+// import "../styles/globals.css";
+import "../../ui-components/dist/styles.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { appWithTranslation } from "next-i18next";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import Head from "next/head";
 import type { AppProps } from "next/app";
@@ -23,36 +24,28 @@ const client = createClient({
 	webSocketProvider,
 });
 
-const HeaderNavigation = () => {
-	const router = useRouter();
+// eslint-disable-next-line react/display-name
+const HeaderNavigation = memo(() => {
 	const { address } = useAccount();
 	const { judges } = useCohort();
 
 	const [isDisputesVisible, setIsDisputesVisible] = useState<boolean>(false);
 
-	/* 	
-	const isDisputesVisible = useMemo(() => {
-		if (!judges || !address) return false;
-		return judges.includes(address);
-	}, [address, judges]); 
-	*/
-
-	// FIXME: Catched input was not updating correctly on Rainbow, recheck on each view instead of a whole re-rendering process.
 	useEffect(() => {
 		if (!judges || !address) return setIsDisputesVisible(false);
 		setIsDisputesVisible(judges.includes(address));
-	}, [address, judges]);
+	}, [address, judges, setIsDisputesVisible]);
 
 	return (
 		<>
+			<Link
+				href="/agreements"
+				className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
+			>
+				Agreements
+			</Link>
 			{isDisputesVisible && (
 				<>
-					<Link
-						href="/agreements"
-						className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
-					>
-						Agreements
-					</Link>
 					<Link
 						href="/disputes"
 						className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
@@ -63,7 +56,7 @@ const HeaderNavigation = () => {
 			)}
 		</>
 	);
-};
+});
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const router = useRouter();

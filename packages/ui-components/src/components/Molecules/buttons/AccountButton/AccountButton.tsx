@@ -17,7 +17,7 @@ export const AccountButton = ({ avatar, account, borderColor, ...props }: Accoun
 					{account.ensName ? account.ensName : shortenHash((account.address as string) ?? "")}
 				</Body3>
 				<div
-					className={`flex justify-center items-center rounded-full h-[50px] w-[50px] border-2 border-${
+					className={`flex justify-center items-center rounded-full h-base w-base md:h-[50px] md:w-[50px] border-2 border-${
 						borderColor ? borderColor : "neutral-c-500"
 					}`}
 				>

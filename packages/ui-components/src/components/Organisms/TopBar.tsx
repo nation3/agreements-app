@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import AppHeader from "../Molecules/AppHeader";
 import Link from "next/link";
 import Nation3Logo from "../Atoms/Nation3Logo";
+import cx from "classnames";
 
 export interface ITopBarProps {
 	title: string;
@@ -19,7 +20,14 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 	return (
 		<React.Fragment>
 			<div className="absolute top-0 left-0 flex justify-center z-10 w-full h-auto">
-				<div className="grid grid-cols-12 gap-base border-2 bg-glass-c-50 border-glass-c-80 backdrop-blur-sm rounded-full p-min2 mt-min2">
+				<div
+					className={cx(
+						"flex mx-min2 md:grid grid-flow-row grid-cols-1 auto-rows-auto gap-16",
+						"lg:grid-cols-lg lg:gap-24",
+						"xl:grid-cols-xl",
+						"border-2 bg-glass-c-50 border-glass-c-80 backdrop-blur-sm rounded-full p-min2 mt-min2",
+					)}
+				>
 					<section className="col-start-1 col-end-13 flex items-center justify-between">
 						<div className="w-full flex items-center h-full">
 							<Link href="/" className="cursor-pointer">

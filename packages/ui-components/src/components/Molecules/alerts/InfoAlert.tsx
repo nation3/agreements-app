@@ -12,7 +12,7 @@ export const InfoAlert = ({ className, color = "bluesky", ...props }: InfoAlertP
 	return (
 		<Alert
 			color={`${color}-200`}
-			className={`bg-opacity-20 text-${color}-500 ${className && className}`}
+			className={`bg-neutral-c-200 text-neutral-c-500 ${className && className}`}
 			icon={<InformationCircleIcon className="w-5 h-5" />}
 			{...props}
 		/>

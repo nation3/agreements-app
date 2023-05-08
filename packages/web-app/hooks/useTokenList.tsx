@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useNetwork } from "wagmi";
-import { Token } from "../components/create/context/types";
+import { Token } from "../components/agreementCreate/context/types";
 
 const mainnetTokens = [
 	{
@@ -75,7 +75,7 @@ export const useTokenList = (): Token[] => {
 	return tokens;
 };
 
-export const findToken = (tokenSymbol: string): Token => {
+export const useFindToken = (tokenSymbol: string): Token => {
 	const { chain } = useNetwork();
 
 	const token = useMemo(() => {
@@ -87,7 +87,7 @@ export const findToken = (tokenSymbol: string): Token => {
 			default:
 				return mainnetTokens.find((token) => token.symbol === tokenSymbol);
 		}
-	}, [chain]);
+	}, [chain, tokenSymbol]);
 
 	return token ? token : empty;
 };

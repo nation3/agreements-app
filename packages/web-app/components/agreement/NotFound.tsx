@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
 import {
-	WarnDocumentOrange,
+	Body2,
+	Body3,
+	BodyHeadline,
 	Card,
 	Headline3,
-	Body2,
-	BodyHeadline,
-	Headline4,
-	Body3,
+	WarnDocumentOrange,
 } from "@nation3/ui-components";
 import cx from "classnames";
+import React from "react";
 import NoActions from "./actions/NoActions";
 
 const INotFoundAgreementDefaultProps = {};
@@ -34,11 +33,13 @@ const NotFoundAgreement: React.FC = (props) => {
 				{/* CORE AGREEMENT DATA */}
 				<div className={cx("md:col-start-1 md:col-end-10 md:gap-16", "w-full text-gray-800")}>
 					{/* Title and details */}
-					<Card className="flex justify-center flex-col c-gradient-warn">
+					<Card className="flex justify-center flex-col c-gradient-warn border-sc-c-orange1">
 						{/* Participants */}
 						<WarnDocumentOrange className="h-[150px] w-[150px] mb-base" />
-						<Headline4 className="pb-min3">Not existing agreement</Headline4>
-						<Body3 className="pb-base">Check the correct agreement id or url</Body3>
+						<BodyHeadline className="mb-min2">This agreement does not exist</BodyHeadline>
+						<Body3 color="neutral-c-500" className="">
+							Check the correct agreement id or url
+						</Body3>
 					</Card>
 				</div>
 
@@ -46,10 +47,10 @@ const NotFoundAgreement: React.FC = (props) => {
 				<div
 					className={cx(
 						// "sticky bottom-base",
-						"md:col-start-10 md:col-end-13",
+						"md:col-start-10 md:col-end-13 ",
 					)}
 				>
-					<div className="w-full flex flex-col bg-white rounded-lg border-2 border-neutral-c-200">
+					<div className="w-full flex flex-col bg-white rounded-lg border-2 border-sc-c-orange1">
 						<div className="border-b-2 border-neutral-c-200 p-base">
 							<BodyHeadline>Available Actions</BodyHeadline>
 						</div>
