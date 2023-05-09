@@ -19,6 +19,7 @@ type Position = { account: string; balance: BigNumber };
 
 export const ParticipantRow = ({
 	positions,
+	initPositions,
 	index,
 	token,
 	onChange,
@@ -26,6 +27,7 @@ export const ParticipantRow = ({
 	ensProvider,
 }: {
 	positions: Position[];
+	initPositions: Position[];
 	token: any;
 	index: number;
 	removePosition?: any;
@@ -90,7 +92,8 @@ export const ParticipantRow = ({
 					<div className="col-start-1 col-end-6 lg:col-end-4">
 						<AddressInput
 							label="Address"
-							defaultValue={localPositions[index].account}
+							defaultValue={initPositions[index].account}
+							value={positions[index].account}
 							focusColor="pr-c-blue2"
 							placeholder={"Ens handler or address"}
 							ensProvider={ensProvider}

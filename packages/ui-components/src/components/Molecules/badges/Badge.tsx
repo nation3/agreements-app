@@ -1,4 +1,5 @@
 import React, { HTMLAttributes, ReactNode } from "react";
+import { Body3 } from "../../Atoms";
 
 export interface BadgeBaseProps extends HTMLAttributes<HTMLSpanElement> {
 	label?: ReactNode;
@@ -11,18 +12,20 @@ export interface BadgeProps extends BadgeBaseProps {
 
 const BadgeBase = ({ label, className, ...props }: BadgeBaseProps) => {
 	return (
-		<span className={`px-2.5 py-0.5 rounded-md ${className}`} {...props}>
+		<Body3 className={`px-min2 py-min1 rounded-base ${className}`} {...props}>
 			{label}
-		</span>
+		</Body3>
 	);
 };
 
 export const Badge = (props: BadgeProps) => {
-	const { textColor = "neutral-c-600", bgColor = "black", className, ...args } = props;
+	const { textColor = "neutral-c-300", bgColor = "white", className, ...args } = props;
 
 	return (
 		<BadgeBase
-			className={`px-4 font-normal text-${textColor} bg-${bgColor} ${className && className}`}
+			className={`px-min2 border-2 border-neutral-c-200 rounded-base bg-white text-${textColor} bg-${bgColor} ${
+				className && className
+			}`}
 			{...args}
 		/>
 	);

@@ -12,12 +12,14 @@ import {
 	Body3,
 	BodyHeadline,
 	IllustrationRenderer,
+	InfoAlert,
 	N3AgreementDone,
 	useScreen,
 } from "@nation3/ui-components";
+import cx from "classnames";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CompleteAnimation from "../../public/animations/Complete.json";
 import EncryptingAnimation from "../../public/animations/Encrypting_file.json";
 import AgreementCard from "../agreement/AgreementCard/AgreementCard";
@@ -49,18 +51,11 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 		create,
 		isLoading: createLoading,
 		isTxSuccess: createSuccess,
-		// isError: createError,
+		isError: createError,
 		isProcessing: createProcessing,
 	} = useAgreementCreate({});
 	const { screen } = useScreen();
 	const [isAgreementCreated, setisAgreementCreated] = useState<boolean>(false);
-
-	useEffect(() => {
-		if (createSuccess) {
-			setisAgreementCreated(true);
-		}
-		console.log("$$$ POSITIONS => ", positions);
-	}, [router, terms, positions, createSuccess, id, title]);
 
 	const submit = async () => {
 		setIsOpen(true);
@@ -117,6 +112,12 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 				</section>
 
 				{/* Action buttons */}
+				{!isValidCriteria && (
+					<InfoAlert
+						className="rounded-md text-sm flex"
+						message={t("create.agreementPositions.warning")}
+					/>
+				)}
 				<div className="flex justify-between gap-min3 mt-min2 sm:mt-mt-min3">
 					<Button
 						label={<div className="flex items-center gap-1">{"Back"}</div>}
@@ -142,7 +143,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 					isOpen={isOpen}
 					isClosingDisabled={!isAgreementCreated}
 					onClose={() => {
-						router.push(`/agreement/${id}`);
+						// router.push(`/agreement/${id}`);
 					}}
 				>
 					<motion.div
@@ -156,9 +157,25 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 							e.stopPropagation();
 						}}
 					>
-						<Card size="base">
+						<Card size="base" className={cx(createError && "border-2 border-sc-c-orange2")}>
 							{/* TODO:   COMPONENTISE */}
-							{!isAgreementCreated && (
+							{createError && (
+								<div className="flex flex-col gap-base">
+									<div className="flex gap-min3">
+										<IllustrationRenderer customSize={60} icon={<N3AgreementDone />} size="sm" />
+										<div>
+											<BodyHeadline color="neutral-c-700" className="mt-min1">
+												Something went wrong
+											</BodyHeadline>
+											<Body3 color="neutral-c-500">Please wait, your wallet will prompt.</Body3>
+										</div>
+										<Button label="Go back" className="w-full text-neutral-c-600"></Button>
+									</div>
+								</div>
+							)}
+
+							{/* TODO:   COMPONENTISE */}
+							{!createSuccess && (
 								<div className="flex flex-col gap-base">
 									<div className="bg-neutral-c-200 rounded-lg px-base py-double border-2 border-neutral-c-300">
 										<AnimationLoader width={200} height={200} animationData={EncryptingAnimation} />
@@ -176,7 +193,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 							)}
 
 							{/* TODO:   COMPONENTISE */}
-							{isAgreementCreated && (
+							{createSuccess && (
 								<div className="flex flex-col gap-base">
 									<div className="bg-neutral-c-200 rounded-lg px-base py-double border-2 border-neutral-c-300">
 										<AnimationLoader width={200} height={200} animationData={CompleteAnimation} />

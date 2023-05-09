@@ -8,7 +8,7 @@ import {
 	IconRenderer,
 	InfoAlert,
 } from "@nation3/ui-components";
-import { utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
@@ -19,7 +19,7 @@ import { validateCriteria } from "../../utils";
 import { ParticipantRow } from "../ParticipantRow";
 import { TokenSelector } from "../TokenSelector";
 import { useAgreementCreation } from "./context/AgreementCreationContext";
-import { InputPositionList, Token } from "./context/types";
+import { Token } from "./context/types";
 
 interface PartiesCardProps {
 	setActiveStep: (step: number) => void;
@@ -31,7 +31,10 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 	const provider = useProvider({ chainId: 1 });
 	const tokens = useTokenList();
 	const [selectedToken, setSelectedToken] = useState<Token>();
-	const [localPositions, setlocalPositions] = useState<InputPositionList>(positions);
+	const [initPositions, setInitPositions] = useState([
+		{ account: "", balance: BigNumber.from(0) },
+		{ account: "", balance: BigNumber.from(0) },
+	]);
 
 	useEffect(() => {
 		if (tokens.length > 0) {
@@ -47,9 +50,8 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 	}, [token]);
 
 	useEffect(() => {
-		positions && setlocalPositions(positions);
-		console.log("$$$ =>  PARTIES POSITIONS", positions);
-	}, [positions]);
+		setPositions(positions.length === 0 ? initPositions : positions);
+	}, []);
 
 	const isValidCriteria = useMemo(() => validateCriteria(positions), [positions]);
 
@@ -89,11 +91,12 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 					</div>
 				</div>
 				<div className="flex flex-col gap-min3">
-					{localPositions.map((_, index) => (
+					{positions.map((_, index) => (
 						<div key={index}>
 							<ParticipantRow
 								ensProvider={provider}
-								positions={localPositions}
+								positions={positions}
+								initPositions={initPositions}
 								token={token}
 								index={index}
 								removePosition={() => setPositions(positions.filter((_, i) => i !== index))}

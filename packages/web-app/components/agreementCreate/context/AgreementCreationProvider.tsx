@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { ReactNode, useMemo, useState } from "react";
 import { AgreementCreationContext, AgreementCreationContextType } from "./AgreementCreationContext";
 
@@ -21,10 +20,7 @@ export const AgreementCreationProvider = ({ children }: { children: ReactNode })
 		decimals: 18,
 		icon: "/tokens/nation3.png",
 	});
-	const [positions, setPositions] = useState([
-		{ account: "", balance: BigNumber.from(0) },
-		{ account: "", balance: BigNumber.from(0) },
-	]);
+	const [positions, setPositions] = useState([]);
 	const { frameworkAddress } = useConstants();
 
 	const termsHash = useMemo(() => hexHash(terms), [terms]);
