@@ -1,6 +1,7 @@
 import {
 	AddressInput,
 	Body1,
+	Body3,
 	Button,
 	IconRenderer,
 	N3Cross,
@@ -11,7 +12,6 @@ import { BigNumber, ethers, providers, utils } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { ChangeEvent, FocusEvent, useEffect, useState } from "react";
-import { Body3 } from "../../ui-components/src/components/Atoms";
 import { purgeFloat } from "../utils";
 import { InputPositionList } from "./agreementCreate/context/types";
 
@@ -19,7 +19,6 @@ type Position = { account: string; balance: BigNumber };
 
 export const ParticipantRow = ({
 	positions,
-	initPositions,
 	index,
 	token,
 	onChange,
@@ -27,7 +26,6 @@ export const ParticipantRow = ({
 	ensProvider,
 }: {
 	positions: Position[];
-	initPositions: Position[];
 	token: any;
 	index: number;
 	removePosition?: any;
@@ -92,8 +90,7 @@ export const ParticipantRow = ({
 					<div className="col-start-1 col-end-6 lg:col-end-4">
 						<AddressInput
 							label="Address"
-							defaultValue={initPositions[index].account}
-							value={positions[index].account}
+							defaultValue={localPositions[index].account}
 							focusColor="pr-c-blue2"
 							placeholder={"Ens handler or address"}
 							ensProvider={ensProvider}

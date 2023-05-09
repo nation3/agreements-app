@@ -3,7 +3,7 @@ import { constants } from "ethers";
 import { useAgreementCreate } from "../../hooks/useAgreement";
 
 import { preparePutToIPFS } from "../../lib/ipfs";
-import { generateAgreementMetadata } from "../../utils";
+import { generateAgreementMetadata, validateCriteria } from "../../utils";
 
 import { Button, Card, HeadlineBasic, ModalNew } from "@nation3/ui-components";
 
@@ -19,7 +19,7 @@ import {
 import cx from "classnames";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CompleteAnimation from "../../public/animations/Complete.json";
 import EncryptingAnimation from "../../public/animations/Encrypting_file.json";
 import AgreementCard from "../agreement/AgreementCard/AgreementCard";
@@ -49,15 +49,17 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 
 	const {
 		create,
-		isLoading: createLoading,
-		isTxSuccess: createSuccess,
-		isError: createError,
-		isProcessing: createProcessing,
+		isLoading: isCreateLoading,
+		isTxSuccess: isCreateSuccess,
+		isError: isCreateError,
+		isProcessing: isCreateProcessing,
 	} = useAgreementCreate({});
 	const { screen } = useScreen();
 	const [isAgreementCreated, setisAgreementCreated] = useState<boolean>(false);
+	const [isLocalCreateError, setisLocalCreateError] = useState<boolean>(false);
 
 	const submit = async () => {
+		setisLocalCreateError(false);
 		setIsOpen(true);
 		const metadata = await generateAgreementMetadata({
 			title,
@@ -82,6 +84,10 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 		});
 	};
 
+	useEffect(() => {
+		if (isCreateError) setisLocalCreateError(true);
+	}, [isCreateError]);
+
 	// MODAL CONTROLLER
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const handleOpen = () => {
@@ -90,6 +96,8 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 	const handleClose = () => {
 		setIsOpen(false);
 	};
+
+	const isValidCriteria = useMemo(() => validateCriteria(positions), [positions]);
 
 	return (
 		<>
@@ -118,10 +126,11 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 						message={t("create.agreementPositions.warning")}
 					/>
 				)}
+
 				<div className="flex justify-between gap-min3 mt-min2 sm:mt-mt-min3">
 					<Button
 						label={<div className="flex items-center gap-1">{"Back"}</div>}
-						disabled={createLoading || createProcessing}
+						disabled={isCreateLoading || isCreateProcessing}
 						bgColor="slate"
 						onClick={() => setActiveStep(2)}
 					/>
@@ -132,8 +141,8 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 								{"Create Agreement"}
 							</div>
 						}
-						isLoading={createLoading || createProcessing}
-						disabled={createLoading || createProcessing}
+						isLoading={isCreateLoading || isCreateProcessing}
+						disabled={isCreateLoading || isCreateProcessing}
 						onClick={() => submit()}
 					/>
 				</div>
@@ -157,25 +166,31 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 							e.stopPropagation();
 						}}
 					>
-						<Card size="base" className={cx(createError && "border-2 border-sc-c-orange2")}>
+						<Card size="base" className={cx(isLocalCreateError && "border-2 border-sc-c-orange2")}>
 							{/* TODO:   COMPONENTISE */}
-							{createError && (
+							{isLocalCreateError && (
 								<div className="flex flex-col gap-base">
 									<div className="flex gap-min3">
 										<IllustrationRenderer customSize={60} icon={<N3AgreementDone />} size="sm" />
 										<div>
 											<BodyHeadline color="neutral-c-700" className="mt-min1">
-												Something went wrong
+												Agreement creation failed
 											</BodyHeadline>
-											<Body3 color="neutral-c-500">Please wait, your wallet will prompt.</Body3>
+											<Body3 color="neutral-c-500">
+												Please, check your wallet status and try again.
+											</Body3>
 										</div>
-										<Button label="Go back" className="w-full text-neutral-c-600"></Button>
 									</div>
+									<Button
+										onClick={() => setIsOpen(false)}
+										label="Go back"
+										className="w-full text-neutral-c-600"
+									></Button>
 								</div>
 							)}
 
 							{/* TODO:   COMPONENTISE */}
-							{!createSuccess && (
+							{!isCreateSuccess && !isLocalCreateError && (
 								<div className="flex flex-col gap-base">
 									<div className="bg-neutral-c-200 rounded-lg px-base py-double border-2 border-neutral-c-300">
 										<AnimationLoader width={200} height={200} animationData={EncryptingAnimation} />
@@ -193,7 +208,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 							)}
 
 							{/* TODO:   COMPONENTISE */}
-							{createSuccess && (
+							{isCreateSuccess && (
 								<div className="flex flex-col gap-base">
 									<div className="bg-neutral-c-200 rounded-lg px-base py-double border-2 border-neutral-c-300">
 										<AnimationLoader width={200} height={200} animationData={CompleteAnimation} />

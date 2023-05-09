@@ -32,8 +32,8 @@ const IFooterDefaultProps = {
 const Footer: React.FC<IFooterProps> = (props) => {
 	const { menu } = props;
 	return (
-		<footer className="hidden md:flex justify-center p-base border-t-2 border-neutral-c-200">
-			<div className="md:grid grid-cols-xl">
+		<footer className="hidden lg:flex justify-center p-base border-t-2 border-neutral-c-200">
+			<div className="lg:grid grid-cols-xl">
 				<div className="col-start-1 col-end-7 flex justify-start items-center">
 					<LogoHolder>
 						<N3LogoGradient />
@@ -44,7 +44,7 @@ const Footer: React.FC<IFooterProps> = (props) => {
 					{menu &&
 						menu.map((e) => (
 							<>
-								<a className="flex items-center" href={e.link}>
+								<a key={e.name} className="flex items-center" href={e.link}>
 									<Body3 className="mr-min2">{e.name}</Body3>
 									<IconRenderer
 										customSize={16}
