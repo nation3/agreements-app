@@ -11,18 +11,20 @@ export interface BadgeProps extends BadgeBaseProps {
 
 const BadgeBase = ({ label, className, ...props }: BadgeBaseProps) => {
 	return (
-		<span className={`px-2.5 py-0.5 rounded-md ${className}`} {...props}>
+		<span className={`px-min2 py-min1 text-sm rounded-base ${className}`} {...props}>
 			{label}
 		</span>
 	);
 };
 
 export const Badge = (props: BadgeProps) => {
-	const { textColor = "neutral-c-600", bgColor = "black", className, ...args } = props;
+	const { textColor = "neutral-c-500", bgColor = "white", className, ...args } = props;
 
 	return (
 		<BadgeBase
-			className={`px-4 font-normal text-${textColor} bg-${bgColor} ${className && className}`}
+			className={`px-min2 border-2 border-neutral-c-300 rounded-base text-${textColor} bg-${bgColor} ${
+				className && className
+			}`}
 			{...args}
 		/>
 	);
