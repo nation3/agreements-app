@@ -18,6 +18,7 @@ import {
 } from "@nation3/ui-components";
 import cx from "classnames";
 import { motion } from "framer-motion";
+import { t } from "i18next";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import CompleteAnimation from "../../public/animations/Complete.json";
