@@ -1,9 +1,10 @@
-import React, { ReactNode } from "react";
-import { ScreenType, useScreen } from "../../hooks/useScreen";
-import BottonNav from "../../components/Organisms/BottomNav";
-import TopBar from "../../components/Organisms/TopBar";
-import { NavButtonProps } from "../../components/Molecules/buttons";
 import cx from "classnames";
+import React, { ReactNode } from "react";
+import { NavButtonProps } from "../../components/Molecules/buttons";
+import BottonNav from "../../components/Organisms/BottomNav";
+import Footer from "../../components/Organisms/Footer";
+import TopBar from "../../components/Organisms/TopBar";
+import { ScreenType, useScreen } from "../../hooks/useScreen";
 
 export interface DefaultLayoutProps extends Omit<NavBarProps, "navItems"> {
 	children: ReactNode;
@@ -39,7 +40,7 @@ export const DefaultLayout = ({ children, ...props }: DefaultLayoutProps) => {
 
 	return (
 		<div className="mx-auto">
-			<div className="flex relative">
+			<div className="relative">
 				<NavBar />
 				<div className={cx("min-h-screen w-full")}>
 					{/* 					<div
@@ -51,6 +52,7 @@ export const DefaultLayout = ({ children, ...props }: DefaultLayoutProps) => {
 					{children}
 					{/* </div> */}
 				</div>
+				<Footer />
 			</div>
 		</div>
 	);

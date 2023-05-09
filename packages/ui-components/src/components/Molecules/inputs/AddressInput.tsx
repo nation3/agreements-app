@@ -26,7 +26,7 @@ export const AddressInput = (props: AddressInputProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [inputValue, setInputValue] = useState("");
 	const [ensName, setEnsName] = useState("");
-	// Sync the local state with the provided defaultValue prop
+
 	useEffect(() => {
 		setInputValue(defaultValue ?? "");
 	}, [props.defaultValue]);
