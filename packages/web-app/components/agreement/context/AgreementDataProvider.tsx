@@ -11,16 +11,18 @@ import {
 } from "./AgreementDataContext";
 import { Token, UserPosition } from "./types";
 import { IPFSUriToUrl, fetchAgreementTerms } from "../../../utils";
+import { isEqual } from "../../../utils/objects";
 
 export const useAgreement = ({ id }: { id: string }) => {
 	const { chain } = useNetwork();
 	const [agreement, setAgreement] = useState<AgreementWithPositions>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [error, setError] = useState<string>("");
+	const [error, setError] = useState<string>();
 
 	useEffect(() => {
 		async function fetchAgreement() {
 			try {
+				setIsLoading(true);
 				const chainId = chain?.id || 1;
 				const response = await fetch(`/api/${chainId}/agreement/${id}`);
 				if (!response.ok) {
@@ -37,7 +39,6 @@ export const useAgreement = ({ id }: { id: string }) => {
 			}
 			setIsLoading(false);
 		}
-		setIsLoading(true);
 		fetchAgreement();
 	}, [chain, id]);
 
@@ -111,10 +112,10 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 				status: agreement.status,
 				termsHash: agreement.termsHash,
 			};
-			if (params != agreementParams) {
+			if (!isEqual(params, agreementParams)) {
 				setAgreementParams(params);
 			}
-		} else {
+		} else if (!isEqual(agreementParams, defaultAgreementParams({ id }))) {
 			setAgreementParams(defaultAgreementParams({ id }));
 		}
 	}, [agreement, agreementParams]);
@@ -131,13 +132,13 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 				termsURI: agreement.termsURI,
 				termsFilename: agreement.termsFilename,
 			};
-			if (terms != termsData) {
+			if (!isEqual(terms, termsData)) {
 				setTermsData(terms);
 				if (terms.termsURI) fetchTerms(terms.termsURI);
 			}
 		} else {
-			setTermsData(defaultTermsData);
-			setTermsFile(undefined);
+			if (!isEqual(termsData, defaultTermsData)) setTermsData(defaultTermsData);
+			if (termsFile !== undefined) setTermsFile(undefined);
 		}
 	}, [agreement, termsData]);
 
@@ -179,7 +180,7 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		isLoading,
 		fileName: termsData.termsFilename,
 		fileStatus: termsData.termsPrivacy,
-		termsFile: "",
+		termsFile,
 	};
 
 	return <AgreementDataContext.Provider value={provider}>{children}</AgreementDataContext.Provider>;
