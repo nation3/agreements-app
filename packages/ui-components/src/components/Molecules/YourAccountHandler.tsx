@@ -11,9 +11,11 @@ export const AccountDisplay = ({ address }: { address: string }) => {
 		isError,
 		isLoading,
 	} = useEnsAvatar({
+		/*
 		onSuccess(data) {
 			console.log("Success AVATAR", data);
 		},
+		*/
 		addressOrName: address,
 	});
 

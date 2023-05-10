@@ -20,8 +20,6 @@ export const AnimationLoader: React.FC<AnimationLoaderProps> = ({
 			preserveAspectRatio: "xMidYMid slice",
 		},
 	};
-	console.log("$$$ => ", defaultOptions);
-
 	return (
 		<div>{animationData && <Lottie options={defaultOptions} width={width} height={height} />}</div>
 	);

@@ -7,7 +7,6 @@ import { useAgreementData } from "./context/AgreementDataContext";
 
 export const AgreementActions = (): ReactElement => {
 	const { id, userPosition, status: agreementStatus } = useAgreementData();
-	console.log("$$$ STATUS => ", agreementStatus, userPosition);
 
 	if (userPosition) {
 		if (["Created", "Ongoing"].includes(String(agreementStatus))) {

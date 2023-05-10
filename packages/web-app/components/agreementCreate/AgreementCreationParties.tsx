@@ -48,7 +48,6 @@ export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) 
 
 	useEffect(() => {
 		positions && setlocalPositions(positions);
-		console.log("$$$ =>  PARTIES POSITIONS", positions);
 	}, [positions]);
 
 	const isValidCriteria = useMemo(() => validateCriteria(positions), [positions]);

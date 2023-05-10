@@ -58,8 +58,6 @@ const Parties = ({
 	const { address: myAccount } = useAccount();
 	const filteredPositions = buildParties(positions);
 
-	console.log("POSITIONS => ", filteredPositions);
-
 	return (
 		<section>
 			{filteredPositions.map(({ message, color, positions }) => (
