@@ -19,6 +19,7 @@ import { ScreenType, useScreen } from "../../../ui-components/src/hooks/useScree
 import { decryptAES } from "../../utils/crypto";
 import { hexHash } from "../../utils/hash";
 import AgreementStatus from "../agreement/AgreementStatus";
+import { LinkedMarkdownLocalViewer } from "./LinkedMarkDownComponents";
 import styles from "./MarkdownFile.module.scss";
 
 interface MarkdownFileProps {
@@ -32,7 +33,7 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 	const { termsFile, hash, fileName, fileStatus } = props;
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [password, setPassword] = useState("");
-	const [markdownContent, setMarkdownContent] = useState("");
+	const [markdownContent, setMarkdownContent] = useState<any>("");
 	const [isDecrypted, setIsDecrypted] = useState(false);
 	const { screen } = useScreen();
 
@@ -52,11 +53,36 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 
 	/* INIT MARKDOWN */
 	const md = new MarkdownIt();
+
+	const loadTermsFile = async () => {
+		const ipfsLinkRegex = /Import\s+ipfs:\/\/\S+/g;
+		const matches = termsFile.match(ipfsLinkRegex);
+
+		if (matches) {
+			// const mdFile = md.render(termsFile);
+			// const mdFile = await renderMarkdown(termsFile, {});
+			console.log("$$$  => ", termsFile);
+			setMarkdownContent(
+				termsFile.length > 0 ? <LinkedMarkdownLocalViewer file={termsFile} /> : "",
+			);
+		} else {
+			const mdFile = md.render(termsFile);
+			// const mdFile = await renderMarkdown(termsFile, {});
+			setMarkdownContent(
+				<div className={cx("content px-base py-double", styles.contentHolder)}>
+					<div
+						className={cx("prose prose-blue", styles["markdown-body"])}
+						dangerouslySetInnerHTML={{ __html: mdFile }}
+					/>
+				</div>,
+			);
+			mdFile === hash ? setIsValid(true) : setIsValid(false);
+		}
+	};
+
 	useEffect(() => {
-		const mdFile = md.render(termsFile);
-		setMarkdownContent(mdFile);
-		mdFile === hash ? setIsValid(true) : setIsValid(false);
-	}, [termsFile]);
+		loadTermsFile();
+	}, [termsFile, document]);
 
 	const handlePasswordSubmit = () => {
 		const decryptedTerms = decryptAES(termsFile, password);
@@ -69,14 +95,7 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 	const renderContent = () => {
 		switch (fileStatus) {
 			case "public":
-				return (
-					<div className={cx("content px-base py-double", styles.contentHolder)}>
-						<div
-							className={cx("prose prose-blue", styles["markdown-body"])}
-							dangerouslySetInnerHTML={{ __html: markdownContent }}
-						/>
-					</div>
-				);
+				return <>{markdownContent}</>;
 			case "public-encrypted":
 				return (
 					<>
@@ -96,12 +115,7 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 								</div>
 							</div>
 						) : (
-							<div className={cx("content px-base py-double", styles.contentHolder)}>
-								<div
-									className={cx("prose prose-blue", styles["markdown-body"])}
-									dangerouslySetInnerHTML={{ __html: markdownContent }}
-								/>
-							</div>
+							<>{markdownContent}</>
 						)}
 					</>
 				);
@@ -136,12 +150,7 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 								/>
 							</div>
 						) : (
-							<div className={cx("content px-base py-double", styles.contentHolder)}>
-								<div
-									className={cx("prose prose-blue", styles["markdown-body"])}
-									dangerouslySetInnerHTML={{ __html: markdownContent }}
-								/>
-							</div>
+							<>{markdownContent}</>
 						)}
 					</>
 				);

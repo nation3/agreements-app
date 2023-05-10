@@ -21,6 +21,8 @@
   "dependencies": {
     "@apollo/client": "^3.7.0",
     "@heroicons/react": "^2.0.11",
+    "@linkedmd/components": "^0.2.6",
+    "@linkedmd/parser": "^0.4.2",
     "@nation3/ui-components": "^0.1.0",
     "@rainbow-me/rainbowkit": "^0.7.1",
     "@safe-global/safe-core-sdk": "^3.2.1",
@@ -42,7 +44,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^12.1.4",
+    "react-textarea-autosize": "^8.4.1",
     "sharp": "^0.31.3",
+    "tippy.js": "^6.3.7",
     "wagmi": "^0.6.7",
     "web3.storage": "^4.4.0"
   },
