@@ -205,7 +205,7 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 										</div>
 										<div className="flex gap-2">
 											<span>
-												{utils.formatUnits(BigNumber.from(userPosition?.balance))} $
+												{utils.formatUnits(BigNumber.from(userPosition?.collateral))} $
 												{collateralToken?.symbol ?? ""}
 											</span>
 											<span className="text-gray-400 font-medium">Collateral</span>

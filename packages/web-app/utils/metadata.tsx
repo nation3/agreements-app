@@ -13,19 +13,13 @@ export type ResolutionMetadata = {
 export const parseAgreementMetadata = (data: { [key: string]: any }): AgreementMetadata => {
 	return {
 		title: data.title ?? "Agreement",
-		fileName: data.fileName ?? "",
-		fileStatus: data.fileStatus ?? "",
-		termsHash: data.termsHash ?? undefined,
-		termsUri: data.termsUri ?? undefined,
 		description: data.description ?? undefined,
+		termsHash: data.termsHash ?? undefined,
+		termsPrivacy: data.termsPrivacy ?? "",
+		termsURI: data.termsURI ?? undefined,
+		termsFilename: data.termsFilename ?? "",
 		criteria: data.criteria ?? undefined,
 		resolvers: data.resolvers ?? undefined,
-	};
-};
-
-export const parseTermsFileMetadata = (data: { [key: string]: any }): { fileTerms: string } => {
-	return {
-		fileTerms: data.termsData,
 	};
 };
 
@@ -34,6 +28,20 @@ export const parseResolutionMetadata = (data: { [key: string]: any }): Resolutio
 		settlement: data.settlement ?? [],
 		reasons: data.reasons ?? undefined,
 	};
+};
+
+export const fetchAgreementTerms = async (fileURI: string): Promise<string | undefined> => {
+	const uri = fileURI.startsWith("ipfs://") ? IPFSUriToUrl(fileURI) : fileURI;
+
+	try {
+		const response = await fetch(uri);
+		if (response.ok) {
+			return await response.text();
+		}
+	} catch (error) {
+		console.debug(`Failed to fetch terms: ${uri}`, error);
+	}
+	return;
 };
 
 export const fetchMetadata = async <T extends object>(
@@ -60,61 +68,53 @@ export const fetchAgreementMetadata = async (fileURI: string): Promise<Agreement
 	return fetchMetadata<AgreementMetadata>(fileURI, parseAgreementMetadata);
 };
 
-export const fetchAgreementTermsMetadata = async (termsURI: string): Promise<any> => {
-	return fetchMetadata<any>(termsURI, parseTermsFileMetadata);
-};
-
 export const fetchResolutionMetadata = async (fileURI: string): Promise<ResolutionMetadata> => {
 	return fetchMetadata<ResolutionMetadata>(fileURI, parseResolutionMetadata);
 };
 
 interface GAMInterface {
-	terms: string;
 	positions: { account: string; balance: BigNumber }[];
+	terms: string;
+	termsPrivacy: string;
+	termsFilename?: string;
+	termsPassword?: string;
 	title?: string;
-	fileName?: string;
-	fileStatus: string;
-	filePass?: string;
 }
 
 export type AgreementMetadata = {
-	termsHash: string;
-	criteria: string;
 	title: string;
-	fileName?: string | null;
-	fileStatus: string;
+	criteria: string;
+	termsHash: string;
+	termsURI?: string;
+	termsPrivacy?: string;
+	termsFilename?: string | null;
 	description?: string;
-	termsUri?: string;
 	resolvers?: ResolverMap;
 };
 
 export const generateAgreementMetadata = async ({
 	title,
-	fileName,
-	fileStatus,
-	filePass,
-	terms,
 	positions,
+	terms,
+	termsPrivacy,
+	termsPassword,
+	termsFilename,
 }: GAMInterface): Promise<AgreementMetadata> => {
 	const termsHash = hexHash(terms);
 	const { criteria, resolvers } = generateCriteria(positions);
 
 	const uploadTermsFile = async () => {
 		/* RETURN EMPTY URI ON PRIVATE */
-		if (fileStatus === "private") {
+		if (termsPrivacy === "private") {
 			return "";
 		}
 
 		/* ENCRYPT TERMS FILE IF IT IS ENCRYPTED */
 		const termsData =
-			fileStatus === "public"
-				? terms
-				: fileStatus === "public-encrypted"
-				? encryptAES(terms, filePass ? filePass : "")
-				: "";
+			termsPrivacy === "public-encrypted" ? encryptAES(terms, termsPassword ?? "") : terms;
 
 		/* UPLOAD TERMS FILE TO IPFS */
-		const { put } = await preparePutToIPFS({ termsData });
+		const { put } = await preparePutToIPFS(termsData, termsFilename);
 		const cid = await put();
 
 		console.log(`$$$ TERMS IPFS URI ipfs://${cid}`);
@@ -126,10 +126,10 @@ export const generateAgreementMetadata = async ({
 
 	const agreementMetadata = {
 		title: title ?? "Agreement",
-		fileStatus: fileStatus,
-		fileName: fileStatus === "public" || fileStatus === "public-encrypted" ? fileName : null,
-		termsUri: termsFileURI,
 		termsHash: termsHash,
+		termsURI: termsFileURI,
+		termsPrivacy: termsPrivacy,
+		termsFilename: termsPrivacy === "private" ? null : termsFilename,
 		criteria: criteria,
 		resolvers: resolvers,
 	};

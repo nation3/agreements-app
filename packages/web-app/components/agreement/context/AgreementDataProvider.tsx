@@ -1,45 +1,149 @@
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { BigNumber } from "ethers";
-import { useAccount, useToken } from "wagmi";
-import { useAgreementData, useDisputeConfig } from "../../../hooks/useAgreement";
-import { trimHash } from "../../../utils/hash";
-import { fetchAgreementMetadata, fetchAgreementTermsMetadata } from "../../../utils/metadata";
-import { AgreementDataContext, AgreementDataContextType } from "./AgreementDataContext";
-import { PositionMap, ResolverMap, Token, UserPosition } from "./types";
+import { useAccount, useToken, useNetwork } from "wagmi";
+import { AgreementWithPositions } from "../../../lib/types";
+import { useDisputeConfig } from "../../../hooks/useAgreement";
+import {
+	AgreementParams,
+	AgreementDataContext,
+	AgreementDataContextType,
+} from "./AgreementDataContext";
+import { Token, UserPosition } from "./types";
+import { IPFSUriToUrl, fetchAgreementTerms } from "../../../utils";
+
+export const useAgreement = ({ id }: { id: string }) => {
+	const { chain } = useNetwork();
+	const [agreement, setAgreement] = useState<AgreementWithPositions>();
+	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string>("");
+
+	useEffect(() => {
+		async function fetchAgreement() {
+			try {
+				const chainId = chain?.id || 1;
+				const response = await fetch(`/api/${chainId}/agreement/${id}`);
+				if (!response.ok) {
+					setAgreement(undefined);
+					setError(response.statusText);
+				} else {
+					const data = await response.json();
+					if (data instanceof Object) {
+						setAgreement(data);
+					}
+				}
+			} catch (error) {
+				setError("Error fetching agreements");
+			}
+			setIsLoading(false);
+		}
+		setIsLoading(true);
+		fetchAgreement();
+	}, [chain, id]);
+
+	return { agreement, isLoading, error };
+};
+
+const useTokenFromAddress = (address: string | undefined): Token | undefined => {
+	const memoAddress = useMemo(() => address, [address]);
+	const { data: tokenData } = useToken({
+		address: memoAddress,
+		enabled: memoAddress !== undefined,
+	});
+
+	const token = useMemo(() => {
+		if (tokenData) {
+			return {
+				name: tokenData.name,
+				symbol: tokenData.symbol,
+				decimals: tokenData.decimals,
+				address: tokenData.address,
+			};
+		}
+	}, [tokenData]);
+
+	return token;
+};
+
+const defaultAgreementParams = ({ id }: { id: string }): AgreementParams => ({
+	id: id,
+	title: undefined,
+	status: undefined,
+	termsHash: undefined,
+});
+
+interface TermsData {
+	termsPrivacy: string;
+	termsURI?: string;
+	termsFilename?: string;
+}
+
+const defaultTermsData: TermsData = {
+	termsPrivacy: "private",
+	termsURI: undefined,
+	termsFilename: undefined,
+};
 
 export const AgreementDataProvider = ({ id, children }: { id: string; children: ReactNode }) => {
 	const { address: userAddress } = useAccount();
-	const [title, setTitle] = useState<string>();
-	const [status, setStatus] = useState<string>();
-	const [fileName, setFileName] = useState<string>();
-	const [fileStatus, setFileStatus] = useState<string>();
-	const [termsFile, setTermsFile] = useState<string>();
-	const [termsHash, setTermsHash] = useState<string>();
-	const [metadataURI, setMetadataURI] = useState<string>();
-	const [resolvers, setResolvers] = useState<ResolverMap>();
-	const [positions, setPositions] = useState<PositionMap>();
+	const [agreementParams, setAgreementParams] = useState<AgreementParams>(
+		defaultAgreementParams({ id }),
+	);
+	const { agreement, isLoading } = useAgreement({ id });
 	const [userPosition, setUserPosition] = useState<UserPosition>();
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [isMetadataError, setIsMetadataError] = useState<boolean>(true);
+	const [termsData, setTermsData] = useState<TermsData>(defaultTermsData);
+	const [termsFile, setTermsFile] = useState<string>();
 
 	/* GET AGREEMENT DATA FROM CONTRACT */
+	/*
 	const { data: agreementData, positions: agreementPositions } = useAgreementData({
 		id: id,
 		enabled: id != "undefined",
 	});
+	*/
 
-	const tokenAddress = useMemo(() => {
-		return agreementData?.token;
-	}, [agreementData]);
+	/* Update params when agreement changes */
+	useEffect(() => {
+		if (agreement) {
+			const params = {
+				id: agreement.id,
+				title: agreement.title,
+				status: agreement.status,
+				termsHash: agreement.termsHash,
+			};
+			if (params != agreementParams) {
+				setAgreementParams(params);
+			}
+		} else {
+			setAgreementParams(defaultAgreementParams({ id }));
+		}
+	}, [agreement, agreementParams]);
 
-	const { amount: disputeAmount } = useDisputeConfig();
+	useEffect(() => {
+		const fetchTerms = async (termsURI: string) => {
+			const terms = await fetchAgreementTerms(termsURI);
+			if (terms) setTermsFile(terms);
+		};
 
-	const { data: tokenData } = useToken({
-		address: tokenAddress,
-		enabled: tokenAddress != undefined,
-	});
+		if (agreement) {
+			const terms = {
+				termsPrivacy: agreement.termsPrivacy,
+				termsURI: agreement.termsURI,
+				termsFilename: agreement.termsFilename,
+			};
+			if (terms != termsData) {
+				setTermsData(terms);
+				if (terms.termsURI) fetchTerms(terms.termsURI);
+			}
+		} else {
+			setTermsData(defaultTermsData);
+			setTermsFile(undefined);
+		}
+	}, [agreement, termsData]);
 
+	/* Token fetching logic */
+	// FIXME: Replace with token data from api query
+	const collateralToken = useTokenFromAddress(agreement?.token);
 	const depositToken = {
 		name: "Nation3",
 		symbol: "NATION",
@@ -47,163 +151,35 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 		decimals: 18,
 	};
 
-	const collateralToken = useMemo<Token | undefined>(() => {
-		if (tokenData)
-			return {
-				name: tokenData.name,
-				symbol: tokenData.symbol,
-				decimals: tokenData.decimals,
-				address: tokenData.address,
-			};
-	}, [tokenData]);
-
+	const { amount: disputeAmount } = useDisputeConfig();
 	const disputeCost = useMemo(() => {
 		return disputeAmount ?? BigNumber.from(0);
 	}, [disputeAmount]);
 
-	/* Update state when fetched agreement params */
-	// TODO:// REMOVE EFFECT, it does not need to keep active listening.
-	useEffect(() => {
-		console.log("$$$ AGREEMENT DATA =>", agreementData);
-
-		/* TERMS HASH  */
-		if (agreementData?.termsHash && agreementData.termsHash != termsHash) {
-			setTermsHash(agreementData.termsHash);
-		}
-
-		/* GET THE AGREEMENT METADATA  */
-		if (agreementData?.metadataURI) {
-			setMetadataURI(agreementData.metadataURI);
-			fetchAgreementMetadata(agreementData.metadataURI)
-				.then((metadata) => {
-					console.log("$$$ AGREEMENT METADATA =>", metadata);
-
-					/* SET STATE CUSTOM TITLE */
-					if (metadata.title && metadata.title != "Agreement") {
-						if (metadata.title != title) setTitle(metadata.title);
-					} else {
-						/* SET DEFAULT TITLE */
-						setTitle(`Agreement #${trimHash(id.toUpperCase())}`);
-					}
-
-					/* SET RESOLVERS POSITIONS TREE */
-					if (metadata.resolvers) {
-						setResolvers((prevResolvers) => ({ ...prevResolvers, ...metadata.resolvers }));
-					}
-
-					if (metadata.fileName) {
-						setFileName(metadata.fileName);
-					}
-
-					if (metadata.fileStatus) {
-						setFileStatus(metadata.fileStatus);
-					}
-					/* GET TERMS FILE URI */
-					if (metadata.termsUri) {
-						return fetchAgreementTermsMetadata(metadata.termsUri);
-					}
-				})
-				/* SET TERMS FILE METADATA */
-				.then((data: { fileTerms: string }) => {
-					console.log("$$$ TERMS FILE =>", data);
-					setTermsFile(data?.fileTerms);
-				})
-				.catch((err) => {
-					console.log("METADA ERROR =>", err);
-					setIsMetadataError(true);
-				});
-		}
-
-		/* SET STATUS  */
-		if (agreementData?.status && agreementData.status != status) {
-			setStatus(agreementData.status);
-		}
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		if (agreementData.status) {
-			setIsLoading(false);
-		}
-	}, [agreementData]);
-
-	/* Update positions when fetched agreement positions or new resolvers */
-	useEffect(() => {
-		let knownPositions: {
-			[key: string]: { party?: string; balance: string; status: number; deposit?: number };
-		} = {};
-
-		if (resolvers) {
-			knownPositions = Object.entries(resolvers).reduce(
-				(result, [account, { balance }]) => ({
-					...result,
-					[account.toString()]: {
-						balance: balance,
-						status: 0,
-						deposit: 0,
-					},
-				}),
-				knownPositions,
-			);
-		}
-
-		if (agreementPositions) {
-			knownPositions = agreementPositions.reduce(
-				(result, [party, balance, deposit, status]) => ({
-					...result,
-					[party.toString()]: {
-						balance: balance.toString(),
-						status: status,
-						deposit: deposit,
-					},
-				}),
-				knownPositions,
-			);
-		}
-
-		if (knownPositions != positions) {
-			setPositions(knownPositions);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [agreementPositions, resolvers]);
-
 	/* Update user position with agreement positions data */
 	useEffect(() => {
-		if (userAddress) {
-			if (positions && positions[userAddress]) {
-				setUserPosition((prevPosition) => ({ ...prevPosition, ...positions[userAddress] }));
-			}
+		if (userAddress && agreement?.positions) {
+			const position = agreement?.positions.find((position) => position.party === userAddress);
+			setUserPosition(position);
 		} else {
 			setUserPosition(undefined);
 		}
-	}, [userAddress, positions]);
-
-	/* Update user position with agreement resolvers data */
-	useEffect(() => {
-		if (userAddress && resolvers && resolvers[userAddress]) {
-			setUserPosition((prevPosition) => ({
-				status: prevPosition?.status || 0,
-				balance: prevPosition?.balance || resolvers[userAddress].balance,
-				deposit: prevPosition?.deposit || 0,
-				resolver: resolvers[userAddress],
-			}));
-		}
-	}, [userAddress, resolvers]);
+	}, [userAddress, agreement?.positions]);
 
 	const provider: AgreementDataContextType = {
 		id,
-		title,
-		termsHash,
+		title: agreementParams.title,
+		termsHash: agreementParams.termsHash,
+		status: agreementParams.status,
 		collateralToken,
 		depositToken,
-		status,
 		disputeCost,
-		resolvers,
-		positions,
+		positions: agreement?.positions,
 		userPosition,
 		isLoading,
-		fileStatus,
-		fileName,
-		termsFile,
-		isMetadataError,
+		fileName: termsData.termsFilename,
+		fileStatus: termsData.termsPrivacy,
+		termsFile: "",
 	};
 
 	return <AgreementDataContext.Provider value={provider}>{children}</AgreementDataContext.Provider>;

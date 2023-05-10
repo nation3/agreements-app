@@ -1,42 +1,42 @@
 import { ReactNode, useEffect, useState } from "react";
 import { AgreementListContext } from "./AgreementListContext";
-import { useQuery } from "@apollo/client";
-import { useSigner } from "wagmi";
-import { AgreementPositionsData, agreementsPositionsQuery } from "../../../lib/subgraph";
+import { AgreementListContextType } from "./AgreementListContext";
+import { useAccount, useNetwork } from "wagmi";
 
-const useAgreementPositions = () => {
-	const { data: signer } = useSigner();
-	const [account, setAccount] = useState<string>("");
-
-	const { data, error } = useQuery<AgreementPositionsData>(agreementsPositionsQuery, {
-		variables: { account: account },
-		skip: account ? false : true,
-	});
+const useUserAgreements = () => {
+	const { chain } = useNetwork();
+	const { address: account } = useAccount();
+	const [error, setError] = useState<string>("");
+	const [agreements, setAgreements] = useState<AgreementListContextType["agreements"]>([]);
 
 	useEffect(() => {
-		if (signer) {
-			signer.getAddress().then((address) => {
-				if (address != account) setAccount(address);
-			});
-		} else {
-			if (account) setAccount("");
+		async function fetchAgreements() {
+			try {
+				const chainId = chain?.id || 1;
+				const response = await fetch(`/api/${chainId}/agreements/${account}`);
+				if (!response.ok) {
+					setError(response.statusText);
+				} else {
+					const data = await response.json();
+					if (data instanceof Array) {
+						setAgreements(data);
+					}
+				}
+			} catch (error) {
+				setError("Error fetching agreements");
+			}
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [signer]);
+		if (account) {
+			fetchAgreements();
+		}
+	}, [chain, account]);
 
-	return { data: data?.agreementPositions, error };
+	return { agreements, error };
 };
 
 export const AgreementListProvider = ({ children }: { children: ReactNode }) => {
-	const { data: positions } = useAgreementPositions();
+	const { agreements } = useUserAgreements();
 
-	const agreements =
-		positions?.map(({ balance, agreement: { id, createdAt, status } }) => ({
-			id,
-			createdAt,
-			userBalance: balance,
-			status,
-		})) || [];
 	agreements.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 
 	const provider = {

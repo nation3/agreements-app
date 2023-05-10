@@ -3,12 +3,13 @@ import cx from "classnames";
 import { BigNumber, utils } from "ethers";
 import { useAccount } from "wagmi";
 import { AccountDisplay } from "./AccountDisplay";
-import { PositionMap, Token } from "./agreement/context/types";
+import { Token } from "./agreement/context/types";
+import { AgreementPosition } from "../lib/types";
 
 interface Position {
 	account: string;
 	balance: string;
-	status: number;
+	status: string;
 }
 
 interface FilteredPositions {
@@ -17,28 +18,28 @@ interface FilteredPositions {
 	positions: Position[];
 }
 
-const statusBadgeMap: { [key: number]: { message: string; color: string } } = {
-	0: { message: "Pending", color: "neutral-c-200" },
-	1: { message: "Joined", color: "pr-c-green1" },
-	2: { message: "Finalized", color: "neutral-c-200" },
-	3: { message: "Withdrawn", color: "neutral-c-200" },
-	4: { message: "Disputed", color: "neutral-c-200" },
+const statusBadgeMap: { [key: string]: { message: string; color: string } } = {
+	Pending: { message: "Pending", color: "neutral-c-200" },
+	Joined: { message: "Joined", color: "pr-c-green1" },
+	Finalized: { message: "Finalized", color: "neutral-c-200" },
+	Withdrawn: { message: "Withdrawn", color: "neutral-c-200" },
+	Disputed: { message: "Disputed", color: "neutral-c-200" },
 };
 
-export const buildParties = (positions: PositionMap | undefined): FilteredPositions[] => {
+export const buildParties = (positions: AgreementPosition[] | undefined): FilteredPositions[] => {
 	const result: FilteredPositions[] = [];
 
-	Object.entries(positions ?? {}).forEach(([account, { balance, status }]) => {
+	positions?.forEach(({ party, collateral, status }) => {
 		if (status !== undefined) {
 			const index = result.findIndex(({ message }) => message === statusBadgeMap[status].message);
 			if (index === -1) {
 				result.push({
 					message: statusBadgeMap[status].message,
 					color: statusBadgeMap[status].color,
-					positions: [{ account, balance, status }],
+					positions: [{ account: party, balance: collateral, status }],
 				});
 			} else {
-				result[index].positions.push({ account, balance, status });
+				result[index].positions.push({ account: party, balance: collateral, status });
 			}
 		}
 	});
@@ -50,7 +51,7 @@ const Parties = ({
 	positions,
 	token,
 }: {
-	positions: PositionMap | undefined;
+	positions: AgreementPosition[] | undefined;
 	token: Token | undefined;
 }) => {
 	const { screen } = useScreen();

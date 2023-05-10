@@ -20,13 +20,13 @@ const PositionsTable = ({
 					? ["participant", "stake", "status"]
 					: ["participant", "stake"]
 			}
-			data={Object.entries(positions ?? {}).map(([account, { balance, status }], index) =>
+			data={Object.entries(positions ?? {}).map(([account, { collateral, status }], index) =>
 				screen === ScreenType.Desktop
 					? [
 							<AccountDisplay key={index} address={account} />,
 							<b key={index}>
 								{" "}
-								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
+								{utils.formatUnits(BigNumber.from(collateral))} ${token?.symbol ?? ""}
 							</b>,
 							<PositionStatusBadge key={index} status={status} />,
 					  ]
@@ -34,7 +34,7 @@ const PositionsTable = ({
 							<AccountDisplay key={index} address={account} />,
 							<b key={index}>
 								{" "}
-								{utils.formatUnits(BigNumber.from(balance))} ${token?.symbol ?? ""}
+								{utils.formatUnits(BigNumber.from(collateral))} ${token?.symbol ?? ""}
 							</b>,
 					  ],
 			)}

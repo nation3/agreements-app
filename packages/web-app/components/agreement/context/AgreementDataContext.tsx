@@ -1,23 +1,25 @@
 import { BigNumber } from "ethers";
 import { createContext, useContext } from "react";
-import { PositionMap, ResolverMap, Token, UserPosition } from "./types";
+import { Token, UserPosition } from "./types";
+import { AgreementPosition } from "../../../lib/types";
 
-export type AgreementDataContextType = {
+export interface AgreementParams {
 	id: string;
-	isLoading: boolean;
-	status: string | undefined;
 	title: string | undefined;
+	status: string | undefined;
 	termsHash: string | undefined;
+}
+
+export type AgreementDataContextType = AgreementParams & {
+	isLoading: boolean;
 	collateralToken: Token | undefined;
 	depositToken: Token | undefined;
-	positions: PositionMap | undefined;
-	resolvers: ResolverMap | undefined;
+	positions: AgreementPosition[] | undefined;
 	disputeCost: BigNumber;
 	userPosition: UserPosition | undefined;
 	fileStatus: string | undefined;
 	fileName: string | undefined;
 	termsFile: string | undefined;
-	isMetadataError: boolean;
 };
 
 export const AgreementDataContext = createContext<AgreementDataContextType | null>(null);

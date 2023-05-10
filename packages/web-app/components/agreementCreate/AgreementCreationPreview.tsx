@@ -66,9 +66,9 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 			title,
 			terms,
 			positions,
-			filePass,
-			fileName,
-			fileStatus,
+			termsPrivacy: fileStatus,
+			termsFilename: fileName,
+			termsPassword: filePass,
 		});
 
 		const { put } = await preparePutToIPFS(metadata);

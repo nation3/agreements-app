@@ -26,10 +26,10 @@ export const AgreementList = () => {
 					columns={
 						screen === ScreenType.Desktop ? ["Id", "Created on", "Status"] : ["Id", "Status"]
 					}
-					data={agreements.map(({ id, createdAt, status }) =>
+					data={agreements.map(({ title, id, createdAt, status }) =>
 						screen === ScreenType.Desktop
 							? [
-									<span key={id}>{utils.shortenHash(id)}</span>,
+									<span key={id}>{title ? title : utils.shortenHash(id)}</span>,
 									<span key={`${id}-date`}>
 										{new Date(Number(createdAt) * 1000).toLocaleDateString()}
 									</span>,
