@@ -35,7 +35,6 @@ export const AgreementView = () => {
 		fileStatus,
 		termsFile,
 	} = useAgreementData();
-	console.log("$$$ status", status);
 	const activeURL = useActiveURL();
 
 	return isLoading ? (

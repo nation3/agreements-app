@@ -37,7 +37,6 @@ export const ParticipantRow = ({
 
 	useEffect(() => {
 		positions && setlocalPositions(positions);
-		console.log("$$$ =>  ROW POSITIONS", positions);
 	}, [positions]);
 
 	const updatePositionAccount = (address: string, input: string) => {

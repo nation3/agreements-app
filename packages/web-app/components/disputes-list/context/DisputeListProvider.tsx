@@ -1,40 +1,36 @@
 import { ReactNode, useEffect, useState } from "react";
-import { DisputeListContext } from "./DisputeListContext";
-import { useQuery } from "@apollo/client";
-import { useSigner } from "wagmi";
-import { DisputesData, disputesQuery } from "../../../lib/subgraph";
+import { DisputeListContext, DisputeListContextType } from "./DisputeListContext";
+import { useNetwork } from "wagmi";
 
-const useDisputePositions = () => {
-	const { data: signer } = useSigner();
-	const [account, setAccount] = useState<string>("");
-
-	const { data, error } = useQuery<DisputesData>(disputesQuery, {});
+const useDisputes = () => {
+	const { chain } = useNetwork();
+	const [error, setError] = useState<string>("");
+	const [disputes, setDisputes] = useState<DisputeListContextType["disputes"]>([]);
 
 	useEffect(() => {
-		if (signer) {
-			signer.getAddress().then((address) => {
-				if (address != account) setAccount(address);
-			});
-		} else {
-			if (account) setAccount("");
+		async function fetchDisputes() {
+			try {
+				const chainId = chain?.id || 1;
+				const response = await fetch(`/api/${chainId}/disputes`);
+				if (!response.ok) {
+					setError(response.statusText);
+				}
+				const data = await response.json();
+				setDisputes(data);
+			} catch (error) {
+				setError("Error fetching disputes");
+			}
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [signer]);
+		fetchDisputes();
+	}, []);
 
-	return { data: data?.disputes, error };
+	return { disputes, error };
 };
 
 export const DisputeListProvider = ({ children }: { children: ReactNode }) => {
-	const { data: disputes } = useDisputePositions();
+	const { disputes } = useDisputes();
 
-	const parsed =
-		disputes
-			?.map(({ id, createdAt, settlement }) => ({
-				id,
-				createdAt,
-				status: settlement?.status ?? "Pending",
-			}))
-			.filter(({ status }) => status != "Executed") || [];
+	const parsed = disputes.filter(({ status }) => status != "Executed") || [];
 	parsed.sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1));
 
 	const provider = {

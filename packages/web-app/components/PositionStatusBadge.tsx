@@ -1,15 +1,18 @@
 import { Badge, BadgeProps } from "@nation3/ui-components";
 
-const statusBadgeMap: { [key: number]: { message: string; color: string } } = {
-	0: { message: "Pending join", color: "yellow" },
-	1: { message: "Joined", color: "bluesky" },
-	2: { message: "Finalized", color: "greensea" },
-	3: { message: "Withdrawn", color: "gray" },
-	4: { message: "Disputed", color: "red" },
+const statusBadgeMap: { [key: string]: { message: string; color: string } } = {
+	Pending: { message: "Pending join", color: "yellow" },
+	Joined: { message: "Joined", color: "bluesky" },
+	Finalized: { message: "Finalized", color: "greensea" },
+	Withdrawn: { message: "Withdrawn", color: "gray" },
+	Disputed: { message: "Disputed", color: "red" },
 };
 
 export interface PositionStatusBadgeProps extends BadgeProps {
-	status: number;
+	status: string;
+	textColor?: string;
+	bgColor?: string;
+	label?: string;
 }
 
 export const PositionStatusBadge = ({

@@ -1,6 +1,6 @@
 export interface PositionParams {
-	status: number;
-	balance: string;
+	status: string;
+	collateral: string;
 }
 
 export interface ResolverParams {
@@ -9,9 +9,9 @@ export interface ResolverParams {
 }
 
 export interface UserPosition {
-	status: number;
-	balance: string;
-	deposit?: number | undefined;
+	status: string;
+	deposit: string;
+	collateral: string;
 	resolver?: ResolverParams;
 }
 
