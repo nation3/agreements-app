@@ -6,20 +6,21 @@ const CSS =
 
 import fetch from "cross-fetch";
 import MarkdownIt from "markdown-it";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import plugins from "./plugins";
+import plugins from "@linkedmd/parser/plugins";
 
 const arrayToObject = (array: Array<any>, key: string): any => {
   const initialValue = {};
   return array.reduce(
-    (obj: Object, item: any) => ({ ...obj, [item[key]]: item }),
+    (obj: object, item: any) => ({ ...obj, [item[key]]: item }),
     initialValue
   );
 };
 
 const replaceVariables = (text: string, definitions: any): string => {
   if (!text) return "";
-  for (const match of text?.matchAll(VARIABLE_REGEX)) {
+  for (const match of text.matchAll(VARIABLE_REGEX)) {
     if (!definitions[match[1]]) continue;
     text = text.replaceAll(match[0], definitions[match[1]]);
   }

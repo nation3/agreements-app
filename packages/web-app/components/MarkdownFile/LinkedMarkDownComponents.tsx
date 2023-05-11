@@ -1,8 +1,8 @@
+import { LinkedMarkdown } from "@linkedmd/parser";
 import React, { useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import tippy, { inlinePositioning } from "tippy.js";
 import "tippy.js/dist/tippy.css";
-import { LinkedMarkdown } from "./LinkedMardownParser";
 
 const IPFS_GATEWAY = "https://cf-ipfs.com/ipfs";
 
