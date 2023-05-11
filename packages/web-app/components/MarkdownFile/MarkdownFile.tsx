@@ -61,9 +61,17 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 		if (matches) {
 			// const mdFile = md.render(termsFile);
 			// const mdFile = await renderMarkdown(termsFile, {});
-			console.log("$$$  => ", termsFile);
+			console.log("$$$$ LINKED TERMS  => ", termsFile);
 			setMarkdownContent(
-				termsFile.length > 0 ? <LinkedMarkdownLocalViewer file={termsFile} /> : "",
+				termsFile.length > 0 ? (
+					<div className={cx("content px-base py-double", styles.contentHolder)}>
+						<div className={cx("prose prose-blue px-min3", styles["markdown-body"])}>
+							<LinkedMarkdownLocalViewer file={termsFile} />
+						</div>
+					</div>
+				) : (
+					""
+				),
 			);
 		} else {
 			const mdFile = md.render(termsFile);
