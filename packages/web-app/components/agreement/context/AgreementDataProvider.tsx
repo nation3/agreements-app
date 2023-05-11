@@ -10,14 +10,22 @@ import {
 	AgreementDataContextType,
 } from "./AgreementDataContext";
 import { Token, UserPosition } from "./types";
-import { IPFSUriToUrl, fetchAgreementTerms } from "../../../utils";
+import { fetchAgreementTerms } from "../../../utils";
+import { useAgreement as useAgreementOnchain } from "../../../hooks/useAgreement";
 import { isEqual } from "../../../utils/objects";
+import { set } from "cypress/types/lodash";
 
+// TODO: Move to hooks folder
 export const useAgreement = ({ id }: { id: string }) => {
 	const { chain } = useNetwork();
 	const [agreement, setAgreement] = useState<AgreementWithPositions>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string>();
+
+	const { agreement: onChain } = useAgreementOnchain({
+		id,
+		enabled: id !== undefined,
+	});
 
 	useEffect(() => {
 		async function fetchAgreement() {
@@ -42,7 +50,27 @@ export const useAgreement = ({ id }: { id: string }) => {
 		fetchAgreement();
 	}, [chain, id]);
 
-	return { agreement, isLoading, error };
+	const [agreementWithFallback, setAgreementWithFallback] = useState<AgreementWithPositions>();
+	useEffect(() => {
+		if (isLoading || agreementWithFallback !== undefined) {
+			return;
+		}
+
+		// Fallback directly to onchain data when using gnosis chain
+		// FIXME: Remove this when gnosis chain is deprecated
+		if (chain?.id == 100) {
+			setAgreementWithFallback(onChain);
+			return;
+		}
+
+		if (agreement) {
+			setAgreementWithFallback(agreement);
+		} else if (onChain) {
+			setAgreementWithFallback(onChain);
+		}
+	}, [chain, agreement, onChain, isLoading, agreementWithFallback]);
+
+	return { agreement: agreementWithFallback, isLoading, error };
 };
 
 const useTokenFromAddress = (address: string | undefined): Token | undefined => {
