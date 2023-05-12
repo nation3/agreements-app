@@ -230,7 +230,7 @@ export class LinkedMarkdown {
     });
 
     return (
-      "<div>" + CSS + md.render(this.toMarkdown(overrideDefinitions)) + "</div>"
+      "<div>" + md.render(this.toMarkdown(overrideDefinitions)) + "</div>"
     );
   }
 }

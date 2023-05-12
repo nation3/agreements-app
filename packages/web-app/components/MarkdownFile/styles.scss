@@ -1,21 +1,29 @@
 
-:global(.LM-split-screen) {
+.LM-split-screen {
     display: flex;
     flex-direction: row;
     gap: 1rem;
   }
   
-  :global(.LM-split-screen .LM-input), :global(.LM-split-screen .LM-output) {
+  .LM-split-screen .LM-input, .LM-split-screen .LM-output {
     width: 50%;
     border-radius: 4px;
   }
   
-  :global(.LM-output) {
+  .LM-output {
     display: flex;
     flex-direction: column;
   }
   
-  :global(textarea.LM-input) {
+  textarea.LM-input {
     padding: 1rem;
+  }
+
+  .LM-output {
+    &>div {
+      &>p:first-child {
+        display: hidden;
+      }
+    }
   }
   

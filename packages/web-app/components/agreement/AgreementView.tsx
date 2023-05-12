@@ -16,7 +16,7 @@ import { constants } from "ethers";
 import { AgreementActions } from ".";
 import { useActiveURL } from "../../hooks";
 import Parties from "../Parties";
-import { DisputeActions } from "../dispute";
+import { DisputeActions, ResolutionDetails } from "../dispute";
 import AgreementSkeleton from "./AgreementSkeleton";
 import AgreementTermsData from "./AgreementTermsData";
 import NotFoundAgreement from "./NotFound";
@@ -63,6 +63,13 @@ export const AgreementView = () => {
 					"w-full text-gray-800",
 				)}
 			>
+				{/* DISPUTE DATA */}
+				{status === "Disputed" && (
+					<Card title="">
+						<ResolutionDetails />
+					</Card>
+				)}
+
 				{/* Title and details */}
 				<Card
 					className={cx("flex flex-col gap-base", status === "Disputed" && "border-sc-c-orange1")}

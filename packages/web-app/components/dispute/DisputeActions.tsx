@@ -1,26 +1,23 @@
-import { useState, useEffect, useMemo } from "react";
-import { Button, IStep, Steps, Card } from "@nation3/ui-components";
-import { BigNumber, constants } from "ethers";
+import { Button, Card, IStep, Steps } from "@nation3/ui-components";
+import { BigNumber, constants, utils } from "ethers";
 import { Modal as FlowModal } from "flowbite-react";
 import Image from "next/image";
-import { utils } from "ethers";
+import { useEffect, useMemo, useState } from "react";
 
-import { useDispute } from "./context/DisputeResolutionContext";
-import { ResolutionDetails } from "./ResolutionDetails";
-import { ResolutionForm } from "./ResolutionForm";
-import { useResolutionAppeal, useResolutionExecute } from "../../hooks/useArbitrator";
-import { AgreementDisputedAlert } from "../alerts";
-import courtIcon from "../../public/svgs/court.svg";
-import nationCoinIcon from "../../public/svgs/nation_coin.svg";
-import joinedIcon from "../../public/svgs/joined.svg";
-import { usePermit2Allowance, usePermit2TransferSignature } from "../../hooks/usePermit2";
-import { useAccount } from "wagmi";
-import { Permit2Setup } from "../Permit2Setup";
 import { useTranslation } from "next-i18next";
+import { useAccount } from "wagmi";
+import { useResolutionAppeal, useResolutionExecute } from "../../hooks/useArbitrator";
 import { useConstants } from "../../hooks/useConstants";
-import { GradientLink } from "../GradientLink";
+import { usePermit2Allowance, usePermit2TransferSignature } from "../../hooks/usePermit2";
 import { useTokenBalance } from "../../hooks/useToken";
-import React from "react";
+import courtIcon from "../../public/svgs/court.svg";
+import joinedIcon from "../../public/svgs/joined.svg";
+import nationCoinIcon from "../../public/svgs/nation_coin.svg";
+import { GradientLink } from "../GradientLink";
+import { Permit2Setup } from "../Permit2Setup";
+import { AgreementDisputedAlert } from "../alerts";
+import { ResolutionForm } from "./ResolutionForm";
+import { useDispute } from "./context/DisputeResolutionContext";
 
 export const DisputeArbitrationActions = () => {
 	const [mode, setMode] = useState("view");
@@ -169,7 +166,6 @@ export const DisputeActions = () => {
 							<span>This dispute has been arbitrated by the court.</span>
 						</div>
 						<div className="flex flex-col gap-2 p-4 pb-2 border-4 border-gray-100 rounded-xl bg-white">
-							<ResolutionDetails />
 							{canBeEnacted && (
 								<Button
 									label="Enact"

@@ -1,25 +1,23 @@
-import { useMemo, useState, useCallback, ReactNode, useEffect } from "react";
-import { Tooltip, Modal as FlowModal } from "flowbite-react";
-import Image from "next/image";
-import cx from "classnames";
-import { BigNumber, BigNumberish, constants, utils } from "ethers";
-import { usePermit2Allowance, usePermit2BatchTransferSignature } from "../hooks/usePermit2";
-import { useTokenBalance } from "../hooks/useToken";
-import { useAgreementJoin } from "../hooks/useAgreement";
-import courtIcon from "../public/svgs/court.svg";
 import {
+	CheckCircleIcon,
 	ExclamationTriangleIcon,
 	InformationCircleIcon,
-	CheckCircleIcon,
 } from "@heroicons/react/24/outline";
+import { Body2, Body3, Button, ButtonBase, ModalNew, Spinner } from "@nation3/ui-components";
+import cx from "classnames";
+import { BigNumber, BigNumberish, constants, utils } from "ethers";
+import { Tooltip } from "flowbite-react";
 import { useTranslation } from "next-i18next";
-import { ButtonBase, Spinner } from "@nation3/ui-components";
-import { useAgreementData } from "./agreement/context/AgreementDataContext";
-import { useAccount } from "wagmi";
-import { useConstants } from "../hooks/useConstants";
-import { useTokenAllowance, useTokenApprovals } from "../hooks/useToken";
+import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@nation3/ui-components";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { useAccount } from "wagmi";
+import { useAgreementJoin } from "../hooks/useAgreement";
+import { useConstants } from "../hooks/useConstants";
+import { usePermit2Allowance, usePermit2BatchTransferSignature } from "../hooks/usePermit2";
+import { useTokenAllowance, useTokenApprovals, useTokenBalance } from "../hooks/useToken";
+import courtIcon from "../public/svgs/court.svg";
+import { useAgreementData } from "./agreement/context/AgreementDataContext";
 
 const InfoTooltip = ({ info, className }: { info: string; className?: string }) => {
 	return (
@@ -50,7 +48,7 @@ const Toggle = ({ onToggle }: { onToggle?: (checked: boolean) => void }) => {
 	return (
 		<label className="relative inline-flex items-center cursor-pointer">
 			<input type="checkbox" className="sr-only peer" checked={isChecked} onChange={toggle} />
-			<div className="w-10 h-6 bg-transparent border-2 border-gray-300 peer-focus:outline-none peer-focus:ring-0 peer-focus:ring-bluesky rounded-full peer peer-checked:border-greensea peer-checked:after:bg-greensea peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-gray-200 after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+			<div className="w-10 h-6 bg-transparent border-2 border-gray-300 peer-focus:outline-none peer-focus:ring-0 peer-focus:ring-bluesky rounded-full peer peer-checked:border-greensea peer-checked:after:bg-greensea peer-checked:after:tranneutral-c-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-gray-200 after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
 		</label>
 	);
 };
@@ -394,19 +392,19 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		if (!enoughDeposit) {
 			return (
 				<Link target="_blank" href="https://app.balancer.fi/#/ethereum/swap">
-					<CompactOutlineButton label={`${"Get $" + depositToken?.symbol}`} />
+					<Button label={`${"Get $" + depositToken?.symbol}`} />
 				</Link>
 			);
 		} else if (usePermit2) {
 			if (typeof depositTokenPermit2 === "undefined" || depositTokenPermit2ApprovalLoading)
 				return <Spinner className="w-7 h-7 text-bluesky" />;
 			if (depositTokenPermit2) return <CheckCircleIcon className="w-7 h-7 text-bluesky" />;
-			return <CompactOutlineButton label={"Enable"} onClick={approveDepositTokenPermit2} />;
+			return <Button label={"Enable"} onClick={approveDepositTokenPermit2} />;
 		} else {
 			if (typeof depositTokenAllowance === "undefined" || depositTokenApprovalLoading)
 				return <Spinner className="w-7 h-7 text-bluesky" />;
 			if (enoughDepositAllowance) return <CheckCircleIcon className="w-7 h-7 text-bluesky" />;
-			return <CompactOutlineButton label={"Approve"} onClick={approveDeposit} />;
+			return <Button label={"Approve"} onClick={approveDeposit} />;
 		}
 	}, [
 		usePermit2,
@@ -484,131 +482,138 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 	}, [isTxSuccess]);
 
 	return (
-		<FlowModal show={isOpen} onClose={onClose}>
-			<FlowModal.Header>
-				<div className="flex items-center w-full pl-3">
-					{courtIcon && (
-						<div className="overflow-hidden flex items-center justify-center h-1/2 mr-6">
-							<Image
-								className="h-full"
-								width={40}
-								height={40}
-								src={courtIcon}
-								alt={"Join Agreement"}
+		<ModalNew isOpen={isOpen} onClose={onClose}>
+			<section className="bg-white rounded-lg shadow w-full max-w-2xl overflow-hidden">
+				<header className="bg-white border-b-2 border-neutral-c-300 p-base">
+					<div className="flex items-center w-full pl-3">
+						{courtIcon && (
+							<div className="overflow-hidden flex items-center justify-center h-1/2 mr-6">
+								<Image
+									className="h-full"
+									width={40}
+									height={40}
+									src={courtIcon}
+									alt={"Join Agreement"}
+								/>
+							</div>
+						)}
+						<h3 className="text-neutral-c-600 md:text-xl text-xl font-semibold">
+							{t("join.title")}
+						</h3>
+					</div>
+				</header>
+				<div className="flex flex-col items-center justify-center p-base++">
+					<div className="flex flex-col w-full items-start gap-1 text-neutral-c-400 text-sm">
+						<div className="flex w-full md:w-2/3">
+							<Body3 className="text-sm text-neutral-c-400  mb-1">{t("join.summary")}</Body3>
+						</div>
+
+						{/* TOKEN REQUIRMENTS */}
+						<Body3 className=" mt-4 text-neutral-c-600 font-semibold">
+							{t("join.requirementsHeadline")}
+						</Body3>
+						<div className="flex w-full gap-3">
+							<AssetDisplay
+								title={"Dispute deposit"}
+								amount={requiredDeposit}
+								symbol={depositToken?.symbol ?? ""}
+								info={t("agreement.depositInfo")}
+								warning={"Not enough balance"}
+								showWarning={!enoughDeposit}
+							/>
+							<AssetDisplay
+								title={"Collateral"}
+								amount={requiredCollateral}
+								symbol={collateralToken?.symbol ?? ""}
+								info={t("agreement.collateralInfo")}
+								warning={"Not enough balance"}
+								showWarning={!enoughCollateral}
 							/>
 						</div>
-					)}
-					<h3 className="text-slate-600 md:text-xl text-xl font-semibold">{t("join.title")}</h3>
-				</div>
-			</FlowModal.Header>
-			<div className="flex flex-col items-center justify-center pt-4">
-				<div className="flex flex-col w-full items-start px-8 pt-3 pb-8 gap-1 text-slate-400 text-sm">
-					<div className="flex w-full md:w-2/3">
-						<h3 className="text-sm text-slate-400  mb-1">{t("join.summary")}</h3>
-					</div>
-
-					<p className=" mt-4 text-slate-600 font-semibold">{t("join.requirementsHeadline")}</p>
-					<div className="flex w-full gap-3">
-						<AssetDisplay
+						<div className="mt-4 flex w-full items-center justify-between gap-2 py-2">
+							<Body3>{t("join.approvalsHeadline")}</Body3>
+							{enoughDeposit && enoughCollateral && (
+								<>
+									<div className="flex w-full items-center justify-end gap-1">
+										<Body2 className="text-md">{t("join.gaslessApprovals.title")}</Body2>
+										<InfoTooltip info={t("join.gaslessApprovals.info")} className="w-5 h-5" />
+									</div>
+									<Toggle onToggle={(checked) => setUsePermit2(checked)} />
+								</>
+							)}
+						</div>
+						<AssetApprove
 							title={"Dispute deposit"}
 							amount={requiredDeposit}
 							symbol={depositToken?.symbol ?? ""}
 							info={t("agreement.depositInfo")}
 							warning={"Not enough balance"}
 							showWarning={!enoughDeposit}
-						/>
-						<AssetDisplay
-							title={"Collateral"}
-							amount={requiredCollateral}
-							symbol={collateralToken?.symbol ?? ""}
-							info={t("agreement.collateralInfo")}
-							warning={"Not enough balance"}
-							showWarning={!enoughCollateral}
-						/>
-					</div>
-					<div className="mt-4 flex w-full items-center justify-between gap-2 py-2">
-						<p className="w-full h-full text-slate-600 font-semibold">
-							{t("join.approvalsHeadline")}
-						</p>
-						{enoughDeposit && enoughCollateral && (
-							<>
-								<div className="flex w-full items-center justify-end gap-1">
-									<p className="text-md">{t("join.gaslessApprovals.title")}</p>
-									<InfoTooltip info={t("join.gaslessApprovals.info")} className="w-5 h-5" />
-								</div>
-								<Toggle onToggle={(checked) => setUsePermit2(checked)} />
-							</>
-						)}
-					</div>
-					<AssetApprove
-						title={"Dispute deposit"}
-						amount={requiredDeposit}
-						symbol={depositToken?.symbol ?? ""}
-						info={t("agreement.depositInfo")}
-						warning={"Not enough balance"}
-						showWarning={!enoughDeposit}
-						action={depositAction}
-					></AssetApprove>
-					{depositToken?.symbol !== collateralToken?.symbol && (
-						<AssetApprove
-							title={"Collateral"}
-							amount={requiredCollateral}
-							symbol={collateralToken?.symbol ?? ""}
-							info={t("agreement.collateralInfo")}
-							warning={"Not enough balance"}
-							showWarning={!enoughCollateral}
-							action={collateralAction}
+							action={depositAction}
 						></AssetApprove>
-					)}
-					{!enoughDeposit ||
-						(!enoughCollateral && (
-							<div className="flex mt-4">
-								<WarningTooltip info={""} className={cx("w-4 h-4 mr-2 text-yellow-500")} />
-								<p>{t("agreement.lackingTokens")}</p>
-							</div>
-						))}
-					<div className="flex w-full min-h-[5rem]">
-						{usePermit2 && enoughDeposit && enoughCollateral && (
-							<div className="flex w-full justify-between items-start gap-2 pt-3 pb-2 mb-6">
-								<span className="flex items-center gap-1">
-									<span className="text-lg">{t("join.signPermit.title")}</span>
-									<InfoTooltip info={t("join.signPermit.info")} className="w-4 h-4" />
-								</span>
-								<div className="flex w-fit">{signAction}</div>
-							</div>
+						{depositToken?.symbol !== collateralToken?.symbol && (
+							<AssetApprove
+								title={"Collateral"}
+								amount={requiredCollateral}
+								symbol={collateralToken?.symbol ?? ""}
+								info={t("agreement.collateralInfo")}
+								warning={"Not enough balance"}
+								showWarning={!enoughCollateral}
+								action={collateralAction}
+							></AssetApprove>
 						)}
-					</div>
-					<div className="flex w-full justify-end mt-5">
-						<div className="w-60">
-							<Button
-								className="rounded-full px-6"
-								outlined
-								label="Join Agreement"
-								disabled={!canJoin}
-								isLoading={joinLoading}
-								onClick={() => {
-									if (usePermit2) {
-										join({ id, resolver: userResolver, permit, signature });
-									} else {
-										join({ id, resolver: userResolver });
-									}
-								}}
-							/>
+						{!enoughDeposit ||
+							(!enoughCollateral && (
+								<div className="flex mt-4">
+									<WarningTooltip info={""} className={cx("w-4 h-4 mr-2 text-yellow-500")} />
+									<p>{t("agreement.lackingTokens")}</p>
+								</div>
+							))}
+						<div className="flex w-full">
+							{usePermit2 && enoughDeposit && enoughCollateral && (
+								<div className="flex w-full justify-between items-start gap-2 pt-3 pb-2 mb-6">
+									<span className="flex items-center gap-1">
+										<span className="text-lg">{t("join.signPermit.title")}</span>
+										<InfoTooltip info={t("join.signPermit.info")} className="w-4 h-4" />
+									</span>
+									<div className="flex w-fit">{signAction}</div>
+								</div>
+							)}
+						</div>
+
+						{/* CTA */}
+						<div className="flex w-full justify-end mt-base">
+							<div className="">
+								<Button
+									className="rounded-full px-6"
+									outlined
+									label="Join Agreement"
+									disabled={!canJoin}
+									isLoading={joinLoading}
+									onClick={() => {
+										if (usePermit2) {
+											join({ id, resolver: userResolver, permit, signature });
+										} else {
+											join({ id, resolver: userResolver });
+										}
+									}}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			{usePermit2 && (
-				<div className="absolute mt-3 flex w-full px-5 py-3 gap-1 items-center justify-between bg-yellow-100 rounded-bottom-lg rounded-lg text-sm">
-					<div className="px-5">
-						<ExclamationTriangleIcon className="w-4 h-4 text-yellow-800" />
+				{usePermit2 && (
+					<div className="absolute mt-3 flex w-full p-base gap-1 items-center justify-between bg-yellow-100 rounded-bottom-lg rounded-lg text-sm">
+						<div className="px-5">
+							<ExclamationTriangleIcon className="w-4 h-4 text-yellow-800" />
+						</div>
+						<p className="grow flex flex-col text-yellow-600">
+							<span>Gassless approvals reportedly causing problems with Ledger wallets.</span>
+							<span>Use traditional approvals if you are using Ledger.</span>
+						</p>
 					</div>
-					<p className="grow flex flex-col text-yellow-600">
-						<span>Gassless approvals reportedly causing problems with Ledger wallets.</span>
-						<span>Use traditional approvals if you are using Ledger.</span>
-					</p>
-				</div>
-			)}
-		</FlowModal>
+				)}
+			</section>
+		</ModalNew>
 	);
 };
