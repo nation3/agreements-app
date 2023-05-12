@@ -2,6 +2,8 @@ import {
 	Body1,
 	Body3,
 	BodyHeadline,
+	ScreenType,
+	useScreen,
 	Button,
 	DropInput,
 	IconRenderer,
@@ -15,7 +17,6 @@ import { constants } from "ethers";
 import { motion } from "framer-motion";
 import MarkdownIt from "markdown-it";
 import { FC, useEffect, useState } from "react";
-import { ScreenType, useScreen } from "../../../ui-components/src/hooks/useScreen";
 import { decryptAES } from "../../utils/crypto";
 import { hexHash } from "../../utils/hash";
 import AgreementStatus from "../agreement/AgreementStatus";

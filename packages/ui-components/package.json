@@ -6,9 +6,14 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "styles.css"
   ],
+  "types": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./styles.css": "./dist/styles.css"
+  },
   "engines": {
     "node": ">=16"
   },

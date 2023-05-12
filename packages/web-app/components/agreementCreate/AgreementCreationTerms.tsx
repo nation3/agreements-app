@@ -9,10 +9,10 @@ import {
 	InfoAlert,
 	PasswordInput,
 	TextInput,
+	CustomRadioInput
 } from "@nation3/ui-components";
 import { useTranslation } from "next-i18next";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { CustomRadioInput } from "../../../ui-components/src/components/Molecules/inputs/CustomRadioInput";
 import { trimHash } from "../../utils";
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 

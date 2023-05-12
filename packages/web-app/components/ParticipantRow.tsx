@@ -6,12 +6,12 @@ import {
 	N3Cross,
 	N3User,
 	TokenBalanceInput,
+	Body3
 } from "@nation3/ui-components";
 import { BigNumber, ethers, providers, utils } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { ChangeEvent, FocusEvent, useEffect, useState } from "react";
-import { Body3 } from "../../ui-components/src/components/Atoms";
 import { purgeFloat } from "../utils";
 import { InputPositionList } from "./agreementCreate/context/types";
 
