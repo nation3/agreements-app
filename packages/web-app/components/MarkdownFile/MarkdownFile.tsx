@@ -60,12 +60,10 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 		const ipfsLinkRegex = /Import\s+ipfs:\/\/\S+/g;
 		const matches = termsFile.match(ipfsLinkRegex);
 		const mdFile = md.render(termsFile);
-		mdFile === hash ? setIsValid(true) : setIsValid(null);
 
 		if (matches) {
 			// const mdFile = md.render(termsFile);
 			// const mdFile = await renderMarkdown(termsFile, {});
-			console.log("$$$$ LINKED TERMS  => ", termsFile);
 			setMarkdownContent(
 				termsFile.length > 0 ? (
 					<div className={cx("content px-base py-double", styles.contentHolder)}>
