@@ -1,4 +1,4 @@
-import "@nation3/ui-components/dist/styles.css";
+import "@nation3/ui-components/styles.css";
 import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { appWithTranslation } from "next-i18next";

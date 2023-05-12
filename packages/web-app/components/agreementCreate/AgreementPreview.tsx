@@ -52,6 +52,7 @@ const AgreementPreview: React.FC<IAgreementPreviewProps> = (props) => {
 						<div className="flex ">
 							<MarkdownFile
 								fileName={fileName}
+								isCreating
 								termsFile={localTerms}
 								hash={localFileName}
 								fileStatus={fileStatus ? fileStatus : "private"}

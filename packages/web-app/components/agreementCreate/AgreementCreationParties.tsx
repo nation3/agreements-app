@@ -7,13 +7,13 @@ import {
 	HeadlineBasic,
 	IconRenderer,
 	InfoAlert,
+	Body3
 } from "@nation3/ui-components";
 import { utils } from "ethers";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useProvider } from "wagmi";
-import { Body3 } from "../../../ui-components/src/components/Atoms";
 import { useTokenList } from "../../hooks/useTokenList";
 import { validateCriteria } from "../../utils";
 import { ParticipantRow } from "../ParticipantRow";

@@ -1,7 +1,6 @@
-import { IconRenderer } from "@nation3/ui-components";
+import { IconRenderer, Body3 } from "@nation3/ui-components";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { Body3 } from "../../ui-components/src/components/Atoms";
 import { useFindToken } from "../hooks/useTokenList";
 
 type ITokenRendererProps = { tokenSymbol: string };
