@@ -1,5 +1,8 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
-
-/* @import '@nation3/ui-components/dist/styles.css'; */
+@font-face {
+    font-family: 'Bossa';
+    src: url('/fonts/Bossa-Bold.woff2') format('woff2'),
+         url('/fonts/Bossa-Bold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }

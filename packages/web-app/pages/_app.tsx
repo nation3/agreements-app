@@ -1,5 +1,5 @@
-// import "../styles/globals.css";
-import "../../ui-components/dist/styles.css";
+import "@nation3/ui-components/dist/styles.css";
+import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { appWithTranslation } from "next-i18next";
 import React, { memo, useEffect, useState } from "react";
@@ -79,6 +79,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 				<Head>
 					<title>Nation3 Agreements</title>
 					<link rel="icon" href="/favicon.ico" />
+					<link
+						href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap"
+						rel="stylesheet"
+					/>
 				</Head>
 
 				<UiGlobals>
