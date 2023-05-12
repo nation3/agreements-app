@@ -201,7 +201,7 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 									<Body1 color="neutral-c-600">Collateral</Body1>
 									<BodyHeadline color="neutral-c-800">
 										<span>
-											{utils.formatUnits(BigNumber.from(userPosition?.balance))} $
+											{utils.formatUnits(BigNumber.from(userPosition?.collateral || 0))} $
 											{collateralToken?.symbol ?? ""}
 										</span>
 									</BodyHeadline>
