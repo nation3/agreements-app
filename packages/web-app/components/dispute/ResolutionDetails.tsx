@@ -1,25 +1,35 @@
+import { Badge, Body3, BodyHeadline, Button, Card } from "@nation3/ui-components";
 import { utils } from "ethers";
-import { Position, useDispute } from "./context/DisputeResolutionContext";
 import { Accordion } from "flowbite-react";
-import { useCohort } from "../../hooks/useCohort";
-import { CountDown } from "../../components/CountDown";
-import { ActionBadge, Button, Table, utils as n3utils } from "@nation3/ui-components";
 import { useMemo } from "react";
+import { useCohort } from "../../hooks/useCohort";
 import { AccountDisplay } from "../AccountDisplay";
-import { CardHeader } from "../CardHeader";
+import { Position, useDispute } from "./context/DisputeResolutionContext";
 
 const SettlementTable = ({ token, positions }: { token: string; positions: Position[] }) => {
 	return (
-		<Table
-			columns={["participant", "stake"]}
-			data={positions.map(({ party, balance }, index) => [
-				<AccountDisplay key={index} address={party} />,
-				<b key={index}>
-					{" "}
-					{utils.formatUnits(balance)} ${token}
-				</b>,
-			])}
-		/>
+		<>
+			{positions.map(({ party, balance }, index) => (
+				<div key={index} className="flex rounded-base bg-neutral-c-200 p-min3 justify-between">
+					<div className="">
+						<Body3 color="neutral-c-500" className="mb-min2">
+							Address
+						</Body3>
+						<div className="shadow rounded-base">
+							<AccountDisplay address={party} />
+						</div>
+					</div>
+					<div className="col-start-4 col-end-6 md:col-start-5 md:col-end-5 flex justify-end flex-col">
+						<Body3 color="neutral-c-500" className="mb-min2">
+							Proposed
+						</Body3>
+						<Body3>
+							{utils.formatUnits(balance)} ${token}
+						</Body3>
+					</div>
+				</div>
+			))}
+		</>
 	);
 };
 
@@ -49,15 +59,20 @@ const ResolutionDataDisplay = ({
 	return (
 		<div className="flex flex-col gap-5">
 			<div className="flex flex-col gap-3">
-				<CardHeader title={"Resolution"} status={status} size={"xl"} />
-				<div className="flex flex-col md:flex-row gap-1">
+				<div className="flex gap-min3">
+					<BodyHeadline>Resolution</BodyHeadline>
+					<Badge label={status}></Badge>
+				</div>
+				{/* <div className="flex flex-col md:flex-row gap-1">
 					{mark && <ActionBadge label="Fingerprint" data={n3utils.shortenHash(mark)} />}
 					{status == "Approved" && unlockTime && (
 						<ActionBadge label="Appeal time left" data={<CountDown seconds={timeLeft} />} />
 					)}
-				</div>
+				</div> */}
 			</div>
-			{settlement && <SettlementTable token={token} positions={settlement} />}
+			<div className="flex flex-col gap-min3">
+				{settlement && <SettlementTable token={token} positions={settlement} />}
+			</div>
 		</div>
 	);
 };
@@ -67,13 +82,15 @@ export const ResolutionDetails = () => {
 
 	if (resolution) {
 		return (
-			<ResolutionDataDisplay
-				mark={resolution.id}
-				status={resolution.status}
-				token={dispute.collateralToken?.symbol ?? ""}
-				settlement={resolution.settlement ?? []}
-				unlockTime={resolution.unlockTime}
-			/>
+			<Card title="" className="border-sc-c-orange1 mb-base">
+				<ResolutionDataDisplay
+					mark={resolution.id}
+					status={resolution.status}
+					token={dispute.collateralToken?.symbol ?? ""}
+					settlement={resolution.settlement ?? []}
+					unlockTime={resolution.unlockTime}
+				/>
+			</Card>
 		);
 	} else {
 		return <></>;

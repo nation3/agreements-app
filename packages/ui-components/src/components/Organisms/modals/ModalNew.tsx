@@ -4,7 +4,7 @@ import React, { FC, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useScreen } from "../../../hooks/useScreen";
 
-interface ModalNewProps {
+export interface ModalNewProps {
 	isOpen: boolean;
 	onClose: () => void;
 	children: React.ReactNode;

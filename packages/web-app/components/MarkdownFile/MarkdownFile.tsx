@@ -25,12 +25,14 @@ import styles from "./MarkdownFile.module.scss";
 interface MarkdownFileProps {
 	fileName?: string;
 	termsFile: string;
+	isCreating?: boolean;
 	hash: string;
 	fileStatus: "public" | "public-encrypted" | "private" | string;
 }
 
 const MarkdownFile: FC<MarkdownFileProps> = (props) => {
-	const { termsFile, hash, fileName, fileStatus } = props;
+	const { termsFile, hash, fileName, fileStatus, isCreating } = props;
+
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [password, setPassword] = useState("");
 	const [markdownContent, setMarkdownContent] = useState<any>("");
@@ -146,7 +148,7 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 												const termsHash = hexHash(text);
 												if (termsHash === hash) {
 													setIsValid(true);
-													setMarkdownContent(md.render(text));
+													loadTermsFile(text);
 												} else {
 													setIsValid(false);
 												}
@@ -253,7 +255,7 @@ const MarkdownFile: FC<MarkdownFileProps> = (props) => {
 							</div>
 						</div>
 
-						{renderContent()}
+						{!isCreating ? renderContent() : <>{markdownContent}</>}
 					</section>
 				</motion.div>
 			</ModalNew>

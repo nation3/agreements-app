@@ -483,7 +483,7 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 
 	return (
 		<ModalNew isOpen={isOpen} onClose={onClose}>
-			<section className="bg-white rounded-lg shadow w-full max-w-2xl overflow-hidden">
+			<section className="bg-white rounded-lg shadow w-full max-w-2xl border-neutral-c-300 border-2 overflow-hidden">
 				<header className="bg-white border-b-2 border-neutral-c-300 p-base">
 					<div className="flex items-center w-full pl-3">
 						{courtIcon && (

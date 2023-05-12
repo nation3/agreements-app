@@ -1,4 +1,12 @@
-import { Button, Card, IStep, Steps } from "@nation3/ui-components";
+import {
+	Body3,
+	BodyHeadline,
+	Button,
+	Card,
+	IStep,
+	OrbitingOrbGreen,
+	Steps,
+} from "@nation3/ui-components";
 import { BigNumber, constants, utils } from "ethers";
 import { Modal as FlowModal } from "flowbite-react";
 import Image from "next/image";
@@ -161,115 +169,122 @@ export const DisputeActions = () => {
 		return (
 			<div className="flex flex-col gap-2">
 				<div>
-					<div className="bg-gray-100 rounded-xl">
-						<div className="flex flex-col py-2 px-4 text-base font-normal text-gray-700">
-							<span>This dispute has been arbitrated by the court.</span>
-						</div>
-						<div className="flex flex-col gap-2 p-4 pb-2 border-4 border-gray-100 rounded-xl bg-white">
-							{canBeEnacted && (
-								<Button
-									label="Enact"
-									disabled={!canBeEnacted}
-									onClick={() =>
-										execute({
-											framework: frameworkAddress,
-											dispute: dispute.id,
-											settlement: resolution.settlement || [],
-										})
-									}
-								/>
-							)}
-							{canAppeal && (
-								<Button
-									label="Appeal"
-									disabled={!canAppeal}
-									onClick={() => setIsAppealModalOpen(true)}
-								/>
-							)}
-							<FlowModal show={isAppealModalOpen} onClose={() => setIsAppealModalOpen(false)}>
-								<FlowModal.Header>
-									<div className="flex items-center w-full pl-3">
-										{courtIcon && (
-											<div className="overflow-hidden flex items-center justify-center h-1/2 mr-6">
-												<Image
-													className="h-full"
-													width={40}
-													height={40}
-													src={courtIcon}
-													alt={"Appeal Resolution"}
-												/>
-											</div>
-										)}
-										<h3 className="text-slate-600 md:text-xl text-xl font-semibold">
-											{"Appeal Resolution"}
-										</h3>
-									</div>
-								</FlowModal.Header>
-								<div className="flex flex-col justify-center border-bluesky-200">
-									{appealTokenApproved ? (
-										<>
-											<div className="flex flex-col w-full mt-8 items-start px-8 md:px-20 py-3 gap-1">
-												<h3 className="text-sm text-slate-400 px-2 mb-1">
-													{t("dispute.yourBalance")}
-												</h3>
-												<p className="flex justify-between items-center gap-5 px-2 text-bluesky-500">
-													<span className="font-semibold ">{formattedBalance} $NATION</span>
-													{/* TODO: Refactor eval */}
-													{(parseInt(formattedBalance) === 0 ||
-														parseInt(utils.formatUnits(appealCost ?? BigNumber.from(0))) >
-															parseInt(formattedBalance)) && (
-														<span className="flex items-center gap-1">
-															⚠️ Get some
-															<a href="https://app.balancer.fi/#/ethereum/trade/ether/0x333A4823466879eeF910A04D473505da62142069">
-																<GradientLink
-																	href="https://docs.nation3.org/agreements/creating-an-agreement"
-																	caption="$NATION"
-																/>
-															</a>
-														</span>
-													)}
-												</p>
-												<hr className="border-b"></hr>
-												<div className="flex flex-col w-full items-start gap-1 mb-1">
-													<h3 className="text-sm text-slate-400 px-2">Appeal cost</h3>
-													<p className="flex justify-between gap-5 px-2 font-semibold text-bluesky-500">
-														<span>
-															{utils.formatUnits(appealCost ?? BigNumber.from(0))} $NATION
-														</span>
-													</p>
-												</div>
-											</div>
-											<div className="flex w-full px-8 my-5">
-												<hr className="w-full" />
-											</div>
-											<Steps
-												steps={steps}
-												icon={courtIcon}
-												isCTAdisabled={
-													parseInt(formattedBalance) === 0 ||
-													parseInt(utils.formatUnits(appealCost ?? BigNumber.from(0))) >
-														parseInt(formattedBalance)
-												}
-												title={"Appeal Resolution"}
-												stepIndex={stepsIndex}
-												isStepLoading={isStepLoading}
+					<div className="rounded-md">
+						{!canBeEnacted && !canAppeal ? (
+							<div className="flex flex-col justify-between">
+								{/* <img src={OrbitingOrbGreenUrl}></img> */}
+								<OrbitingOrbGreen className="h-[85px] w-[85px] mb-base" />
+								<BodyHeadline>No actions</BodyHeadline>
+								<Body3 className="text-slate-500 text-sm mt-min2">
+									This dispute has been arbitrated by the court.
+								</Body3>
+							</div>
+						) : (
+							<div className="text-neutral-c-700">
+								<Body3 color="neutral-c-700">This dispute has been arbitrated by the court.</Body3>
+							</div>
+						)}
+						{canBeEnacted && (
+							<Button
+								label="Enact"
+								disabled={!canBeEnacted}
+								onClick={() =>
+									execute({
+										framework: frameworkAddress,
+										dispute: dispute.id,
+										settlement: resolution.settlement || [],
+									})
+								}
+							/>
+						)}
+						{canAppeal && (
+							<Button
+								label="Appeal"
+								disabled={!canAppeal}
+								onClick={() => setIsAppealModalOpen(true)}
+							/>
+						)}
+						<FlowModal show={isAppealModalOpen} onClose={() => setIsAppealModalOpen(false)}>
+							<FlowModal.Header>
+								<div className="flex items-center w-full pl-3">
+									{courtIcon && (
+										<div className="overflow-hidden flex items-center justify-center h-1/2 mr-6">
+											<Image
+												className="h-full"
+												width={40}
+												height={40}
+												src={courtIcon}
+												alt={"Appeal Resolution"}
 											/>
-										</>
-									) : (
-										<Permit2Setup
-											tokens={[
-												{
-													address: NATION,
-													name: "NATION",
-													isApproved: appealTokenApproved,
-													approve: approveAppealToken,
-												},
-											]}
-										/>
+										</div>
 									)}
+									<h3 className="text-slate-600 md:text-xl text-xl font-semibold">
+										{"Appeal Resolution"}
+									</h3>
 								</div>
-							</FlowModal>
-						</div>
+							</FlowModal.Header>
+							<div className="flex flex-col justify-center border-bluesky-200">
+								{appealTokenApproved ? (
+									<>
+										<div className="flex flex-col w-full mt-8 items-start px-8 md:px-20 py-3 gap-1">
+											<h3 className="text-sm text-slate-400 px-2 mb-1">
+												{t("dispute.yourBalance")}
+											</h3>
+											<p className="flex justify-between items-center gap-5 px-2 text-bluesky-500">
+												<span className="font-semibold ">{formattedBalance} $NATION</span>
+												{/* TODO: Refactor eval */}
+												{(parseInt(formattedBalance) === 0 ||
+													parseInt(utils.formatUnits(appealCost ?? BigNumber.from(0))) >
+														parseInt(formattedBalance)) && (
+													<span className="flex items-center gap-1">
+														⚠️ Get some
+														<a href="https://app.balancer.fi/#/ethereum/trade/ether/0x333A4823466879eeF910A04D473505da62142069">
+															<GradientLink
+																href="https://docs.nation3.org/agreements/creating-an-agreement"
+																caption="$NATION"
+															/>
+														</a>
+													</span>
+												)}
+											</p>
+											<hr className="border-b"></hr>
+											<div className="flex flex-col w-full items-start gap-1 mb-1">
+												<h3 className="text-sm text-slate-400 px-2">Appeal cost</h3>
+												<p className="flex justify-between gap-5 px-2 font-semibold text-bluesky-500">
+													<span>{utils.formatUnits(appealCost ?? BigNumber.from(0))} $NATION</span>
+												</p>
+											</div>
+										</div>
+										<div className="flex w-full px-8 my-5">
+											<hr className="w-full" />
+										</div>
+										<Steps
+											steps={steps}
+											icon={courtIcon}
+											isCTAdisabled={
+												parseInt(formattedBalance) === 0 ||
+												parseInt(utils.formatUnits(appealCost ?? BigNumber.from(0))) >
+													parseInt(formattedBalance)
+											}
+											title={"Appeal Resolution"}
+											stepIndex={stepsIndex}
+											isStepLoading={isStepLoading}
+										/>
+									</>
+								) : (
+									<Permit2Setup
+										tokens={[
+											{
+												address: NATION,
+												name: "NATION",
+												isApproved: appealTokenApproved,
+												approve: approveAppealToken,
+											},
+										]}
+									/>
+								)}
+							</div>
+						</FlowModal>
 					</div>
 				</div>
 			</div>

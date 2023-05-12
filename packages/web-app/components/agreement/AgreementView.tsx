@@ -1,6 +1,7 @@
 import {
 	Body2,
 	Body3,
+	BodyHeadline,
 	Card,
 	Headline3,
 	HeadlineBasic,
@@ -64,11 +65,7 @@ export const AgreementView = () => {
 				)}
 			>
 				{/* DISPUTE DATA */}
-				{status === "Disputed" && (
-					<Card title="">
-						<ResolutionDetails />
-					</Card>
-				)}
+				<ResolutionDetails />
 
 				{/* Title and details */}
 				<Card
@@ -105,7 +102,7 @@ export const AgreementView = () => {
 						</div>
 					</div>
 					{/* Participants */}
-					<HeadlineBasic className="">Agreements terms</HeadlineBasic>
+					<BodyHeadline className="">Agreements terms</BodyHeadline>
 
 					<AgreementTermsData
 						id={id}
