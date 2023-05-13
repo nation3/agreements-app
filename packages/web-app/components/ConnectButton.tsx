@@ -1,12 +1,5 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import {
-	AccountButton,
-	Button,
-	ButtonBase,
-	ScreenType,
-	UserIcon,
-	useScreen,
-} from "@nation3/ui-components";
+import { AccountButton, Button, ScreenType, UserIcon, useScreen } from "@nation3/ui-components";
 import { AvatarComponent, ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import React, { useState } from "react";
 
@@ -81,7 +74,7 @@ export const ConnectButton = () => {
 
 							if (chain.unsupported) {
 								return (
-									<ButtonBase
+									<Button
 										className="gap-1 p-1 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
 										onClick={openChainModal}
 									>
@@ -89,7 +82,7 @@ export const ConnectButton = () => {
 											Wrong network
 										</span>
 										<ExclamationTriangleIcon className="w-10 h-10" />
-									</ButtonBase>
+									</Button>
 								);
 							}
 
@@ -97,7 +90,7 @@ export const ConnectButton = () => {
 								<>
 									<div className="flex items-center justify-end">
 										<button
-											className="hidden md:flex gap-2 font-medium cursor-default items-center text-neutral-400 mr-base"
+											className="hidden md:flex cursor-default items-center text-neutral-400 mr-base"
 											onClick={() => openChainModal()}
 										>
 											{/* {chain && chain.id === 5 && <span>{chain.name} </span>} */}

@@ -1,9 +1,8 @@
 import React, { ReactNode } from "react";
 import { shortenHash } from "../../../../utils/strings";
-import { ButtonBase, ButtonBaseProps } from "../Button";
 import { Body3 } from "../../../Atoms";
 
-export interface AccountButtonProps extends ButtonBaseProps {
+export interface AccountButtonProps {
 	avatar?: ReactNode;
 	account: { address: string; ensName?: string };
 	borderColor?: string;
@@ -11,7 +10,7 @@ export interface AccountButtonProps extends ButtonBaseProps {
 
 export const AccountButton = ({ avatar, account, borderColor, ...props }: AccountButtonProps) => {
 	return (
-		<ButtonBase {...props}>
+		<div {...props}>
 			<div className="flex items-center gap-base">
 				<Body3 className="hidden md:inline bg-white rounded shadow px-min2 py-min1">
 					{account.ensName ? account.ensName : shortenHash((account.address as string) ?? "")}
@@ -24,6 +23,6 @@ export const AccountButton = ({ avatar, account, borderColor, ...props }: Accoun
 					{avatar}
 				</div>
 			</div>
-		</ButtonBase>
+		</div>
 	);
 };

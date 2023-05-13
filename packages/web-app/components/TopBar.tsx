@@ -1,6 +1,13 @@
-import { IllustrationRenderer, N3LogoGreen } from "@nation3/ui-components";
+import {
+	Body3,
+	IconRenderer,
+	IllustrationRenderer,
+	N3Agreement,
+	N3LogoGreen,
+} from "@nation3/ui-components";
 import cx from "classnames";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { ReactNode, memo, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { useCohort } from "../hooks/useCohort";
@@ -16,6 +23,7 @@ export interface ITopBarProps {
 const HeaderNavigation = memo(() => {
 	const { address } = useAccount();
 	const { judges } = useCohort();
+	const router = useRouter();
 
 	const [isDisputesVisible, setIsDisputesVisible] = useState<boolean>(false);
 
@@ -25,24 +33,71 @@ const HeaderNavigation = memo(() => {
 	}, [address, judges, setIsDisputesVisible]);
 
 	return (
-		<>
+		<div className="flex gap-min3 bg-pr-c-green1 items-center rounded-base pr-base h-[32px]">
 			<Link
 				href="/agreements"
-				className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
+				className={"flex items-center gap-min2 bg-white shadow rounded-base h-[32px] pr-min2"}
 			>
-				Agreements
+				<IconRenderer icon={<N3Agreement />} customSize={32} backgroundColor="pr-c-green1" />
+				<Body3 className="text-xs">Agreements</Body3>
 			</Link>
-			{isDisputesVisible && (
-				<>
-					<Link
-						href="/disputes"
-						className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
+
+			<div className="flex gap-min3 items-center">
+				<Link
+					href="/agreements"
+					className={"text-sm rounded-base text-neutral-700"}
+					onClick={(e) => {
+						if (router.pathname === "/agreements/dashboard") {
+							e.preventDefault();
+						}
+					}}
+				>
+					<Body3
+						color={
+							router.pathname === "/agreements/dashboard"
+								? "text-neutral-c-800"
+								: "text-neutral-c-400"
+						}
+						className={cx("text-xs transition-colors font-medium")}
 					>
-						Disputes
+						Dashboard
+					</Body3>
+				</Link>
+				<Link
+					href="/agreements"
+					className={"text-sm rounded-base text-neutral-700"}
+					onClick={(e) => {
+						if (router.pathname === "/agreements") {
+							e.preventDefault();
+						}
+					}}
+				>
+					<Body3
+						color={router.pathname === "/agreements" ? "text-neutral-c-800" : "text-neutral-c-400"}
+						className={cx("text-xs transition-colors font-medium")}
+					>
+						Agreements
+					</Body3>
+				</Link>
+				<Link href="/agreement/create" className={"text-sm   rounded-base text-neutral-700"}>
+					<Body3
+						color={
+							router.pathname === "/agreement/create" ? "text-neutral-c-800" : "text-neutral-c-400"
+						}
+						className={cx("text-xs transition-colors font-medium")}
+					>
+						Create
+					</Body3>
+				</Link>
+			</div>
+			{/* {isDisputesVisible && (
+				<>
+					<Link href="/disputes" className={" bg-white shadow-md rounded-base text-neutral-700"}>
+						<Body3>Disputes</Body3>
 					</Link>
 				</>
-			)}
-		</>
+			)} */}
+		</div>
 	);
 });
 
@@ -53,21 +108,19 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 
 	return (
 		<React.Fragment>
-			<div className="absolute top-0 left-0 flex justify-center z-10 w-full h-auto">
+			<div className="absolute top-0 left-0 flex justify-center z-10 w-full">
 				<div
 					className={cx(
 						"flex mx-min2 md:grid grid-flow-row grid-cols-1 auto-rows-auto gap-16",
 						"lg:grid-cols-lg lg:gap-24",
 						"xl:grid-cols-xl",
-						"border-2 bg-glass-c-50 border-glass-c-80 backdrop-blur-sm rounded-full p-min2 mt-min2",
+						"border-2 bg-glass-c-50 border-glass-c-80 backdrop-blur-sm rounded-full p-min2 mt-min3",
 					)}
 				>
 					<section className="col-start-1 col-end-13 flex items-center justify-between">
-						<div className="w-full flex items-center h-full">
+						<div className="w-full flex gap-base items-center">
 							<Link href="/" className="cursor-pointer">
-								<div className="h-[50px] w-[50px]">
-									<IllustrationRenderer icon={<N3LogoGreen />} size={"sm"} />
-								</div>
+								<IllustrationRenderer customSize={50} icon={<N3LogoGreen />} size={"sm"} />
 							</Link>
 							<HeaderNavigation />
 						</div>
