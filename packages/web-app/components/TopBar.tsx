@@ -1,9 +1,9 @@
-import React from "react";
-import { ReactNode } from "react";
-import AppHeader from "../Molecules/AppHeader";
-import Link from "next/link";
-import Nation3Logo from "../Atoms/Nation3Logo";
+import { IllustrationRenderer, N3LogoGreen } from "@nation3/ui-components";
 import cx from "classnames";
+import Link from "next/link";
+import React, { ReactNode, memo, useEffect, useState } from "react";
+import { useAccount } from "wagmi";
+import { useCohort } from "../hooks/useCohort";
 
 export interface ITopBarProps {
 	title: string;
@@ -11,6 +11,40 @@ export interface ITopBarProps {
 	navItems?: ReactNode;
 	connectionButton?: ReactNode;
 }
+
+// eslint-disable-next-line react/display-name
+const HeaderNavigation = memo(() => {
+	const { address } = useAccount();
+	const { judges } = useCohort();
+
+	const [isDisputesVisible, setIsDisputesVisible] = useState<boolean>(false);
+
+	useEffect(() => {
+		if (!judges || !address) return setIsDisputesVisible(false);
+		setIsDisputesVisible(judges.includes(address));
+	}, [address, judges, setIsDisputesVisible]);
+
+	return (
+		<>
+			<Link
+				href="/agreements"
+				className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
+			>
+				Agreements
+			</Link>
+			{isDisputesVisible && (
+				<>
+					<Link
+						href="/disputes"
+						className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
+					>
+						Disputes
+					</Link>
+				</>
+			)}
+		</>
+	);
+});
 
 const ITopBarDefaultProps = {};
 
@@ -32,10 +66,10 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 						<div className="w-full flex items-center h-full">
 							<Link href="/" className="cursor-pointer">
 								<div className="h-[50px] w-[50px]">
-									<Nation3Logo />
+									<IllustrationRenderer icon={<N3LogoGreen />} size={"sm"} />
 								</div>
 							</Link>
-							<div className="">{navItems}</div>
+							<HeaderNavigation />
 						</div>
 						{/* <div className="basis-1/2 flex items-center justify-center">{navItems}</div> */}
 						<div className="flex items-center justify-end gap-5">

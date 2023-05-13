@@ -8,6 +8,8 @@ export { default as N3DocumentGrey } from './n3DocumentGrey.svg';
 export { default as N3LogoGradient } from './n3GradientLogo.svg';
 export { default as N3IdIcon } from './n3Id.svg';
 export { default as N3LinkArrow } from './n3LinkArrow.svg';
+export { default as N3LogoBlue } from './n3LogoBlue.svg';
+export { default as N3LogoGreen } from './n3LogoGreen.svg';
 export { default as N3StatusIcon } from './n3Status.svg';
 export { default as N3TypeIcon } from './n3Type.svg';
 export { default as N3User } from './n3User.svg';

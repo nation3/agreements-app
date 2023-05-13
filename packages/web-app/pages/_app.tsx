@@ -1,21 +1,21 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import "@nation3/ui-components/styles.css";
-import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { appWithTranslation } from "next-i18next";
-import React, { memo, useEffect, useState } from "react";
+import { useEffect } from "react";
+import "../styles/globals.css";
 
-import Head from "next/head";
-import type { AppProps } from "next/app";
+import { BottonNav, Footer, ScreenType, useScreen } from "@nation3/ui-components";
 import { RainbowKitProvider, lightTheme } from "@rainbow-me/rainbowkit";
-import { createClient, useAccount, WagmiConfig, useNetwork } from "wagmi";
-import { DefaultLayout } from "@nation3/ui-components";
-import { ConnectButton } from "../components/ConnectButton";
+import cx from "classnames";
+import type { AppProps } from "next/app";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { chains, provider, webSocketProvider, connectors } from "../lib/connectors";
-import Link from "next/link";
-import { useCohort } from "../hooks/useCohort";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
+import { WagmiConfig, createClient } from "wagmi";
+import { ConnectButton } from "../components/ConnectButton";
+import TopBar from "../components/TopBar";
 import UiGlobals from "../components/uiGlobals/uiGlobals";
+import { chains, connectors, provider, webSocketProvider } from "../lib/connectors";
 
 const client = createClient({
 	autoConnect: true,
@@ -24,46 +24,13 @@ const client = createClient({
 	webSocketProvider,
 });
 
-// eslint-disable-next-line react/display-name
-const HeaderNavigation = memo(() => {
-	const { address } = useAccount();
-	const { judges } = useCohort();
-
-	const [isDisputesVisible, setIsDisputesVisible] = useState<boolean>(false);
-
-	useEffect(() => {
-		if (!judges || !address) return setIsDisputesVisible(false);
-		setIsDisputesVisible(judges.includes(address));
-	}, [address, judges, setIsDisputesVisible]);
-
-	return (
-		<>
-			<Link
-				href="/agreements"
-				className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
-			>
-				Agreements
-			</Link>
-			{isDisputesVisible && (
-				<>
-					<Link
-						href="/disputes"
-						className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
-					>
-						Disputes
-					</Link>
-				</>
-			)}
-		</>
-	);
-});
-
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const router = useRouter();
 
 	useEffect(() => {
 		import("flowbite-react");
 	}, []);
+	const { screen } = useScreen();
 
 	return (
 		<WagmiConfig client={client}>
@@ -86,18 +53,22 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 				</Head>
 
 				<UiGlobals>
-					<DefaultLayout
-						title="Nation3"
-						appName="Agreements"
-						onRoute={(route: string) => {
-							router.push(route);
-						}}
-						isActiveRoute={(route: string) => router.pathname.startsWith(route)}
-						headerNavItems={<HeaderNavigation />}
-						connectionButton={<ConnectButton />}
-					>
-						<Component {...pageProps} />
-					</DefaultLayout>
+					<div className="mx-auto">
+						<div className="relative">
+							{/* NAVBAR */}
+							{screen === ScreenType.Desktop ? (
+								<TopBar title="Nation3" appName="Agreements" connectionButton={<ConnectButton />} />
+							) : (
+								<BottonNav connectionButton={<ConnectButton />} />
+							)}
+
+							{/* CONTENT */}
+							<div className={cx("min-h-screen w-full")}>{<Component {...pageProps} />}</div>
+
+							{/* FOOTER */}
+							<Footer />
+						</div>
+					</div>
 				</UiGlobals>
 			</RainbowKitProvider>
 		</WagmiConfig>
