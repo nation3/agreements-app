@@ -23,9 +23,8 @@ const LogoHolder = styled.div`
 const IFooterDefaultProps = {
 	menu: [
 		{ name: "Docs", link: "https://docs.nation3.org" },
-		{ name: "About Nation3", link: "https://docs.nation3.org" },
-		{ name: "Nation3 DAO", link: "https://docs.nation3.org" },
-		{ name: "Support", link: "https://docs.nation3.org" },
+		{ name: "About Nation3", link: "https://nation3.org" },
+		{ name: "Support", link: "https://discord.gg/invite/nation3-690584551239581708" },
 	],
 };
 
