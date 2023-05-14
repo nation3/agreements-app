@@ -28,11 +28,11 @@ export const RadioDescription: React.FC<RadioDescriptionProps> = ({ status }) =>
 	const getDescription = () => {
 		switch (status) {
 			case "private":
-				return "The file will only be visible to the parties involved. It needs to be shared personally by each party.";
+				return "The terms aren't saved online and must be locally stored and manually distributed among the parties.";
 			case "public":
-				return "The terms file will be visible to everyone as it will be uploaded publicly to IPFS.";
+				return "The terms are saved on IPFS and can be publicly accessed by anyone.";
 			case "public-encrypted":
-				return "The terms file will be publicly accessible on IPFS, but it will be encrypted.";
+				return "The terms are saved encrypted on IPFS, and can only be accessed by those who possess the password.";
 			default:
 				return "";
 		}
@@ -112,7 +112,7 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 				/>
 			</div>
 			<div className="flex flex-col gap-2">
-				<Body2 className="mb-min2">{"Terms file status"}</Body2>
+				<Body2 className="mb-min2">{"Terms Access"}</Body2>
 				<div className="flex space-x-4">
 					<CustomRadioInput
 						id="private"
@@ -124,21 +124,21 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 						onChange={handleRadioChange}
 					/>
 					<CustomRadioInput
+						id="public-encrypted"
+						name="visibility"
+						value="public-encrypted"
+						label="Restricted"
+						disabled={!terms}
+						checked={radioValue === "public-encrypted"}
+						onChange={handleRadioChange}
+					/>
+					<CustomRadioInput
 						id="public"
 						name="visibility"
 						value="public"
 						label="Public"
 						disabled={!terms}
 						checked={radioValue === "public"}
-						onChange={handleRadioChange}
-					/>
-					<CustomRadioInput
-						id="public-encrypted"
-						name="visibility"
-						value="public-encrypted"
-						label="Public Encrypted"
-						disabled={!terms}
-						checked={radioValue === "public-encrypted"}
 						onChange={handleRadioChange}
 					/>
 					{/* Description */}
@@ -160,7 +160,7 @@ export const AgreementTerms: React.FC<AgreeementTermsProps> = ({ setActiveStep }
 			<div className="flex justify-between">
 				<Button label="Back" onClick={() => setActiveStep(0)} />
 				<Button
-					disabled={!terms || !title}
+					disabled={!terms}
 					label="Next"
 					onClick={() => {
 						setTitle(title || defaultTitle);

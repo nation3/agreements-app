@@ -67,8 +67,8 @@ export const AgreementCreation = () => {
 								<Breadcrumbs
 									steps={[
 										{ title: "Intro", hidden: true },
-										{ title: "Name & Terms" },
-										{ title: "Positions" },
+										{ title: "Terms" },
+										{ title: "Parties" },
 										{ title: "Preview" },
 									]}
 									hidden={activeStep === 0}
