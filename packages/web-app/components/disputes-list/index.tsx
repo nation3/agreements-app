@@ -55,7 +55,7 @@ export const DisputeList = () => {
 						</div>
 						<div className="w-full flex justify-center flex-col items-center p-2">
 							<p className="text-slate-400 font-medium text-xl md:w-1/2 tracking-wide text-center">
-								Nation3 has its own system of law, enforced by its own court and secured by economic
+								Nation3 has its own legal system, enforced by its own court and secured by economic
 								incentives.
 							</p>
 							<div className="mt-3">

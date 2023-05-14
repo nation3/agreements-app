@@ -29,7 +29,7 @@ const mainnetTokens = [
 		symbol: "ANT",
 		address: "0xa117000000f279D81A1D3cc75430fAA017FA5A2e",
 		decimals: 18,
-		icon: "/tokens/aragon.png",
+		icon: "/tokens/ant.png",
 	},
 ];
 
