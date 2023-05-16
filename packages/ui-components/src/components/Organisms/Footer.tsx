@@ -37,13 +37,15 @@ const Footer: React.FC<IFooterProps> = (props) => {
 					<LogoHolder>
 						<N3LogoGradient />
 					</LogoHolder>
-					<Badge color="neutral-c-500" label="Beta v0.2.0" />
+					<a href="https://docs.nation3.org/agreements/agreements-beta" target="_blank">
+						<Badge color="neutral-c-500" label="Beta v0.2.0" />
+					</a>
 				</div>
 				<div className="col-start-7 col-end-13 flex justify-end items-center gap-base">
 					{menu &&
 						menu.map((e) => (
 							<>
-								<a className="flex items-center" href={e.link}>
+								<a className="flex items-center" href={e.link} target="_blank">
 									<Body3 className="mr-min2">{e.name}</Body3>
 									<IconRenderer
 										customSize={16}
