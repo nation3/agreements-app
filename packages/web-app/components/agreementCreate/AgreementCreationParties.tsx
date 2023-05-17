@@ -7,7 +7,7 @@ import {
 	HeadlineBasic,
 	IconRenderer,
 	InfoAlert,
-	Body3
+	Body3,
 } from "@nation3/ui-components";
 import { utils } from "ethers";
 import { useTranslation } from "next-i18next";

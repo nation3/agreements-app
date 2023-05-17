@@ -6,7 +6,7 @@ import {
 	N3Cross,
 	N3User,
 	TokenBalanceInput,
-	Body3
+	Body3,
 } from "@nation3/ui-components";
 import { BigNumber, ethers, providers, utils } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";

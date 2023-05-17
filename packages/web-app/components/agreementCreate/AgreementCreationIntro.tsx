@@ -35,12 +35,8 @@ const AgreementCreateIntro = ({ setActiveStep }: IAgreementCreateIntroProps) => 
 					/>
 					<BodyHeadline>{t("newAgreement.heading")}</BodyHeadline>
 					<div className="flex flex-col items-center justify-center gap-2">
-					<Body3 className="text-center gap-y-min3">
-						{t("newAgreement.p1")}
-					</Body3>
-					<Body3 className="text-center gap-y-min3">
-						{t("newAgreement.p2")}
-					</Body3>
+						<Body3 className="text-center gap-y-min3">{t("newAgreement.p1")}</Body3>
+						<Body3 className="text-center gap-y-min3">{t("newAgreement.p2")}</Body3>
 					</div>
 					<Button label="Create New Agreement" onClick={() => setActiveStep(1)}></Button>
 				</div>
@@ -54,9 +50,7 @@ const AgreementCreateIntro = ({ setActiveStep }: IAgreementCreateIntroProps) => 
 					rounded
 				/>
 				<Body1>{t("agreementIntro.heading")}</Body1>
-				<Body3 className="text-neutral-c-600 my-min3">
-					{t("agreementIntro.subheading")}
-				</Body3>
+				<Body3 className="text-neutral-c-600 my-min3">{t("agreementIntro.subheading")}</Body3>
 				<GradientLink
 					href={"https://docs.nation3.org/agreements/what-is-a-nation3-agreement"}
 					caption={"Learn more"}
@@ -71,9 +65,7 @@ const AgreementCreateIntro = ({ setActiveStep }: IAgreementCreateIntroProps) => 
 					rounded
 				/>
 				<Body1>{t("agreementTips.heading")}</Body1>
-				<Body3 className="text-neutral-c-600 my-min3">
-					{t("agreementTips.subheading")}
-				</Body3>
+				<Body3 className="text-neutral-c-600 my-min3">{t("agreementTips.subheading")}</Body3>
 				<GradientLink
 					href={"https://docs.nation3.org/agreements/creating-an-agreement"}
 					caption={"Learn more"}

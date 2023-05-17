@@ -9,7 +9,7 @@ import {
 	InfoAlert,
 	PasswordInput,
 	TextInput,
-	CustomRadioInput
+	CustomRadioInput,
 } from "@nation3/ui-components";
 import { useTranslation } from "next-i18next";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
