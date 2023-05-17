@@ -1,8 +1,8 @@
+import "@nation3/ui-components/styles.css";
 import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { appWithTranslation } from "next-i18next";
-
-import { useEffect, useMemo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import Head from "next/head";
 import type { AppProps } from "next/app";
@@ -24,43 +24,39 @@ const client = createClient({
 	webSocketProvider,
 });
 
-const HeaderNavigation = () => {
-	const router = useRouter();
+// eslint-disable-next-line react/display-name
+const HeaderNavigation = memo(() => {
 	const { address } = useAccount();
 	const { judges } = useCohort();
 
 	const [isDisputesVisible, setIsDisputesVisible] = useState<boolean>(false);
 
-	/* 	
-	const isDisputesVisible = useMemo(() => {
-		if (!judges || !address) return false;
-		return judges.includes(address);
-	}, [address, judges]); 
-	*/
-
-	// FIXME: Catched input was not updating correctly on Rainbow, recheck on each view instead of a whole re-rendering process.
 	useEffect(() => {
 		if (!judges || !address) return setIsDisputesVisible(false);
 		setIsDisputesVisible(judges.includes(address));
-	}, [address, judges]);
-
-	const isActiveRoute = (route: string) => router.pathname.startsWith(route);
+	}, [address, judges, setIsDisputesVisible]);
 
 	return (
-		<div className="flex items-center gap-2 font-medium text-lg text-slate-500">
+		<>
+			<Link
+				href="/agreements"
+				className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
+			>
+				Agreements
+			</Link>
 			{isDisputesVisible && (
 				<>
-					<Link href="/disputes" className={`${isActiveRoute("/dispute") && "text-slate-700"}`}>
-						<div className="hover:bg-gray-100 p-2 px-4 rounded-xl">Disputes</div>
-					</Link>
-					<Link href="/agreements" className={`${isActiveRoute("/agreement") && "text-slate-700"}`}>
-						<div className="hover:bg-gray-100 p-2 px-4 rounded-xl">Agreements</div>
+					<Link
+						href="/disputes"
+						className={`${"text-sm py-min2 px-min3 bg-white shadow rounded-md ml-min3 text-neutral-700"}`}
+					>
+						Disputes
 					</Link>
 				</>
 			)}
-		</div>
+		</>
 	);
-};
+});
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
 	const router = useRouter();
@@ -83,6 +79,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 				<Head>
 					<title>Nation3 Agreements</title>
 					<link rel="icon" href="/favicon.ico" />
+					<link
+						href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap"
+						rel="stylesheet"
+					/>
 				</Head>
 
 				<UiGlobals>

@@ -1,57 +1,12 @@
-import { Button } from "@nation3/ui-components";
-import { ReactNode, useEffect, useMemo, useState } from "react";
-import { useAgreementDispute, useAgreementFinalize } from "../../../hooks";
-import { Modal, ModalProps } from "flowbite-react";
+import { Body1, Body3, BodyHeadline, Button, IconRenderer, ModalNew } from "@nation3/ui-components";
+import { BigNumber, utils } from "ethers";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useAgreementDispute, useAgreementFinalize } from "../../../hooks";
 import disputeIcon from "../../../public/svgs/dispute-icon.svg";
 import finalizeIcon from "../../../public/svgs/finalize-icon.svg";
-import { utils, BigNumber } from "ethers";
-import Image from "next/image";
 import { useAgreementData } from "../context/AgreementDataContext";
-import { CheckCircleIcon } from "@heroicons/react/24/outline";
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-
-interface ContextModalProps extends Pick<ModalProps, "show" | "onClose"> {
-	icon: ReactNode;
-	title: string;
-	content: ReactNode;
-	button: ReactNode;
-}
-
-const ContextModal = ({ icon, title, content, show, button, onClose }: ContextModalProps) => {
-	return (
-		<Modal show={show} onClose={onClose}>
-			<Modal.Header>
-				<div className="flex items-center w-full">
-					<div className="overflow-hidden w-10 p-2 mr-2">{icon && icon}</div>
-					<h3 className="text-slate-600 text-xl md:text-xl font-semibold">{title}</h3>
-				</div>
-			</Modal.Header>
-			<div className="flex flex-col items-center justify-center gap-10 p-5 border-t-2 border-bluesky-200 text-gray-400">
-				{content}
-				{button}
-			</div>
-		</Modal>
-	);
-};
-
-const ContextSection = ({
-	title,
-	highlight,
-	content,
-}: {
-	title: ReactNode;
-	highlight?: ReactNode;
-	content?: ReactNode;
-}) => {
-	return (
-		<div>
-			<h3 className="text-lg font-medium text-slate-600 mb-2">{title}</h3>
-			{highlight && <div className="font-medium text-md text-bluesky">{highlight}</div>}
-			{content && <div>{content}</div>}
-		</div>
-	);
-};
 
 export const JoinedAgreementActions = ({ id }: { id: string }) => {
 	const { userPosition, depositToken, collateralToken } = useAgreementData();
@@ -90,154 +45,180 @@ export const JoinedAgreementActions = ({ id }: { id: string }) => {
 
 	return (
 		<>
-			<div className="grid grid-cols-2 gap-6">
-				{/* FINALISE ACTION BLOCK */}
-				<div className="w-full flex-col items-stretch h-full flex justify-between">
-					<div className="flex flex-col justify-between">
-						<div className="flex mb-4 items-center">
-							<span>
-								<CheckCircleIcon className="w-7 h-7 text-bluesky" />
-							</span>
-							<h3 className="text-xl text-slate-700 ml-2 font-semibold">
-								{t("agreementActions.finalizeHeadline")}
-							</h3>
+			<div className="grid grid-cols-1 gap-double">
+				{/* 
+				FINALISE ACTION BLOCK
+				 */}
+				<section className="grid grid-cols-1 gap-min3">
+					<div className="w-full flex-col items-stretch h-full flex justify-between gap-min3">
+						<div className="flex flex-col justify-between gap-min3">
+							<div className="flex items-center mr-min3">
+								<BodyHeadline color="neutral-c-800">
+									{t("agreementActions.finalizeHeadline")}
+								</BodyHeadline>
+							</div>
+							<Body3 color="neutral-c-500" className="text-sm ">
+								{t("agreementActions.finalizeDescription")}
+							</Body3>
 						</div>
-						<p className="text-slate-500 text-sm mb-4">
-							{t("agreementActions.finalizeDescription")}
-							<b className="text-slate-600">{t("agreementActions.finalizeDescriptionBold")}</b>.
-						</p>
-					</div>
-					<div>
 						<Button
-							className="flex w-auto px-12 rounded-full"
 							outlined
 							label={t("agreementActions.finalizeCTA")}
 							onClick={() => setFinalizeModalVisibility(true)}
 						/>
 					</div>
-				</div>
+				</section>
 
-				{/* DISPUTE ACTION BLOCK */}
-				<div className="w-full flex-col h-full flex justify-between">
-					<div className="flex flex-col justify-between h-full">
-						<div className="flex mb-4 items-center">
-							<span>
-								<ExclamationCircleIcon className="w-7 h-7 text-bluesky" />
-							</span>
-							<h3 className="text-xl text-slate-700 ml-2 font-semibold">
-								{t("agreementActions.disputeHeadline")}
-							</h3>
+				{/* 
+				DISPUTE ACTION BLOCK
+				 */}
+				<section className="grid grid-cols-1 gap-min3">
+					<div className="w-full flex-col items-stretch h-full flex justify-between gap-min3">
+						<div className="flex flex-col justify-between gap-min3">
+							<div className="flex items-center mr-min3">
+								<BodyHeadline color="neutral-c-800">
+									{t("agreementActions.disputeHeadline")}
+								</BodyHeadline>
+							</div>
+							<Body3 color="neutral-c-500" className="text-sm ">
+								{t("agreementActions.disputeDescription")}
+							</Body3>
 						</div>
-						<p className="text-slate-500 text-sm mb-4">
-							{t("agreementActions.disputeDescription")}
-						</p>
-					</div>
-					<div>
 						<Button
-							className="flex w-auto px-12 rounded-full"
-							disabled={userPosition?.status === 2}
+							className="border-sc-c-orange3"
 							outlined
 							label={t("agreementActions.disputeCTA")}
 							onClick={() => setDisputeModalVisibility(true)}
 						/>
 					</div>
-				</div>
+				</section>
 			</div>
 
-			<ContextModal
-				icon={
-					<Image
-						className="h-full"
-						width={40}
-						height={40}
-						src={disputeIcon}
-						alt={"Dispute Agreement"}
-					/>
-				}
-				title={t("dispute.title")}
-				content={
-					<div className="px-12 pt-2 text-sm">
-						<div className="md:max-w-[66%]">{t("dispute.description")}</div>
-						<hr className="md:w-2/5 my-7" />
-						<div className="flex flex-col gap-4">
-							<ContextSection
-								title={t("dispute.disputeCost.title")}
-								highlight={`${utils.formatUnits(userPosition?.deposit ?? 0)} $NATION`}
-								content={t("dispute.disputeCost.description")}
-							/>
-							<ContextSection
-								title={t("dispute.evidenceSubmission.title")}
-								highlight="5 days"
-								content={t("dispute.evidenceSubmission.description")}
-							/>
-							<ContextSection
-								title={t("dispute.disputeResolution.title")}
-								content={t("dispute.disputeResolution.description")}
-							/>
-						</div>
-					</div>
-				}
-				show={showDisputeModal}
-				button={
-					<Button
-						label="Confirm Dispute"
-						isLoading={disputeButtonLoading}
-						onClick={() => dispute()}
-					/>
-				}
-				onClose={() => setDisputeModalVisibility(false)}
-			/>
-			<ContextModal
-				icon={
-					<Image
-						className="h-full"
-						width={40}
-						height={40}
-						src={finalizeIcon}
-						alt={"Finalize Agreement"}
-					/>
-				}
-				title={t("finalize.title")}
-				content={
-					<div className="px-12 pt-2 text-sm">
-						<div className="md:max-w-[66%]">{t("finalize.description")}</div>
-						<hr className="md:w-2/5 my-7" />
-						<div className="flex flex-col gap-4">
-							<ContextSection
-								title={t("finalize.tokenWithdrawal.title")}
-								highlight={
-									<>
-										<div className="flex gap-2">
-											<span>
-												{utils.formatUnits(userPosition?.deposit ?? 0)} $
-												{depositToken?.symbol ?? ""}
-											</span>
-											<span className="text-gray-400 font-medium">Dispute deposit</span>
-										</div>
-										<div className="flex gap-2">
-											<span>
-												{utils.formatUnits(BigNumber.from(userPosition?.balance))} $
-												{collateralToken?.symbol ?? ""}
-											</span>
-											<span className="text-gray-400 font-medium">Collateral</span>
-										</div>
-									</>
+			{/* 
+
+			DISPUTE MODAL
+			
+			*/}
+			<ModalNew isOpen={showDisputeModal} onClose={() => setDisputeModalVisibility(false)}>
+				<section className="bg-white rounded-lg shadow w-full max-w-2xl overflow-hidden border-sc-c-orange1 border-2">
+					<header className="bg-white border-b-2 border-sc-c-orange1 p-base">
+						<div className="flex items-center w-full">
+							<IconRenderer
+								icon={
+									<Image
+										className="h-full"
+										width={40}
+										height={40}
+										src={disputeIcon}
+										alt={"Dispute Agreement"}
+									/>
 								}
-								content={t("finalize.tokenWithdrawal.description")}
+								backgroundColor={"neutral-c-200"}
+								size={"sm"}
+							/>
+							<BodyHeadline color="neutral-c-600" className="text-xl ml-base">
+								{t("dispute.title")}
+							</BodyHeadline>
+						</div>
+					</header>
+					<div className="flex flex-col items-center justify-center text-neutral-c-500 px-base+ py-base+ w-full">
+						<div className="mb-base">
+							<div className="md:max-w-[66%]">{t("dispute.description")}</div>
+							<hr className="md:w-2/5 my-7" />
+							<div className="flex flex-col gap-4">
+								<div>
+									<Body1 color="neutral-c-700">{t("dispute.disputeCost.title")}</Body1>
+									<BodyHeadline color="neutral-c-800">{`${utils.formatUnits(
+										userPosition?.deposit ?? 0,
+									)} $NATION`}</BodyHeadline>
+									<Body3 color="neutral-c-400">{t("dispute.disputeCost.description")}</Body3>
+								</div>
+								<div>
+									<Body1 color="neutral-c-700">{t("dispute.evidenceSubmission.title")}</Body1>
+									<BodyHeadline color="neutral-c-800">{"5 days"}</BodyHeadline>
+									<Body3 color="neutral-c-400">{t("dispute.disputeCost.description")}</Body3>
+								</div>
+								<div>
+									<Body1 color="neutral-c-700">{t("dispute.disputeResolution.title")}</Body1>
+									<Body3 color="neutral-c-400">{t("dispute.disputeResolution.description")}</Body3>
+								</div>
+							</div>
+						</div>
+						<div className="flex justify-end w-full">
+							<Button
+								className="border-sc-c-orange3"
+								label="Confirm Dispute"
+								isLoading={disputeButtonLoading}
+								onClick={() => dispute()}
 							/>
 						</div>
 					</div>
-				}
-				show={showFinalizeModal}
-				button={
-					<Button
-						label="Confirm Finalization"
-						isLoading={finalizeButtonLoading}
-						onClick={() => finalize()}
-					/>
-				}
-				onClose={() => setFinalizeModalVisibility(false)}
-			/>
+				</section>
+			</ModalNew>
+
+			{/* 
+
+			FINALISE MODAL
+			
+			*/}
+			<ModalNew isOpen={showFinalizeModal} onClose={() => setFinalizeModalVisibility(false)}>
+				<section className="bg-white rounded-lg shadow w-full max-w-2xl overflow-hidden border-neutral-c-300 border-2">
+					<header className="bg-white border-b-2 border-neutral-c-300 p-base">
+						<div className="flex items-center w-full">
+							<IconRenderer
+								icon={
+									<Image
+										className="h-full"
+										width={40}
+										height={40}
+										src={finalizeIcon}
+										alt={"Finalize Agreement"}
+									/>
+								}
+								backgroundColor={"neutral-c-200"}
+								size={"sm"}
+							/>
+							<BodyHeadline color="neutral-c-600" className="text-xl ml-base">
+								{t("finalize.title")}
+							</BodyHeadline>
+						</div>
+					</header>
+					<div className="flex flex-col items-center justify-center text-neutral-c-500 px-base+ py-base+ w-full">
+						<div className="mb-base">
+							<div className="md:max-w-[66%]">{t("finalize.description")}</div>
+							<hr className="md:w-2/5 my-7" />
+							<div className="flex flex-col gap-min3">
+								<Body1 color="neutral-c-700">{t("finalize.tokenWithdrawal.title")}</Body1>
+								<div className="flex flex-col">
+									<Body1 color="neutral-c-600">Dispute deposit</Body1>
+									<BodyHeadline color="neutral-c-800">
+										<span>
+											{utils.formatUnits(userPosition?.deposit ?? 0)} ${depositToken?.symbol ?? ""}
+										</span>
+									</BodyHeadline>
+								</div>
+								<div className="flex flex-col">
+									<Body1 color="neutral-c-600">Collateral</Body1>
+									<BodyHeadline color="neutral-c-800">
+										<span>
+											{utils.formatUnits(BigNumber.from(userPosition?.collateral || 0))} $
+											{collateralToken?.symbol ?? ""}
+										</span>
+									</BodyHeadline>
+								</div>
+								<Body3 color="neutral-c-400">{t("finalize.tokenWithdrawal.description")}</Body3>
+							</div>
+						</div>
+						<div className="flex justify-end w-full">
+							<Button
+								label="Confirm Finalization"
+								isLoading={finalizeButtonLoading}
+								onClick={() => finalize()}
+							/>
+						</div>
+					</div>
+				</section>
+			</ModalNew>
 		</>
 	);
 };

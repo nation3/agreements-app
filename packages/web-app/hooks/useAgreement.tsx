@@ -1,13 +1,19 @@
 // import { BigNumber, utils } from "ethers";
-import { useCallback, useMemo } from "react";
 import { PermitBatchTransferFrom } from "@uniswap/permit2-sdk";
+import { BigNumber } from "ethers";
+import { useCallback, useMemo } from "react";
 import { useContractRead, useContractWrite, useWaitForTransaction } from "wagmi";
 import frameworkInterface from "../abis/CollateralAgreementFramework.json";
 import { Resolver } from "../utils/criteria";
 import { useConstants } from "./useConstants";
-import { BigNumber } from "ethers";
+import { AgreementBase, AgreementPosition, AgreementWithPositions } from "../lib/types";
+import { ethers, utils } from "ethers";
+import { useEffect, useState } from "react";
+import { normalizeAddress, feedAgreementWithMetadata } from "../utils";
 
 const frameworkAbi = frameworkInterface.abi;
+
+//TODO: Move contract hooks to sdk
 
 const agreementStatus = (status: number) => {
 	switch (status) {
@@ -24,8 +30,85 @@ const agreementStatus = (status: number) => {
 	}
 };
 
-export const useAgreementData = ({ id, enabled = true }: { id: string; enabled?: boolean }) => {
+const positionStatus = (status: number) => {
+	switch (status) {
+		case 0:
+			return "Pending";
+		case 1:
+			return "Joined";
+		case 2:
+			return "Finalized";
+		case 3:
+			return "Withdrawn";
+		case 4:
+			return "Disputed";
+		default:
+			return "Unknown";
+	}
+};
+
+interface AgreementParams {
+	termsHash: string;
+	metadataURI: string;
+	token: string;
+	status: string;
+}
+
+const parseReadResultToAgreementParams = (result: any): AgreementParams => {
+	return {
+		termsHash: result.termsHash ? String(result.termsHash) : ethers.constants.HashZero,
+		metadataURI: result.metadataURI ? String(result.metadataURI) : "",
+		token: result.token ? String(result.token) : ethers.constants.AddressZero,
+		status: result.status !== undefined ? agreementStatus(result.status) : "Unknown",
+	};
+};
+
+const parseAgreementWithPositions = (
+	id: string,
+	framework: string,
+	agreementData: utils.Result,
+	agreementPositions: utils.Result,
+): AgreementWithPositions => {
+	const params = parseReadResultToAgreementParams(agreementData);
+	const positions: AgreementPosition[] = agreementPositions.map(
+		(position: { party: string; balance: BigNumber; deposit: BigNumber; status: number }) => {
+			return {
+				party: normalizeAddress(position.party),
+				collateral: utils.formatUnits(position.balance, 0),
+				deposit: utils.formatUnits(position.deposit, 0),
+				status: positionStatus(position.status),
+			};
+		},
+	);
+	return {
+		id,
+		...params,
+		title: "Agreement",
+		framework,
+		createdAt: "0",
+		termsPrivacy: "private",
+		termsURI: undefined,
+		termsFilename: undefined,
+		positions,
+	};
+};
+
+interface AgreementDataReturn {
+	agreement: AgreementWithPositions | undefined;
+	isReady: boolean;
+}
+
+export const useAgreement = ({
+	id,
+	enabled = true,
+}: {
+	id: string;
+	enabled?: boolean;
+}): AgreementDataReturn => {
 	const { frameworkAddress } = useConstants();
+	const [agreement, setAgreement] = useState<AgreementWithPositions>();
+	const [isReady, setIsReady] = useState<boolean>(false);
+
 	const { data: agreementData } = useContractRead({
 		addressOrName: frameworkAddress,
 		contractInterface: frameworkAbi,
@@ -34,7 +117,7 @@ export const useAgreementData = ({ id, enabled = true }: { id: string; enabled?:
 		enabled,
 	});
 
-	const { data: positions } = useContractRead({
+	const { data: agreementPositions } = useContractRead({
 		addressOrName: frameworkAddress,
 		contractInterface: frameworkAbi,
 		functionName: "agreementPositions",
@@ -42,20 +125,28 @@ export const useAgreementData = ({ id, enabled = true }: { id: string; enabled?:
 		enabled,
 	});
 
-	const data = useMemo(() => {
-		return {
-			termsHash: agreementData?.termsHash,
-			criteria: agreementData?.criteria,
-			metadataURI: agreementData?.metadataURI,
-			token: agreementData?.token,
-			status:
-				typeof agreementData?.status === "number"
-					? agreementStatus(agreementData.status)
-					: "Unknown",
+	useEffect(() => {
+		const composeAgreement = async (
+			agreementData: utils.Result,
+			agreementPositions: utils.Result,
+		) => {
+			const agreement = parseAgreementWithPositions(
+				id,
+				frameworkAddress,
+				agreementData,
+				agreementPositions,
+			);
+			const fedAgreement = await feedAgreementWithMetadata(agreement);
+			setAgreement(fedAgreement);
+			setIsReady(true);
 		};
-	}, [agreementData]);
 
-	return { data, positions };
+		if (agreementData && agreementPositions) {
+			composeAgreement(agreementData, agreementPositions);
+		}
+	}, [agreementData, agreementPositions]);
+
+	return { agreement, isReady };
 };
 
 export const useAgreementCreate = ({

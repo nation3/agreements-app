@@ -10,6 +10,7 @@ import { useAgreementList } from "./context/AgreementListContext";
 import { useTranslation } from "next-i18next";
 import courtIll from "./../../public/court-ill.png";
 import { GradientLink } from "../GradientLink";
+import React from "react";
 
 export const AgreementList = () => {
 	const { t } = useTranslation("common");
@@ -25,18 +26,18 @@ export const AgreementList = () => {
 					columns={
 						screen === ScreenType.Desktop ? ["Id", "Created on", "Status"] : ["Id", "Status"]
 					}
-					data={agreements.map(({ id, createdAt, status }) =>
+					data={agreements.map(({ title, id, createdAt, status }) =>
 						screen === ScreenType.Desktop
 							? [
-									<span key={id}>{utils.shortenHash(id)}</span>,
+									<span key={id}>{title ? title : utils.shortenHash(id)}</span>,
 									<span key={`${id}-date`}>
 										{new Date(Number(createdAt) * 1000).toLocaleDateString()}
 									</span>,
-									<Badge key={`${id}-status`} label={status} bgColor="slate-300" />,
+									<Badge key={`${id}-status`} label={status} bgColor="pr-c-blue2" />,
 							  ]
 							: [
 									<span key={id}>{utils.shortenHash(id)}</span>,
-									<Badge key={`${id}-status`} label={status} bgColor="slate-300" />,
+									<Badge key={`${id}-status`} label={status} bgColor="pr-c-blue2" />,
 							  ],
 					)}
 					clickHandlers={agreements.map(

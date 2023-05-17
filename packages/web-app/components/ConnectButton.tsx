@@ -1,24 +1,41 @@
-import Blockies from "react-blockies";
-import { AccountButton, ButtonBase } from "@nation3/ui-components";
-import { ConnectButton as RainbowConnectButton, AvatarComponent } from "@rainbow-me/rainbowkit";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
+import {
+	AccountButton,
+	Button,
+	ButtonBase,
+	ScreenType,
+	UserIcon,
+	useScreen,
+} from "@nation3/ui-components";
+import { AvatarComponent, ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
+import React, { useState } from "react";
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
-	return ensImage ? (
+	const [avatarLoadError, setAvatarLoadError] = useState<boolean>(false);
+
+	const handleAvatarError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+		event.currentTarget.onerror = null;
+		setAvatarLoadError(true);
+	};
+
+	return ensImage && !avatarLoadError ? (
 		<img
+			onError={handleAvatarError}
 			src={ensImage}
-			width={size * 4}
-			height={size * 4}
+			width={size}
+			height={size}
 			alt="ENS Avatar"
 			className={`rounded-full`}
 		/>
 	) : (
-		<Blockies seed={address} size={size} className="overflow-hidden rounded-full" />
+		<div className="rounded-full overflow-hidden flex items-center bg-pr-c-green2">
+			<UserIcon className={`w-[${size}px] h-[${size}px]`} />
+		</div>
 	);
 };
 
 export const ConnectButton = () => {
+	const { screen } = useScreen();
 	return (
 		<RainbowConnectButton.Custom>
 			{({
@@ -53,15 +70,12 @@ export const ConnectButton = () => {
 						{(() => {
 							if (!connected) {
 								return (
-									<ButtonBase
-										className="gap-1 p-1 text-bluesky-400 bg-white border-2 border-bluesky-400 rounded-full hover:shadow transition-shadow"
+									<Button
+										label="Connect"
+										size="medium"
+										className="text-sm"
 										onClick={openConnectModal}
-									>
-										<span className="hidden font-regular tracking-wide md:inline md:w-32">
-											Connect
-										</span>
-										<UserCircleIcon className="w-12 h-12 -m-1" />
-									</ButtonBase>
+									></Button>
 								);
 							}
 
@@ -83,19 +97,19 @@ export const ConnectButton = () => {
 								<>
 									<div className="flex items-center justify-end">
 										<button
-											className="hidden md:flex gap-2 font-medium cursor-default items-center text-slate-300 mr-5"
+											className="hidden md:flex gap-2 font-medium cursor-default items-center text-neutral-400 mr-base"
 											onClick={() => openChainModal()}
 										>
 											{/* {chain && chain.id === 5 && <span>{chain.name} </span>} */}
 											<span>{chain.name} </span>
 										</button>
 										<AccountButton
-											className="font-semibold text-slate-600 tracking-wide shadow rounded-full md:pl-5 md:pr-2 md:py-2 p-2 bg-white hover:bg-gray-100"
+											borderColor="pr-c-green3"
 											avatar={
 												<AccountAvatar
 													address={account.address}
 													ensImage={account.ensAvatar ?? ""}
-													size={10}
+													size={screen == ScreenType.Desktop ? 50 : 32}
 												/>
 											}
 											account={account}

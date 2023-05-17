@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { ReactNode, useMemo, useState, useEffect } from "react";
-import { useAgreementData } from "../../../hooks/useAgreement";
+import { useAgreement as useAgreementOnChain } from "../../../hooks/useAgreement";
 import { useResolution } from "../../../hooks/useArbitrator";
 import { useResolutionProposals } from "../../../hooks/useCohort";
 import { abiEncodingPacked, hashEncoding } from "../../../utils/hash";
@@ -24,7 +24,7 @@ export const DisputeResolutionProvider = ({
 	id: string;
 	children: ReactNode;
 }) => {
-	const { data, positions: agreementPositions } = useAgreementData({
+	const { agreement } = useAgreementOnChain({
 		id,
 		enabled: id != "undefined",
 	});
@@ -32,8 +32,8 @@ export const DisputeResolutionProvider = ({
 	// const { amount } = useAppealConfig();
 
 	const tokenAddress = useMemo(() => {
-		return data?.token;
-	}, [data]);
+		return agreement?.token;
+	}, [agreement]);
 
 	const { data: tokenData } = useToken({
 		address: tokenAddress,
@@ -51,8 +51,13 @@ export const DisputeResolutionProvider = ({
 	}, [tokenData]);
 
 	const positions = useMemo(() => {
-		return agreementPositions?.map(([party, balance]) => ({ party, balance }));
-	}, [agreementPositions]);
+		const activePositions = agreement?.positions;
+		activePositions?.filter(({ status }) => status != "Pending");
+		return activePositions?.map(({ party, collateral }) => ({
+			party,
+			balance: BigNumber.from(collateral),
+		}));
+	}, [agreement]);
 
 	// TODO: Change on Next iteration
 	const { appealCost } = useConstants();
@@ -64,19 +69,16 @@ export const DisputeResolutionProvider = ({
 	*/
 
 	const balance = useMemo(() => {
-		return agreementPositions?.reduce(
-			(result, [, balance]) => result.add(balance),
-			BigNumber.from(0),
-		);
-	}, [agreementPositions]);
+		return positions?.reduce((result, { balance }) => result.add(balance), BigNumber.from(0));
+	}, [positions]);
 
 	const resolutionId = useMemo(() => {
-		if (id != "undefined" && data.status == "Disputed") {
+		if (id != "undefined" && agreement?.status == "Disputed") {
 			return hashEncoding(abiEncodingPacked(["address", "bytes32"], [framework, id]));
 		} else {
 			return "undefined";
 		}
-	}, [data, framework, id]);
+	}, [agreement, framework, id]);
 
 	const { resolution: resolutionData } = useResolution({
 		id: resolutionId,
@@ -101,8 +103,8 @@ export const DisputeResolutionProvider = ({
 
 	const dispute = {
 		id,
-		status: data?.status == "Disputed" ? "Open" : "Closed",
-		termsHash: data?.termsHash,
+		status: agreement?.status == "Disputed" ? "Open" : "Closed",
+		termsHash: agreement?.termsHash,
 		collateralToken: collateralToken,
 		balance,
 		positions,

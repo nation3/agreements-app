@@ -1,12 +1,33 @@
 import React, { HTMLAttributes, ReactNode } from "react";
-export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-	children: ReactNode;
+import classNames from "classnames";
+
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
+	children?: ReactNode;
+	size?: "base" | "double";
+	className?: string;
 }
 
-export const Card = ({ children, className }: CardProps) => {
+const defaultProps: CardProps = {};
+
+const Card: React.FC<CardProps> = (props) => {
+	const { children, className, size, ...rest } = props;
+	const cardClass = classNames(
+		size ? `p-${size}` : `p-base md:p-double`,
+		"w-full",
+		"bg-white",
+		"rounded-lg",
+		"border-2",
+		"border-neutral-c-200",
+		className,
+	);
+
 	return (
-		<div className={`p-6 w-full md:max-w-3xl bg-white rounded-lg shadow-md ${className}`}>
+		<div className={cardClass} {...rest}>
 			{children}
 		</div>
 	);
 };
+
+Card.defaultProps = defaultProps;
+
+export { Card };

@@ -1,9 +1,10 @@
-import React, { ReactNode } from "react";
-import { ScreenType, useScreen } from "../../hooks/useScreen";
-import BottonNav from "../../components/Organisms/BottomNav";
-import TopBar from "../../components/Organisms/TopBar";
-import { NavButtonProps } from "../../components/Molecules/buttons";
 import cx from "classnames";
+import React, { ReactNode } from "react";
+import { NavButtonProps } from "../../components/Molecules/buttons";
+import BottonNav from "../../components/Organisms/BottomNav";
+import Footer from "../../components/Organisms/Footer";
+import TopBar from "../../components/Organisms/TopBar";
+import { ScreenType, useScreen } from "../../hooks/useScreen";
 
 export interface DefaultLayoutProps extends Omit<NavBarProps, "navItems"> {
 	children: ReactNode;
@@ -38,23 +39,20 @@ export const DefaultLayout = ({ children, ...props }: DefaultLayoutProps) => {
 	};
 
 	return (
-		<div className="mx-auto bg-nation3-bg_grey">
-			<div className="flex relative">
+		<div className="mx-auto">
+			<div className="relative">
 				<NavBar />
-				<div
-					className={cx(
-						"grow flex min-h-screen w-full px-4 pt-2 pb-24 lg:pt-4 lg:pb-4 justify-center",
-					)}
-				>
-					<div
-						className={cx(
-							screen === ScreenType.Desktop ? "pt-28" : "pt-24",
-							"w-full flex justify-center",
-						)}
-					>
-						{children}
-					</div>
+				<div className={cx("min-h-screen w-full")}>
+					{/* 					<div
+						className={cx()
+						// screen === ScreenType.Desktop ? "pt-28" : "pt-24",
+						// "w-full flex justify-center",
+						}
+					> */}
+					{children}
+					{/* </div> */}
 				</div>
+				<Footer />
 			</div>
 		</div>
 	);

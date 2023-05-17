@@ -7,16 +7,18 @@
   "license": "MIT",
   "private": true,
   "workspaces": {
-      "packages": [
-          "packages/ui-components",
-          "packages/web-app"
-      ],
-      "nohoist": [
-          "flowbite",
-          "flowbite-react"
-      ]
+    "packages": [
+      "packages/ui-components",
+      "packages/web-app"
+    ],
+    "nohoist": [
+      "flowbite",
+      "flowbite-react"
+    ]
   },
   "engines": {
-      "node": ">=16.0.0"
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
   }
 }

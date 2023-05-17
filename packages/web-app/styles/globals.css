@@ -1,7 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
-    background-color: rgb(249, 250, 251)
-}
+@font-face {
+    font-family: 'Bossa';
+    src: url('/fonts/Bossa-Bold.woff2') format('woff2'),
+         url('/fonts/Bossa-Bold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }

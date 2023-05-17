@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useNetwork } from "wagmi";
-import { Token } from "../components/create/context/types";
+import { Token } from "../components/agreementCreate/context/types";
 
 const mainnetTokens = [
 	{
@@ -29,7 +29,7 @@ const mainnetTokens = [
 		symbol: "ANT",
 		address: "0xa117000000f279D81A1D3cc75430fAA017FA5A2e",
 		decimals: 18,
-		icon: "/tokens/aragon.png",
+		icon: "/tokens/ant.png",
 	},
 ];
 
@@ -50,6 +50,14 @@ const goerliTokens = [
 	},
 ];
 
+const empty = {
+	name: "?",
+	symbol: "?",
+	address: "",
+	decimals: 18,
+	icon: "",
+};
+
 export const useTokenList = (): Token[] => {
 	const { chain } = useNetwork();
 
@@ -65,4 +73,21 @@ export const useTokenList = (): Token[] => {
 	}, [chain]);
 
 	return tokens;
+};
+
+export const useFindToken = (tokenSymbol: string): Token => {
+	const { chain } = useNetwork();
+
+	const token = useMemo(() => {
+		switch (chain?.id) {
+			case 1:
+				return mainnetTokens.find((token) => token.symbol === tokenSymbol);
+			case 5:
+				return goerliTokens.find((token) => token.symbol === tokenSymbol);
+			default:
+				return mainnetTokens.find((token) => token.symbol === tokenSymbol);
+		}
+	}, [chain, tokenSymbol]);
+
+	return token ? token : empty;
 };

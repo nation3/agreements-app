@@ -1,16 +1,9 @@
-import { generateCriteria, ResolverMap } from "./criteria";
-import { IPFSUriToUrl } from "./ipfs";
 import { BigNumber } from "ethers";
+import { preparePutToIPFS } from "../lib/ipfs";
+import { generateCriteria, ResolverMap } from "./criteria";
+import { encryptAES } from "./crypto";
 import { hexHash } from "./hash";
-
-export type AgreementMetadata = {
-	termsHash: string;
-	criteria: string;
-	title?: string;
-	description?: string;
-	termsUri?: string;
-	resolvers?: ResolverMap;
-};
+import { IPFSUriToUrl } from "./ipfs";
 
 export type ResolutionMetadata = {
 	settlement: { party: string; balance: string }[];
@@ -20,9 +13,11 @@ export type ResolutionMetadata = {
 export const parseAgreementMetadata = (data: { [key: string]: any }): AgreementMetadata => {
 	return {
 		title: data.title ?? "Agreement",
-		termsHash: data.termsHash ?? undefined,
-		termsUri: data.termsUri ?? undefined,
 		description: data.description ?? undefined,
+		termsHash: data.termsHash ?? undefined,
+		termsPrivacy: data.termsPrivacy ?? "",
+		termsURI: data.termsURI ?? undefined,
+		termsFilename: data.termsFilename ?? "",
 		criteria: data.criteria ?? undefined,
 		resolvers: data.resolvers ?? undefined,
 	};
@@ -33,6 +28,20 @@ export const parseResolutionMetadata = (data: { [key: string]: any }): Resolutio
 		settlement: data.settlement ?? [],
 		reasons: data.reasons ?? undefined,
 	};
+};
+
+export const fetchAgreementTerms = async (fileURI: string): Promise<string | undefined> => {
+	const uri = fileURI.startsWith("ipfs://") ? IPFSUriToUrl(fileURI) : fileURI;
+
+	try {
+		const response = await fetch(uri);
+		if (response.ok) {
+			return await response.text();
+		}
+	} catch (error) {
+		console.debug(`Failed to fetch terms: ${uri}`, error);
+	}
+	return;
 };
 
 export const fetchMetadata = async <T extends object>(
@@ -47,6 +56,7 @@ export const fetchMetadata = async <T extends object>(
 		const response = await fetch(uri);
 		const raw = await response.json();
 		data = parser(raw);
+		console.log("$$$ Parsing data from IPFS => ", data);
 	} catch (error) {
 		console.debug(`Failed to fetch metadata: ${uri}`, error);
 	}
@@ -62,24 +72,69 @@ export const fetchResolutionMetadata = async (fileURI: string): Promise<Resoluti
 	return fetchMetadata<ResolutionMetadata>(fileURI, parseResolutionMetadata);
 };
 
-export const generateAgreementMetadata = ({
-	title,
-	terms,
-	positions,
-}: {
-	terms: string;
+interface GAMInterface {
 	positions: { account: string; balance: BigNumber }[];
+	terms: string;
+	termsPrivacy: string;
+	termsFilename?: string;
+	termsPassword?: string;
 	title?: string;
-}): AgreementMetadata => {
+}
+
+export type AgreementMetadata = {
+	title: string;
+	criteria: string;
+	termsHash: string;
+	termsURI?: string;
+	termsPrivacy?: string;
+	termsFilename?: string | null;
+	description?: string;
+	resolvers?: ResolverMap;
+};
+
+export const generateAgreementMetadata = async ({
+	title,
+	positions,
+	terms,
+	termsPrivacy,
+	termsPassword,
+	termsFilename,
+}: GAMInterface): Promise<AgreementMetadata> => {
 	const termsHash = hexHash(terms);
 	const { criteria, resolvers } = generateCriteria(positions);
 
-	return {
+	const uploadTermsFile = async () => {
+		/* RETURN EMPTY URI ON PRIVATE */
+		if (termsPrivacy === "private") {
+			return "";
+		}
+
+		/* ENCRYPT TERMS FILE IF IT IS ENCRYPTED */
+		const termsData =
+			termsPrivacy === "public-encrypted" ? encryptAES(terms, termsPassword ?? "") : terms;
+
+		/* UPLOAD TERMS FILE TO IPFS */
+		const { put } = await preparePutToIPFS(termsData, termsFilename);
+		const cid = await put();
+
+		console.log(`$$$ TERMS IPFS URI ipfs://${cid}`);
+		return `ipfs://${cid}`;
+	};
+
+	const termsFileURI = await uploadTermsFile();
+	console.log(`$$$ TERMS metadata uploaded to ${termsFileURI}`);
+
+	const agreementMetadata = {
 		title: title ?? "Agreement",
 		termsHash: termsHash,
+		termsURI: termsFileURI,
+		termsPrivacy: termsPrivacy,
+		termsFilename: termsPrivacy === "private" ? null : termsFilename,
 		criteria: criteria,
 		resolvers: resolvers,
 	};
+	console.log("$$$ METADATA AGREEMENT => ", agreementMetadata);
+	return agreementMetadata;
 };
 
 export const generateResolutionMetadata = (
