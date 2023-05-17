@@ -13,7 +13,7 @@ const AgreementStatus: React.FC<IAgreementStatusProps> = ({ fileStatus }) => {
 			case "public":
 				return "Public";
 			case "public-encrypted":
-				return "Public";
+				return "Restricted";
 			case "private":
 				return "Private";
 			default:
@@ -28,13 +28,6 @@ const AgreementStatus: React.FC<IAgreementStatusProps> = ({ fileStatus }) => {
 					{getStatusMessage()}
 				</Body3>
 			</div>
-			{isEncrypted && (
-				<div className="border-2 border-neutral-c-200 w-auto rounded-base px-min2 h-full bg-white">
-					<Body3 color="neutral-c-500" className="text-xs">
-						Locked
-					</Body3>
-				</div>
-			)}
 		</div>
 	) : (
 		<></>
