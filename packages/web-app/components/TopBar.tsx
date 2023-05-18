@@ -7,6 +7,7 @@ import {
 	N3UpRightArrowIcon,
 	TextCard,
 } from "@nation3/ui-components";
+import { N3Arbitrator } from "@nation3/ui-components/src";
 import cx from "classnames";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -16,12 +17,13 @@ export interface ITopBarProps {
 	appName: { name: string; link: string };
 	navElements?: { name: string; link: string }[];
 	connectionButton?: ReactNode;
+	isArbitrator?: boolean;
 }
 
 const ITopBarDefaultProps = {};
 
 const TopBar: React.FC<ITopBarProps> = (props) => {
-	const { appName, navElements, connectionButton } = props;
+	const { appName, navElements, connectionButton, isArbitrator } = props;
 	const router = useRouter();
 
 	return (
@@ -99,7 +101,7 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 									shadow
 									icon={
 										<IconRenderer
-											icon={<N3UpRightArrowIcon />}
+											icon={isArbitrator ? <N3Arbitrator /> : <N3UpRightArrowIcon />}
 											customSize={14}
 											backgroundColor="pr-c-green1"
 										/>

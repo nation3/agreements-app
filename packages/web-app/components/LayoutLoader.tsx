@@ -1,7 +1,9 @@
 import { BottonNav, Footer, ScreenType, useScreen } from "@nation3/ui-components";
 import cx from "classnames";
 import { useRouter } from "next/router";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useMemo } from "react";
+import { useAccount } from "wagmi";
+import { useCohort } from "../hooks/useCohort";
 import { ConnectButton } from "./ConnectButton";
 import TopBar from "./TopBar";
 
@@ -12,6 +14,12 @@ interface AgreementsLayoutProps {
 const AgreementsLayout: React.FC<AgreementsLayoutProps> = ({ children }) => {
 	const router = useRouter();
 	const { screen } = useScreen();
+	const { judges } = useCohort();
+	const { address } = useAccount();
+	const isArbitrator = useMemo(() => {
+		if (!judges || !address) return false;
+		return judges.includes(address);
+	}, [judges, address]);
 
 	/* TODO: AT GROWING THE APP BUILD DYNAMIC DATA STRUCTURES BASED ON LOCATION */
 	const appName = {
@@ -37,12 +45,13 @@ const AgreementsLayout: React.FC<AgreementsLayoutProps> = ({ children }) => {
 					{/* NAVBAR */}
 					{screen === ScreenType.Desktop ? (
 						<TopBar
+							isArbitrator
 							navElements={navElements}
 							appName={appName}
 							connectionButton={<ConnectButton />}
 						/>
 					) : (
-						<BottonNav connectionButton={<ConnectButton />} />
+						<BottonNav isArbitrator connectionButton={<ConnectButton />} />
 					)}
 
 					{/* CONTENT */}

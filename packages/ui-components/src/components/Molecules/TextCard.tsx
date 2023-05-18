@@ -53,7 +53,7 @@ export const TextCard = (props: TextCardProps) => {
 				className && className,
 			)}
 		>
-			{icon && !iconRight && <>{iconLocal}</>}
+			{icon && <>{iconLocal}</>}
 			{<Body3>{text}</Body3>}
 			{iconRight && <>{iconLocal}</>}
 		</div>

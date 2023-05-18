@@ -1,16 +1,16 @@
-import { useCallback, useMemo, useState, useEffect } from "react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
-import { Table, Alert, ActionBadge, Button, utils as n3utils } from "@nation3/ui-components";
-import { BigNumber, utils, constants } from "ethers";
-import { ResolutionDetails, ProposedResolutionDetails } from "./ResolutionDetails";
-import { useDispute } from "./context/DisputeResolutionContext";
-import { trimHash } from "../../utils/hash";
-import { useResolutionExecute } from "../../hooks/useArbitrator";
+import { ActionBadge, Alert, Button, Table, utils as n3utils } from "@nation3/ui-components";
+import { BigNumber, constants, utils } from "ethers";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
-import { CardHeader } from "../CardHeader";
+import { useResolutionExecute } from "../../hooks/useArbitrator";
 import { useCohort } from "../../hooks/useCohort";
-import { AccountDisplay } from "../AccountDisplay";
 import { useConstants } from "../../hooks/useConstants";
+import { trimHash } from "../../utils/hash";
+import { AccountDisplay } from "../AccountDisplay";
+import { CardHeader } from "../CardHeader";
+import { ProposedResolutionDetails, ResolutionDetails } from "./ResolutionDetails";
+import { useDispute } from "./context/DisputeResolutionContext";
 
 export const DisputeDetails = () => {
 	const currentTime = Math.floor(Date.now() / 1000);

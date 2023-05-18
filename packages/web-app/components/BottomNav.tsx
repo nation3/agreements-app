@@ -4,6 +4,7 @@ import React, { ReactNode } from "react";
 
 type IBottomNavProps = {
 	connectionButton?: ReactNode;
+	isArbitrator?: boolean;
 };
 
 const IBottomNavDefaultProps = {};

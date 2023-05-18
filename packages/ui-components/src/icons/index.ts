@@ -3,6 +3,7 @@ export { default as EthereumIcon } from "./ethereumIcon.svg";
 export { default as N3AddFIle } from "./n3AddFile.svg";
 export { default as N3Agreement } from "./n3Agreement.svg";
 export { default as N3AgreementDone } from "./n3AgreementDone.svg";
+export { default as N3Arbitrator } from "./n3Arbitrator.svg";
 export { default as N3Cross } from "./n3Cross.svg";
 export { default as N3Document } from "./n3Document.svg";
 export { default as N3DocumentGrey } from "./n3DocumentGrey.svg";
