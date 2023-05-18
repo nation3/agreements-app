@@ -34,10 +34,7 @@ const AgreementCreateIntro = ({ setActiveStep }: IAgreementCreateIntroProps) => 
 						rounded
 					/>
 					<BodyHeadline>{t("newAgreement.heading")}</BodyHeadline>
-					<div className="flex flex-col items-center justify-center gap-2">
-						<Body3 className="text-center gap-y-min3">{t("newAgreement.p1")}</Body3>
-						<Body3 className="text-center gap-y-min3">{t("newAgreement.p2")}</Body3>
-					</div>
+					<Body3 className="text-center gap-y-min3">{t("newAgreement.subheading")}</Body3>
 					<Button label="Create New Agreement" onClick={() => setActiveStep(1)}></Button>
 				</div>
 			</Card>

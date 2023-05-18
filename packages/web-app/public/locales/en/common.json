@@ -18,16 +18,15 @@
     },
     "newAgreement": {
         "heading": "New agreement",
-        "p1": "Define terms, secure collateral, and establish your agreement on-chain in minutes with our user-friendly creation process.",
-        "p2": "Make your internet-native handshake a reality, all with the assurance of Nation3 Legal System."
+        "subheading": "Make your internet-native handshake a reality, all with the assurance of Nation3 Legal System."
     },
     "agreementIntro": {
         "heading": "What is an Agreement?",
-        "subheading": "A Nation3 Agreement is a contract between two or more parties, secured by the Nation3 Legal System. It's an internet-native handshake, defined by mutually agreed terms and backed by crypto assets. This system delimits each party's liability, while offering a built-in, dispute resolution mechanism tailored for the internet era."  
+        "subheading": "A Nation3 Agreement is an internet-native contract, defined by agreed terms, secured by crypto assets, and backed by Nation3 Legal System, a built-in dispute resolution system for the internet era."  
     },
     "agreementTips": {
         "heading": "Quick tips for great agreements",
-        "subheading": "A well-crafted agreement is your best ally in Nation3's dispute resolution system. Our judges focus on resolving disputes based on the agreement's terms, so clarity in your terms is essential. Moreover, specificity is key when defining desired settlements and breach conditions. Be sure to include a notice provision and specify your preferred dispute resolution timeframes to ensure a smooth, efficient resolution process."
+        "subheading": "Crafting a detailed and precise agreement is key to successful dispute resolution in Nation3; aim for clarity in all terms and conditions for the best outcomes."
     },
     "permit2": {
         "title": "Approve tokens",
