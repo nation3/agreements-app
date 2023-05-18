@@ -1,5 +1,12 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { AccountButton, Button, ScreenType, UserIcon, useScreen } from "@nation3/ui-components";
+import {
+	AccountButton,
+	Button,
+	ScreenType,
+	TextCard,
+	UserIcon,
+	useScreen,
+} from "@nation3/ui-components";
 import { AvatarComponent, ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import React, { useState } from "react";
 
@@ -89,13 +96,12 @@ export const ConnectButton = () => {
 							return (
 								<>
 									<div className="flex items-center justify-end">
-										<button
-											className="hidden md:flex cursor-default items-center text-neutral-400 mr-base"
+										<TextCard
+											className="mr-min3"
+											shadow
 											onClick={() => openChainModal()}
-										>
-											{/* {chain && chain.id === 5 && <span>{chain.name} </span>} */}
-											<span>{chain.name} </span>
-										</button>
+											text={chain.name}
+										/>
 										<AccountButton
 											borderColor="pr-c-green3"
 											avatar={

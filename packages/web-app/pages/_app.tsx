@@ -5,15 +5,13 @@ import { appWithTranslation } from "next-i18next";
 import { useEffect } from "react";
 import "../styles/globals.css";
 
-import { BottonNav, Footer, ScreenType, useScreen } from "@nation3/ui-components";
+import { useScreen } from "@nation3/ui-components";
 import { RainbowKitProvider, lightTheme } from "@rainbow-me/rainbowkit";
-import cx from "classnames";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { WagmiConfig, createClient } from "wagmi";
-import { ConnectButton } from "../components/ConnectButton";
-import TopBar from "../components/TopBar";
+import LayoutLoader from "../components/LayoutLoader";
 import UiGlobals from "../components/uiGlobals/uiGlobals";
 import { chains, connectors, provider, webSocketProvider } from "../lib/connectors";
 
@@ -53,22 +51,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 				</Head>
 
 				<UiGlobals>
-					<div className="mx-auto">
-						<div className="relative">
-							{/* NAVBAR */}
-							{screen === ScreenType.Desktop ? (
-								<TopBar title="Nation3" appName="Agreements" connectionButton={<ConnectButton />} />
-							) : (
-								<BottonNav connectionButton={<ConnectButton />} />
-							)}
-
-							{/* CONTENT */}
-							<div className={cx("min-h-screen w-full")}>{<Component {...pageProps} />}</div>
-
-							{/* FOOTER */}
-							<Footer />
-						</div>
-					</div>
+					<LayoutLoader>
+						<Component {...pageProps} />
+					</LayoutLoader>
 				</UiGlobals>
 			</RainbowKitProvider>
 		</WagmiConfig>

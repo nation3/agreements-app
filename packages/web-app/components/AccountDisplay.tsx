@@ -1,6 +1,5 @@
 import { WalletIcon } from "@heroicons/react/24/solid";
-import { AddressDisplay, IconLoader } from "@nation3/ui-components";
-import Image from "next/image";
+import { AddressDisplay } from "@nation3/ui-components";
 import React, { useState } from "react";
 import { useEnsAvatar, useEnsName } from "wagmi";
 

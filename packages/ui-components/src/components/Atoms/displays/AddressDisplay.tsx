@@ -18,5 +18,5 @@ export const AddressDisplay = ({
 		[address, ensName],
 	);
 
-	return <Body3 className={cx("flex items-stretch", className)}>{displayAddress}</Body3>;
+	return {displayAddress};
 };
