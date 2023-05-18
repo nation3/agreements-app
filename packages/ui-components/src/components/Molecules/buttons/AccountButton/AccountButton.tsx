@@ -1,5 +1,7 @@
 import React, { ReactNode } from "react";
+import { N3User } from "../../../../icons";
 import { shortenHash } from "../../../../utils/strings";
+import { IconRenderer } from "../../../Atoms";
 import { TextCard } from "../../TextCard";
 
 export interface AccountButtonProps {
@@ -14,6 +16,7 @@ export const AccountButton = ({ avatar, account, borderColor, ...props }: Accoun
 			<div className="flex items-center gap-min3">
 				<TextCard
 					shadow
+					icon={<IconRenderer icon={<N3User />} backgroundColor={"pr-c-green1"} size={"xs"} />}
 					text={account.ensName ? account.ensName : shortenHash((account.address as string) ?? "")}
 				></TextCard>
 				<div

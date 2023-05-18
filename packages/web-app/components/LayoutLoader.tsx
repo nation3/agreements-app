@@ -22,7 +22,7 @@ const AgreementsLayout: React.FC<AgreementsLayoutProps> = ({ children }) => {
 	const navElements = [
 		{
 			name: "My agreements",
-			link: appName.link + "/myagreements",
+			link: appName.link + "/my-agreements",
 		},
 		{
 			name: "Create",
@@ -32,15 +32,6 @@ const AgreementsLayout: React.FC<AgreementsLayoutProps> = ({ children }) => {
 
 	return (
 		<>
-			{/* 			<Head>
-				<title>Nation3 Agreements</title>
-				<link rel="icon" href="/favicon.ico" />
-				<link
-					href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap"
-					rel="stylesheet"
-				/>
-			</Head> */}
-
 			<div className="mx-auto">
 				<div className="relative">
 					{/* NAVBAR */}

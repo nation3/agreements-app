@@ -7,11 +7,9 @@ import {
 	IconRenderer,
 	N3Agreement,
 	N3User,
-	N3World,
 } from "@nation3/ui-components";
-import React from "react";
+import { useTranslation } from "next-i18next";
 import { GradientLink } from "../GradientLink";
-import { i18n, useTranslation } from "next-i18next";
 
 type IAgreementCreateIntroProps = {
 	setActiveStep: (step: number) => void; // add setActiveStep as a prop
@@ -34,7 +32,9 @@ const AgreementCreateIntro = ({ setActiveStep }: IAgreementCreateIntroProps) => 
 						rounded
 					/>
 					<BodyHeadline>{t("newAgreement.heading")}</BodyHeadline>
-					<Body3 className="text-center gap-y-min3">{t("newAgreement.subheading")}</Body3>
+					<Body3 color="neutral-c-600" className="text-center gap-y-min3">
+						{t("newAgreement.subheading")}
+					</Body3>
 					<Button label="Create New Agreement" onClick={() => setActiveStep(1)}></Button>
 				</div>
 			</Card>
@@ -47,7 +47,9 @@ const AgreementCreateIntro = ({ setActiveStep }: IAgreementCreateIntroProps) => 
 					rounded
 				/>
 				<Body1>{t("agreementIntro.heading")}</Body1>
-				<Body3 className="text-neutral-c-600 my-min3">{t("agreementIntro.subheading")}</Body3>
+				<Body3 color="neutral-c-500" className=" my-min3">
+					{t("agreementIntro.subheading")}
+				</Body3>
 				<GradientLink
 					href={"https://docs.nation3.org/agreements/what-is-a-nation3-agreement"}
 					caption={"Learn more"}
@@ -62,7 +64,9 @@ const AgreementCreateIntro = ({ setActiveStep }: IAgreementCreateIntroProps) => 
 					rounded
 				/>
 				<Body1>{t("agreementTips.heading")}</Body1>
-				<Body3 className="text-neutral-c-600 my-min3">{t("agreementTips.subheading")}</Body3>
+				<Body3 color="neutral-c-500" className=" my-min3">
+					{t("agreementTips.subheading")}
+				</Body3>
 				<GradientLink
 					href={"https://docs.nation3.org/agreements/creating-an-agreement"}
 					caption={"Learn more"}

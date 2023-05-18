@@ -43,15 +43,13 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 							<div className="flex gap-min3 bg-pr-c-green1 items-center rounded-base pr-base h-[32px]">
 								<Link
 									href={appName.link}
-									className={
-										"flex items-center gap-min2 bg-white shadow rounded-base h-[32px] pr-min2"
-									}
+									className={"flex items-center gap-min2 bg-white shadow rounded-base h-[32px]"}
 								>
 									<TextCard
 										icon={
 											<IconRenderer
 												icon={<N3Agreement />}
-												customSize={32}
+												size="xs"
 												backgroundColor="pr-c-green1"
 											/>
 										}
@@ -61,10 +59,11 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 
 								<div className="flex gap-min3 items-center">
 									{navElements &&
-										navElements.map((el) => {
+										navElements.map((el, i) => {
 											return (
 												<>
 													<Link
+														key={i}
 														href={el.link}
 														className={"text-sm rounded-base text-neutral-700"}
 														onClick={(e) => {
@@ -101,7 +100,7 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 									icon={
 										<IconRenderer
 											icon={<N3UpRightArrowIcon />}
-											customSize={17}
+											customSize={14}
 											backgroundColor="pr-c-green1"
 										/>
 									}

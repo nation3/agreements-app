@@ -1,4 +1,5 @@
 export { default as AddIcon } from "./addIcon.svg";
+export { default as EthereumIcon } from "./ethereumIcon.svg";
 export { default as N3AddFIle } from "./n3AddFile.svg";
 export { default as N3Agreement } from "./n3Agreement.svg";
 export { default as N3AgreementDone } from "./n3AgreementDone.svg";
@@ -7,7 +8,9 @@ export { default as N3Document } from "./n3Document.svg";
 export { default as N3DocumentGrey } from "./n3DocumentGrey.svg";
 export { default as N3LogoGradient } from "./n3GradientLogo.svg";
 export { default as N3IdIcon } from "./n3Id.svg";
+export { default as N3InfoIcon } from "./n3Info.svg";
 export { default as N3LinkArrow } from "./n3LinkArrow.svg";
+export { default as N3ListIcon } from "./n3List.svg";
 export { default as N3LogoBlue } from "./n3LogoBlue.svg";
 export { default as N3LogoGreen } from "./n3LogoGreen.svg";
 export { default as N3StatusIcon } from "./n3Status.svg";

@@ -8,4 +8,13 @@ module.exports = withTM({
 		domains: ["https://picsum.photos/"],
 	},
 	i18n,
+	async redirects() {
+		return [
+			{
+				source: "/agreements",
+				destination: "/agreements/my-agreements",
+				permanent: true,
+			},
+		];
+	},
 });

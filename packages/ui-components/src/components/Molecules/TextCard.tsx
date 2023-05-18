@@ -47,14 +47,14 @@ export const TextCard = (props: TextCardProps) => {
 		<div
 			onClick={onClick}
 			className={cx(
-				"bg-white flex items-center rounded-base h-base+ whitespace-nowrap",
+				"bg-white flex gap-min1 items-center rounded-base h-base+ whitespace-nowrap p-min2",
 				onClick && "cursor-pointer",
 				shadow && "shadow",
 				className && className,
 			)}
 		>
 			{icon && !iconRight && <>{iconLocal}</>}
-			{<Body3 className="px-min2">{text}</Body3>}
+			{<Body3>{text}</Body3>}
 			{iconRight && <>{iconLocal}</>}
 		</div>
 	);

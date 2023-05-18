@@ -16,7 +16,6 @@ import {
 	N3AgreementDone,
 	useScreen,
 } from "@nation3/ui-components";
-import cx from "classnames";
 import { motion } from "framer-motion";
 import { t } from "i18next";
 import { useRouter } from "next/router";
@@ -166,7 +165,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 							e.stopPropagation();
 						}}
 					>
-						<Card size="base" className={cx(isLocalCreateError && "border-2 border-sc-c-orange2")}>
+						<Card size="base">
 							{/* TODO:   COMPONENTISE */}
 							{isLocalCreateError && (
 								<div className="flex flex-col gap-base">

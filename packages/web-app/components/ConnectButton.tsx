@@ -2,6 +2,8 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import {
 	AccountButton,
 	Button,
+	EthereumIcon,
+	IconRenderer,
 	ScreenType,
 	TextCard,
 	UserIcon,
@@ -95,9 +97,21 @@ export const ConnectButton = () => {
 
 							return (
 								<>
-									<div className="flex items-center justify-end">
+									<div className="flex gap-min3 items-center justify-end">
 										<TextCard
-											className="mr-min3"
+											icon={
+												/* TODO:// BUILD LOGIC FOR DYNAMIC CHAIN ICON */
+												chain.name === "Ethereum" ? (
+													<IconRenderer
+														icon={<EthereumIcon />}
+														backgroundColor={"neutral-c-200"}
+														size={"xs"}
+													/>
+												) : (
+													<></>
+												)
+											}
+											className=""
 											shadow
 											onClick={() => openChainModal()}
 											text={chain.name}

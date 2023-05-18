@@ -1,10 +1,13 @@
 import { Button, Card, Headline3 } from "@nation3/ui-components";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
-import { AgreementList, AgreementListProvider } from "../../components/agreements-list";
 
 import cx from "classnames";
-import { GetStaticProps } from "next";
+import { GetStaticProps } from "next/types";
+import {
+	AgreementList,
+	AgreementListProvider,
+} from "../../components/agreements-list/AgreementList";
 import { useConstants } from "../../hooks/useConstants";
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
