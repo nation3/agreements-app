@@ -6,10 +6,9 @@ import {
 	Card,
 	IconRenderer,
 	N3Agreement,
-	N3User,
-	N3World,
 } from "@nation3/ui-components";
 import { useTranslation } from "next-i18next";
+import { N3InfoIcon, N3ListIcon } from "../../../ui-components/src/icons/index";
 import { GradientLink } from "../GradientLink";
 
 type IAgreementCreateIntroProps = {
@@ -42,7 +41,7 @@ const AgreementCreateIntro = ({ setActiveStep }: IAgreementCreateIntroProps) => 
 			<Card className="col-start-1 md:col-end-7 col-end-13" size="base">
 				<IconRenderer
 					className="mb-base"
-					icon={<N3World />}
+					icon={<N3InfoIcon />}
 					backgroundColor="pr-c-green1"
 					size="sm"
 					rounded
@@ -59,7 +58,7 @@ const AgreementCreateIntro = ({ setActiveStep }: IAgreementCreateIntroProps) => 
 			<Card className="col-start-1 md:col-start-7 col-end-13" size="base">
 				<IconRenderer
 					className="mb-base"
-					icon={<N3User />}
+					icon={<N3ListIcon />}
 					backgroundColor="pr-c-green1"
 					size="sm"
 					rounded
