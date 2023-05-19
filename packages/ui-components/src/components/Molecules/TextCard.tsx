@@ -10,12 +10,24 @@ interface TextCardProps {
 	iconError?: boolean;
 	text: ReactNode | string;
 	iconColorBg?: string;
+	hoverColor?: string;
 	onClick?: () => void;
 	className?: string;
+	rounded?: boolean;
 }
 
 export const TextCard = (props: TextCardProps) => {
-	const { className, shadow, onClick, icon, iconRight, text, iconColorBg = "pr-c-green1" } = props;
+	const {
+		className,
+		hoverColor,
+		shadow,
+		onClick,
+		icon,
+		iconRight,
+		rounded,
+		text,
+		iconColorBg = "pr-c-green1",
+	} = props;
 	const [isImgError, setIsImgError] = useState(false);
 
 	const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -59,8 +71,10 @@ export const TextCard = (props: TextCardProps) => {
 		<div
 			onClick={onClick}
 			className={cx(
-				"bg-white flex gap-min1 items-center rounded-base h-base+ whitespace-nowrap p-min2",
+				"bg-white flex gap-min2 items-center  h-base+ whitespace-nowrap p-min2",
 				onClick && "cursor-pointer",
+				hoverColor && "hover:bg-" + hoverColor,
+				rounded ? "rounded-full" : "rounded-base",
 				shadow && "shadow",
 				className && className,
 			)}

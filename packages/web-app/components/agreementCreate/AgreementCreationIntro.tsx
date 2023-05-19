@@ -7,6 +7,7 @@ import {
 	IconRenderer,
 	N3Agreement,
 	N3User,
+	N3World,
 } from "@nation3/ui-components";
 import { useTranslation } from "next-i18next";
 import { GradientLink } from "../GradientLink";

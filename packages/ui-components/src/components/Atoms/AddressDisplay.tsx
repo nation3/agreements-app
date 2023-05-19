@@ -1,8 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { utils, providers } from "ethers";
-import { shortenHash } from "../../../utils";
-import cx from "classnames";
-import { Body3 } from "../typography";
+import { utils } from "ethers";
+import { useMemo } from "react";
+import { shortenHash } from "../../utils";
 
 export const AddressDisplay = ({
 	address,
@@ -18,5 +16,5 @@ export const AddressDisplay = ({
 		[address, ensName],
 	);
 
-	return {displayAddress};
+	return { displayAddress };
 };

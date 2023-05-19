@@ -1,9 +1,11 @@
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import {
 	AccountButton,
+	ArbitratorAccountButton,
 	Button,
 	EthereumIcon,
 	IconRenderer,
+	IllustrationRenderer,
 	ScreenType,
 	TextCard,
 	UserIcon,
@@ -23,6 +25,7 @@ export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 	};
 
 	return ensImage && !avatarLoadError ? (
+		// eslint-disable-next-line @next/next/no-img-element
 		<img
 			onError={handleAvatarError}
 			src={ensImage}
@@ -32,9 +35,7 @@ export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 			className={`rounded-full`}
 		/>
 	) : (
-		<div className="rounded-full overflow-hidden flex items-center bg-pr-c-green2">
-			<UserIcon className={`w-[${size}px] h-[${size}px]`} />
-		</div>
+		<IllustrationRenderer icon={<UserIcon />} size={"xs"}></IllustrationRenderer>
 	);
 };
 
@@ -106,25 +107,27 @@ export const ConnectButton = () => {
 							return (
 								<>
 									<div className="flex gap-min3 items-center justify-end">
-										<TextCard
-											icon={
-												/* TODO:// BUILD LOGIC FOR DYNAMIC CHAIN ICON */
-												chain.name === "Ethereum" ? (
-													<IconRenderer
-														icon={<EthereumIcon />}
-														backgroundColor={"neutral-c-200"}
-														size={"xs"}
-													/>
-												) : (
-													<></>
-												)
-											}
-											className=""
-											shadow
-											onClick={() => openChainModal()}
-											text={chain.name}
-										/>
-										{/* {isArbitrator ? (
+										{screen == ScreenType.Desktop && (
+											<TextCard
+												icon={
+													/* TODO:// BUILD LOGIC FOR DYNAMIC CHAIN ICON */
+													chain.name === "Ethereum" ? (
+														<IconRenderer
+															icon={<EthereumIcon />}
+															backgroundColor={"neutral-c-200"}
+															size={"xs"}
+														/>
+													) : (
+														<></>
+													)
+												}
+												className=""
+												shadow
+												onClick={() => openChainModal()}
+												text={chain.name}
+											/>
+										)}
+										{isArbitrator ? (
 											<ArbitratorAccountButton
 												borderColor="pr-c-green3"
 												avatar={
@@ -137,20 +140,20 @@ export const ConnectButton = () => {
 												account={account}
 												onClick={openAccountModal}
 											/>
-										) : ( */}
-										<AccountButton
-											borderColor="pr-c-green3"
-											avatar={
-												<AccountAvatar
-													address={account.address}
-													ensImage={account.ensAvatar ?? ""}
-													size={screen == ScreenType.Desktop ? 50 : 32}
-												/>
-											}
-											account={account}
-											onClick={openAccountModal}
-										></AccountButton>
-										{/* )} */}
+										) : (
+											<AccountButton
+												borderColor="pr-c-green3"
+												avatar={
+													<AccountAvatar
+														address={account.address}
+														ensImage={account.ensAvatar ?? ""}
+														size={screen == ScreenType.Desktop ? 50 : 32}
+													/>
+												}
+												account={account}
+												onClick={openAccountModal}
+											></AccountButton>
+										)}
 									</div>
 								</>
 							);

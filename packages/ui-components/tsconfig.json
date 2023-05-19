@@ -1,6 +1,6 @@
 {
   // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
-  "include": ["src", "types", "../web-app/public/animations", "../web-app/components/TopBar.tsx", "../web-app/components/BottomNav.tsx"],
+  "include": ["src", "types", "../web-app/public/animations", "../web-app/components/TopBar.tsx", "../web-app/components/MobileNav.tsx"],
   "compilerOptions": {
     "module": "esnext",
     "lib": ["dom", "esnext"],
@@ -33,6 +33,6 @@
     "noEmit": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-
+    "outDir": "dist"
   }
 }

@@ -27,7 +27,7 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 
 	return (
 		<React.Fragment>
-			<div className="absolute top-0 left-0 flex justify-center z-10 w-full">
+			<div className="absolute top-0 left-0 flex justify-center z-20 w-full">
 				<div
 					className={cx(
 						"flex mx-min2 md:grid grid-flow-row grid-cols-1 auto-rows-auto gap-16",
@@ -41,7 +41,10 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 							<Link href="/" className="cursor-pointer">
 								<IllustrationRenderer customSize={50} icon={<N3LogoGreen />} size={"sm"} />
 							</Link>
+
+							{/* TODO: FUTURE COMPONETISE BASED ON OTHER APPS & navElements  */}
 							<div className="flex gap-min3 bg-pr-c-green1 items-center rounded-base pr-base h-[32px]">
+								{/* FUTURE DROPDOWNCARD */}
 								<Link
 									href={appName.link}
 									className={"flex items-center gap-min2 bg-white shadow rounded-base h-[32px]"}
@@ -62,38 +65,35 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 									{navElements &&
 										navElements.map((el, i) => {
 											return (
-												<>
-													<Link
-														key={i}
-														href={el.link}
-														className={"text-sm rounded-base text-neutral-700"}
-														onClick={(e) => {
-															if (router.pathname === el.link) {
-																e.preventDefault();
-															}
-														}}
+												<Link
+													key={i}
+													href={el.link}
+													className={"text-sm rounded-base text-neutral-700"}
+												>
+													<Body3
+														color={
+															router.asPath === el.link
+																? "text-neutral-c-800"
+																: "text-neutral-c-400"
+														}
+														className={cx("text-xs transition-colors font-medium")}
 													>
-														<Body3
-															color={
-																router.pathname === el.link
-																	? "text-neutral-c-800"
-																	: "text-neutral-c-400"
-															}
-															className={cx("text-xs transition-colors font-medium")}
-														>
-															{el.name}
-														</Body3>
-													</Link>
-												</>
+														{el.name}
+													</Body3>
+												</Link>
 											);
 										})}
 								</div>
 							</div>
 						</div>
 
-						{/* <div className="basis-1/2 flex items-center justify-center">{navItems}</div> */}
+						{/* FEEDBACK */}
 						<div className="flex items-center justify-end gap-min3">
-							<Link href="/" className="cursor-pointer">
+							<Link
+								href="https://airtable.com/shrGlDQrBEcoKcI1B"
+								target="_blank"
+								className="cursor-pointer"
+							>
 								<TextCard
 									className="pr-min2"
 									iconRight
@@ -101,7 +101,7 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 									icon={
 										<IconRenderer
 											icon={<N3UpRightArrowIcon />}
-											customSize={14}
+											customSize={13}
 											backgroundColor="pr-c-green1"
 										/>
 									}

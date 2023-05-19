@@ -1,10 +1,9 @@
-import { BottonNav, Footer, ScreenType, useScreen } from "@nation3/ui-components";
+import { Footer, ScreenType, useScreen } from "@nation3/ui-components";
 import cx from "classnames";
 import { useRouter } from "next/router";
-import React, { ReactNode, useMemo } from "react";
-import { useAccount } from "wagmi";
-import { useCohort } from "../hooks/useCohort";
+import React, { ReactNode } from "react";
 import { ConnectButton } from "./ConnectButton";
+import MobileNav from "./MobileNav";
 import TopBar from "./TopBar";
 
 interface AgreementsLayoutProps {
@@ -14,14 +13,8 @@ interface AgreementsLayoutProps {
 const AgreementsLayout: React.FC<AgreementsLayoutProps> = ({ children }) => {
 	const router = useRouter();
 	const { screen } = useScreen();
-	const { judges } = useCohort();
-	const { address } = useAccount();
-	const isArbitrator = useMemo(() => {
-		if (!judges || !address) return false;
-		return judges.includes(address);
-	}, [judges, address]);
 
-	/* TODO: AT GROWING THE APP BUILD DYNAMIC DATA STRUCTURES BASED ON LOCATION */
+	/* TODO: AT GROWING THE APP BUILD DYNAMIC DATA STRUCTURES BASED ON LOCATION & DESIRED APP */
 	const appName = {
 		name: "Agreements",
 		link: "/agreements",
@@ -45,13 +38,12 @@ const AgreementsLayout: React.FC<AgreementsLayoutProps> = ({ children }) => {
 					{/* NAVBAR */}
 					{screen === ScreenType.Desktop ? (
 						<TopBar
-							isArbitrator
 							navElements={navElements}
 							appName={appName}
 							connectionButton={<ConnectButton />}
 						/>
 					) : (
-						<BottonNav isArbitrator connectionButton={<ConnectButton />} />
+						<MobileNav connectionButton={<ConnectButton />} />
 					)}
 
 					{/* CONTENT */}

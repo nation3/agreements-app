@@ -2,15 +2,13 @@
 export { AgreementListProvider } from "./context/AgreementListProvider";
 import Image from "next/image";
 
-import { Table, utils, Badge, useScreen, ScreenType } from "@nation3/ui-components";
-import { ethers, BigNumber } from "ethers";
+import { Badge, ScreenType, Table, useScreen, utils } from "@nation3/ui-components";
 
-import { useRouter } from "next/router";
-import { useAgreementList } from "./context/AgreementListContext";
 import { useTranslation } from "next-i18next";
-import courtIll from "./../../public/court-ill.png";
+import { useRouter } from "next/router";
 import { GradientLink } from "../GradientLink";
-import React from "react";
+import courtIll from "./../../public/court-ill.png";
+import { useAgreementList } from "./context/AgreementListContext";
 
 export const AgreementList = () => {
 	const { t } = useTranslation("common");
@@ -21,31 +19,56 @@ export const AgreementList = () => {
 	return (
 		<>
 			{agreements && agreements.length > 0 ? (
-				<Table
-					className={"max-h-full"}
-					columns={
-						screen === ScreenType.Desktop ? ["Id", "Created on", "Status"] : ["Id", "Status"]
-					}
-					data={agreements.map(({ title, id, createdAt, status }) =>
-						screen === ScreenType.Desktop
-							? [
-									<span key={id}>{title ? title : utils.shortenHash(id)}</span>,
-									<span key={`${id}-date`}>
-										{new Date(Number(createdAt) * 1000).toLocaleDateString()}
-									</span>,
-									<Badge key={`${id}-status`} label={status} bgColor="pr-c-blue2" />,
-							  ]
-							: [
-									<span key={id}>{utils.shortenHash(id)}</span>,
-									<Badge key={`${id}-status`} label={status} bgColor="pr-c-blue2" />,
-							  ],
-					)}
-					clickHandlers={agreements.map(
-						({ id }) =>
-							() =>
-								router.push(`/agreement/${id}`),
-					)}
-				/>
+				<>
+					{/* TODO: REMOVE TABLE */}
+					<Table
+						className={"max-h-full"}
+						columns={
+							screen === ScreenType.Desktop ? ["Id", "Created on", "Status"] : ["Id", "Status"]
+						}
+						data={agreements.map(({ title, id, createdAt, status }) =>
+							screen === ScreenType.Desktop
+								? [
+										<span key={id}>{title ? title : utils.shortenHash(id)}</span>,
+										<span key={`${id}-date`}>
+											{new Date(Number(createdAt) * 1000).toLocaleDateString()}
+										</span>,
+										<Badge key={`${id}-status`} label={status} bgColor="pr-c-blue2" />,
+								  ]
+								: [
+										<span key={id}>{utils.shortenHash(id)}</span>,
+										<Badge key={`${id}-status`} label={status} bgColor="pr-c-blue2" />,
+								  ],
+						)}
+						clickHandlers={agreements.map(
+							({ id }) =>
+								() =>
+									router.push(`/agreements/${id}`),
+						)}
+					/>
+
+					{/* TODO: PI THE PERFECT WAY WOULD BE WITH RESPONSIVE GRID JUMPS, FLEX WRAP FOR NOW */}
+
+					{/* <div className="flex flex-wrap gap-base">
+						{agreements.map(({ title, id, createdAt, status }) => {
+							return (
+								<>
+									<AgreementCard
+										id={id}
+										title={title ? title : ""}
+										status={status}
+										token={undefined}
+										terms={""}
+										termsHash={""}
+										fileName={""}
+										fileStatus={""}
+										positions={[]}
+									></AgreementCard>
+								</>
+							);
+						})}
+					</div> */}
+				</>
 			) : (
 				<div className="flex justify-center w-full h-full">
 					<div className="flex flex-col items-center w-full h-full">

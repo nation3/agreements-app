@@ -8,7 +8,7 @@ type Icon = React.ReactNode | string;
 interface IconRendererProps {
 	icon: Icon;
 	backgroundColor: string;
-	size: keyof typeof iconSpacing;
+	size?: keyof typeof iconSpacing;
 	customSize?: number;
 	rounded?: boolean;
 	className?: string;
@@ -42,7 +42,7 @@ const IconRenderer: React.FC<IconRendererProps> = (props) => {
 	const {
 		icon,
 		backgroundColor,
-		size,
+		size = "xs",
 		customSize,
 		className,
 		rounded = false,

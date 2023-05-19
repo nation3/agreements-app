@@ -21,7 +21,7 @@ type IAgreementCardProps = {
 	id: string;
 	title: string;
 	status: string;
-	token: Token;
+	token?: Token;
 	terms: string;
 	termsHash: string;
 	fileName: string;
@@ -58,7 +58,7 @@ const AgreementCard: React.FC<IAgreementCardProps> = (props) => {
 					/>
 					<AgreementStatus fileStatus={fileStatus} />
 				</div>
-				<TokenRenderer tokenSymbol={token?.symbol} />
+				{token && <TokenRenderer tokenSymbol={token?.symbol} />}
 				<BodyHeadline color="text-neutral-c-400">{title}</BodyHeadline>
 				<div className="flex justify-between">
 					<Body3 color="neutral-c-400">Parties</Body3>

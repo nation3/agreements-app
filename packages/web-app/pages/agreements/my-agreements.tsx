@@ -30,25 +30,23 @@ const Agreements = () => {
 				<div
 					id="agreementsPage"
 					className={cx(
-						"grid sm-only:grid-flow-row sm-only:grid-cols-1 sm-only:auto-rows-auto gap-24",
-						"md:grid-cols-12 md:gap-24",
-						"z-10 mt-40",
+						"grid grid-flow-row grid-cols-1 auto-rows-auto gap-16",
+						"lg:grid-cols-lg lg:gap-24",
+						"xl:grid-cols-xl",
+						"z-10 mt-40 m-min3",
 					)}
 				>
+					<div className="flex items-start justify-between text-gray-700 col-start-1 col-end-13 gap-16">
+						<Headline3 className="">My Agreements</Headline3>
+						<div className="flex">
+							<Button label="New Agreement" onClick={() => router.push("/agreements/create")} />
+						</div>
+					</div>
 					{/* <div className="col-start-1 col-end-12 h-40 bg-pr-c-green2"></div> */}
 					<Card
-						className={cx(
-							"col-start-1 col-end-7 gap-16",
-							"md:col-start-2 md:col-end-12 md:gap-24",
-							"flex flex-col w-full text-gray-800",
-						)}
+						size="base"
+						className={cx("col-start-1 col-end-13 gap-16", "flex flex-col w-full text-gray-800")}
 					>
-						<div className="md:flex items-center justify-between gap-2 text-gray-700">
-							<Headline3 className="mb-base">My Agreements</Headline3>
-							<div className="flex">
-								<Button label="New Agreement" onClick={() => router.push("/agreement/create")} />
-							</div>
-						</div>
 						<AgreementList />
 					</Card>
 				</div>

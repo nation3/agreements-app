@@ -231,7 +231,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 										transition={{ duration: 0.15 }}
 										className="w-full flex justify-end"
 										onClick={(e) => {
-											router.push(`/agreement/${id}`);
+											router.push(`/agreements/${id}`);
 										}}
 									>
 										<Button
