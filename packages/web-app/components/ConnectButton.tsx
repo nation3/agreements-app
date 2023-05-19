@@ -10,7 +10,9 @@ import {
 	useScreen,
 } from "@nation3/ui-components";
 import { AvatarComponent, ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
+import { useAccount } from "wagmi";
+import { useCohort } from "../hooks/useCohort";
 
 export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 	const [avatarLoadError, setAvatarLoadError] = useState<boolean>(false);
@@ -38,6 +40,12 @@ export const AccountAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 
 export const ConnectButton = () => {
 	const { screen } = useScreen();
+	const { judges } = useCohort();
+	const { address } = useAccount();
+	const isArbitrator = useMemo(() => {
+		if (!judges || !address) return false;
+		return judges.includes(address);
+	}, [judges, address]);
 	return (
 		<RainbowConnectButton.Custom>
 			{({
@@ -116,6 +124,20 @@ export const ConnectButton = () => {
 											onClick={() => openChainModal()}
 											text={chain.name}
 										/>
+										{/* {isArbitrator ? (
+											<ArbitratorAccountButton
+												borderColor="pr-c-green3"
+												avatar={
+													<AccountAvatar
+														address={account.address}
+														ensImage={account.ensAvatar ?? ""}
+														size={screen == ScreenType.Desktop ? 50 : 32}
+													/>
+												}
+												account={account}
+												onClick={openAccountModal}
+											/>
+										) : ( */}
 										<AccountButton
 											borderColor="pr-c-green3"
 											avatar={
@@ -128,6 +150,7 @@ export const ConnectButton = () => {
 											account={account}
 											onClick={openAccountModal}
 										></AccountButton>
+										{/* )} */}
 									</div>
 								</>
 							);

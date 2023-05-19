@@ -5,7 +5,7 @@ import { Body3 } from "../Atoms";
 
 interface TextCardProps {
 	icon?: ReactNode | string;
-	iconRight?: boolean;
+	iconRight?: ReactNode | string;
 	shadow?: boolean;
 	iconError?: boolean;
 	text: ReactNode | string;
@@ -28,19 +28,31 @@ export const TextCard = (props: TextCardProps) => {
 			<img
 				onError={handleImageError}
 				src={icon}
-				width={24}
-				height={24}
 				className={`h-base w-base rounded-sm bg-${iconColorBg}`}
 			/>
-		) : isImgError === true ? (
-			<>
-				<div className="h-base w-base rounded-sm bg-pr-c-blue1 flex justify-center items-center">
-					{/* {isLoading && <IconLoader src={} />} */}
-					<StopCircleIcon className="h-min3 text-neutral-c-400" />
-				</div>
-			</>
-		) : (
+		) : icon && isImgError === true ? (
+			<div className="h-base w-base rounded-sm bg-pr-c-blue1 flex justify-center items-center">
+				<StopCircleIcon className="h-min3 text-neutral-c-400" />
+			</div>
+		) : icon ? (
 			<>{icon}</>
+		) : (
+			<></>
+		);
+
+	const iconRightLocal =
+		typeof iconRight === "string" ? (
+			<img
+				onError={handleImageError}
+				src={iconRight}
+				className={`h-base w-base rounded-sm bg-${iconColorBg}`}
+			/>
+		) : iconRight && isImgError === true ? (
+			<div className="h-base w-base rounded-sm bg-pr-c-blue1 flex justify-center items-center">
+				<StopCircleIcon className="h-min3 text-neutral-c-400" />
+			</div>
+		) : (
+			<>{iconRight}</>
 		);
 
 	return (
@@ -53,9 +65,9 @@ export const TextCard = (props: TextCardProps) => {
 				className && className,
 			)}
 		>
-			{icon && <>{iconLocal}</>}
+			{iconLocal}
 			{<Body3>{text}</Body3>}
-			{iconRight && <>{iconLocal}</>}
+			{iconRightLocal}
 		</div>
 	);
 };

@@ -7,7 +7,6 @@ import {
 	N3UpRightArrowIcon,
 	TextCard,
 } from "@nation3/ui-components";
-import { N3Arbitrator } from "@nation3/ui-components/src";
 import cx from "classnames";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -101,7 +100,7 @@ const TopBar: React.FC<ITopBarProps> = (props) => {
 									shadow
 									icon={
 										<IconRenderer
-											icon={isArbitrator ? <N3Arbitrator /> : <N3UpRightArrowIcon />}
+											icon={<N3UpRightArrowIcon />}
 											customSize={14}
 											backgroundColor="pr-c-green1"
 										/>

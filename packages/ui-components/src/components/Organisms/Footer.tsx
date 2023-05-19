@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { N3LinkArrow, N3LogoGradient } from "../../icons/index";
+import { N3GradientLogo, N3LinkArrow } from "../../icons/index";
 import { Body3, IconRenderer } from "../Atoms";
 import { Badge } from "../Molecules";
 
@@ -35,7 +35,7 @@ const Footer: React.FC<IFooterProps> = (props) => {
 			<div className="md:grid grid-cols-xl">
 				<div className="col-start-1 col-end-7 flex justify-start items-center">
 					<LogoHolder>
-						<N3LogoGradient />
+						<N3GradientLogo />
 					</LogoHolder>
 					<a
 						href="https://docs.nation3.org/agreements/agreements-beta"

@@ -1,3 +1,5 @@
+// @index('./**/*.jsx', f => `export * from '${f.path}'`)
+
 export * from "./AccountButton/AccountButton";
 export * from "./BackLinkButton";
 export * from "./Button";

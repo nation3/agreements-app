@@ -1,8 +1,7 @@
 import { EyeIcon } from "@heroicons/react/24/outline";
 import React, { useMemo } from "react";
 import { DropzoneOptions, useDropzone } from "react-dropzone";
-import { N3AddFIle } from "../../../icons";
-import { N3DocumentGrey } from "../../../icons/index";
+import { N3AddFile, N3DocumentGrey } from "../../../icons/index";
 import { Body2, IconRenderer } from "../../Atoms";
 import { IconButton, IconButtonProps } from "../buttons/IconButton";
 
@@ -73,7 +72,7 @@ export const DropInput = (props: DropInputProps) => {
 				)}
 				{(!acceptedFiles || acceptedFiles.length === 0) && (
 					<div className="cursor-pointer">
-						<IconRenderer icon={<N3AddFIle />} backgroundColor={"neutral-c-300"} size={"sm"} />
+						<IconRenderer icon={<N3AddFile />} backgroundColor={"neutral-c-300"} size={"sm"} />
 					</div>
 				)}
 				<Body2 color="neutral-c-500 cursor-pointer" className="mt-min2">
