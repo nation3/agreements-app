@@ -18,6 +18,7 @@ import { usePermit2Allowance, usePermit2BatchTransferSignature } from "../hooks/
 import { useTokenAllowance, useTokenApprovals, useTokenBalance } from "../hooks/useToken";
 import courtIcon from "../public/svgs/court.svg";
 import { useAgreementData } from "./agreement/context/AgreementDataContext";
+import { check } from "prettier";
 
 const InfoTooltip = ({ info, className }: { info: string; className?: string }) => {
 	return (
@@ -35,8 +36,13 @@ const WarningTooltip = ({ info, className }: { info: string; className?: string 
 	);
 };
 
-const Toggle = ({ onToggle }: { onToggle?: (checked: boolean) => void }) => {
-	const [isChecked, setIsChecked] = useState<boolean>(false);
+interface ToogleProps {
+	checked?: boolean;
+	onToggle?: (checked: boolean) => void;
+}
+
+const Toggle = ({ onToggle, checked = false }: ToogleProps) => {
+	const [isChecked, setIsChecked] = useState<boolean>(checked);
 
 	const toggle = () => {
 		setIsChecked(!isChecked);
@@ -47,8 +53,21 @@ const Toggle = ({ onToggle }: { onToggle?: (checked: boolean) => void }) => {
 
 	return (
 		<label className="relative inline-flex items-center cursor-pointer">
-			<input type="checkbox" className="sr-only peer" checked={isChecked} onChange={toggle} />
-			<div className="w-10 h-6 bg-transparent border-2 border-gray-300 peer-focus:outline-none peer-focus:ring-0 peer-focus:ring-bluesky rounded-full peer peer-checked:border-greensea peer-checked:after:bg-greensea peer-checked:after:tranneutral-c-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-gray-200 after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+			<input type="checkbox" className="sr-only" checked={isChecked} onChange={toggle} />
+			<div
+				className={cx(
+					"w-10 h-6 bg-transparent rounded-full border-2",
+					isChecked ? "border-pr-c-green3" : "border-neutral-c-300",
+				)}
+			>
+				<div
+					className={cx(
+						"transform transition-transform ease-in-out duration-200",
+						isChecked ? "translate-x-5 bg-pr-c-green3" : "translate-x-1 bg-neutral-c-300",
+						"absolute inset-y-0 left-0 flex items-center justify-center translate-y-1 w-4 h-4 rounded-full",
+					)}
+				></div>
+			</div>
 		</label>
 	);
 };
@@ -538,7 +557,7 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 										<Body2 className="text-md">{t("join.gaslessApprovals.title")}</Body2>
 										<InfoTooltip info={t("join.gaslessApprovals.info")} className="w-5 h-5" />
 									</div>
-									<Toggle onToggle={(checked) => setUsePermit2(checked)} />
+									<Toggle checked={usePermit2} onToggle={(checked) => setUsePermit2(checked)} />
 								</>
 							)}
 						</div>
@@ -603,7 +622,7 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 					</div>
 				</div>
 				{usePermit2 && (
-					<div className="absolute mt-3 flex w-full p-base gap-1 items-center justify-between bg-yellow-100 rounded-bottom-lg rounded-lg text-sm">
+					<div className="absolute mt-3 left-1/2 transform -translate-x-1/2 flex p-base gap-1 items-center justify-between bg-yellow-100 rounded-bottom-lg rounded-lg text-sm">
 						<div className="px-5">
 							<ExclamationTriangleIcon className="w-4 h-4 text-yellow-800" />
 						</div>

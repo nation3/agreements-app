@@ -23,7 +23,7 @@ import AgreementStatus from "../agreement/AgreementStatus";
 import { LinkedMarkdownLocalViewer } from "./LinkedMarkDownComponents";
 import styles from "./MarkdownFile.module.scss";
 
-interface MarkdownFileProps {
+export interface MarkdownFileProps {
 	fileName?: string;
 	termsFile: string;
 	isCreating?: boolean;

@@ -53,7 +53,11 @@ export const ModalNew: FC<ModalNewProps> = ({
 					exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
 					transition={transitionBlur}
 					className="transition-all items-center fixed w-screen h-screen inset-0 z-50 flex justify-center bg-pr-c-green1 bg-opacity-30"
-					onClick={isOpen && onClose}
+					onClick={(e) => {
+						if (isOpen && e.target == e.currentTarget) {
+							onClose();
+						}
+					}}
 				>
 					{/* <motion.div
 						key="modal-content"
