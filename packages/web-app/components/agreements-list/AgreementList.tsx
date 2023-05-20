@@ -47,12 +47,12 @@ export const AgreementList = () => {
 						)}
 					/>
 
-					{/* TODO: PI THE PERFECT WAY WOULD BE WITH RESPONSIVE GRID JUMPS, FLEX WRAP FOR NOW */}
+					{/* TODO: PI THE PERFECT WAY WOULD BE WITH RESPONSIVE GRID JUMPS, FLEX WRAP FOR NOW, IT NEEDS TEST*/}
 
 					{/* <div className="flex flex-wrap gap-base">
 						{agreements.map(({ title, id, createdAt, status }) => {
 							return (
-								<>
+								<div className="w-full md:w-1/3 xl:w-1/4">
 									<AgreementCard
 										id={id}
 										title={title ? title : ""}
@@ -64,7 +64,7 @@ export const AgreementList = () => {
 										fileStatus={""}
 										positions={[]}
 									></AgreementCard>
-								</>
+								</div>
 							);
 						})}
 					</div> */}
