@@ -10,6 +10,7 @@ import { firstZeroBitPosition } from "../utils/bytes";
 import { BigNumber, BigNumberish, constants } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import { useConstants } from "./useConstants";
+import { fixVInSignature } from "../utils/signaturefix";
 
 interface Permit2AllowanceConfig {
 	account: string;
@@ -117,7 +118,13 @@ export const usePermit2TransferSignature = ({
 		signTypedData: signPermit,
 	} = useSignTypedData(signTypedDataConfig);
 
-	return { permit, signature, signPermit, signSuccess, signError };
+	let eip155signature = signature;
+
+	if (signSuccess && signature) {
+		eip155signature = fixVInSignature(signature);
+	}
+
+	return { permit, signature: eip155signature, signPermit, signSuccess, signError };
 };
 
 export const usePermit2BatchTransferSignature = ({
@@ -172,7 +179,13 @@ export const usePermit2BatchTransferSignature = ({
 		signTypedData: signPermit,
 	} = useSignTypedData(signTypedDataConfig);
 
-	return { permit, signature, signPermit, signSuccess, signError, signReady };
+	let eip155signature = signature;
+
+	if (signSuccess && signature) {
+		eip155signature = fixVInSignature(signature);
+	}
+
+	return { permit, signature: eip155signature, signPermit, signSuccess, signError, signReady };
 };
 
 export const useAvailableNonce = (address: string) => {
