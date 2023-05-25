@@ -10,7 +10,7 @@ import { firstZeroBitPosition } from "../utils/bytes";
 import { BigNumber, BigNumberish, constants } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import { useConstants } from "./useConstants";
-import { fixVInSignature } from "../utils/signaturefix";
+import { fixSignature } from "../utils/signature";
 
 interface Permit2AllowanceConfig {
 	account: string;
@@ -118,13 +118,12 @@ export const usePermit2TransferSignature = ({
 		signTypedData: signPermit,
 	} = useSignTypedData(signTypedDataConfig);
 
-	let signatureFix = signature;
+	const fixedSignature = useMemo(() => {
+		if (!signSuccess || !signature) return;
+		return fixSignature(signature);
+	}, [signSuccess, signature]);
 
-	if (signSuccess && signature) {
-		signatureFix = fixVInSignature(signature);
-	}
-
-	return { permit, signature: signatureFix, signPermit, signSuccess, signError };
+	return { permit, signature: fixedSignature, signPermit, signSuccess, signError };
 };
 
 export const usePermit2BatchTransferSignature = ({
@@ -179,13 +178,12 @@ export const usePermit2BatchTransferSignature = ({
 		signTypedData: signPermit,
 	} = useSignTypedData(signTypedDataConfig);
 
-	let signatureFix = signature;
+	const fixedSignature = useMemo(() => {
+		if (!signSuccess || !signature) return;
+		return fixSignature(signature);
+	}, [signSuccess, signature]);
 
-	if (signSuccess && signature) {
-		signatureFix = fixVInSignature(signature);
-	}
-
-	return { permit, signature: signatureFix, signPermit, signSuccess, signError, signReady };
+	return { permit, signature: fixedSignature, signPermit, signSuccess, signError, signReady };
 };
 
 export const useAvailableNonce = (address: string) => {
