@@ -446,8 +446,9 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		} else if (usePermit2) {
 			if (typeof collateralTokenPermit2 === "undefined" || collateralTokenPermit2ApprovalLoading)
 				return <Spinner className="w-7 h-7 text-bluesky" />;
-			if (collateralTokenPermit2 || requiredCollateral.eq(0))
+			if (collateralTokenPermit2 || requiredCollateral.eq(0)) {
 				return <CheckCircleIcon className="w-7 h-7 text-bluesky" />;
+			}
 			return <CompactOutlineButton label={"Enable"} onClick={approveCollateralTokenPermit2} />;
 		} else {
 			if (isSameToken) return <CompactOutlineButton label={"Approve"} disabled />;
