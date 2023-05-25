@@ -31,7 +31,7 @@ const TopBarGrid = ({ children }: { children: ReactNode }) => (
 // TODO: Move to a separate file and make dynamic routing
 const DesktopNavigation = () => {
 	return (
-		<div id="navigation" className="flex items-center justify-center gap-y-16">
+		<div id="navigation" className="flex items-center justify-center gap-16">
 			<IllustrationRenderer customSize={50} icon={<N3LogoGreen />} size={"sm"} />
 			<div className="flex bg-pr-c-green1 rounded-base">
 				<Link href="/agreements">
