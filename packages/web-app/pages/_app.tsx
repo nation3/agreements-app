@@ -2,20 +2,18 @@ import "@nation3/ui-components/styles.css";
 import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { appWithTranslation } from "next-i18next";
-import React, { memo, useEffect, useState } from "react";
+import React, { ReactElement, ReactNode, memo, useEffect, useState } from "react";
 
+import type { NextPage } from "next";
 import Head from "next/head";
 import type { AppProps } from "next/app";
 import { RainbowKitProvider, lightTheme } from "@rainbow-me/rainbowkit";
 import { createClient, useAccount, WagmiConfig, useNetwork } from "wagmi";
-import { DefaultLayout } from "@nation3/ui-components";
-import { ConnectButton } from "../components/ConnectButton";
 import { useRouter } from "next/router";
 import { chains, provider, webSocketProvider, connectors } from "../lib/connectors";
 import Link from "next/link";
 import { useCohort } from "../hooks/useCohort";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import UiGlobals from "../components/uiGlobals/uiGlobals";
+import Layout from "../components/layout/Layout";
 
 const client = createClient({
 	autoConnect: true,
@@ -23,6 +21,10 @@ const client = createClient({
 	provider,
 	webSocketProvider,
 });
+
+const defaultLayout = (page: ReactElement) => {
+	return <Layout>{page}</Layout>;
+};
 
 // eslint-disable-next-line react/display-name
 const HeaderNavigation = memo(() => {
@@ -58,8 +60,18 @@ const HeaderNavigation = memo(() => {
 	);
 });
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
+	getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+	Component: NextPageWithLayout;
+};
+
+const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 	const router = useRouter();
+	// As recommended in https://nextjs.org/docs/pages/building-your-application/routing/pages-and-layouts#per-page-layouts
+	const getLayout = Component.getLayout ?? defaultLayout;
 
 	useEffect(() => {
 		import("flowbite-react");
@@ -84,21 +96,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 						rel="stylesheet"
 					/>
 				</Head>
-
-				<UiGlobals>
-					<DefaultLayout
-						title="Nation3"
-						appName="Agreements"
-						onRoute={(route: string) => {
-							router.push(route);
-						}}
-						isActiveRoute={(route: string) => router.pathname.startsWith(route)}
-						headerNavItems={<HeaderNavigation />}
-						connectionButton={<ConnectButton />}
-					>
-						<Component {...pageProps} />
-					</DefaultLayout>
-				</UiGlobals>
+				<div id="ui-root">{getLayout(<Component {...pageProps} />)}</div>
 			</RainbowKitProvider>
 		</WagmiConfig>
 	);
