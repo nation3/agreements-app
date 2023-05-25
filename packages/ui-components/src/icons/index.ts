@@ -1,3 +1,4 @@
+export { default as N3LogoGreen } from './n3LogoGreen.svg';
 export { default as AddIcon } from './addIcon.svg';
 export { default as N3AddFIle } from './n3AddFile.svg';
 export { default as N3Agreement } from './n3Agreement.svg';

@@ -6,6 +6,9 @@ import {
 	ScreenType,
 	UserIcon,
 	useScreen,
+	SmallCardButton,
+	Body3,
+	utils,
 } from "@nation3/ui-components";
 import { AvatarComponent, ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import React, { useState } from "react";
@@ -95,14 +98,19 @@ export const ConnectButton = () => {
 
 							return (
 								<>
-									<div className="flex items-center justify-end">
-										<button
-											className="hidden md:flex gap-2 font-medium cursor-default items-center text-neutral-400 mr-base"
-											onClick={() => openChainModal()}
-										>
-											{/* {chain && chain.id === 5 && <span>{chain.name} </span>} */}
-											<span>{chain.name} </span>
-										</button>
+									<div className="flex items-center justify-end gap-16">
+										<span className="hidden lg:flex items-center justify-center gap-8">
+											<SmallCardButton className="px-2" onClick={() => openChainModal()}>
+												<Body3>{chain.name}</Body3>
+											</SmallCardButton>
+											<SmallCardButton className="px-2" onClick={() => openAccountModal()}>
+												<Body3>
+													{account.ensName
+														? account.ensName
+														: utils.shortenHash((account.address as string) ?? "")}
+												</Body3>
+											</SmallCardButton>
+										</span>
 										<AccountButton
 											borderColor="pr-c-green3"
 											avatar={
