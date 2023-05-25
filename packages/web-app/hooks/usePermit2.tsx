@@ -118,13 +118,13 @@ export const usePermit2TransferSignature = ({
 		signTypedData: signPermit,
 	} = useSignTypedData(signTypedDataConfig);
 
-	let eip155signature = signature;
+	let signatureFix = signature;
 
 	if (signSuccess && signature) {
-		eip155signature = fixVInSignature(signature);
+		signatureFix = fixVInSignature(signature);
 	}
 
-	return { permit, signature: eip155signature, signPermit, signSuccess, signError };
+	return { permit, signature: signatureFix, signPermit, signSuccess, signError };
 };
 
 export const usePermit2BatchTransferSignature = ({
@@ -179,13 +179,13 @@ export const usePermit2BatchTransferSignature = ({
 		signTypedData: signPermit,
 	} = useSignTypedData(signTypedDataConfig);
 
-	let eip155signature = signature;
+	let signatureFix = signature;
 
 	if (signSuccess && signature) {
-		eip155signature = fixVInSignature(signature);
+		signatureFix = fixVInSignature(signature);
 	}
 
-	return { permit, signature: eip155signature, signPermit, signSuccess, signError, signReady };
+	return { permit, signature: signatureFix, signPermit, signSuccess, signError, signReady };
 };
 
 export const useAvailableNonce = (address: string) => {
