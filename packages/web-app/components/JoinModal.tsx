@@ -446,7 +446,8 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		} else if (usePermit2) {
 			if (typeof collateralTokenPermit2 === "undefined" || collateralTokenPermit2ApprovalLoading)
 				return <Spinner className="w-7 h-7 text-bluesky" />;
-			if (collateralTokenPermit2) return <CheckCircleIcon className="w-7 h-7 text-bluesky" />;
+			if (collateralTokenPermit2 || requiredCollateral.eq(0))
+				return <CheckCircleIcon className="w-7 h-7 text-bluesky" />;
 			return <CompactOutlineButton label={"Enable"} onClick={approveCollateralTokenPermit2} />;
 		} else {
 			if (isSameToken) return <CompactOutlineButton label={"Approve"} disabled />;
@@ -463,6 +464,7 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		collateralTokenAllowance,
 		collateralTokenApprovalLoading,
 		enoughCollateralAllowance,
+		requiredCollateral,
 	]);
 
 	const signAction = useMemo(() => {
@@ -482,12 +484,24 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 	const canJoin = useMemo(() => {
 		if (!enoughBalance) return false;
 		if (usePermit2) {
+			if (!depositTokenPermit2 || (!collateralTokenPermit2 && requiredCollateral.gt(0))) {
+				return false;
+			}
 			return signature !== undefined ? true : false;
 		} else if (!enoughDepositAllowance || !enoughCollateralAllowance) {
 			return false;
 		}
 		return true;
-	}, [enoughBalance, usePermit2, signature, enoughDepositAllowance, enoughCollateralAllowance]);
+	}, [
+		enoughBalance,
+		usePermit2,
+		signature,
+		enoughDepositAllowance,
+		enoughCollateralAllowance,
+		depositTokenPermit2,
+		collateralTokenPermit2,
+		requiredCollateral,
+	]);
 
 	const joinMode = useMemo(() => {
 		return usePermit2 ? "permit" : "approval";
