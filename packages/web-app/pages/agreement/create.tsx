@@ -3,8 +3,10 @@ import { AgreementCreationProvider } from "../../components/agreementCreate/cont
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import { GetStaticProps } from "next";
-import Image from "next/image";
 import { AgreementCreation } from "../../components/agreementCreate/AgreementCreation";
+import Layout from "../../components/layout/Layout";
+import AgreementsLayout from "../../components/layout/agreements/Layout";
+import { ReactElement } from "react";
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
 	return {
@@ -19,15 +21,20 @@ const AgreementCreationPage = () => {
 	const router = useRouter();
 
 	return (
-		<AgreementCreationProvider>
-			{/* <BackLinkButton route="/agreements" label="Go back to agreements" onRoute={router.push} /> */}
-			<article className="w-full flex justify-center">
-				<div className="absolute top h-[350px] w-full bg-pr-c-green1 z-5">
-					<Image src="/illustrations/header1.svg" fill object-fit="cover" alt={""} />
-				</div>
+		<AgreementsLayout>
+			<AgreementCreationProvider>
 				<AgreementCreation />
-			</article>
-		</AgreementCreationProvider>
+			</AgreementCreationProvider>
+		</AgreementsLayout>
+	);
+};
+
+// As recommended in https://nextjs.org/docs/pages/building-your-application/routing/pages-and-layouts#per-page-layouts
+AgreementCreationPage.getLayout = function getLayout(page: ReactElement) {
+	return (
+		<Layout>
+			<AgreementsLayout>{page}</AgreementsLayout>
+		</Layout>
 	);
 };
 

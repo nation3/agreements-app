@@ -22,6 +22,7 @@ import AgreementSkeleton from "./AgreementSkeleton";
 import AgreementTermsData from "./AgreementTermsData";
 import NotFoundAgreement from "./NotFound";
 import { useAgreementData } from "./context/AgreementDataContext";
+import AgreementsGrid from "./../layout/agreements/Grid";
 
 export const AgreementView = () => {
 	const {
@@ -43,15 +44,7 @@ export const AgreementView = () => {
 	) : !termsHash && !isLoading ? (
 		<NotFoundAgreement />
 	) : (
-		<section
-			id="agreement"
-			className={cx(
-				"grid grid-flow-row grid-cols-1 auto-rows-auto gap-16",
-				"lg:grid-cols-lg lg:gap-24",
-				"xl:grid-cols-xl",
-				"z-10 mt-40 m-min3",
-			)}
-		>
+		<AgreementsGrid id="agreement">
 			{/* HEADER */}
 			<div className={cx("lg:col-start-1 lg:col-end-13 ")}>
 				<Body2>Agreement</Body2>
@@ -163,6 +156,6 @@ export const AgreementView = () => {
 					</div>
 				</Card> */}
 			</div>
-		</section>
+		</AgreementsGrid>
 	);
 };

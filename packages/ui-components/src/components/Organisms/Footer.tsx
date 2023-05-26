@@ -37,7 +37,11 @@ const Footer: React.FC<IFooterProps> = (props) => {
 					<LogoHolder>
 						<N3LogoGradient />
 					</LogoHolder>
-					<a href="https://docs.nation3.org/agreements/agreements-beta" target="_blank" rel="noreferrer">
+					<a
+						href="https://docs.nation3.org/agreements/agreements-beta"
+						target="_blank"
+						rel="noreferrer"
+					>
 						<Badge color="neutral-c-500" label="Beta v0.2.0" />
 					</a>
 				</div>

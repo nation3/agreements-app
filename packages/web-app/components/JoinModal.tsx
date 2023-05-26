@@ -636,17 +636,6 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 						</div>
 					</div>
 				</div>
-				{usePermit2 && (
-					<div className="absolute mt-3 left-1/2 transform -translate-x-1/2 flex p-base gap-1 items-center justify-between bg-yellow-100 rounded-bottom-lg rounded-lg text-sm">
-						<div className="px-5">
-							<ExclamationTriangleIcon className="w-4 h-4 text-yellow-800" />
-						</div>
-						<p className="grow flex flex-col text-yellow-600">
-							<span>Gassless approvals reportedly causing problems with Ledger wallets.</span>
-							<span>Use traditional approvals if you are using Ledger.</span>
-						</p>
-					</div>
-				)}
 			</section>
 		</ModalNew>
 	);
