@@ -1,75 +1,69 @@
 // import { useEffect, useMemo } from 'react';
 export { AgreementListProvider } from "./context/AgreementListProvider";
 import Image from "next/image";
-
-import { Table, utils, Badge, useScreen, ScreenType } from "@nation3/ui-components";
-import { ethers, BigNumber } from "ethers";
-
+import Link from "next/link";
 import { useRouter } from "next/router";
+
+import { BodyHeadline, Body2, Body3, Button, Breadcrumbs, utils } from "@nation3/ui-components";
+
 import { useAgreementList } from "./context/AgreementListContext";
 import { useTranslation } from "next-i18next";
-import courtIll from "./../../public/court-ill.png";
-import { GradientLink } from "../GradientLink";
+import { AgreementCardCompact } from "../agreement/AgreementCard";
 import React from "react";
 
 export const AgreementList = () => {
 	const { t } = useTranslation("common");
-	const router = useRouter();
-	const { screen } = useScreen();
 	const { agreements } = useAgreementList();
+	const router = useRouter();
 
+	if (agreements.length === 0) {
+		return (
+			<div className="flex flex-col items-center justify-center h-full">
+				<Image src="/svgs/fading-agreements.svg" alt="Fading agreements" width={300} height={300} />
+				<BodyHeadline>No agreements yet</BodyHeadline>
+				<Body2
+					color={"neutral-c-600"}
+					className="flex flex-col items-center justify-center text-center"
+				>
+					<p>There is no agreement created yet</p>
+					<p>
+						You can create your first one <br className="md:hidden" />
+						in less than 1 minute
+					</p>
+				</Body2>
+				<Button
+					className="mt-4"
+					label="New Agreement"
+					onClick={() => router.push("/agreement/create")}
+				/>
+			</div>
+		);
+	}
+
+	// FIXME: Get real terms file data from query
 	return (
 		<>
-			{agreements && agreements.length > 0 ? (
-				<Table
-					className={"max-h-full"}
-					columns={
-						screen === ScreenType.Desktop ? ["Id", "Created on", "Status"] : ["Id", "Status"]
-					}
-					data={agreements.map(({ title, id, createdAt, status }) =>
-						screen === ScreenType.Desktop
-							? [
-									<span key={id}>{title ? title : utils.shortenHash(id)}</span>,
-									<span key={`${id}-date`}>
-										{new Date(Number(createdAt) * 1000).toLocaleDateString()}
-									</span>,
-									<Badge key={`${id}-status`} label={status} bgColor="pr-c-blue2" />,
-							  ]
-							: [
-									<span key={id}>{utils.shortenHash(id)}</span>,
-									<Badge key={`${id}-status`} label={status} bgColor="pr-c-blue2" />,
-							  ],
-					)}
-					clickHandlers={agreements.map(
-						({ id }) =>
-							() =>
-								router.push(`/agreement/${id}`),
-					)}
-				/>
-			) : (
-				<div className="flex justify-center w-full h-full">
-					<div className="flex flex-col items-center w-full h-full">
-						<div className="w-full flex items-center justify-center my-6">
-							<Image
-								className="w-28"
-								src={courtIll}
-								alt="GFG logo served with static path of public directory"
-							/>
-						</div>
-						<div className="w-full flex justify-center flex-col items-center p-2">
-							<p className="text-slate-400 font-medium text-xl md:w-1/2 tracking-wide text-center">
-								{t("jurisdictionInfo")}
-							</p>
-							<div className="mt-3">
-								<GradientLink
-									href="https://docs.nation3.org/jurisdiction/supreme-court"
-									caption="Learn more"
-								/>
-							</div>
-						</div>
-					</div>
+			<div className="mb-[16px]">
+				<div className="flex w-fit py-[12px] border-b-2 border-pr-c-green3">
+					<Body3 className="sm-only:text-xs">All ({agreements.length})</Body3>
 				</div>
-			)}
+			</div>
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-24">
+				{agreements.map(({ id, title, status, termsHash }) => {
+					return (
+						<Link key={id} href={`/agreement/${id}`}>
+							<AgreementCardCompact
+								title={title || `Agreement #${utils.shortenHash(id)}`}
+								status={status}
+								fileName=""
+								termsHash={termsHash}
+								fileStatus="Private"
+								token={{ name: "Nation", symbol: "NATION", address: "0x00000000", decimals: 18 }}
+							/>
+						</Link>
+					);
+				})}
+			</div>
 		</>
 	);
 };
