@@ -8,6 +8,7 @@ export interface AgreementPositionsData {
 		agreement: {
 			id: string;
 			metadataURI: string;
+			termsHash: string;
 			createdAt: string;
 			status: string;
 			token: string;
@@ -24,6 +25,7 @@ export const agreementsPositionsQuery = gql`
 			agreement {
 				id
 				metadataURI
+				termsHash
 				createdAt
 				status
 				token
