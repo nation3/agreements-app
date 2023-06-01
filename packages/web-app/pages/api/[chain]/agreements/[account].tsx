@@ -41,6 +41,7 @@ const parseAgreementPositionsToAgreements = (
 		return {
 			id: agreementPosition.agreement.id,
 			metadataURI: agreementPosition.agreement.metadataURI,
+			termsHash: agreementPosition.agreement.termsHash,
 			status: agreementPosition.agreement.status,
 			token: agreementPosition.agreement.token,
 			createdAt: agreementPosition.agreement.createdAt,

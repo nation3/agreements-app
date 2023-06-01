@@ -36,10 +36,12 @@ const AgreementsPage = () => {
 					/>
 				</div>
 				<Card
+					size="base"
 					className={cx(
 						"col-start-1 col-end-13",
 						"lg:gap-16",
 						"w-full text-gray-800 transition-all",
+						"min-h-[620px]",
 					)}
 				>
 					<AgreementList />

@@ -11,7 +11,7 @@ export const BodyHeadline = (props: Props) => {
 	return (
 		<h5
 			{...props}
-			className={`text-xl md:text-head tracking-wide font-semibold text-${
+			className={`text-xl md:text-head tracking-wide line-clamp-2 font-semibold text-${
 				color ? color : "neutral-c-800"
 			} ${props.className}`}
 		>
