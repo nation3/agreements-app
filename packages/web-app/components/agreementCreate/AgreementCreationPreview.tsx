@@ -23,8 +23,9 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import CompleteAnimation from "../../public/animations/Complete.json";
 import EncryptingAnimation from "../../public/animations/Encrypting_file.json";
-import AgreementCard from "../agreement/AgreementCard/AgreementCard";
+import AgreementCard from "../agreement/AgreementCard";
 import { useAgreementCreation } from "./context/AgreementCreationContext";
+import { formatFileStatus } from "../../utils/fileStatus";
 
 interface AgreemetCreationPreviewProps {
 	setActiveStep: (step: number) => void;
@@ -107,13 +108,13 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 					<div className="flex max-w-sm w-full">
 						<AgreementCard
 							token={token}
-							id={id ?? constants.HashZero}
+							// id={id ?? constants.HashZero}
 							title={title}
 							status={"Preview"}
 							termsHash={termsHash ?? constants.HashZero}
 							terms={terms}
 							fileName={fileName}
-							fileStatus={fileStatus}
+							fileStatus={formatFileStatus(fileStatus)}
 							positions={positions}
 						/>
 					</div>

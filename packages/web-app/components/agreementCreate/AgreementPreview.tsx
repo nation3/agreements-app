@@ -63,7 +63,7 @@ const AgreementPreview: React.FC<IAgreementPreviewProps> = (props) => {
 							Add terms file
 						</Body3>
 					)}
-					<div>{localToken && <TokenRenderer tokenSymbol={localToken} />}</div>
+					<div>{localToken && <TokenRenderer tokenSymbol={localToken} elevation={true} />}</div>
 
 					{localPositions.length > 0 ? (
 						<div className="flex flex-col mb-min2 gap-min2">

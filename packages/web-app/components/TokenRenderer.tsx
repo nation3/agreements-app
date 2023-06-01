@@ -2,13 +2,15 @@ import { IconRenderer, Body3 } from "@nation3/ui-components";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useFindToken } from "../hooks/useTokenList";
+import cx from "classnames";
 
-type ITokenRendererProps = { tokenSymbol: string };
+type ITokenRendererProps = { tokenSymbol: string; elevation?: boolean };
 
 const ITokenRendererDefaultProps = {};
 
+// FIXME: Why this only works if the token is in the token list?
 const TokenRenderer: React.FC<ITokenRendererProps> = (props) => {
-	const { tokenSymbol } = props;
+	const { tokenSymbol, elevation = false } = props;
 	const token = useFindToken(tokenSymbol);
 	const [localToken, setlocalToken] = useState<any>(token);
 
@@ -16,9 +18,9 @@ const TokenRenderer: React.FC<ITokenRendererProps> = (props) => {
 		setlocalToken(token);
 	}, [token]);
 
-	return localToken?.icon ? (
+	return localToken ? (
 		<div className="flex">
-			<div className="flex gap-min2 shadow rounded-base pr-min2 items-center">
+			<div className={cx("flex gap-min2 rounded-base pr-min2 items-center", elevation && "shadow")}>
 				{localToken.icon && (
 					<>
 						<IconRenderer

@@ -23,6 +23,7 @@ import AgreementTermsData from "./AgreementTermsData";
 import NotFoundAgreement from "./NotFound";
 import { useAgreementData } from "./context/AgreementDataContext";
 import AgreementsGrid from "./../layout/agreements/Grid";
+import { formatFileStatus } from "../../utils/fileStatus";
 
 export const AgreementView = () => {
 	const {
@@ -103,7 +104,7 @@ export const AgreementView = () => {
 						status={status || "Unknonw"}
 						termsHash={termsHash || constants.HashZero}
 						fileName={fileName}
-						fileStatus={fileStatus}
+						fileStatus={formatFileStatus(fileStatus || "Unknown")}
 						termsFile={termsFile}
 					/>
 
