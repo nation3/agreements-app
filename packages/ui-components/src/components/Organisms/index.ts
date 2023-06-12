@@ -1,6 +1,7 @@
-export * from './modals'
+import Footer from './Footer'
+import Breadcrumbs from './BreadCrumbs'
+
 export * from './steps'
 export * from './table'
-export * from './UploadButton'
-export * from './BreadCrumbs'
-export { default as Footer } from './Footer'
+
+export { Footer, Breadcrumbs }

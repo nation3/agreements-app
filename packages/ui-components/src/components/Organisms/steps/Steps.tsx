@@ -1,11 +1,10 @@
 import React, { ReactElement } from "react";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import cx from "classnames";
-import Spinner from "../../Atoms/Spinner";
-import { Button } from "../../Molecules/buttons/Button";
 import { motion } from "framer-motion";
+
+import { Spinner, Button } from "../../atoms";
+import { RightIcon } from "../../../icons";
 import { ScreenType, useScreen } from "../../../hooks/useScreen";
-import Image from "next/image";
 
 export interface IStep {
 	action: () => void | null;
@@ -157,7 +156,7 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 						<div className="w-32">{finishImage && <img className="" src={finishImage} />}</div>
 					</div>
 					<div className="mb-6 text-center">{finishMessage}</div>
-					<Button className="px-6 w-32" label="Finish" onClick={finishAction} />
+					<Button className="px-6 w-32" onClick={finishAction}>Finish</Button>
 				</div>
 			) : (
 				<div className="pb-24 pt-8 px-8 flex justify-between">
@@ -173,11 +172,6 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 							/>
 						))}
 					</div>
-					<div className="hidden md:block md:w-2/5 relative">
-						<div className="w-full relative">
-							{steps && <Image width={170} height={170} alt={""} src={steps[stepIndex].image} />}
-						</div>
-					</div>
 				</div>
 			)}
 			{!areStepsFinished && (
@@ -191,7 +185,7 @@ export const Steps: React.FC<IStepsProps> = (props) => {
 					)}
 				>
 					<p className="">{!areStepsFinished ? steps && steps[stepIndex].stepCTA : "Finish"}</p>
-					<ArrowRightIcon
+					<RightIcon
 						className={cx(
 							isStepLoading && "group-hover:ml-1 group-hover:mr-0 transition-all",
 							"mr-1 h-5",

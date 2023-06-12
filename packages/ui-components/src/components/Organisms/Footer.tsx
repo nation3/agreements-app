@@ -1,24 +1,11 @@
 import React from "react";
-import styled from "styled-components";
-import { N3LinkArrow, N3LogoGradient } from "../../icons/index";
-import { Body3, IconRenderer } from "../Atoms";
-import { Badge } from "../Molecules";
+import { RightIcon } from "../../icons";
+import { GridContainer, Body3, ThemedIconRenderer, Label } from "../../components/atoms";
+import Nation3Logo from "../../illustrations/Nation3Logo.svg";
 
 type IFooterProps = {
 	menu?: Array<{ name: string; link: string }>;
 };
-
-const LogoHolder = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	height: 48px;
-	width: 160px;
-	svg {
-		height: 100%;
-		width: 100%;
-	}
-`;
 
 const IFooterDefaultProps = {
 	menu: [
@@ -31,37 +18,37 @@ const IFooterDefaultProps = {
 const Footer: React.FC<IFooterProps> = (props) => {
 	const { menu } = props;
 	return (
-		<footer className="hidden md:flex justify-center p-base border-t-2 border-neutral-c-200">
-			<div className="md:grid grid-cols-xl">
-				<div className="col-start-1 col-end-7 flex justify-start items-center">
-					<LogoHolder>
-						<N3LogoGradient />
-					</LogoHolder>
+		<footer className="flex w-full justify-center p-4 border-t-2 border-neutral-200">
+			<GridContainer>
+				<div className="col-span-6 flex justify-start items-center gap-2">
+					<Nation3Logo className="w-10 h-10 rounded-full fill-neutral-600" />
+					<span className="text-md font-bossa text-neutral-700">NATION3</span>
 					<a
 						href="https://docs.nation3.org/agreements/agreements-beta"
 						target="_blank"
 						rel="noreferrer"
 					>
-						<Badge color="neutral-c-500" label="Beta v0.2.0" />
+						<Label color="neutral-600" border="neutral-500" className="no-wrap">Beta v0.2.0</Label>
 					</a>
 				</div>
-				<div className="col-start-7 col-end-13 flex justify-end items-center gap-base">
+				<div className="col-span-6 flex justify-end items-center gap-4">
 					{menu &&
 						menu.map((e) => (
 							<>
-								<a className="flex items-center" href={e.link} target="_blank" rel="noreferrer">
-									<Body3 className="mr-min2">{e.name}</Body3>
-									<IconRenderer
-										customSize={16}
-										icon={<N3LinkArrow />}
-										backgroundColor={"pr-c-blue1"}
-										size={"xs"}
+								<a className="flex items-center gap-1 no-wrap" href={e.link} target="_blank" rel="noreferrer">
+									<Body3>{e.name}</Body3>
+									<ThemedIconRenderer
+										icon={RightIcon}
+										theme="neutral"	
+										size="extra-small"
+										rounded={false}
+										containerClass="rounded-sm"
 									/>
 								</a>
 							</>
 						))}
 				</div>
-			</div>
+			</GridContainer>
 		</footer>
 	);
 };
