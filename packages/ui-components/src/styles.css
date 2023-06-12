@@ -4,6 +4,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
 
+
 @layer base {
     h1,h2,h3,h4 {
       @apply font-bossa;
@@ -18,14 +19,14 @@
 
 @layer components {
     /*  COLOR ADDITIONS */
-    .c-gradient-dark {
-      @apply bg-gradient-to-r from-pr-c-blue3 to-pr-c-green3;
+    .n3-gradient-dark {
+      @apply bg-gradient-to-r from-primary-blue-600 to-primary-green-600;
     }
-    .c-gradient-light {
-      @apply bg-gradient-to-r from-pr-c-blue1 to-pr-c-green1;
+    .n3-gradient-light {
+      @apply bg-gradient-to-r from-primary-blue-200 to-primary-green-200;
     }
-    .c-gradient-warn {
-      @apply bg-gradient-to-t from-white from-70% to-sc-c-orange1;
+    .n3-gradient-warn {
+      @apply bg-gradient-to-t from-white from-70% to-secondary-orange-200;
     }
 
   }

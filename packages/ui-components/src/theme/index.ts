@@ -27,6 +27,8 @@ import * as spacing from "./spacing";
 import * as typography from "./typography";
 import * as illustrations from "./illustrations";
 import * as screens from "./screens";
+import * as animations from "./animations";
+
 import {grid} from './grid';
 
 export default {
@@ -37,5 +39,6 @@ export default {
   ...screens,
   ...typography,
   ...illustrations,
-  ...grid
+  ...grid,
+  ...animations
 };

@@ -22,6 +22,7 @@ export const borderRadius = {
     xs: "2px",
     sm: "4px",
     base: "8px",
+    DEFAULT: "8px",
     md: "16px",
     lg: "24px",
     xl: "48px",

@@ -68,5 +68,5 @@ export const fontSize = {
   }
 
   export const fontFamily = {
-     bossa: "Bossa", inter: "Inter, sans-serif", 
+     bossa: "Bossa, sans-serif", inter: "Inter, sans-serif", 
     }
