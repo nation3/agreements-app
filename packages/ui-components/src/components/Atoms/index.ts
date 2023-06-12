@@ -1,9 +1,13 @@
-import IconLoader from "./IconLoader";
-import IconRenderer from './IconRenderer';
-import IllustrationRenderer from './IllustrationRenderer';
+import Button from "./Button";
+import Label from "./Label";
 import Spinner from "./Spinner";
+import IllustrationRenderer from './IllustrationRenderer';
 
-export * from "./Nation3Logo";
+export * from "./containers";
 export * from "./displays";
+export * from "./icon-renderer";
 export * from "./typography";
-export { IconLoader, IconRenderer, IllustrationRenderer, Spinner };
+export * from "./Button";
+export * from "./Label";
+
+export { Button, Label, IllustrationRenderer, Spinner };

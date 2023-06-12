@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { utils, providers } from "ethers";
+import React, { useMemo } from "react";
+import { utils } from "ethers";
 import { shortenHash } from "../../../utils";
 import cx from "classnames";
 import { Body3 } from "../typography";
@@ -11,12 +11,21 @@ export const AddressDisplay = ({
 }: {
 	address: string;
 	ensName?: string;
-	className: string;
+	className?: string;
 }) => {
 	const displayAddress = useMemo(
 		() => ensName ?? shortenHash(utils.getAddress(address)),
 		[address, ensName],
 	);
 
-	return <Body3 className={cx("flex items-stretch", className)}>{displayAddress}</Body3>;
+	return (
+		<Body3
+			className={cx(
+				"flex flex-nowrap whitespace-nowrap overflow-hidden text-ellipsis items-stretch",
+				className,
+			)}
+		>
+			{displayAddress}
+		</Body3>
+	);
 };

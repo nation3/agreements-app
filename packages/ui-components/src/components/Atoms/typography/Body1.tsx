@@ -1,21 +1,23 @@
-import React, { ReactNode } from "react";
+import React from "react";
+import cx from "classnames";
 
-interface Props {
-	children: ReactNode;
-	className?: string;
+interface ParagraphProps extends React.HTMLAttributes<HTMLParagraphElement> {
 	color?: string;
 }
 
-export const Body1 = (props: Props) => {
-	const { color, children, className } = props;
+const Body1 = ({ color, children, className, ...props }: ParagraphProps) => {
 	return (
 		<p
+			className={cx(
+				"text-base md:text-lg font-medium tracking-wide",
+				color ? `text-${color}` : "text-neutral-800",
+				className,
+			)}
 			{...props}
-			className={`text-base md:text-lg font-medium tracking-wide text-${
-				color ? color : "neutral-c-800"
-			} ${className}`}
 		>
 			{children}
 		</p>
 	);
 };
+
+export default Body1;

@@ -1,21 +1,23 @@
-import React, { ReactNode } from "react";
+import React from "react";
+import cx from "classnames";
 
-interface Props {
-	children: ReactNode;
-	className?: string;
+interface HeadlineProps extends React.HTMLAttributes<HTMLHeadingElement> {
 	color?: string;
 }
 
-export const BodyHeadline = (props: Props) => {
-	const { color, children, className } = props;
+const BodyHeadline = ({ color, children, className, ...props }: HeadlineProps) => {
 	return (
 		<h5
+			className={cx(
+				"text-xl md:text-head tracking-wide line-clamp-2 font-semibold",
+				color && `text-${color}`,
+				className,
+			)}
 			{...props}
-			className={`text-xl md:text-head tracking-wide line-clamp-2 font-semibold text-${
-				color ? color : "neutral-c-800"
-			} ${props.className}`}
 		>
-			{props.children}
+			{children}
 		</h5>
 	);
 };
+
+export default BodyHeadline;

@@ -1,14 +1,19 @@
-import React, { ReactNode } from "react";
+import React, { HTMLAttributes } from "react";
+import cx from "classnames";
 
-interface Props {
-	children: ReactNode;
-	className?: string;
+interface HeadlineProps extends HTMLAttributes<HTMLHeadingElement> {
+	color?: string;
 }
 
-export const Headline3 = (props: Props) => {
+const Headline3 = ({ color, children, ...props }: HeadlineProps) => {
 	return (
-		<h3 {...props} className={`text-3xl md:text-4xl md:font-bold font-semibold ${props.className}`}>
-			{props.children}
+		<h3
+			{...props}
+			className={cx("text-3xl md:text-4xl md:font-bold font-semibold", color && `text-${color}`)}
+		>
+			{children}
 		</h3>
 	);
 };
+
+export default Headline3;

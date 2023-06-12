@@ -38,7 +38,7 @@ const CenteredIcon = styled.div<{
 `;
 
 const IllustrationRenderer: React.FC<IllustrationRendererProps> = (props) => {
-	const { icon, size, className, rounded = false, customSize, fillColor = "" } = props;
+	const { icon, size, className, customSize, fillColor = "" } = props;
 	let squareSize;
 	if (customSize !== undefined) {
 		squareSize = customSize;
@@ -57,7 +57,7 @@ const IllustrationRenderer: React.FC<IllustrationRendererProps> = (props) => {
 			className={cx(
 				"relative",
 				"inline-block",
-				"flex items-center justify-center rounded-base",
+				"flex items-center justify-center rounded",
 				className,
 			)}
 			style={{
