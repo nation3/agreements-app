@@ -1,7 +1,4 @@
 const postcss = require("rollup-plugin-postcss");
-const autoprefixer = require("autoprefixer");
-const cssnano = require("cssnano");
-const svg = require("rollup-plugin-svg");
 const svgr = require("@svgr/rollup");
 const url = require("@rollup/plugin-url");
 
@@ -25,7 +22,7 @@ module.exports = {
 		config.plugins.push(
 			url({
 				limit: 0, // Always emit files as separate assets
-				include: ["**/*.svg"], // You can adjust the pattern to match other image types if needed
+				include: ["**/illustrations/*.svg"], // You can adjust the pattern to match other images if needed
 				fileName: "assets/[name][extname]",
 				// publicPath: '/static/', // Adjust the public path as needed
 			}),
