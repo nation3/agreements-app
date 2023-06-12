@@ -1,8 +1,8 @@
-import clsx from "clsx";
-import { ethers, providers } from "ethers";
 import React, { ChangeEvent, InputHTMLAttributes, useEffect, useState } from "react";
-import { Body3 } from "../../Atoms";
-import Spinner from "../../Atoms/Spinner";
+import cx from "classnames";
+import { ethers, providers } from "ethers";
+
+import { Body3, Spinner } from "../../atoms";
 
 export interface AddressInputProps extends InputHTMLAttributes<HTMLInputElement> {
 	focusColor?: string;
@@ -11,25 +11,36 @@ export interface AddressInputProps extends InputHTMLAttributes<HTMLInputElement>
 	label?: string | undefined;
 	defaultValue?: string | undefined;
 	showEnsName?: boolean;
+	disabled?: boolean;
+	status?: 'default' | 'success' | 'warning' | 'error';
 }
 
 export const AddressInput = (props: AddressInputProps) => {
 	const {
-		focusColor = "pr-c-blue-3",
+		focusColor = "primary-blue-200",
 		ensProvider,
 		defaultValue,
 		label,
+		status = 'default',
 		onBlurCustom,
+		disabled = false,
 		showEnsName = false,
 	} = props;
-	const [isValid, setIsValid] = useState(true);
+	// const [isValid, setIsValid] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const [inputValue, setInputValue] = useState("");
 	const [ensName, setEnsName] = useState("");
 
+	const statusClass = !disabled && cx({
+		"border-neutral-300": status === 'default',
+		"border-semantic-success": status === 'success', 
+		"border-semantic-warning": status === 'warning',
+		"border-semantic-error": status === 'error',
+	});
+
 	useEffect(() => {
 		setInputValue(defaultValue ?? "");
-	}, [props.defaultValue]);
+	}, [defaultValue]);
 
 	const fetchAddress = async (value: string) => {
 		setIsLoading(true);
@@ -46,7 +57,7 @@ export const AddressInput = (props: AddressInputProps) => {
 	const handleBlur = async (e: ChangeEvent<HTMLInputElement>) => {
 		const addressOrEns = e.target.value;
 		const address = await fetchAddress(addressOrEns);
-		setIsValid(address ? true : false);
+		// setIsValid(address ? true : false);
 		if (address) {
 			setEnsName(addressOrEns); // Update the ENS name
 		}
@@ -55,21 +66,24 @@ export const AddressInput = (props: AddressInputProps) => {
 
 	return (
 		<div>
-			{label && <Body3 color="neutral-c-600">{label}</Body3>}
-			<div className={clsx("flex items-center justify-center relative")}>
+			{label && <Body3 color="neutral-600 mb-3">{label}</Body3>}
+			<div className={cx("flex items-center justify-center relative")}>
 				<input
 					type="text"
 					id="text-input"
 					value={showEnsName && ensName ? ensName : inputValue}
-					className={clsx(
-						`border-neutral-c-300 flex bg-white border-2 relative h-double rounded-base  focus:border-${focusColor} block flex-1 min-w-0 w-full text-sm `,
+					className={cx(
+					"block w-full p-3 border-2 rounded-base outline-none transition-all",
+					disabled ? "bg-neutral-200 text-neutral-500" : "bg-white text-neutral-800",
+					statusClass,
+					`focus:ring-${focusColor} focus:border-${focusColor}`
 					)}
 					onChange={(e) => setInputValue(e.target.value)}
 					onBlur={handleBlur}
 					{...props}
 				/>
 				{isLoading && (
-					<Spinner className="text-pr-c-blue3 w-5 h-5 absolute right-min3 top-[14px]" />
+					<Spinner className="text-primary-blue-100 w-5 h-5 absolute right-3 top-[14px]" />
 				)}
 			</div>
 		</div>
