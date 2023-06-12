@@ -4,6 +4,14 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
 
+@font-face {
+  font-family: 'Bossa';
+  src: url('./fonts/Bossa-Bold.woff2') format('woff2'),
+       url('./fonts/Bossa-Bold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 @layer base {
     h1,h2,h3,h4 {
