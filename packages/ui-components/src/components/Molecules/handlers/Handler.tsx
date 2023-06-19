@@ -8,12 +8,14 @@ export interface HandlerProps extends HTMLAttributes<HTMLDivElement> {
 	primaryIcon?: React.FC<React.SVGProps<SVGSVGElement>>;
 	actionIcon?: React.FC<React.SVGProps<SVGSVGElement>>;
 	theme?: ThemedIconRendererProps["theme"];
+	disabled?: boolean;
 }
 
 const Handler: React.FC<HandlerProps> = ({
 	primaryIcon: PrimaryIcon,
 	actionIcon: ActionIcon,
 	theme = "neutral",
+	disabled = false,
 	className,
 	children,
 	...props

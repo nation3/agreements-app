@@ -4,6 +4,7 @@ import cx from "classnames";
 import Spinner from "./Spinner";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+	label?: string;
 	size?: "medium" | "small" | "compact";
 	border?: string;
 	disabled?: boolean;
@@ -11,6 +12,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const Button: React.FC<ButtonProps> = ({
+	label,
 	children,
 	border = "primary-blue-600",
 	size = "medium",
@@ -58,7 +60,7 @@ const Button: React.FC<ButtonProps> = ({
 					loading ? "opacity-0" : "opacity-100",
 				)}
 			>
-				{children}
+				{children ?? label}
 			</span>
 			<span
 				className={cx(

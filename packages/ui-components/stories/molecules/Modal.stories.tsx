@@ -2,7 +2,7 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { Button } from 'ui-components/components/atoms';
-import { Modal } from 'ui-components/components/molecules/modal/Modal';
+import { Modal } from 'ui-components/components/molecules/modals/Modal';
 
 const meta: Meta<typeof Modal> = {
     title: 'molecules/Modal',

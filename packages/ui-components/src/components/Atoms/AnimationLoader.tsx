@@ -7,7 +7,7 @@ interface AnimationLoaderProps {
 	height?: number;
 }
 
-export const AnimationLoader: React.FC<AnimationLoaderProps> = ({
+const AnimationLoader: React.FC<AnimationLoaderProps> = ({
 	animationData,
 	width = 100,
 	height = 100,
@@ -24,3 +24,5 @@ export const AnimationLoader: React.FC<AnimationLoaderProps> = ({
 		<div>{animationData && <Lottie options={defaultOptions} width={width} height={height} />}</div>
 	);
 };
+
+export default AnimationLoader;

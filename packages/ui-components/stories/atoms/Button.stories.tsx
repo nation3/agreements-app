@@ -6,15 +6,19 @@ const meta: Meta<typeof Button> = {
 	title: "atoms/Button",
 	component: Button,
 	args: {
-		children: "This is a Button",
+		label: "This is a Button",
 		size: "medium",
 		border: "primary-blue-600",
 		disabled: false,
 		loading: false,
 	},
 	argTypes: {
-		children: {
+		label: {
 			name: "Label",
+			control: "text",
+		},
+		children: {
+			name: "Children",
 			control: "text",
 		},
 		size: {

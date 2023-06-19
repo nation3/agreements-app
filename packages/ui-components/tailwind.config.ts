@@ -1,6 +1,5 @@
 import type { Config } from 'tailwindcss'
-import n3theme from './src/theme/index';
-import { variantColorClasses } from './src/utils/theme';
+import n3theme, {colorClasses, variantColorClasses}  from './src/theme';
 
 const config: Config = {
 	content: [
@@ -9,7 +8,8 @@ const config: Config = {
 	],
 	/* Avoid using patterns here as it will break the build */
 	safelist: [
-		// ...variantColorClasses
+		...colorClasses,
+		...variantColorClasses
 	],
 	theme: {
 		extend: {

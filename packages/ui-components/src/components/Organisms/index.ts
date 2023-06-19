@@ -1,5 +1,5 @@
 import Footer from './Footer'
-import Breadcrumbs from './BreadCrumbs'
+import Breadcrumbs from './steps/StepsProgress'
 
 export * from './steps'
 export * from './table'

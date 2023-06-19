@@ -1,7 +1,7 @@
-import React from "react";
+import React, { HtmlHTMLAttributes } from "react";
 import cx from "classnames";
 
-const GridContainer: React.FC<{children: React.ReactNode, className?: string}> = ({ children, className}) => {
+const GridContainer: React.FC<HtmlHTMLAttributes<HTMLDivElement>> = ({ children, className}) => {
     return (
 		<div className={cx(
             "grid",
