@@ -1,7 +1,0 @@
-coverage:
-  range: 40..80
-  round: down
-  precision: 2
-ignore:
-  - "*/**/test"
-  - "*/**/script"
