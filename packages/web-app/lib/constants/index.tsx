@@ -2,8 +2,9 @@ import { BigNumber } from "ethers";
 import * as mainnet from "./mainnet";
 import * as goerli from "./goerli";
 import * as gnosis from "./gnosis";
+import * as sepolia from "./sepolia";
 
-export { mainnet, goerli };
+export { mainnet, goerli, sepolia};
 
 export interface Constants {
 	permit2Address: `0x${string}`;
@@ -22,6 +23,8 @@ const constants = (chainId: number) => {
 			return { ...mainnet };
 		case 5:
 			return { ...goerli };
+		case 11155111:
+			return { ...sepolia };	
 		case 100:
 			return { ...gnosis };
 		default:
