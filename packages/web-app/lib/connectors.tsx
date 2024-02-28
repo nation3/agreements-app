@@ -1,7 +1,7 @@
 import { getDefaultWallets } from "@rainbow-me/rainbowkit";
 import { providers } from "ethers";
 import { Chain, configureChains } from "wagmi";
-import { goerli, mainnet } from "wagmi/chains";
+import { goerli, mainnet, sepolia } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
 type FallbackProviderConfig = Omit<providers.FallbackProviderConfig, "provider">;
@@ -33,14 +33,15 @@ const gnosis: Chain = {
 };
 
 // Returns and alchemy provider based on the chain
-// if the chain is goerli, use the goerly alchemy api key from the env
-// else, use the mainnet alchemy api key from the env
+// select alchemy api key from env based on current chain
 const customAlchemyProvider = ({ priority, stallTimeout, weight }: FallbackProviderConfig) => {
 	return (chain: Chain) => {
 		const apiKey =
 			chain.id === 5
 				? process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_GOERLI
-				: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+				: chain.id === 11155111
+					? process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_SEPOLIA
+					: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
 		if (!apiKey || !chain.rpcUrls.alchemy) return null;
 
 		return {
@@ -81,7 +82,7 @@ export const providersToUse = () => {
 };
 
 export const chainsToUse = () => {
-	return [mainnet, gnosis, goerli];
+	return [mainnet, gnosis, goerli, sepolia];
 };
 
 export const { chains, provider, webSocketProvider } = configureChains(
