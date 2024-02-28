@@ -1,7 +1,7 @@
 import { getDefaultWallets } from "@rainbow-me/rainbowkit";
 import { providers } from "ethers";
 import { Chain, configureChains } from "wagmi";
-import { goerli, mainnet } from "wagmi/chains";
+import { goerli, mainnet, sepolia } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
 type FallbackProviderConfig = Omit<providers.FallbackProviderConfig, "provider">;
@@ -81,7 +81,7 @@ export const providersToUse = () => {
 };
 
 export const chainsToUse = () => {
-	return [mainnet, gnosis, goerli];
+	return [mainnet, gnosis, goerli, sepolia];
 };
 
 export const { chains, provider, webSocketProvider } = configureChains(
