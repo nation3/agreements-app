@@ -35,16 +35,20 @@ const gnosis: Chain = {
 // Returns and alchemy provider based on the chain
 const customAlchemyProvider = ({ priority, stallTimeout, weight }: FallbackProviderConfig) => {
 	return (chain: Chain) => {
-		var apiKey: any;
+		let apiKey: any;
 		switch (chain?.id) {
 			case 1:
 				apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+				break;
 			case 5:
 				apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_GOERLI;
+				break;
 			case 11155111:
 				apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_SEPOLIA;
+				break;
 			default:
 				apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+				break;
 		}
 		if (!apiKey || !chain.rpcUrls.alchemy) return null;
 
