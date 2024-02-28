@@ -33,14 +33,19 @@ const gnosis: Chain = {
 };
 
 // Returns and alchemy provider based on the chain
-// if the chain is goerli, use the goerly alchemy api key from the env
-// else, use the mainnet alchemy api key from the env
 const customAlchemyProvider = ({ priority, stallTimeout, weight }: FallbackProviderConfig) => {
   return (chain: Chain) => {
-    const apiKey =
-      chain.id === 5
-        ? process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_GOERLI
-        : process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+    var apiKey: any;
+    switch (chain?.id) {
+      case 1:
+        apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
+      case 5:
+        apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_GOERLI
+      case 11155111:
+        apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_SEPOLIA
+      default:
+        apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
+    }
     if (!apiKey || !chain.rpcUrls.alchemy) return null;
 
     return {
