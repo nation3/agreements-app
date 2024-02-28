@@ -47,8 +47,8 @@ const Footer: React.FC<IFooterProps> = (props) => {
 				</div>
 				<div className="col-start-7 col-end-13 flex justify-end items-center gap-base">
 					{menu &&
-						menu.map((e) => (
-							<>
+						menu.map((e, i) => (
+							<div key={i}>
 								<a className="flex items-center" href={e.link} target="_blank" rel="noreferrer">
 									<Body3 className="mr-min2">{e.name}</Body3>
 									<IconRenderer
@@ -58,7 +58,7 @@ const Footer: React.FC<IFooterProps> = (props) => {
 										size={"xs"}
 									/>
 								</a>
-							</>
+							</div>
 						))}
 				</div>
 			</div>
