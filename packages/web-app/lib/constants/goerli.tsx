@@ -6,5 +6,5 @@ export const frameworkAddress = "0x710617547D96573520b5f38668168DaFDBD9EA83";
 export const arbitratorAddress = "0x1dBEFF62DFa113f7254AaB5772F1AC6E66F94e7e";
 export const cohortAddress = "0xD86B638A810fc0C811c6A27152744eEFFE7262C0";
 export const safeTxServiceUrl = "https://safe-transaction-goerli.safe.global";
-export const subgraphURI = process.env.NEXT_PUBLIC_GRAPH_API_URL_GOERLI;
+export const subgraphURI = process.env.NEXT_PUBLIC_GRAPH_API_URL;
 export const appealCost = BigNumber.from("100000000000000000");
