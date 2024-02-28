@@ -9,3 +9,7 @@ See https://github.com/nation3/agreements-contracts
 ## Documentation
 
 https://github.com/nation3/agreements-app/tree/main/docs
+
+### Discussions
+
+https://github.com/nation3/agreements-app/discussions
