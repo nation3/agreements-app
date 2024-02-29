@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { TopBar } from "./TopBar";
-import { Footer } from "@nation3/ui-components"
+import { Footer } from "@nation3/ui-components";
 
 export interface LayoutProps {
 	children: ReactNode;
