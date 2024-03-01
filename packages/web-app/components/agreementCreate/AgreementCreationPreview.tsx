@@ -73,6 +73,7 @@ export const AgreementCreationPreview: React.FC<AgreemetCreationPreviewProps> = 
 
 		const { put } = await preparePutToIPFS(metadata);
 		const cid = await put();
+		console.log(cid);
 		const metadataURI = `ipfs://${cid}`;
 
 		create({

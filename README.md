@@ -12,6 +12,7 @@ See https://github.com/nation3/agreements-contracts
 
 - https://github.com/nation3/agreements-app/tree/main/docs
 - https://docs.nation3.org/agreements/what-is-a-nation3-agreement
+- [Building court multisig over Zodiac](https://github.com/nation3/agreements-app/wiki/Building-court-multisig-over-Zodiac-%5BWIP%5D)
 
 ### Discussions
 
