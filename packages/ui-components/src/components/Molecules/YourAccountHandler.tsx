@@ -2,20 +2,25 @@ import { WalletIcon } from "@heroicons/react/24/solid";
 import { AddressDisplay, IconLoader } from "@nation3/ui-components";
 import Image from "next/image";
 import React from "react";
-import { useEnsAvatar, useEnsName } from "wagmi";
+import { useEnsAvatar, useEnsName, useNetwork } from "wagmi";
 
 export const AccountDisplay = ({ address }: { address: string }) => {
-	const { data: ensName } = useEnsName({ address, chainId: 1 });
+	const { chain } = useNetwork();
+
+	if (chain?.id == null) {
+		throw new Error("chain.id is null or undefined");
+	}
+	const { data: ensName } = useEnsName({ address, chainId: chain.id });
 	const {
 		data: ensAvatar,
 		isError,
 		isLoading,
 	} = useEnsAvatar({
 		/*
-		onSuccess(data) {
-			console.log("Success AVATAR", data);
-		},
-		*/
+    onSuccess(data) {
+      console.log("Success AVATAR", data);
+    },
+    */
 		addressOrName: address,
 	});
 

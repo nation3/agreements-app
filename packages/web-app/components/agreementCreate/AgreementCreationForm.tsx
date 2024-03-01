@@ -11,7 +11,7 @@ import {
 	Card,
 } from "@nation3/ui-components";
 import { utils } from "ethers";
-import { useProvider } from "wagmi";
+import { useNetwork, useProvider } from "wagmi";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
 import { ParticipantRow } from "../ParticipantRow";
@@ -29,7 +29,12 @@ import React from "react";
 
 export const AgreementCreationForm = () => {
 	const { t } = useTranslation("common");
-	const provider = useProvider({ chainId: 1 });
+	const { chain } = useNetwork();
+
+	if (chain?.id == null) {
+		throw new Error("chain.id is null or undefined");
+	}
+	const provider = useProvider({ chainId: chain.id });
 	const tokens = useTokenList();
 	const [isTokenModalOpen, setIsTokenModalOpen] = useState<boolean>(false);
 	const {

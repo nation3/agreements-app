@@ -91,10 +91,14 @@ export const usePermit2TransferSignature = ({
 		[tokenTransfer, nonce],
 	);
 
+	if (chain?.id == null) {
+		throw new Error("chain.id is null or undefined");
+	}
+
 	const domain = useMemo(
 		() => ({
 			name: "Permit2",
-			chainId: chain?.id || 5,
+			chainId: chain.id,
 			verifyingContract: permit2Address,
 		}),
 		[chain],
@@ -146,10 +150,14 @@ export const usePermit2BatchTransferSignature = ({
 		};
 	}, [tokenTransfers, nonce]);
 
+	if (chain?.id == null) {
+		throw new Error("chain.id is null or undefined");
+	}
+
 	const domain = useMemo(
 		() => ({
 			name: "Permit2",
-			chainId: chain?.id || 5,
+			chainId: chain.id,
 			verifyingContract: permit2Address,
 		}),
 		[chain],
