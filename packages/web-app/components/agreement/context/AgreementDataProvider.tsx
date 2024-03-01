@@ -31,7 +31,11 @@ export const useAgreement = ({ id }: { id: string }) => {
 		async function fetchAgreement() {
 			try {
 				setIsLoading(true);
-				const chainId = chain?.id || 1;
+
+				if (chain?.id == null) {
+					throw new Error("chain.id is null or undefined");
+				}
+				const chainId = chain.id;
 				const response = await fetch(`/api/${chainId}/agreement/${id}`);
 				if (!response.ok) {
 					setAgreement(undefined);
@@ -125,11 +129,11 @@ export const AgreementDataProvider = ({ id, children }: { id: string; children: 
 
 	/* GET AGREEMENT DATA FROM CONTRACT */
 	/*
-	const { data: agreementData, positions: agreementPositions } = useAgreementData({
-		id: id,
-		enabled: id != "undefined",
-	});
-	*/
+  const { data: agreementData, positions: agreementPositions } = useAgreementData({
+    id: id,
+    enabled: id != "undefined",
+  });
+  */
 
 	/* Update params when agreement changes */
 	useEffect(() => {

@@ -13,7 +13,7 @@ import { utils } from "ethers";
 import { useTranslation } from "next-i18next";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { useProvider } from "wagmi";
+import { useNetwork, useProvider } from "wagmi";
 import { useTokenList } from "../../hooks/useTokenList";
 import { validateCriteria } from "../../utils";
 import { ParticipantRow } from "../ParticipantRow";
@@ -28,7 +28,13 @@ interface PartiesCardProps {
 export const AgreementParties: React.FC<PartiesCardProps> = ({ setActiveStep }) => {
 	const { t } = useTranslation("common");
 	const { positions, token, setPositions, setToken, terms } = useAgreementCreation();
-	const provider = useProvider({ chainId: 1 });
+
+	const { chain } = useNetwork();
+
+	if (chain?.id == null) {
+		throw new Error("chain.id is null or undefined");
+	}
+	const provider = useProvider({ chainId: chain.id });
 	const tokens = useTokenList();
 	const [selectedToken, setSelectedToken] = useState<Token>();
 	const [localPositions, setlocalPositions] = useState<InputPositionList>(positions);
