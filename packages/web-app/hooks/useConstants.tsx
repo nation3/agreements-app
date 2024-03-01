@@ -3,11 +3,11 @@ import { useNetwork } from "wagmi";
 import getConstants, { Constants } from "../lib/constants";
 
 export const useConstants = (): Constants => {
-  const { chain } = useNetwork();
+	const { chain } = useNetwork();
 
-  const constants = useMemo(() => {
-    return getConstants(chain?.id || 1);
-  }, [chain]);
+	const constants = useMemo(() => {
+		return getConstants(chain?.id || 1);
+	}, [chain]);
 
-  return constants;
+	return constants;
 };
