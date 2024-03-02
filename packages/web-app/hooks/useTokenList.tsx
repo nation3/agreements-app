@@ -33,18 +33,18 @@ const mainnetTokens = [
 	},
 ];
 
-const goerliTokens = [
+const sepoliaTokens = [
 	{
 		name: "Nation3",
 		symbol: "NATION",
-		address: "0x333A4823466879eeF910A04D473505da62142069",
+		address: "0x23Ca3002706b71a440860E3cf8ff64679A00C9d7",
 		decimals: 18,
 		icon: "/tokens/nation3.png",
 	},
 	{
 		name: "Wrapped Ether",
 		symbol: "WETH",
-		address: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
+		address: "0x7b79995e5f793a07bc00c21412e50ecae098e7f9",
 		decimals: 18,
 		icon: "/tokens/weth.png",
 	},
@@ -65,8 +65,8 @@ export const useTokenList = (): Token[] => {
 		switch (chain?.id) {
 			case 1:
 				return mainnetTokens;
-			case 5:
-				return goerliTokens;
+			case 11155111:
+				return sepoliaTokens;
 			default:
 				return mainnetTokens;
 		}
@@ -82,8 +82,8 @@ export const useFindToken = (tokenSymbol: string): Token => {
 		switch (chain?.id) {
 			case 1:
 				return mainnetTokens.find((token) => token.symbol === tokenSymbol);
-			case 5:
-				return goerliTokens.find((token) => token.symbol === tokenSymbol);
+			case 11155111:
+				return mainnetTokens.find((token) => token.symbol === tokenSymbol);
 			default:
 				return mainnetTokens.find((token) => token.symbol === tokenSymbol);
 		}

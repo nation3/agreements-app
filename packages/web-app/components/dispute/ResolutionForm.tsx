@@ -33,7 +33,8 @@ export const ResolutionForm = () => {
 	const submit = async () => {
 		const metadata = generateResolutionMetadata(settlement ?? []);
 
-		const { put, cid } = await preparePutToIPFS(metadata);
+		const { put } = await preparePutToIPFS(metadata);
+		const cid = await put();
 		const metadataURI = `ipfs://${cid}`;
 
 		const data = arbitratorInterface.encodeFunctionData("submitResolution", [

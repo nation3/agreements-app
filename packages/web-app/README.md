@@ -1,6 +1,6 @@
-# Nation3 Court Web App
+# Nation3 Agreements Web App
 
-Human-centric UI to create and manage agreements arbitrated by the Nation3 Court.
+Human-centric UI to create and manage agreements in the Nation3 Legal system.
 
 ## Development
 

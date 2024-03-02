@@ -12,7 +12,11 @@ const useUserAgreements = () => {
 	useEffect(() => {
 		async function fetchAgreements() {
 			try {
-				const chainId = chain?.id || 1;
+				if (chain?.id == null) {
+					throw new Error("chain.id is null or undefined");
+				}
+
+				const chainId = chain.id;
 				const response = await fetch(`/api/${chainId}/agreements/${account}`);
 				if (!response.ok) {
 					setError(response.statusText);

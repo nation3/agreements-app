@@ -1,6 +1,6 @@
 import { Breadcrumbs, Card, Headline3 } from "@nation3/ui-components";
 import { useMemo, useState } from "react";
-import { useProvider } from "wagmi";
+import { useNetwork, useProvider } from "wagmi";
 import { AgreementCreationPreview } from "./AgreementCreationPreview";
 
 import { useAgreementCreation } from "./context/AgreementCreationContext";
@@ -21,7 +21,6 @@ export const AgreementCreation = () => {
 	const [activeStep, setActiveStep] = useState<number>(0);
 
 	const { t } = useTranslation("common");
-	const provider = useProvider({ chainId: 1 });
 	const tokens = useTokenList();
 
 	const { title, terms, positions, id, token, setToken, termsHash, fileName } =
