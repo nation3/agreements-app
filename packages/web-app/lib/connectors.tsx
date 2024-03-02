@@ -1,14 +1,17 @@
 import { getDefaultWallets } from "@rainbow-me/rainbowkit";
 import { providers } from "ethers";
 import { Chain, configureChains } from "wagmi";
-import { mainnet } from "wagmi/chains";
+import { mainnet, sepolia } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
 type FallbackProviderConfig = Omit<providers.FallbackProviderConfig, "provider">;
 
 const customAlchemyProvider = ({ priority, stallTimeout, weight }: FallbackProviderConfig) => {
 	return (chain: Chain) => {
-		const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY; //mainnet
+		let apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+		if (chain?.id == 11155111) {
+			apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_SEPOLIA;
+		}
 		if (!apiKey || !chain.rpcUrls.alchemy) return null;
 
 		return {
@@ -49,7 +52,7 @@ export const providersToUse = () => {
 };
 
 export const chainsToUse = () => {
-	return [mainnet];
+	return [mainnet, sepolia];
 };
 
 export const { chains, provider, webSocketProvider } = configureChains(

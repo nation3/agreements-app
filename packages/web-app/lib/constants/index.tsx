@@ -1,7 +1,8 @@
 import { BigNumber } from "ethers";
 import * as mainnet from "./mainnet";
+import * as sepolia from "./sepolia";
 
-export { mainnet };
+export { mainnet, sepolia };
 
 export interface Constants {
 	permit2Address: `0x${string}`;
@@ -18,6 +19,8 @@ const constants = (chainId: number) => {
 	switch (chainId) {
 		case 1:
 			return { ...mainnet };
+		case 11155111:
+			return { ...sepolia };
 		default:
 			return { ...mainnet };
 	}
