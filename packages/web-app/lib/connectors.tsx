@@ -9,9 +9,6 @@ type FallbackProviderConfig = Omit<providers.FallbackProviderConfig, "provider">
 const customAlchemyProvider = ({ priority, stallTimeout, weight }: FallbackProviderConfig) => {
 	return (chain: Chain) => {
 		let apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
-		if (chain?.id == 11155111) {
-			apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY_SEPOLIA;
-		}
 		if (!apiKey || !chain.rpcUrls.alchemy) return null;
 
 		return {

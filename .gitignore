@@ -4,7 +4,8 @@ node_modules/
 lcov.info
 coverage
 
-.env**
+.env
+.env.local
 
 # dependencies
 /node_modules
