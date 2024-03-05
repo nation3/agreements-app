@@ -1,24 +1,24 @@
 import { gql } from "graphql-request";
 
 export interface AgreementData {
-	agreement: {
-		id: string;
-		framework: {
-			id: string;
-		};
-		termsHash: string;
-		criteria: string;
-		status: string;
-		token: string;
-		metadataURI: string;
-		createdAt: string;
-		positions: {
-			party: string;
-			collateral: string;
-			deposit: string;
-			status: string;
-		}[];
-	};
+  agreement: {
+    id: string;
+    framework: {
+      id: string;
+    };
+    termsHash: string;
+    criteria: string;
+    status: string;
+    token: string;
+    metadataURI: string;
+    createdAt: string;
+    positions: {
+      party: string;
+      // collateral: string;
+      deposit: string;
+      status: string;
+    }[];
+  };
 }
 
 export const agreementQuery = gql`
@@ -36,7 +36,6 @@ export const agreementQuery = gql`
 			createdAt
 			positions {
 				party
-				collateral
 				deposit
 				status
 			}
