@@ -17,7 +17,7 @@ export interface Agreement extends AgreementBase {
 
 export interface AgreementPosition {
 	party: string;
-	collateral: string;
+	// collateral: string;
 	deposit: string;
 	status: string;
 	resolver?: {
