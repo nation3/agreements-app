@@ -1,18 +1,18 @@
 import { gql } from "graphql-request";
 
 export interface AgreementPositionsData {
-  agreementPositions: {
-    party: string;
-    // collateral: string;
-    status: string;
-    agreement: {
-      id: string;
-      metadataURI: string;
-      createdAt: string;
-      status: string;
-      token: string;
-    };
-  }[];
+	agreementPositions: {
+		party: string;
+		// collateral: string;
+		status: string;
+		agreement: {
+			id: string;
+			metadataURI: string;
+			createdAt: string;
+			status: string;
+			token: string;
+		};
+	}[];
 }
 
 export const agreementsPositionsQuery = gql`
