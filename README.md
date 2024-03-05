@@ -2,7 +2,8 @@
 
 User interface for interacting with the Nation3 Agreements smart contracts.
 
-https://agreements.nation3.org
+- Mainnet: https://agreements.nation3.org
+- Sepolia: https://agreements-sepolia.nation3.org
 
 ## Smart Contracts
 
