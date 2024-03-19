@@ -37,7 +37,7 @@
     "i18next": "^22.4.9",
     "ipfs-car": "^0.9.1",
     "keccak256": "^1.0.6",
-    "markdown-it": "^13.0.1",
+    "markdown-it": "^14.1.0",
     "merkletreejs": "^0.3.0",
     "next": "latest",
     "next-i18next": "^13.0.3",
