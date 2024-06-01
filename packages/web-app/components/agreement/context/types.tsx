@@ -1,6 +1,6 @@
 export interface PositionParams {
 	status: string;
-	collateral: string;
+	// collateral: string;
 }
 
 export interface ResolverParams {
@@ -11,7 +11,7 @@ export interface ResolverParams {
 export interface UserPosition {
 	status: string;
 	deposit: string;
-	collateral: string;
+	// collateral: string;
 	resolver?: ResolverParams;
 }
 

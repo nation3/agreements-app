@@ -14,7 +14,7 @@ export interface AgreementData {
 		createdAt: string;
 		positions: {
 			party: string;
-			collateral: string;
+			// collateral: string;
 			deposit: string;
 			status: string;
 		}[];
@@ -36,7 +36,6 @@ export const agreementQuery = gql`
 			createdAt
 			positions {
 				party
-				collateral
 				deposit
 				status
 			}
