@@ -199,7 +199,7 @@ export const JoinModal = ({ onClose, isOpen }: { onClose: () => void; isOpen: bo
 		collateralToken,
 		depositToken,
 	} = useAgreementData();
-	const [usePermit2, setUsePermit2] = useState<boolean>(false);
+	const [usePermit2, setUsePermit2] = useState<boolean>(true);
 	const [signLoading, setSignLoading] = useState<boolean>(false);
 
 	const userResolver = useMemo(
